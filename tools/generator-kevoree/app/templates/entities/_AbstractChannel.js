@@ -17,6 +17,7 @@ var <%= entityName %> = <%= entityType %>.extend({
   start: function (_super) {
     _super.call(this);
     // TODO
+    this.log.debug(this.toString(), 'START');
   },
 
   /**
@@ -24,6 +25,7 @@ var <%= entityName %> = <%= entityType %>.extend({
    */
   stop: function () {
     // TODO
+    this.log.debug(this.toString(), 'STOP');
   },
 
   /**
@@ -35,6 +37,7 @@ var <%= entityName %> = <%= entityType %>.extend({
    */
   onSend: function (fromPortPath, destPortPaths, msg) {
     // TODO
+    this.log.debug(this.toString(), 'TODO send message to all destPort');
   }
 });
 

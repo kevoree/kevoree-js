@@ -17,6 +17,7 @@ var <%= entityName %> = <%= entityType %>.extend({
   start: function (_super) {
     _super.call(this);
     // TODO
+    this.log.debug(this.toString(), 'START');
   },
 
   /**
@@ -24,6 +25,7 @@ var <%= entityName %> = <%= entityType %>.extend({
    */
   stop: function () {
     // TODO
+    this.log.debug(this.toString(), 'STOP');
   },
 
   /**
@@ -33,6 +35,7 @@ var <%= entityName %> = <%= entityType %>.extend({
    */
   push: function (model, targetNodeName) {
     // TODO
+    this.log.debug(this.toString(), 'TODO change current model with pushed one');
   },
 
   /**
@@ -42,6 +45,7 @@ var <%= entityName %> = <%= entityType %>.extend({
    */
   pull: function (targetNodeName, callback) {
     // TODO
+    this.log.debug(this.toString(), 'TODO send current model back to targetNodeName');
   }
 
 });

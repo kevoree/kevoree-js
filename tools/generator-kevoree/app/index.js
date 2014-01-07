@@ -60,23 +60,32 @@ KevoreeGenerator.prototype.askFor = function askFor() {
 };
 
 KevoreeGenerator.prototype.app = function app() {
-  if (this.rawEntityType == 'comp') {
-    // Component dependant files & dirs
-    this.template('_Gruntfile.js', 'Gruntfile.js');
-    this.template('_compPackage.json', 'package.json');
-    this.mkdir('ui');
-  } else {
-    // Other entities dependant files & dirs
-    this.template('_defaultPackage.json', 'package.json');
-  }
-  
   // common files & dirs for all entities
   this.mkdir('lib');
-  this.mkdir('kevs');
-  this.template('_README.md', 'README.md');
   this.template('entities/_'+this.entityType+'.js', 'lib/'+this.entityName+'.js');
+  this.template('_README.md', 'README.md');
   this.template('_kevoree-letype-lename.js', 'kevoree-'+this.rawEntityType+'-'+ _.slugify(this.entityName)+'.js');
-  this.template('_main.kevs', 'kevs/main.kevs');
+  this.mkdir('kevs');
+  
+  // type dependant config
+  switch (this.rawEntityType) {
+    case 'comp':
+      this.mkdir('ui');
+      this.template('_Gruntfile.js', 'Gruntfile.js');
+      this.template('_compPackage.json', 'package.json');
+      this.template('_compMain.kevs', 'kevs/main.kevs');
+      break;
+    
+    case 'chan':
+      this.template('_defaultPackage.json', 'package.json');;
+      this.template('_chanMain.kevs', 'kevs/main.kevs');
+      break;
+    
+    case 'group':
+      this.template('_defaultPackage.json', 'package.json');;
+      this.template('_groupMain.kevs', 'kevs/main.kevs');
+      break;
+  }
 };
 
 var matcher = function matcher(input, pattern) {

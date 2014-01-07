@@ -7,9 +7,8 @@ include npm:kevoree-<%= rawEntityType %>-<%= _.slugify(entityName) %> // this is
 
 add node0 : JavascriptNode
 add sync : WebSocketGroup
-// add your entity here
-// something like:
-// add myUberEntity : <%= entityName %>
-// if your entity is a component, you will have to prepend your entity's name with the host node name
-// like: add node0.myUberEntity : <%= entityName %>
+add node0.myComp : <%= entityName %>
 
+attach node0 sync
+
+set sync.port/node0 = "9000"

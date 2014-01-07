@@ -17,6 +17,7 @@ var <%= entityName %> = <%= entityType %>.extend({
   start: function (_super) {
     _super.call(this);
     // TODO
+    this.log.debug(this.toString(), 'START');
   },
 
   /**
@@ -25,6 +26,7 @@ var <%= entityName %> = <%= entityType %>.extend({
   stop: function (_super) {
     _super.call(this);
     // TODO
+    this.log.debug(this.toString(), 'STOP');
   }
 });
 
