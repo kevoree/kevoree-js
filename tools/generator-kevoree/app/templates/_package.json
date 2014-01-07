@@ -1,0 +1,16 @@
+{
+  "name": "kevoree-<%= rawEntityType %>-<%= _.slugify(entityName) %>",
+  "version": "0.0.1",
+  "main": "./kevoree-<%= rawEntityType %>-<%= _.slugify(entityName) %>.js",
+  "scripts": {
+    "prepublish": "node node_modules/kevoree-gen-model -q"
+  },
+  "dependencies": {
+    "kevoree-entities": ">= 0.0.3"
+  },
+  "devDependencies": {
+    "kevoree-gen-model": ">= 0.0.2",
+    "grunt": "~0.4.1",
+    "grunt-jade": "~0.4.0"
+  }
+}

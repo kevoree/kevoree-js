@@ -1,0 +1,46 @@
+{
+  "name": "kevoree-group-websocket",
+  "version": "0.0.4",
+  "main": "./kevoree-group-websocket.js",
+  "description": "A Kevoree group that uses WebSocket to transfer models",
+  "scripts": {
+    "prepublish": "node node_modules/kevoree-gen-model"
+  },
+  "keywords": [
+    "kevoree",
+    "component"
+  ],
+  "author": {
+    "name": "Maxime Tricoire",
+    "email": "max.tricoire@gmail.com"
+  },
+  "contributors": [],
+  "bugs": {
+    "url": "https://github.com/dukeboard/kevoree-js/issues"
+  },
+  "license": "LGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dukeboard/kevoree-js"
+  },
+  "dependencies": {
+    "kevoree-library": "0.0.3",
+    "kevoree-entities": "~0.0.3",
+    "kevoree-commons": "0.0.1",
+    "pseudoclass": "0.2.6",
+    "ws": "0.4.30"
+  },
+  "devDependencies": {
+    "kevoree-gen-model": "~0.0.2"
+  },
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  },
+  "maintainers": [
+    {
+      "name": "leiko",
+      "email": "max.tricoire@gmail.com"
+    }
+  ]
+}

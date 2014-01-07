@@ -1,0 +1,21 @@
+merge file:/home/leiko/dev/kevoree-js/library/kevoree-node-javascript
+merge file:/home/leiko/dev/kevoree-js/library/kevoree-group-websocket
+merge file:/home/leiko/dev/kevoree-js/library/kevoree-chan-websocket
+merge file:/home/leiko/dev/kevoree-js/library/kevoree-comp-fakeconsole
+merge file:/home/leiko/dev/kevoree-js/library/kevoree-comp-helloworld
+
+add node0: JavascriptNode
+add sync: WebSocketGroup
+add chan0: WebSocketChannel
+add helloworldComp: HelloWorldComponent
+add fakeconsoleComp: FakeConsole
+
+attach node0 sync
+
+move helloworldComp, fakeconsoleComp node0
+
+bind fakeconsoleComp.inMsg chan0
+bind helloworldComp.sendText chan0
+
+set sync {port='8000'}@node0 // test
+set chan0 {port='8088'}@node0

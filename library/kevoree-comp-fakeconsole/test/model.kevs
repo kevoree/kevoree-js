@@ -1,0 +1,23 @@
+merge npm:kevoree-group-websocket
+merge npm:kevoree-comp-helloworld
+merge npm:kevoree-chan-websocket
+merge file:/home/leiko/dev/kevoree-js/library/kevoree-comp-fakeconsole
+
+add node0: JavascriptNode
+add sync: WebSocketGroup
+add chan0, chan1: WebSocketChannel
+add console: FakeConsole
+add comp: HelloWorldComponent
+
+attach node0 sync
+
+move comp, console node0
+
+bind console.sendMsg chan0
+bind console.inMsg chan1, chan0
+
+bind comp.sendText chan1
+
+set sync {port="8053"}@node0
+set chan0 {port="8054"}@node0
+set chan1 {port="8055"}@node0

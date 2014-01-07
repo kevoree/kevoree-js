@@ -1,0 +1,16 @@
+{
+  "name": "kevoree-merger",
+  "version": "0.0.1",
+  "description": "Command-line tool that helps merging XMI or Json models together and generate a merged JSON model",
+  "main": "./kevoree-merger.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node kevoree-merger.js"
+  },
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "license": "LGPL-3.0",
+  "dependencies": {
+    "optimist": "~0.6.0",
+    "kevoree-library": "0.0.3"
+  }
+}

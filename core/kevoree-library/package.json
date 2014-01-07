@@ -1,0 +1,25 @@
+{
+  "name": "kevoree-library",
+  "version": "0.0.3",
+  "description": "Kevoree Library - Generated with KMF and Kotlin JS Compiler",
+  "author": "François Fouquet <fouquet.f@gmail.com>",
+  "main": "./kevoree-library.js",
+  "keywords": [
+    "kevoree",
+    "library"
+  ],
+  "contributors": [],
+  "bugs": {
+    "url": "https://github.com/dukeboard/kevoree-js/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dukeboard/kevoree-js"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "dependencies": {
+    "kevoree-kotlin": "0.0.2"
+  },
+  "license": "LGPL-3.0"
+}

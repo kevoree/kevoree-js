@@ -1,0 +1,41 @@
+{
+  "name": "kevoree-kevscript",
+  "version": "0.0.1",
+  "description": "Kevoree KevScript module - contains parser, interpreter and grammar",
+  "main": "./kevoree-kevscript.js",
+  "scripts": {
+    "test": "node test/test-parser.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dukeboard/kevoree-js.git"
+  },
+  "keywords": [
+    "kevoree",
+    "parser",
+    "grammar",
+    "interpreter",
+    "kevscript"
+  ],
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "license": "LGPL3.0",
+  "bugs": {
+    "url": "https://github.com/dukeboard/kevoree-js/issues"
+  },
+  "homepage": "https://github.com/dukeboard/kevoree-js",
+  "dependencies": {
+    "pseudoclass": "~0.2.6",
+    "optimist": "~0.6.0",
+    "async": "~0.2.9",
+    "kevoree-library": "0.0.3",
+    "kevoree-kotlin": "0.0.1",
+    "kevoree-commons": "0.0.1",
+    "kevoree-resolvers": "0.0.1"
+  },
+  "devDependencies": {
+    "browserify": "~2.35.2",
+    "grunt": "~0.4.1",
+    "grunt-browserify": "~1.2.11",
+    "grunt-contrib-uglify": "~0.2.7"
+  }
+}

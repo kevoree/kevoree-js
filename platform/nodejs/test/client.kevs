@@ -1,0 +1,11 @@
+include npm:kevoree-node-javascript
+include npm:kevoree-group-websocket
+
+add node0, node1 : JavascriptNode/0.0.1
+add sync: WebSocketGroup/0.0.4
+
+attach node0, node1 sync
+
+set sync.port/node0 = "8088"
+
+network node0 braindead.fr

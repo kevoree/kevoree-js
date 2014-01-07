@@ -1,0 +1,16 @@
+{
+  "name": "kevoree-chan-websocket",
+  "version": "0.0.4",
+  "main": "./kevoree-chan-websocket.js",
+  "scripts": {
+    "prepublish": "node node_modules/kevoree-gen-model"
+  },
+  "dependencies": {
+    "kevoree-entities": ">= 0.0.3",
+    "kevoree-commons": ">= 0.0.1",
+    "ws": "~0.4.31"
+  },
+  "devDependencies": {
+    "kevoree-gen-model": ">= 0.0.1"
+  }
+}

@@ -1,0 +1,34 @@
+include npm:kevoree-node-javascript
+include npm:kevoree-group-websocket@0.0.2
+include npm:kevoree-chan-websocket
+// include mvn:org.kevoree.library.javase:org.kevoree.library.javase.websocketgrp:2.0.5-SNAPSHOT
+include npm:kevoree-comp-fakeconsole
+
+// this is a comment
+add node0, node1: JavascriptNode/0.0.1
+add sync : WebSocketGroup/0.0.2
+add node0.comp0, node1.comp0, node1.comp1 : FakeConsole/0.0.2
+add chan0 : WebSocketChannel/0.0.1
+
+attach node0 *
+attach node0, node1 sync
+attach * sync
+
+move node0.comp0 node1
+move node1.* node0
+move node1.comp0, node1.comp1 node0
+
+bind node0.comp0.inMsg chan0
+bind node0.*.* chan0
+unbind node0.comp1.sendMsg *
+unbind *.*.inMsg chan0
+
+set sync.port/node0 = '8000'
+set sync.port/node0 = '8088'
+set chan0.port/node0 = '8047'
+
+network node1 192.168.0.1
+
+remove node1
+
+bind node0.comp1.inMsg chan0

@@ -1,0 +1,15 @@
+{
+  "name": "kevoree-chan-remotews",
+  "version": "0.0.2",
+  "main": "./kevoree-chan-remotews.js",
+  "scripts": {
+    "prepublish": "node node_modules/kevoree-gen-model"
+  },
+  "dependencies": {
+    "kevoree-entities": "~0.0.3",
+    "ws": "~0.4.31"
+  },
+  "devDependencies": {
+    "kevoree-gen-model": "~0.0.1"
+  }
+}
