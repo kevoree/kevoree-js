@@ -37,15 +37,15 @@ var NPMResolver = Resolver.extend({
       }
     }
     
-    function resolveFromRegistry(installPath) {
-      npmInstall(installPath, module, function (err) {
+    function resolveFromRegistry() {
+      npmInstall(this.modulesPath, module, function (err) {
         if (err) {
           this.log.error(this.toString(), 'npm failed to install package \''+ module +'\'');
           return callback(new Error("Bootstrap failure"));
         }
         // npm install succeed so library should be installed as an npm module: go resolve
         doResolve();
-      });
+      }.bind(this));
     }
     
     // first of all: is "forceInstall" flag set to true ?
@@ -73,14 +73,14 @@ var NPMResolver = Resolver.extend({
               }
               // library should now be installed as an npm module
               doResolve();
-            });
+            }.bind(this));
           } else {
             // well unable to find module locally, lets try to resolve it from npm registry
-            resolveFromRegistry(this.modulesPath);
+            resolveFromRegistry.bind(this)();
           }
         } catch (err) {
           // unable to require current directory package.json, lets try to resolve module from npm registry
-          resolveFromRegistry(this.modulesPath);
+          resolveFromRegistry.bind(this)();
         }
       }
     }
