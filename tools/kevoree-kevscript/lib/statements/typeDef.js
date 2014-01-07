@@ -13,7 +13,6 @@ module.exports = function (model, statements, stmt, opts, cb) {
     var version = null;
     while (tDefs.hasNext()) {
       var tDef = tDefs.next();
-      console.log('TDEF > ',tDef.name);
       if (tDef.name === name) {
         version = tDef.version;
         break;
