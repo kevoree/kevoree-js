@@ -4,7 +4,8 @@
   "main": "./kevoree-comp-helloworld.js",
   "description": "A Kevoree component that displays an hello world",
   "scripts": {
-    "prepublish": "node node_modules/kevoree-gen-model"
+    "prepublish": "node node_modules/kevoree-gen-model",
+    "kevoree": "node node_modules/kevoree-nodejs-runtime/cli.js -n node0 -g sync -k kevs/main.kevs"
   },
   "keywords": [
     "kevoree",
@@ -26,7 +27,8 @@
     "pseudoclass": "0.2.6"
   },
   "devDependencies": {
-    "kevoree-gen-model": "~0.0.2"
+    "kevoree-gen-model": "~0.0.2",
+    "kevoree-nodejs-runtime": "0.0.2"
   },
   "optionalDependencies": {},
   "engines": {
