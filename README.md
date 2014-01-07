@@ -3,7 +3,7 @@
 ## Project description
 __kevoree-js__ provides several tools in order to use [Kevoree](http://kevoree.org) in the Javascript world.
 
-> If you already have the KevoreeJS environment up and ready, you already can [build up your first component!](https://github.com/dukeboard/kevoree-js/blob/master/library/README.md)
+> If you already have the KevoreeJS environment up and ready, you already can [build up your first component!](https://github.com/kevoree/kevoree-js/blob/master/library/README.md)
 
 
 ## Getting started
