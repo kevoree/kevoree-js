@@ -1,0 +1,16 @@
+{
+  "name": "kevoree-<%= rawEntityType %>-<%= _.slugify(entityName) %>",
+  "version": "0.0.1",
+  "main": "./kevoree-<%= rawEntityType %>-<%= _.slugify(entityName) %>.js",
+  "scripts": {
+    "prepublish": "node node_modules/kevoree-gen-model -q",
+    "kevoree": "node node_modules/kevoree-nodejs-runtime/cli.js -n node0 -g sync -k kevs/main.kevs"
+  },
+  "dependencies": {
+    "kevoree-entities": ">= 0.0.3"
+  },
+  "devDependencies": {
+    "kevoree-gen-model": "0.0.2",
+    "kevoree-nodejs-runtime": "0.0.2"
+  }
+}
