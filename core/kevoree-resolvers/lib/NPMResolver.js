@@ -84,67 +84,6 @@ var NPMResolver = Resolver.extend({
         }
       }
     }
-
-//    function doResolve(someLib) {
-//      var KClass = require(someLib);
-//      var jsonModel = require(path.resolve(someLib, 'kevlib.json'));
-//      return callback(null, KClass, loader.loadModelFromString(JSON.stringify(jsonModel)).get(0));
-//    }
-//
-//    try {
-//      if (forceInstall == true) {
-//        // trigger FORCE_INSTALL error so installation is forced
-//        var e = new Error();
-//        e.code = 'FORCE_INSTALL';
-//        throw e;
-//      }
-//      doResolve.bind(this)(pkgPath);
-//
-//    } catch (err) {
-//      if (err.code === 'MODULE_NOT_FOUND' || err.code === 'FORCE_INSTALL') {
-//        try {
-//          // for non-published packages this is useful because it tries
-//          // to find the module in the current directory
-//          this.log.info(this.toString(), "DeployUnit ("+module+") is not installed yet: trying local install...");
-//          npm.load({}, function (err) {
-//            if (err) {
-//              return callback(new Error('Unable to load npm module'));
-//            }
-//
-//            // load success
-//            npm.commands.install(this.modulesPath, [path.resolve('..', packageName)], function (err) {
-//              if (err) {
-//                this.log.error(this.toString(), 'npm failed to install package \''+ module +'\'');
-//                return callback(new Error("Bootstrap failure"));
-//              }
-//
-//              doResolve.bind(this)(module);
-//            }.bind(this));
-//          }.bind(this));
-//          
-//        } catch (err) {
-//          if (err.code === 'MODULE_NOT_FOUND' || err.code === 'FORCE_INSTALL') {
-//            // try to download it from npm registry
-//            this.log.info(this.toString(), "DeployUnit ("+module+") is not installed yet: downloading & installing it...");
-//            npm.load({}, function (err) {
-//              if (err) {
-//                return callback(new Error('Unable to load npm module'));
-//              }
-//
-//              // load success
-//              npm.commands.install(this.modulesPath, [module], function (err) {
-//                if (err) {
-//                  this.log.error(this.toString(), 'npm failed to install package \''+ module +'\'');
-//                  return callback(new Error("Bootstrap failure"));
-//                }
-//
-//                doResolve.bind(this)(module);
-//              }.bind(this));
-//            }.bind(this));
-//          } else throw err;
-//        }
-//      } else throw err;
-//    }
   },
 
   uninstall: function (deployUnit, callback) {
