@@ -1,7 +1,7 @@
-# Kevoree-JS
+![Kevoree](http://kevoree.org/images/kevoree-gris.png)
 
 ## Project description
-__kevoree-js__ provides several tools in order to use [Kevoree](http://kevoree.org) in the Javascript world.
+__kevoree-js__ provides several tools in order to use **[Kevoree](http://kevoree.org)** in **Javascript**.
 
 > If you already have the KevoreeJS environment up and ready, you already can [build up your first component!](https://github.com/kevoree/kevoree-js/blob/master/library/README.md)
 
