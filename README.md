@@ -53,12 +53,12 @@ Choose a node name to bootstrap on, here 'node0', then press "Start" and "Deploy
 
 If you get the "Model deployed successfully" you have just created a new Kevoree runtime that runs in your browser! Awesome, huh?  
 
-__WHY DID I INSTALLED & RUN KEV-WEB-EDITOR?__  
+__What about KEV-WEB-EDITOR?__  
 Well, that's a good question. In fact, you should open it now, and follow those actions:  
 
  * File > Open from node
  * Choose 'ws' protocol
- * Write 'localhost:8000' next to 'ws' protocol.
+ * Write 'localhost:9000' next to 'ws' protocol.
  * Click 'Open'
  
 By doing so, Kevoree Web Editor will retrieve the model that runs on your own Kevoree Runtime (server-side).  
