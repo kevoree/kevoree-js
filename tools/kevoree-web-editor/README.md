@@ -1,6 +1,9 @@
 # Kevoree Web Editor
 
 ## Get started
+
+> You need to have `npm` and `grunt` installed on your computer in order to install `kevoree-web-editor`
+
 ### Installing from npm
 ```sh
 export JAVA_HOME=/path/to/your/jdk
