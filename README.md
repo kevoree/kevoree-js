@@ -1,7 +1,7 @@
-# Kevoree-JS
+![Kevoree](http://kevoree.org/images/kevoree-gris.png)
 
 ## Project description
-__kevoree-js__ provides several tools in order to use [Kevoree](http://kevoree.org) in the Javascript world.
+__kevoree-js__ provides several tools in order to use **[Kevoree](http://kevoree.org)** in **Javascript**.
 
 > If you already have the KevoreeJS environment up and ready, you already can [build up your first component!](https://github.com/kevoree/kevoree-js/blob/master/library/README.md)
 
@@ -53,12 +53,12 @@ Choose a node name to bootstrap on, here 'node0', then press "Start" and "Deploy
 
 If you get the "Model deployed successfully" you have just created a new Kevoree runtime that runs in your browser! Awesome, huh?  
 
-__WHY DID I INSTALLED & RUN KEV-WEB-EDITOR?__  
+__What about KEV-WEB-EDITOR?__  
 Well, that's a good question. In fact, you should open it now, and follow those actions:  
 
  * File > Open from node
  * Choose 'ws' protocol
- * Write 'localhost:8000' next to 'ws' protocol.
+ * Write 'localhost:9000' next to 'ws' protocol.
  * Click 'Open'
  
 By doing so, Kevoree Web Editor will retrieve the model that runs on your own Kevoree Runtime (server-side).  
