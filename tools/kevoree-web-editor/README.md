@@ -12,7 +12,7 @@ npm start
 ### Installing from repository
 ```sh
 git clone git@github.com:kevoree/kevoree-js
-cd tools/kevoree-web-editor
+cd kevoree-js/tools/kevoree-web-editor
 export JAVA_HOME=/path/to/your/jdk
 npm install
 npm start
