@@ -5,11 +5,12 @@
   "main": "./app.js",
   "scripts": {
     "preinstall": "if [ -z \"$JAVA_HOME\" ]; then echo \"You should export JAVA_HOME before installing kevoree-web-editor\" && exit 1; fi",
-    "postinstall": "mvn install && cd node_modules/kevoree-web-editor-client && npm install && grunt",
+    "postinstall": "mvn install",
+    "buildclient": "cd node_modules/kevoree-web-editor-client && npm install && grunt",
     "start": "node app.js"
   },
   "dependencies": {
-    "kevoree-web-editor-client": "0.0.4",
+    "kevoree-web-editor-client": "0.0.5",
     "express": "3.1.1",
     "jade": "~1.1.0",
     "java": "0.2.3",
