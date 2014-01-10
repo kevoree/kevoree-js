@@ -13,8 +13,9 @@ var app = express();
 
 // all environments
 app.set('port', process.env.PORT || config.PORT || 3000);
-app.use(config.ROUTE_PREFIX, express.static(config.CLIENT_PATH));
-app.set('views', config.CLIENT_PATH);
+app.set('jsonp callback', true);
+app.use(config.ROUTE_PREFIX, express.static(path.join(__dirname, config.CLIENT_PATH)));
+app.set('views', path.join(__dirname, config.CLIENT_PATH));
 // rendering engine (basic html renderer)
 app.engine('html', require('ejs').renderFile);
 app.use(express.favicon());
@@ -33,16 +34,17 @@ app.configure('development', function() {
 
 app.get('/', routes.index);
 app.get('/load', routes.load);
-app.post('/merge', routes.merge);
-app.post('/open', routes.open);
-app.post('/resolve', routes.resolve);
+app.get('/merge', routes.merge);
+app.get('/open', routes.open);
+app.get('/resolve', routes.resolve);
 
 app.use(function(req, res) {
   // if you end-up here, it means that I do not know the given url
   // so for now => redirect to '/' but you can put a custom 404 if you want
+  console.log('POTATO!!');
   res.redirect('/');
 });
 
 http.createServer(app).listen(app.get('port'), function() {
-  console.log('Express server (ENV: '+config.environment+') listening on port ' + app.get('port'));
+  console.log('Express server started on port ' + app.get('port'));
 });

@@ -4,30 +4,22 @@ var kevoree = require('kevoree-library').org.kevoree;
 var serializer = new kevoree.serializer.JSONModelSerializer();
 
 module.exports = function (req, res) {
-  if (req.xhr) {
-    if (req.body.name) {
-      var version = undefined;
-      if (req.body.version.length > 0) version = req.body.version;
-      getJSONModel(req.body.name, version, function (err, model) {
-        if (err) return res.json({ result: -1, message: err.message });
+  if (req.query.name) {
+    var version = undefined;
+    if (req.query.version.length > 0) version = req.query.version;
+    getJSONModel(req.query.name, version, function (err, model) {
+      if (err) return res.jsonp({ result: -1, message: err.message });
 
-        return res.json({
-          result: 1,
-          message: 'ok',
-          model: serializer.serialize(model)
-        });
+      return res.jsonp({
+        result: 1,
+        message: 'ok',
+        model: serializer.serialize(model)
       });
-    } else {
-      return res.json({
-        result: -1,
-        message: 'Unable to retrieve "name" and/or "version" parameters from request.'
-      });
-    }
-
+    });
   } else {
-    return res.json({
+    return res.jsonp({
       result: -1,
-      message: 'Request must be an XHR'
+      message: 'Unable to retrieve "name" and/or "version" parameters from request.'
     });
   }
 }
