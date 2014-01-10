@@ -13,8 +13,8 @@ var app = express();
 
 // all environments
 app.set('port', process.env.PORT || config.PORT || 3000);
-app.use(config.ROUTE_PREFIX, express.static(path.join(__dirname, 'node_modules/kevoree-web-editor-client/dist')));
-app.set('views', path.join(__dirname, 'node_modules/kevoree-web-editor-client/dist'));
+app.use(config.ROUTE_PREFIX, express.static(config.CLIENT_PATH));
+app.set('views', config.CLIENT_PATH);
 // rendering engine (basic html renderer)
 app.engine('html', require('ejs').renderFile);
 app.use(express.favicon());
