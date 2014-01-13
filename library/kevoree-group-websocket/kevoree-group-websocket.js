@@ -46,7 +46,6 @@ var WebSocketGroup = AbstractGroup.extend({
     if (this.dictionary.getValue('port') != undefined) {
       this.server = this.startWSServer(this.dictionary.getValue('port'));
     } else {
-      console.log("AM A CLIENT");
       this.client = this.startWSClient();
     }
   },
@@ -172,7 +171,6 @@ var WebSocketGroup = AbstractGroup.extend({
   startWSClient: function () {
     var addresses = this.getMasterServerAddresses();
     if (addresses && addresses.length > 0) {
-      console.log('GOT ADDRESSES', addresses);
       var group = this;
       var connectToServer = function () {
         var ws = new WebSocket('ws://'+addresses[0]); // TODO change that => to try each different addresses not only the first one
