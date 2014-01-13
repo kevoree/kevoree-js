@@ -5,20 +5,16 @@ var kevoree = require('kevoree-library').org.kevoree;
 
 java.classpath.push(config.KEV_JAR);
 
-// Java tools
-var resolver  = java.newInstanceSync('org.kevoree.resolver.MavenResolver'),
-  jsonLoader  = java.newInstanceSync('org.kevoree.loader.JSONModelLoader'),
-  list        = java.newInstanceSync('java.util.ArrayList'),
-  serializer  = java.newInstanceSync('org.kevoree.serializer.JSONModelSerializer'),
-  compare     = java.newInstanceSync('org.kevoree.compare.DefaultModelCompare'),
-  factory     = java.newInstanceSync('org.kevoree.impl.DefaultKevoreeFactory');
+var resolver   = java.newInstanceSync('org.kevoree.resolver.MavenResolver'),
+    list       = java.newInstanceSync('java.util.ArrayList'),
+    serializer = new kevoree.serializer.JSONModelSerializer(),
+    loader     = new kevoree.loader.JSONModelLoader(),
+    compare    = new kevoree.compare.DefaultModelCompare(),
+    factory    = new kevoree.impl.DefaultKevoreeFactory();
 list.addSync("http://oss.sonatype.org/content/groups/public");
 
-// Javascript tools
-var jsLoader = new kevoree.loader.JSONModelLoader();
-
 module.exports = function (libraries, callback) {
-  var mergedModel = factory.createContainerRootSync();
+  var mergedModel = factory.createContainerRoot();
   for (var i in libraries) {
     var artID   = libraries[i].artifactID,
         grpID   = libraries[i].groupID,
@@ -31,14 +27,18 @@ module.exports = function (libraries, callback) {
 
       } else {
         var jar      = java.newInstanceSync('java.util.jar.JarFile', file),
-            jarEntry = jar.getJarEntrySync("KEV-INF/lib.json");
+            jarEntry = jar.getJarEntrySync("KEV-INF/lib.json"),
+            strWriter = java.newInstanceSync('java.io.StringWriter');
 
         if (jarEntry != null) {
-          var model    = jsonLoader.loadModelFromStreamSync(jar.getInputStreamSync(jarEntry)).getSync(0),
-              mergeSeq = compare.mergeSync(mergedModel, model);
+          // filling up strWriter with jarEntry input stream content
+          java.callStaticMethodSync('org.apache.commons.io.IOUtils', 'copy', jar.getInputStreamSync(jarEntry), strWriter);
+          // load model from strWriter string
+          var model    = loader.loadModelFromString(strWriter.toStringSync()).get(0),
+              mergeSeq = compare.merge(mergedModel, model);
 
           try {
-            mergeSeq.applyOnSync(mergedModel);
+            mergeSeq.applyOn(mergedModel);
           } catch (err) {
             console.error("mergeSeq.applyOn error");
             console.error(err);
@@ -55,7 +55,5 @@ module.exports = function (libraries, callback) {
     }
   }
   
-  var strModel = serializer.serializeSync(mergedModel);        // converting 'Java' ContainerRoot to string
-  mergedModel = jsLoader.loadModelFromString(strModel).get(0); // and then loading it with jsLoader
-  return callback(null, mergedModel);                          // otherwise mergedModel wouldn't have been well typed
+  return callback(null, mergedModel);
 }
