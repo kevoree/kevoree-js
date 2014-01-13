@@ -296,7 +296,9 @@ var WebSocketGroup = AbstractGroup.extend({
 
     // broadcast model over all connected nodes
     for (var nodeName in this.connectedNodes) {
-      this.connectedNodes[nodeName].send(strData);
+      if (this.connectedNodes[nodeName].readyState === 1) { // send current model to connected peers
+        this.connectedNodes[nodeName].send(strData);
+      }
     }
   },
 
