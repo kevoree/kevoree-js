@@ -57,7 +57,9 @@ var WebSocketChannel = AbstractChannel.extend({
     } else if (this.server != null) {
       // broadcast message to each connected clients
       for (var i in this.connectedClients) {
-        this.connectedClients[i].send(msg);
+        if (this.connectedClients[i].readyState === 1) {
+          this.connectedClients[i].send(msg);
+        }
       }
     }
 

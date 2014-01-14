@@ -45,6 +45,9 @@ module.exports = function(req, res) {
           // browserify module
           var b = browserify();
           var bundleFile = fs.createWriteStream(path.resolve(browserModulePath, req.body.name+'-bundle.js'));
+          bundleFile.on('end', function () {
+            bundleFile.end();
+          });
 
           // set kevoree-library et kevoree-kotlin as 'provided externally' because there are bundled with
           // kevoree-browser-runtime-client, if you don't do that, they will be loaded multiple times
