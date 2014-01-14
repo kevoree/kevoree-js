@@ -1,16 +1,16 @@
 {
   "name": "kevoree-web-editor",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "main": "./app.js",
   "scripts": {
     "preinstall": "if [ -z \"$JAVA_HOME\" ]; then echo \"You should export JAVA_HOME before installing kevoree-web-editor\" && exit 1; fi",
-    "postinstall": "mvn install",
+    "postinstall": "mvn install && npm run buildclient",
     "buildclient": "cd node_modules/kevoree-web-editor-client && npm install && grunt",
     "start": "node app.js"
   },
   "dependencies": {
-    "kevoree-web-editor-client": "0.0.6",
+    "kevoree-web-editor-client": "0.0.8",
     "express": "3.1.1",
     "jade": "~1.1.0",
     "java": "0.2.3",
