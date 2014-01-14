@@ -1,14 +1,14 @@
 include npm:kevoree-node-javascript
-include npm:kevoree-group-websocket@0.0.2
+include npm:kevoree-group-websocket@0.0.5
 include npm:kevoree-chan-websocket
 // include mvn:org.kevoree.library.javase:org.kevoree.library.javase.websocketgrp:2.0.5-SNAPSHOT
 include npm:kevoree-comp-fakeconsole
 
 // this is a comment
 add node0, node1: JavascriptNode/0.0.1
-add sync : WebSocketGroup/0.0.2
-add node0.comp0, node1.comp0, node1.comp1 : FakeConsole/0.0.2
-add chan0 : WebSocketChannel/0.0.1
+add sync : WebSocketGroup
+add node0.comp0, node1.comp0, node1.comp1 : FakeConsole/0.0.3
+add chan0 : WebSocketChannel
 
 attach node0 *
 attach node0, node1 sync
