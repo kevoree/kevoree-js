@@ -35,7 +35,6 @@ app.configure('development', function() {
 app.get('/', routes.index);
 app.get('/load', routes.load);
 app.get('/merge', routes.merge);
-app.get('/resolve', routes.resolve);
 
 app.use(function(req, res) {
   // if you end-up here, it means that I do not know the given url
