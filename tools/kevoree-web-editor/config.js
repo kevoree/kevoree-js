@@ -10,4 +10,4 @@ exports.KEV_JAR      = path.resolve('target', 'tools.editor.server-0.0.1-jar-wit
 // server port
 exports.PORT         = 3042;
 // once loaded, libraries list will be erased (memory flush) every CLEAR_LIBS ms
-exports.CLEAR_LIBS   = 1000*60*60;
+exports.CLEAR_LIBS   = 1000*60*30; // 30 minutes

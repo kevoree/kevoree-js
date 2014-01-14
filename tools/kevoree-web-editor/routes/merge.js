@@ -9,11 +9,12 @@ var factory    = new kevoree.impl.DefaultKevoreeFactory(),
   compare    = new kevoree.compare.DefaultModelCompare();
 
 module.exports = function(req, res) {
-  if (req.query.libz) {
+  req.body.libz = req.body.libz || req.query.libz; // works whether it is a POST or a GET
+  if (req.body.libz) {
     try {
       var asyncTasks = [];
       var fullModel = factory.createContainerRoot();
-      for (var platform in req.query.libz) {
+      for (var platform in req.body.libz) {
         (function (libraries, platform) {
           asyncTasks.push(function (taskCb) {
             var handler = require('./merge/'+platform);
@@ -25,7 +26,7 @@ module.exports = function(req, res) {
               taskCb();
             });
           });
-        })(req.query.libz[platform], platform);
+        })(req.body.libz[platform], platform);
       }
 
       async.series(asyncTasks, function (err) {

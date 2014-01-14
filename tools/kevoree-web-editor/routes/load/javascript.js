@@ -1,20 +1,46 @@
 var npm    = require('npm');
 var async  = require('async');
 var config = require('../../config');
+var rimraf = require('rimraf');
+var path   = require('path');
 
 var libraries = [];
+var canClear = true;
+var clearId = null;
 
 // clear libraries cache function loop
-setInterval(function () {
+setInterval(function clearCache() {
   if (libraries.length > 0) {
-    var currentdate = new Date();
-    console.log("Javascript core libraries cache cleared at " + currentdate.getDate() + "/"
-      + (currentdate.getMonth()+1)  + "/"
-      + currentdate.getFullYear() + " @ "
-      + currentdate.getHours() + ":"
-      + currentdate.getMinutes() + ":"
-      + currentdate.getSeconds());
-    libraries = []; // clear cache (TODO lock the thing because ugly things could happen here)
+    if (canClear) {
+      // we can clear cache now
+      clearTimeout(clearId);
+      // rm library module directory if any
+      for (var i in libraries) {
+        var modulePath = path.resolve('node_modules', libraries[i].artifactID);
+        (function (modulePath) {
+          rimraf(modulePath, function (err) {
+            if (err) {
+              console.log('Unable to rimraf "'+modulePath+'".\nError: '+err.message);
+            }
+          });
+        })(modulePath);
+      }
+
+      var currentdate = new Date();
+      console.log("Javascript core libraries cache cleared (" + currentdate.getDate() + "/"
+        + (currentdate.getMonth()+1)  + "/"
+        + currentdate.getFullYear() + " @ "
+        + currentdate.getHours() + ":"
+        + currentdate.getMinutes() + ":"
+        + currentdate.getSeconds() + ')');
+      libraries.length = 0;
+      
+    } else {
+      // clear old task if any
+      clearTimeout(clearId);
+      // restart a task in 2000ms
+      clearId = setTimeout(clearCache, 2000);
+    }
   }
 }, config.CLEAR_LIBS); // do this every CLEAR_LIBS ms
 
@@ -35,6 +61,7 @@ module.exports = function (callback) {
 
         // npm search command succeed
         libraries.length = 0; // resetting libraries array (clear cache)
+        canClear = false;
         var asyncTasks = [];
         for (var moduleName in modules) {
           (function (packageName, latest) {
@@ -58,9 +85,14 @@ module.exports = function (callback) {
         }
 
         async.parallel(asyncTasks, function (err) {
-          if (err) return callback(err);
+          if (err) {
+            callback(err);
+            canClear = true;
+            return;
+          }
 
-          return callback(null, libraries);
+          callback(null, libraries);
+          canClear = true;
         });
       });
     });

@@ -4,19 +4,27 @@ var semver = require('semver');
 var config = require('../../config');
 
 var libraries = [];
+var canClear = true;
+var clearId = null;
 var platform = 'java'; // enhance that to add "cloud", "android", etc...
 
 // clear libraries cache function loop
-setInterval(function () {
+setInterval(function clearCache() {
   if (libraries.length > 0) {
-    var currentdate = new Date();
-    console.log(platform.charAt(0).toUpperCase() + platform.slice(1)+" core libraries cache cleared at " + currentdate.getDate() + "/"
-      + (currentdate.getMonth()+1)  + "/"
-      + currentdate.getFullYear() + " @ "
-      + currentdate.getHours() + ":"
-      + currentdate.getMinutes() + ":"
-      + currentdate.getSeconds());
-    libraries = []; // clear cache (TODO lock the thing because ugly things could happen here)
+    if (canClear) {
+      clearTimeout(clearId);
+      var currentdate = new Date();
+      console.log(platform.charAt(0).toUpperCase() + platform.slice(1)+" core libraries cache cleared (" + currentdate.getDate() + "/"
+        + (currentdate.getMonth()+1)  + "/"
+        + currentdate.getFullYear() + " @ "
+        + currentdate.getHours() + ":"
+        + currentdate.getMinutes() + ":"
+        + currentdate.getSeconds()+')');
+      libraries.length = 0;
+    } else {
+      clearTimeout(clearId);
+      clearId = setTimeout(clearCache, 2000);
+    }
   }
 }, config.CLEAR_LIBS); // do this every CLEAR_LIBS ms
 
@@ -39,7 +47,14 @@ module.exports = function (callback) {
       result.on('end', function () {
         // XML data fully retrieved from remote server => parsing and sending result
         libraries.length = 0; // resetting library cache for this platform
+        canClear = false;
         parseString(data, function (err, xml) {
+          if (err) {
+            callback(new Error('Unable to parse XML file.'));
+            canClear = true;
+            return;
+          }
+          
           var artifacts = xml['search-results']['data'][0]['artifact'];
           for (var i in artifacts) {
             var rawArt = artifacts[i]['artifactId'][0].split('.');
@@ -73,7 +88,9 @@ module.exports = function (callback) {
             }
           }
 
-          return callback(null, libraries);
+          callback(null, libraries);
+          canClear = true;
+          return;
         });
       });
     });
