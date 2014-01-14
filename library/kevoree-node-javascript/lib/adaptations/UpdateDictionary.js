@@ -13,10 +13,8 @@ module.exports = AdaptationPrimitive.extend({
   execute: function (_super, callback) {
     _super.call(this, callback);
 
-    var dicValue = this.adaptModel.findByPath(this.trace.srcPath),
-        instance = this.findEntityInstance();
-
-    var kDictionary = dicValue.eContainer();
+    var instance = this.findEntityInstance();
+    var kDictionary = this.modelElement.eContainer();
 
     if (instance != null) {
       var dictionary = instance.getDictionary();
@@ -24,13 +22,13 @@ module.exports = AdaptationPrimitive.extend({
       this.instance = instance;
       if (Kotlin.isType(kDictionary, kevoree.impl.FragmentDictionaryImpl)) {
         if (kDictionary.name == this.node.getName()) {
-          dictionary.setEntry(dicValue.name, dicValue.value);
+          dictionary.setEntry(this.modelElement.name, this.modelElement.value);
         }
       } else {
-        dictionary.setEntry(dicValue.name, dicValue.value);
+        dictionary.setEntry(this.modelElement.name, this.modelElement.value);
       }
 
-      this.log.debug(this.toString(), 'job done for attribute '+dicValue.name+'@'+this.node.getName());
+      this.log.debug(this.toString(), 'job done for attribute '+this.modelElement.name+'@'+this.node.getName());
       return callback();
 
     } else {
@@ -71,7 +69,7 @@ module.exports = AdaptationPrimitive.extend({
 
   findEntityInstance: function () {
     for (var path in this.mapper.getMap()) {
-      if (this.trace.srcPath.startsWith(path)) {
+      if (this.modelElement.path().startsWith(path)) {
         return this.mapper.getObject(path);
       }
     }

@@ -18,30 +18,28 @@ module.exports = AdaptationPrimitive.extend({
   execute: function (_super, callback) {
     _super.call(this, callback);
 
-    var kInstance = this.node.getKevoreeCore().getCurrentModel().findByPath(this.trace.previousPath || this.trace.objPath);
-
-    if (kInstance) {
-      var instance = this.mapper.getObject(kInstance.path());
+    if (this.modelElement) {
+      var instance = this.mapper.getObject(this.modelElement.path());
       if (instance != undefined && instance != null) {
-        this.mapper.removeEntry(kInstance.path());
-        this.doSpecificTypeProcess(kInstance);
+        this.mapper.removeEntry(this.modelElement.path());
+        this.doSpecificTypeProcess(this.modelElement);
         this.log.debug(this.toString(), 'job done for '+instance.getName()+'@'+this.node.getName());
         return callback();
 
       } else {
-        callback(new Error(this.toString()+" error: unable to remove instance "+kInstance.path()));
+        callback(new Error(this.toString()+" error: unable to remove instance "+this.modelElement.path()));
         return;
       }
     }
 
-    this.log.debug(this.toString(), 'no work done with '+this.trace.toString()+'@'+this.node.getName());
+    this.log.debug(this.toString(), 'no work done with '+this.modelElement.name+'@'+this.node.getName());
     return callback();
   },
 
   undo: function (_super, callback) {
     _super.call(this, callback);
 
-    var cmd = new AddInstance(this.node, this.mapper, this.adaptModel, this.trace);
+    var cmd = new AddInstance(this.node, this.mapper, this.adaptModel, this.modelElement);
     cmd.execute(callback);
     return;
   },

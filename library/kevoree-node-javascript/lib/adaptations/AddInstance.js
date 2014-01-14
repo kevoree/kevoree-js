@@ -21,25 +21,23 @@ module.exports = AdaptationPrimitive.extend({
   execute: function (_super, callback) {
     _super.call(this, callback);
 
-    var kInstance = this.adaptModel.findByPath(this.trace.previousPath);
-
     // inception check
-    if (kInstance && (kInstance.name != this.node.getName())) {
+    if (this.modelElement && (this.modelElement.name != this.node.getName())) {
       // platform related check
-      if (this.isRelatedToPlatform(kInstance)) {
-        var moduleName = this.findSuitableModuleName(kInstance);
+      if (this.isRelatedToPlatform(this.modelElement)) {
+        var moduleName = this.findSuitableModuleName(this.modelElement);
         if (moduleName != undefined && moduleName != null) {
           try {
             var InstanceClass = require(moduleName);
             var instance = new InstanceClass();
             instance.setKevoreeCore(this.node.getKevoreeCore());
-            instance.setName(kInstance.name);
-            instance.setPath(kInstance.path());
+            instance.setName(this.modelElement.name);
+            instance.setPath(this.modelElement.path());
             instance.setNodeName(this.node.getName());
 
-            this.doSpecificTypeProcess(kInstance);
+            this.doSpecificTypeProcess(this.modelElement);
 
-            this.mapper.addEntry(kInstance.path(), instance);
+            this.mapper.addEntry(this.modelElement.path(), instance);
 
             this.log.debug(this.toString(), 'job done for '+instance.getName()+'@'+this.node.getName());
             return callback();
@@ -61,7 +59,7 @@ module.exports = AdaptationPrimitive.extend({
   undo: function (_super, callback) {
     _super.call(this, callback);
 
-    var cmd = new RemoveInstance(this.node, this.mapper, this.adaptModel, this.trace);
+    var cmd = new RemoveInstance(this.node, this.mapper, this.adaptModel, this.modelElement);
     cmd.execute(callback);
     return;
   },

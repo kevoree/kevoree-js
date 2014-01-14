@@ -17,17 +17,15 @@ module.exports = AdaptationPrimitive.extend({
   execute: function (_super, callback) {
     _super.call(this, callback);
 
-    var deployUnit = this.adaptModel.findByPath(this.trace.previousPath);
-
-    if (!this.mapper.hasObject(deployUnit.path())) {
+    if (!this.mapper.hasObject(this.modelElement.path())) {
       var bootstrapper = this.node.getKevoreeCore().getBootstrapper();
 
-      bootstrapper.bootstrap(deployUnit, false, function (err) {
+      bootstrapper.bootstrap(this.modelElement, false, function (err) {
         if (err) return callback(err);
 
         // bootstrap success: add deployUnit path & packageName into mapper
-        this.mapper.addEntry(deployUnit.path(), deployUnit.name);
-        this.log.debug(this.toString(), 'job done for '+deployUnit.name+'@'+this.node.getName());
+        this.mapper.addEntry(this.modelElement.path(), this.modelElement.name);
+        this.log.debug(this.toString(), 'job done for '+this.modelElement.name+'@'+this.node.getName());
         return callback();
       }.bind(this));
 
@@ -40,7 +38,7 @@ module.exports = AdaptationPrimitive.extend({
   undo: function (_super, callback) {
     _super.call(this, callback);
 
-    var cmd = new RemoveDeployUnit(this.node, this.mapper, this.adaptModel, this.trace);
+    var cmd = new RemoveDeployUnit(this.node, this.mapper, this.adaptModel, this.modelElement);
     cmd.execute(callback);
 
     return;

@@ -6,7 +6,8 @@ var Class               = require('pseudoclass'),
   ModelAddAllTrace    = require('kevoree-library').org.kevoree.modeling.api.trace.ModelAddAllTrace,
   Kotlin              = require('kevoree-kotlin'),
   ModelObjectMapper   = require('./ModelObjectMapper'),
-  KevoreeLogger       = require('kevoree-commons').KevoreeLogger;
+  KevoreeLogger       = require('kevoree-commons').KevoreeLogger,
+  JSNodeCompare       = require('./JSNodeCompare');
 
 // Adaptation Primitives
 var AddInstance         = require('./adaptations/AddInstance'),
@@ -61,69 +62,79 @@ var AdaptationEngine = Class({
 
     this.node = node;
     this.modelObjMapper = new ModelObjectMapper();
+    this.jsNodeCompare = new JSNodeCompare(node.getName());
   },
 
   /**
    * Process traces to find the right adaptation primitive command
    * Returns a command to execute in order to do the adaptation logic
-   * @param traces
-   * @param model
+   * @param diffSeq
+   * @param targetModel
    * @returns {Array}
    */
-  processTraces: function (traces, model) {
+  processTraces: function (diffSeq, targetModel) {
     var cmdList = [];
-    for (var i=0; i < traces.size(); i++) {
-      cmdList.push(this.processTrace(traces.get(i), model));
+    
+    this.jsNodeCompare.plan(this.node.getKevoreeCore().getCurrentModel(), targetModel, diffSeq);
+    
+    // generated compare traces list
+    for (var i=0; i < diffSeq.traces.size(); i++) {
+      this.processTrace(diffSeq.traces.get(i), targetModel, cmdList);
     }
 
     return this.sortCommands(cmdList);
   },
 
   /**
-   *
+   * 
    * @param trace
-   * @returns {AddInstance, RemoveInstance, AddDeployUnit, RemoveDeployUnit, AddBinding, RemoveBinding,
-   *  AdaptationPrimitive, Noop, UpdateDictionary}
+   * @param model
+   * @param cmdList
    */
-  processTrace: function (trace, model) {
+  processTrace: function (trace, model, cmdList) {
     // ADD - TRACES HANDLING
     if (Kotlin.isType(trace, ModelAddTrace)) {
       if (INSTANCE_TRACE.indexOf(trace.typeName) != -1) {
         // Add instance
-        return new AddInstance(this.node, this.modelObjMapper, model, trace);
+        cmdList.push(new AddInstance(this.node, this.modelObjMapper, model, model.findByPath(trace.previousPath)));
 
       } else if (DEPLOY_UNIT.indexOf(trace.typeName) != -1) {
         // Add deploy unit
-        return new AddDeployUnit(this.node, this.modelObjMapper, model, trace);
+        cmdList.push(new AddDeployUnit(this.node, this.modelObjMapper, model, model.findByPath(trace.previousPath)));
 
       } else if (trace.refName == 'mBindings') {
         // Add binding
-        return new AddBinding(this.node, this.modelObjMapper, model, trace);
+        var binding = model.findByPath(trace.previousPath);
+        if (binding && binding.hub && !this.modelObjMapper.getObject(binding.hub.path())) {
+            // this binding relies on a hub that hasn't been instantiated yet
+            cmdList.push(new AddInstance(this.node, this.modelObjMapper, model, model.findByPath(binding.hub.path())));
+        }
+        cmdList.push(new AddBinding(this.node, this.modelObjMapper, model, binding));
       }
 
       // SET - TRACES HANDLING
     } else if (Kotlin.isType(trace, ModelSetTrace)) {
       if (trace.refName && trace.refName == "started") {
         var AdaptationPrimitive = (trace.content == 'true') ? StartInstance : StopInstance;
-        return new AdaptationPrimitive(this.node, this.modelObjMapper, model, trace);
+        cmdList.push(new AdaptationPrimitive(this.node, this.modelObjMapper, model, model.findByPath(trace.srcPath)));
 
       } else if (trace.refName && trace.refName == 'value') {
-        return new UpdateDictionary(this.node, this.modelObjMapper, model, trace);
+        cmdList.push(new UpdateDictionary(this.node, this.modelObjMapper, model, model.findByPath(trace.srcPath)));
       }
 
       // REMOVE - TRACES HANDLING
     } else if (Kotlin.isType(trace, ModelRemoveTrace)) {
       if (INSTANCE_TRACE.indexOf(trace.typeName) != -1) {
         // Remove instance
-        return new RemoveInstance(this.node, this.modelObjMapper, model, trace);
+        cmdList.push(new RemoveInstance(this.node, this.modelObjMapper, model, this.node.getKevoreeCore().getCurrentModel().findByPath(trace.previousPath || trace.objPath)));
 
       } else if (DEPLOY_UNIT.indexOf(trace.typeName) != -1) {
         // Remove deploy unit
-        return new RemoveDeployUnit(this.node, this.modelObjMapper, model, trace);
+        cmdList.push(new RemoveDeployUnit(this.node, this.modelObjMapper, model, this.node.getKevoreeCore().getCurrentModel().findByPath(trace.previousPath || trace.objPath)));
 
       } else if (trace.refName == 'mBindings') {
         // Remove binding
-        return new RemoveBinding(this.node, this.modelObjMapper, model, trace);
+        cmdList.push(new RemoveBinding(this.node, this.modelObjMapper, model, this.node.getKevoreeCore().getCurrentModel().findByPath(trace.previousPath || trace.objPath)));
       }
 
     } else if (Kotlin.isType(trace, ModelAddAllTrace)) {
@@ -131,9 +142,6 @@ var AdaptationEngine = Class({
     } else if (Kotlin.isType(trace, ModelRemoveAllTrace)) {
       // TODO
     }
-
-    // Unhandled trace command
-    return new Noop(this.node, this.modelObjMapper, model, trace);
   },
 
   sortCommands: function (list) {

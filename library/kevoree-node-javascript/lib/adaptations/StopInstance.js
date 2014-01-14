@@ -7,9 +7,7 @@ module.exports = AdaptationPrimitive.extend({
   execute: function (_super, callback) {
     _super.call(this, callback);
 
-    var kInstance = this.adaptModel.findByPath(this.trace.srcPath);
-
-    var instance = this.mapper.getObject(kInstance.path());
+    var instance = this.mapper.getObject(this.modelElement.path());
     if (instance != undefined && instance != null) {
       instance.stop();
       this.log.debug(this.toString(), 'job done on '+instance.getName()+'@'+this.node.getName());
@@ -20,7 +18,7 @@ module.exports = AdaptationPrimitive.extend({
   undo: function (_super, callback) {
     _super.call(this, callback);
 
-    var cmd = new StartInstance(this.node, this.mapper, this.adaptModel, this.trace);
+    var cmd = new StartInstance(this.node, this.mapper, this.adaptModel, this.modelElement);
     cmd.execute(callback);
 
     return;

@@ -7,10 +7,8 @@ module.exports = AdaptationPrimitive.extend({
   execute: function (_super, callback) {
     _super.call(this, callback);
 
-    var kInstance = this.adaptModel.findByPath(this.trace.srcPath);
-
-    if (kInstance.name != this.node.getName() && this.isRelatedToPlatform(kInstance)) {
-      var instance = this.mapper.getObject(kInstance.path());
+    if (this.modelElement.name != this.node.getName() && this.isRelatedToPlatform(this.modelElement)) {
+      var instance = this.mapper.getObject(this.modelElement.path());
 
       if (instance != undefined && instance != null) {
         instance.start();
@@ -18,7 +16,7 @@ module.exports = AdaptationPrimitive.extend({
         return callback();
 
       } else {
-        return callback(new Error(this.toString()+" error: unable to start instance "+kInstance.name));
+        return callback(new Error(this.toString()+" error: unable to start instance "+this.modelElement.name));
       }
     }
 
@@ -28,7 +26,7 @@ module.exports = AdaptationPrimitive.extend({
   undo: function (_super, callback) {
     _super.call(this, callback);
 
-    var cmd = new StopInstance(this.node, this.mapper, this.adaptModel, this.trace);
+    var cmd = new StopInstance(this.node, this.mapper, this.adaptModel, this.modelElement);
     cmd.execute(callback);
 
     return;

@@ -126,7 +126,7 @@ module.exports = Class({
               core.deployModel = core.cloner.clone(model, true);
               core.deployModel.setRecursiveReadOnly();
               var diffSeq = core.compare.diff(core.currentModel, core.deployModel);
-              var adaptations = core.nodeInstance.processTraces(diffSeq.traces, core.deployModel);
+              var adaptations = core.nodeInstance.processTraces(diffSeq, core.deployModel);
 
               // list of adaptation commands retrieved
               var cmdStack = [];
@@ -193,8 +193,7 @@ module.exports = Class({
                 return;
               });
             } catch (err) {
-              console.log(err);
-              err = new Error('Something went wrong while deploying model');
+              err.message = 'Something went wrong while deploying model.\n'+err.message;
               core.emitter.emit('error', err);
               return;
             }

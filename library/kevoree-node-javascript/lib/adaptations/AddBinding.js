@@ -6,21 +6,19 @@ module.exports = AdaptationPrimitive.extend({
 
   execute: function (_super, callback) {
     _super.call(this, callback);
-
-    var mBinding = this.adaptModel.findByPath(this.trace.previousPath);
-
-    if (mBinding.port.eContainer().eContainer().name == this.node.getName()) {
+    
+    if (this.modelElement.port.eContainer().eContainer().name == this.node.getName()) {
       // this binding is related to the current node platform
-      var chanInstance = this.mapper.getObject(mBinding.hub.path()),
-          compInstance = this.mapper.getObject(mBinding.port.eContainer().path()),
-          portInstance = this.mapper.getObject(mBinding.port.path());
+      var chanInstance = this.mapper.getObject(this.modelElement.hub.path()),
+          compInstance = this.mapper.getObject(this.modelElement.port.eContainer().path()),
+          portInstance = this.mapper.getObject(this.modelElement.port.path());
 
       if (chanInstance && compInstance) {
         try {
           portInstance.setComponent(compInstance);
           portInstance.setChannel(chanInstance);
 
-          if (this.isInputPortType(mBinding.port)) {
+          if (this.isInputPortType(this.modelElement.port)) {
             // binding related port is an 'in' port type
             compInstance.addInternalInputPort(portInstance);
             chanInstance.addInternalInputPort(portInstance);
@@ -31,10 +29,10 @@ module.exports = AdaptationPrimitive.extend({
             compInstance.addInternalOutputPort(portInstance);
 
             // retrieve every bindings related to this binding chan
-            var bindings = mBinding.hub.bindings.iterator();
+            var bindings = this.modelElement.hub.bindings.iterator();
             while (bindings.hasNext()) {
               var binding = bindings.next();
-              if (binding != mBinding) { // ignore this binding cause we are already processing it
+              if (binding != this.modelElement) { // ignore this binding cause we are already processing it
                 chanInstance.addInternalInputPort(this.mapper.getObject(binding.port.path()));
               }
             }
@@ -58,7 +56,7 @@ module.exports = AdaptationPrimitive.extend({
   undo: function (_super, callback) {
     _super.call(this, callback);
 
-    var cmd = new RemoveBinding(this.node, this.mapper, this.adaptModel, this.trace);
+    var cmd = new RemoveBinding(this.node, this.mapper, this.adaptModel, this.modelElement);
     cmd.execute(callback);
 
     return;

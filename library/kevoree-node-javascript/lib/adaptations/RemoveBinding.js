@@ -7,17 +7,15 @@ module.exports = AdaptationPrimitive.extend({
   execute: function (_super, callback) {
     _super.call(this, callback);
 
-    var mBinding = this.node.getKevoreeCore().getCurrentModel().findByPath(this.trace.previousPath || this.trace.objPath);
-
-    if (mBinding && mBinding.port.eContainer().eContainer().name == this.node.getName()) {
+    if (this.modelElement && this.modelElement.port.eContainer().eContainer().name == this.node.getName()) {
       // this binding is related to the current node platform
-      var chanInstance = this.mapper.getObject(mBinding.hub.path()),
-          compInstance = this.mapper.getObject(mBinding.port.eContainer().path()),
-          portInstance = this.mapper.getObject(mBinding.port.path());
+      var chanInstance = this.mapper.getObject(this.modelElement.hub.path()),
+          compInstance = this.mapper.getObject(this.modelElement.port.eContainer().path()),
+          portInstance = this.mapper.getObject(this.modelElement.port.path());
 
       if (chanInstance && compInstance) {
         try {
-          if (this.isInputPortType(mBinding.port)) {
+          if (this.isInputPortType(this.modelElement.port)) {
             compInstance.removeInternalInputPort(portInstance);
             chanInstance.removeInternalInputPort(portInstance);
           } else {
@@ -36,14 +34,14 @@ module.exports = AdaptationPrimitive.extend({
       }
     }
 
-    this.log.debug(this.toString(), 'no work done with '+this.trace.toString());
+    this.log.debug(this.toString(), 'no work done with '+this.modelElement.name()); // TODO this could lead to "undefined" name
     return callback();
   },
 
   undo: function (_super, callback) {
     _super.call(this, callback);
 
-    var cmd = new AddBinding(this.node, this.mapper, this.adaptModel, this.trace);
+    var cmd = new AddBinding(this.node, this.mapper, this.adaptModel, this.modelElement);
     cmd.execute(callback);
 
     return;

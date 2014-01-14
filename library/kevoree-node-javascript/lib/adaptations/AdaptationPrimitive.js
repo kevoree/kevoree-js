@@ -19,13 +19,13 @@ module.exports = Class({
    * @param node KevoreeNode platform
    * @param mapper ModelObjectMapper
    * @param model model to deploy (that triggers adaptations)
-   * @param trace command related trace
+   * @param modelElement model element linked with this primitive
    */
-  construct: function (node, mapper, model, trace) {
+  construct: function (node, mapper, model, modelElement) {
     this.node = node;
     this.mapper = mapper;
     this.adaptModel = model;
-    this.trace = trace;
+    this.modelElement = modelElement;
     this.log = this.node.getKevoreeCore().getLogger();
   },
 
