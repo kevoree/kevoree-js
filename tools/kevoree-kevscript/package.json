@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/dukeboard/kevoree-js.git"
+    "url": "https://github.com/kevoree/kevoree-js.git"
   },
   "keywords": [
     "kevoree",
@@ -20,9 +20,9 @@
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "license": "LGPL3.0",
   "bugs": {
-    "url": "https://github.com/dukeboard/kevoree-js/issues"
+    "url": "https://github.com/kevoree/kevoree-js/issues"
   },
-  "homepage": "https://github.com/dukeboard/kevoree-js",
+  "homepage": "https://github.com/kevoree/kevoree-js",
   "dependencies": {
     "pseudoclass": "~0.2.6",
     "optimist": "~0.6.0",

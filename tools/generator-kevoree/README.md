@@ -1,4 +1,4 @@
-# generator-kevoree [![Build Status](https://secure.travis-ci.org/dukeboard/kevoree-js.png?branch=master)](https://travis-ci.org/dukeboard/kevoree-js)
+# generator-kevoree [![Build Status](https://secure.travis-ci.org/kevoree/kevoree-js.png?branch=master)](https://travis-ci.org/kevoree/kevoree-js)
 
 A generator for [Yeoman](http://yeoman.io).
 

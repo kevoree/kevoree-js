@@ -29,9 +29,9 @@
     </parent>
 
     <scm>
-        <connection>scm:git:git@github.com:dukeboard/kevoree-js.git</connection>
-        <developerConnection>scm:git:git@github.com:dukeboard/kevoree-js.git</developerConnection>
-        <url>http://github.com/dukeboard/kevoree-js.git</url>
+        <connection>scm:git:git@github.com:kevoree/kevoree-js.git</connection>
+        <developerConnection>scm:git:git@github.com:kevoree/kevoree-js.git</developerConnection>
+        <url>http://github.com/kevoree/kevoree-js.git</url>
     </scm>
 
     <licenses>

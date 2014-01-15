@@ -14,12 +14,12 @@
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "contributors": [],
   "bugs": {
-    "url": "https://github.com/dukeboard/kevoree-js/issues"
+    "url": "https://github.com/kevoree/kevoree-js/issues"
   },
   "license": "LGPL-3.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dukeboard/kevoree-js"
+    "url": "https://github.com/kevoree/kevoree-js"
   },
   "dependencies": {
     "kevoree-entities": "~0.0.3",

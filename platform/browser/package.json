@@ -5,7 +5,7 @@
   "main": "./server.js",
   "repository": {
     "type": "git",
-    "url": "http://github.com/dukeboard/kevoree-js"
+    "url": "http://github.com/kevoree/kevoree-js"
   },
   "keywords": [
     "kevoree",
