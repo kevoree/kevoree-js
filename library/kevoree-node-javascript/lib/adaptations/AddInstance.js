@@ -58,7 +58,6 @@ module.exports = AdaptationPrimitive.extend({
 
   undo: function (_super, callback) {
     _super.call(this, callback);
-
     var cmd = new RemoveInstance(this.node, this.mapper, this.adaptModel, this.modelElement);
     cmd.execute(callback);
     return;

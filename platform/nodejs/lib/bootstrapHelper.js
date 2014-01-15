@@ -12,7 +12,7 @@ var bootstrapModel = function bootstrapModel(options, callback) {
 
   var node = options.model.findNodesByID(options.nodeName);
   var group = options.model.findGroupsByID(options.groupName);
-  if (typeof(node) == 'undefined' || typeof(group) == 'undefined') {
+  if (!node || !group) {
     try {
       var jsNodePackage = require(path.resolve(options.modulesPath, 'node_modules', 'kevoree-node-javascript', 'package.json'));
       var wsGrpPackage = require(path.resolve(options.modulesPath, 'node_modules', 'kevoree-group-websocket', 'package.json'));

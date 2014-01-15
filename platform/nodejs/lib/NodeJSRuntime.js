@@ -61,7 +61,10 @@ var NodeJSRuntime = Class({
       logger: this.log
     };
     bootstrapHelper(options, function (err, bootstrapModel) {
+      if (err) throw err;
+      
       this.kCore.deploy(bootstrapModel);
+      
     }.bind(this));
   },
 

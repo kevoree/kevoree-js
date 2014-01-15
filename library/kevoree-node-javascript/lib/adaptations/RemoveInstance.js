@@ -1,6 +1,7 @@
 var AdaptationPrimitive = require('./AdaptationPrimitive'),
     AddInstance         = require('./AddInstance'),
-    kevoree             = require('kevoree-library').org.kevoree;
+    kevoree             = require('kevoree-library').org.kevoree,
+    Kotlin              = require('kevoree-kotlin');
 
 /**
  * RemoveInstance Adaptation command

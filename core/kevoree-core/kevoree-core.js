@@ -104,13 +104,13 @@ module.exports = Class({
    * @param model
    */
   deploy: function (model) {
-    if (model && model.findNodesByID(this.nodeName) == null) {
+    if (model && !model.findNodesByID(this.nodeName)) {
       this.emitter.emit('error', new Error('Deploy model failure: unable to find '+this.nodeName+' in given model'));
       return;
 
     } else {
       this.log.info(this.toString(), 'Deploy process started...');
-      if (model != undefined && model != null) {
+      if (model) {
         // check if there is an instance currently running
         // if not, it will try to run it
         var core = this;
@@ -120,7 +120,7 @@ module.exports = Class({
             return;
           }
 
-          if (core.nodeInstance != undefined && core.nodeInstance != null) {
+          if (core.nodeInstance) {
             try {
               // given model is defined and not null
               core.deployModel = core.cloner.clone(model, true);
