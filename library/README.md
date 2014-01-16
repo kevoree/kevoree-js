@@ -2,6 +2,8 @@
 
 ## Create your own Kevoree-JS component
 
+> TODO: This documentation is a bit outdated, use with caution
+
 ### Step 1
 First of all, you need to set up your environment in order to use all the tools provided by Kevoree.
 
