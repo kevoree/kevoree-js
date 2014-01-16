@@ -58,7 +58,7 @@ var BrowserBootstrapper = Bootstrapper.extend({
   },
 
   resolver: function (action, deployUnit, forceInstall, callback) {
-    var url = deployUnit ? (deployUnit.url || '') : '';
+    var url = deployUnit ? (deployUnit.url || '') : '';
 
     if (url.startsWith(FILE)) {
 //            this.resolvers[FILE][action](deployUnit, forceInstall, callback);

@@ -1,7 +1,8 @@
 var Resolver        = require('kevoree-commons').Resolver,
   KevoreeLogger   = require('./KevoreeBrowserLogger'),
   FileSystem      = require('kevoree-commons').FileSystem,
-  async           = require('async');
+  async           = require('async'),
+  resolveService  = require('./service/resolve');
 
 /**
  * Retrieves module content from zip from server
@@ -24,42 +25,32 @@ var NPMResolver = Resolver.extend({
     }
 
     // forward resolving request to server
-    $.ajax({
-      type: 'POST',
-      url: 'resolve',
-      data: {
-        type: deployUnit.type,
-        name: deployUnit.name,
-        version: deployUnit.version,
-        forceInstall: forceInstall
-      },
-      success: function (resp) {
-        // server response contains a zipPath & name of the requested module package
-        // (retrieved server-side from npm registry)
-
-        installZip(resp.zipPath, resp.zipName, function (err) {
-          if (err) {
-            errorHandler(err);
-            callback(err);
-            return;
-          }
-
-          // zip installed successfully
-          $.getScript('filesystem:'+window.location.origin+'/persistent/kev_libraries/'+deployUnit.name+'@'+deployUnit.version+'/'+deployUnit.name+'-bundle.js', function () {
-            self.log.info("Zip '"+deployUnit.name+"' installed and module loaded successfully");
-
-            var ModuleEntry = require(deployUnit.name);
-
-            callback(null, ModuleEntry);
-          });
-        });
-      },
-      error: function (err) {
+    resolveService(deployUnit, forceInstall, function (err, resp) {
+      if (err) {
         if (err.responseText.length == 0) {
           err.responseText = "Kevoree Runtime server was not able to process '/resolve' request ("+deployUnit.name+":"+deployUnit.version+")";
         }
-        callback(new Error(err.responseText));
+        return callback(new Error(err.responseText));
       }
+
+      // server response contains a zipPath & name of the requested module package
+      // (retrieved server-side from npm registry)
+      installZip(resp.zipPath, resp.zipName, function (err) {
+        if (err) {
+          errorHandler(err);
+          callback(err);
+          return;
+        }
+
+        // zip installed successfully
+        $.getScript('filesystem:'+window.location.origin+'/persistent/kev_libraries/'+deployUnit.name+'@'+deployUnit.version+'/'+deployUnit.name+'-bundle.js', function () {
+          self.log.info("Zip '"+deployUnit.name+"' installed and module loaded successfully");
+
+          var ModuleEntry = require(deployUnit.name);
+
+          callback(null, ModuleEntry);
+        });
+      });
     });
   },
 
@@ -200,7 +191,7 @@ var processFileEntry = function processFileEntry(entry, zipDir, callback) {
  * @param callback
  */
 var getDir = function getDir(path, dir, callback, errorCallback) {
-  if (!dir || dir == null) {
+  if (!dir || dir == null) {
     return errorCallback(new Error('getDir(path, dir, callback, errorCallback) error: "dir" is null'));
   }
 

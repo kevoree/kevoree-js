@@ -8,10 +8,6 @@ var http       = require('http'),
     browserify = require('browserify'),
     npm        = require('npm');
 
-
-var BROWSER_MODULES = 'browser_modules',
-    BROWSER_TAG     = '-kbrowser';
-
 /**
  * GET /resolve
  *
@@ -26,10 +22,11 @@ var BROWSER_MODULES = 'browser_modules',
  */
 module.exports = function(req, res) {
   if (req.body.type == 'npm') {
-    var installDir        = path.resolve('site', 'public', 'libraries'),
-        modulePath        = path.resolve('node_modules', req.body.name),
-        browserModulePath = path.resolve(installDir, BROWSER_MODULES, req.body.name+BROWSER_TAG),
-        downloadLink      = '/libraries/'+BROWSER_MODULES+'/'+req.body.name+BROWSER_TAG+'.zip';
+    var installDir        = path.resolve('client', 'dist', 'public', 'libraries'),
+        npmInstallDir     = path.resolve('node_modules'),
+        modulePath        = path.resolve(npmInstallDir, req.body.name),
+        browserModulePath = path.resolve(installDir, req.body.name),
+        downloadLink      = '/libraries/'+req.body.name+'.zip';
 
     // check if bundle as already been downloaded
     if (!fs.existsSync(browserModulePath+'.zip')) {
@@ -52,17 +49,18 @@ module.exports = function(req, res) {
           // set kevoree-library et kevoree-kotlin as 'provided externally' because there are bundled with
           // kevoree-browser-runtime-client, if you don't do that, they will be loaded multiple times
           // and the whole thing will blew up like crazy, trust me (just lost 2 hours)
-          b.external('kevoree-library', {expose: 'kevoree-library'})
-            .external('kevoree-kotlin', {expose: 'kevoree-kotlin'})
-            .require(modulePath, { expose: req.body.name })
-            .transform('brfs')// will try to get content from fs.readFileSync() into a function (to be available as a string later on)
-            .bundle({detectGlobals: false})
-            .pipe(bundleFile)
-            .on('finish', function () {
+          b.external(path.resolve(npmInstallDir, 'kevoree-kotlin'), {expose: 'kevoree-kotlin'})
+           .external(path.resolve(npmInstallDir, 'kevoree-library'), {expose: 'kevoree-library'})
+           .require(modulePath, { expose: req.body.name })
+           .transform('brfs')// will try to get content from fs.readFileSync() into a function (to be available as a string later on)
+           .bundle({detectGlobals: false})
+           .pipe(bundleFile)
+           .on('finish', function () {
               // zip browser-bundled folder
               var zip = new AdmZip();
               zip.addLocalFolder(browserModulePath);
               zip.writeZip(browserModulePath+'.zip');
+              
               // remove browserModulePath folder from server
               rimraf(browserModulePath, function (err) {
                 if (err) console.error("Unable to delete %s folder :/", browserModulePath);
@@ -106,7 +104,7 @@ module.exports = function(req, res) {
             }
 
             // load success
-            npm.commands.install(path.resolve(__dirname, '..', 'node_modules'), [module], function installCallback(err) {
+            npm.commands.install(npmInstallDir, [module], function installCallback(err) {
               if (err) {
                 res.send(500, 'npm failed to install package %s:%s', req.body.name, req.body.version);
                 return;

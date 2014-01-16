@@ -5,7 +5,7 @@ var KevNodeJSRuntime = require('kevoree-nodejs-runtime'),
   kevoree            = require('kevoree-library').org.kevoree;
 
 var serializer = new kevoree.serializer.JSONModelSerializer();
-var serverSideModelPath = path.resolve('model.json');
+var serverSideModelPath = path.resolve(__dirname, '..', 'model.json');
 
 module.exports = function (modulesPath) {
   var knjs = new KevNodeJSRuntime(modulesPath);

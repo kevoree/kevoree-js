@@ -21,19 +21,14 @@ module.exports = AdaptationPrimitive.extend({
 
     if (this.modelElement) {
       var instance = this.mapper.getObject(this.modelElement.path());
-      if (instance != undefined && instance != null) {
+      if (instance) {
         this.mapper.removeEntry(this.modelElement.path());
         this.doSpecificTypeProcess(this.modelElement);
         this.log.debug(this.toString(), 'job done for '+instance.getName()+'@'+this.node.getName());
         return callback();
-
-      } else {
-        callback(new Error(this.toString()+" error: unable to remove instance "+this.modelElement.path()));
-        return;
       }
     }
 
-    this.log.debug(this.toString(), 'no work done with '+this.modelElement.name+'@'+this.node.getName());
     return callback();
   },
 

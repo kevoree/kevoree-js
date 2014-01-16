@@ -52,13 +52,19 @@ var WebSocketChannel = AbstractChannel.extend({
   onSend: function (fromPortPath, destPortPaths, msg) {
     if (this.client != null) {
       // directly send message to server because we can't much more =)
-      this.client.send(msg);
+      if (this.client.readyState === 1) {
+        this.client.send(msg);
+      } else {
+        // TODO
+      }
 
     } else if (this.server != null) {
       // broadcast message to each connected clients
       for (var i in this.connectedClients) {
         if (this.connectedClients[i].readyState === 1) {
           this.connectedClients[i].send(msg);
+        } else {
+          // TODO
         }
       }
     }
@@ -94,10 +100,10 @@ var WebSocketChannel = AbstractChannel.extend({
   startWSClient: function () {
     var addresses = this.getMasterServerAddresses();
     if (addresses && addresses.length > 0) {
-      var connectToServer = function connectToServer() {
+      var connectToServer = function() {
         this.client = new WebSocket('ws://'+addresses[0]); // TODO change that => to try each different addresses not only the first one
 
-        this.client.onopen = function onOpen() {
+        this.client.onopen = function() {
           clearTimeout(this.timeoutID);
           this.timeoutID = null;
           this.log.info(this.toString(), 'Now connected to master server '+addresses[0]);
@@ -105,14 +111,14 @@ var WebSocketChannel = AbstractChannel.extend({
 
         this.client.onmessage = localDispatchHandler.bind(this);
 
-        this.client.onerror = function onError() {
+        this.client.onerror = function() {
           // if there is an error, retry to initiate connection in 5 seconds
           clearTimeout(this.timeoutID);
           this.timeoutID = null;
           this.timeoutID = setTimeout(connectToServer, 5000);
         }.bind(this);
 
-        this.client.onclose = function onClose() {
+        this.client.onclose = function() {
           this.log.info(this.toString(), "client connection closed with server ("+this.client._socket.remoteAddress+":"+this.client._socket.remotePort+")");
           // when websocket is closed, retry connection in 5 seconds
           clearTimeout(this.timeoutID);

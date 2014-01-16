@@ -1,7 +1,8 @@
 var KevoreeCore        = require('kevoree-core'),
   kevoree              = require('kevoree-library').org.kevoree,
   KevoreeBrowserLogger = require('./lib/KevoreeBrowserLogger'),
-  HTTPBootstrapper     = require('./lib/BrowserBootstrapper');
+  HTTPBootstrapper     = require('./lib/BrowserBootstrapper'),
+  bootstrapService     = require('./lib/service/bootstrap');
 
 var log = new KevoreeBrowserLogger('Runtime');
 
@@ -88,7 +89,7 @@ kevoreeCore.setUICommand(function (ui, callback) {
 startBtn.on('click', function () {
   if (!started) {
     try {
-      var nodename = nodeName.val() || "node0";
+      var nodename = nodeName.val() || 'node0';
       kevoreeCore.start(cleanString(nodename));
       nodeName.prop('disabled', 'disabled');
     } catch (err) {
@@ -113,30 +114,27 @@ deployBtn.on('click', function () {
           });
           deployBtn.popover('show');
 
-          $.ajax({
-            type: 'POST',
-            url: 'bootstrap',
-            data: {nodename: kevoreeCore.getNodeName()},
-            success: function (data) {
-              try {
-                var loader = new kevoree.loader.JSONModelLoader();
-                console.log(loader);
-                kevoreeCore.deploy(loader.loadModelFromString(data.model).get(0));
-              } catch (err) {
-                log.error(err.message);
-                deploying = false;
-                deployBtn.removeClass('disabled');
-                deployBtn.popover('hide');
-              }
-            },
-            error: function (err) {
+          bootstrapService(kevoreeCore.getNodeName(), function (err, res) {
+            if (err) {
               console.log(err);
-              log.error('Unable to retrieve bootstrap model from server. Deploy aborted.<br/>Reason: '+err.responseText);
+              log.error('Unable to retrieve bootstrap model from server. Deploy aborted.<br/>Reason: '+(err.responseText || err.status + ' '+err.statusText));
+              deploying = false;
+              deployBtn.removeClass('disabled');
+              deployBtn.popover('hide');
+              return;
+            }
+
+            try {
+              var loader = new kevoree.loader.JSONModelLoader();
+              kevoreeCore.deploy(loader.loadModelFromString(res.model).get(0));
+            } catch (err) {
+              log.error(err.message);
               deploying = false;
               deployBtn.removeClass('disabled');
               deployBtn.popover('hide');
             }
           });
+          
         } catch (err) {
           log.error(err.message);
         }

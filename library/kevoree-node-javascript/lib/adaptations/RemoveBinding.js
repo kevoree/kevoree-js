@@ -34,7 +34,6 @@ module.exports = AdaptationPrimitive.extend({
       }
     }
 
-    this.log.debug(this.toString(), 'no work done with '+this.modelElement.name()); // TODO this could lead to "undefined" name
     return callback();
   },
 

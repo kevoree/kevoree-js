@@ -5,7 +5,7 @@
   "main": "./app.js",
   "scripts": {
     "preinstall": "if [ -z \"$JAVA_HOME\" ]; then echo \"You should export JAVA_HOME before installing kevoree-web-editor\" && exit 1; fi",
-    "postinstall": "mvn install && npm run buildclient",
+    "postinstall": "mvn install",
     "buildclient": "cd node_modules/kevoree-web-editor-client && npm install && grunt",
     "start": "node app.js"
   },

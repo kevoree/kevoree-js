@@ -1,4 +1,5 @@
 var KevoreeLogger = require('kevoree-commons').KevoreeLogger;
+require('date-format-lite');
 
 var logDOM  = document.querySelector('#log-console'),
   ERROR   = 0,
@@ -36,7 +37,7 @@ var addLogToDOM = function addLogToDOM(level, tag, msg) {
       break;
   }
 
-  timeTd.innerHTML = getTimeFormatted();
+  timeTd.innerHTML = (new Date()).format('hh:mm:ss:SS');
   tagTd.innerHTML = '<strong>'+tag+'</strong>';
   msgTd.innerHTML = msg;
 
@@ -124,13 +125,5 @@ var KevoreeBrowserLogger = KevoreeLogger.extend({
     logger(ERROR, tag, msg);
   }
 });
-
-var getTimeFormatted = function getTimeFormatted() {
-  var time = new Date;
-  var hours = (time.getHours().toString().length == 1) ? '0'+time.getHours() : time.getHours();
-  var mins = (time.getMinutes().toString().length == 1) ? '0'+time.getMinutes() : time.getMinutes();
-  var secs = (time.getSeconds().toString().length == 1) ? '0'+time.getSeconds() : time.getSeconds();
-  return hours+':'+mins+':'+secs+':'+time.getMilliseconds();
-}
 
 module.exports = KevoreeBrowserLogger;
