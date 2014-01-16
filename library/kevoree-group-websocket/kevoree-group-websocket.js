@@ -198,7 +198,7 @@ var WebSocketGroup = AbstractGroup.extend({
         }
 
         ws.onclose = function onClose() {
-          group.log.info(this.toString(), "client connection closed with server ("+ws._socket.remoteAddress+":"+ws._socket.remotePort+")");
+          group.log.info(this.toString(), "client connection closed with server ("+group.getNodeName()+")");
           // when websocket is closed, retry connection in 5 seconds
           clearTimeout(group.timeoutID);
           group.timeoutID = null;
