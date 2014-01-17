@@ -56,36 +56,34 @@ module.exports = function (callback) {
           }
           
           var artifacts = xml['search-results']['data'][0]['artifact'];
+          var libz = {};
           for (var i in artifacts) {
-            var rawArt = artifacts[i]['artifactId'][0].split('.');
+            if (artifacts[i]['classifier'] === undefined) {
+              var artId = artifacts[i]['artifactId'][0];
+              var rawArt = artId.split('.');
 
-            var grpId = artifacts[i]['groupId'][0],
-              artId   = artifacts[i]['artifactId'][0],
-              name    = rawArt[rawArt.length-1],
-              version = artifacts[i]['version'][0];
-
-            var versions = [];
-            var latest = null;
-            for (var j=0; j<artifacts.length-1; j++) {
-              if (artifacts[j]['groupId'][0] === grpId && artifacts[j]['artifactId'][0] === artId) {
-                versions.push(artifacts[j]['version'][0]);
-                if (semver.gt(artifacts[j]['version'][0], artifacts[j+1]['version'][0])) {
-                  latest = artifacts[j]['version'][0];
-                } else {
-                  latest = artifacts[j+1]['version'][0];
-                }
+              var lib = libz[artId];
+              if (!lib) {
+                lib = {
+                  groupID:    artifacts[i]['groupId'][0],
+                  artifactID: artId,
+                  simpleName: rawArt[rawArt.length-1],
+                  versions:   []
+                };
+                libz[artId] = lib;
+              }
+              lib.versions.push(artifacts[i]['version'][0]);              
+            }
+          }
+          
+          for (var artId in libz) {
+            libz[artId].latest = libz[artId].versions[0];
+            for (var i=1; i < libz[artId].versions.length; i++) {
+              if (semver.gt(libz[artId].versions[i], libz[artId].latest)) {
+                libz[artId].latest = libz[artId].versions[i];
               }
             }
-
-            if (artifacts[i]['classifier'] == undefined) { // XXX Warning, this could be really bad
-              libraries.push({
-                groupID:    grpId,
-                artifactID: artId,
-                simpleName: name,
-                latest:     latest,
-                versions:   versions
-              });
-            }
+            libraries.push(libz[artId]);
           }
 
           callback(null, libraries);
