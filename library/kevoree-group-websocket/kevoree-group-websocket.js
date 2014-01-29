@@ -53,11 +53,11 @@ var WebSocketGroup = AbstractGroup.extend({
   stop: function (_super) {
     _super.call(this);
 
-    if (this.server != null) {
+    if (this.server) {
       this.server.close();
     }
 
-    if (this.client != null) {
+    if (this.client) {
       // close client connection
       this.client.close();
       // remove reconnection task because we closed on purpose
@@ -198,7 +198,7 @@ var WebSocketGroup = AbstractGroup.extend({
         }
 
         ws.onclose = function onClose() {
-          group.log.info(this.toString(), "client connection closed with server ("+group.getNodeName()+")");
+          group.log.debug(group.toString(), "Connection closed with server "+group.getNodeName()+". Retry attempt in 5 seconds");
           // when websocket is closed, retry connection in 5 seconds
           clearTimeout(group.timeoutID);
           group.timeoutID = null;

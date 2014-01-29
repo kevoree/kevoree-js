@@ -1,7 +1,3 @@
-exports.index = function(req, res) {
-    res.render('index.html');
-}
-
-// exports other rules
-exports.resolve     = require('./resolve');
-exports.bootstrap   = require('./bootstrap');
+exports.main      = require('./main.js');
+exports.bootstrap = require('./bootstrap.js');
+exports.resolve   = require('./resolve.js');

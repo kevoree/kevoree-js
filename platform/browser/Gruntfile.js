@@ -39,16 +39,6 @@ module.exports = function (grunt) {
                     alias: [ path.resolve('node_modules', 'kevoree-kotlin')+':kevoree-kotlin' ]
                 }
             }
-//      kevoree: {
-//        files: {
-//          'client/dist/public/js/kevoree-library.js': []
-//        },
-//        options: {
-//          alias: [
-//            'kevoree-library:kevoree-library'
-//          ]
-//        }
-//      }
         },
         express: {
             custom: {
