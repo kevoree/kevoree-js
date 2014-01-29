@@ -50,15 +50,15 @@ var WebSocketChannel = AbstractChannel.extend({
    * @param msg
    */
   onSend: function (fromPortPath, destPortPaths, msg) {
-    if (this.client != null) {
-      // directly send message to server because we can't much more =)
+    if (this.client) {
+      // directly send message to server because we can't do much more =)
       if (this.client.readyState === 1) {
         this.client.send(msg);
       } else {
         // TODO
       }
 
-    } else if (this.server != null) {
+    } else if (this.server) {
       // broadcast message to each connected clients
       for (var i in this.connectedClients) {
         if (this.connectedClients[i].readyState === 1) {
@@ -119,7 +119,7 @@ var WebSocketChannel = AbstractChannel.extend({
         }.bind(this);
 
         this.client.onclose = function() {
-          this.log.info(this.toString(), "client connection closed with server ("+this.client._socket.remoteAddress+":"+this.client._socket.remotePort+")");
+          this.log.info(this.toString(), "Connection closed with server "+addresses[0]+". Retry attempt in 5 seconds");
           // when websocket is closed, retry connection in 5 seconds
           clearTimeout(this.timeoutID);
           this.timeoutID = null;
