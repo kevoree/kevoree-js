@@ -11,6 +11,6 @@
   },
   "devDependencies": {
     "kevoree-gen-model": "0.0.2",
-    "kevoree-nodejs-runtime": "0.0.2"
+    "kevoree-nodejs-runtime": "0.0.3"
   }
 }
