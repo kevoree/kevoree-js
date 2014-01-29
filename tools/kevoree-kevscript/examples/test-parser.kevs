@@ -1,5 +1,5 @@
 include npm:kevoree-node-javascript
-include npm:kevoree-group-websocket@0.0.5
+include npm:kevoree-group-websocket:0.0.5
 include npm:kevoree-chan-websocket
 // include mvn:org.kevoree.library.javase:org.kevoree.library.javase.websocketgrp:2.0.5-SNAPSHOT
 include npm:kevoree-comp-fakeconsole
@@ -26,8 +26,6 @@ unbind *.*.inMsg chan0
 set sync.port/node0 = '8000'
 set sync.port/node0 = '8088'
 set chan0.port/node0 = '8047'
-// this actually won't work BUT IT SHOULD! (TODO incoming!)
-// set node0.favicon.urlPattern = "/favicon.*"
 
 network node1 192.168.0.1
 
