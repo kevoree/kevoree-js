@@ -6,26 +6,29 @@ var http       = require('http'),
     rimraf     = require('rimraf'),
     browserify = require('browserify'),
     npm        = require('npm'),
-    config     = require('./../config.js')
+    config     = require('./../config.js'),
+    npmi       = require('npmi'),
     path       = require('path');
 
 module.exports = function(req, res) {
     if (req.body.type == 'npm') {
         var installDir        = path.resolve('client', 'dist', 'public', 'libraries'),
-            npmInstallDir     = path.resolve('node_modules'),
-            modulePath        = path.resolve(npmInstallDir, req.body.name),
+            npmInstallDir     = path.resolve('.'),
+            modulePath        = path.resolve(npmInstallDir, 'node_modules', req.body.name),
             browserModulePath = path.resolve(installDir, req.body.name),
             downloadLink      = '/libraries/'+req.body.name+'.zip';
 
         // check if bundle as already been downloaded
         if (!fs.existsSync(browserModulePath+'.zip')) {
-            var packageName = req.body.name,
-                module      = packageName + ((req.body.version.length > 0) ? '@'+req.body.version: '');
+            var options = {
+                name: req.body.name,
+                version: req.body.version
+            };
+            npmi(options, function (err) {
+                if (err) {
+                    return res.send(500, err.message);
+                }
 
-            /**
-             * Bundles currently asked module with browserify
-             */
-            function doBundle() {
                 // installation succeeded
                 fs.mkdir(browserModulePath, function () {
                     // browserify module
@@ -35,16 +38,22 @@ module.exports = function(req, res) {
                         bundleFile.end();
                     });
 
-                    // set kevoree-library et kevoree-kotlin as 'provided externally' because there are bundled with
+                    console.log('BUNDLING...', req.body.name+'-bundle.js');
+                    // set kevoree-library and kevoree-kotlin as 'provided externally' because there are bundled with
                     // kevoree-browser-runtime-client, if you don't do that, they will be loaded multiple times
                     // and the whole thing will blew up like crazy, trust me (just lost 2 hours)
-                    b.external(path.resolve(npmInstallDir, 'kevoree-kotlin'), {expose: 'kevoree-kotlin'})
-                        .external(path.resolve(npmInstallDir, 'kevoree-library'), {expose: 'kevoree-library'})
+                    b.external(path.resolve(npmInstallDir, 'node_modules', 'kevoree-kotlin'), {expose: 'kevoree-kotlin'})
+                        .external(path.resolve(npmInstallDir, 'node_modules', 'kevoree-library'), {expose: 'kevoree-library'})
                         .require(modulePath, { expose: req.body.name })
                         .transform('brfs')// will try to get content from fs.readFileSync() into a function (to be available as a string later on)
-                        .bundle({detectGlobals: false})
+                        .bundle({detectGlobals: false}, function (err) {
+                            if (err) {
+                                return res.send(500, err.message);
+                            }
+                        })
                         .pipe(bundleFile)
                         .on('finish', function () {
+                            console.log('BUNDLE OK', req.body.name+'-bundle.js');
                             // zip browser-bundled folder
                             var zip = new AdmZip();
                             zip.addLocalFolder(browserModulePath);
@@ -55,48 +64,10 @@ module.exports = function(req, res) {
                                 zipPath: downloadLink,
                                 zipName: req.body.name+'@'+req.body.version,
                                 requireName: modulePath
-                            });         
+                            });
                         });
                 });
-            }
-
-            /**
-             * Try to resolve packageName directly (will work if already installed)
-             * If resolve worked, then it bundles the module
-             * Otherwise it will throw an error
-             * @throws Error err.code === 'MODULE_NOT_FOUND' if module is not yet installed
-             */
-            function doResolve() {
-                require.resolve(packageName);
-                doBundle();
-            }
-
-            try {
-                if (req.body.forceInstall == true) {
-                    // trigger FORCE_INSTALL error so installation is forced
-                    var e = new Error();
-                    e.code = 'FORCE_INSTALL';
-                    throw e;
-                }
-                doResolve();
-            } catch (err) {
-                // install module with npm
-                npm.load({}, function (err) {
-                    if (err) {
-                        res.send(500, 'Unable to load npm module');
-                        return;
-                    }
-
-                    // load success
-                    npm.commands.install(npmInstallDir, [module], function installCallback(err) {
-                        if (err) {
-                            res.send(500, 'npm failed to install package %s:%s', req.body.name, req.body.version);
-                            return;
-                        }
-                        doBundle();
-                    });
-                });
-            }
+            });
 
         } else {
             // send response

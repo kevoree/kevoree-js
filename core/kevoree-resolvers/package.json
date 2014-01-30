@@ -1,29 +1,30 @@
 {
-  "name": "kevoree-resolvers",
-  "version": "0.0.1",
-  "description": "Standard Kevoree Javascript resolvers",
-  "main": "./kevoree-resolvers.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kevoree/kevoree-js"
-  },
-  "keywords": [
-    "kevoree",
-    "resolver",
-    "npm",
-    "file"
-  ],
-  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
-  "license": "LGPL-3.0",
-  "bugs": {
-    "url": "https://github.com/kevoree/kevoree-js/issues"
-  },
-  "homepage": "https://github.com/kevoree/kevoree-js",
-  "dependencies": {
-    "kevoree-commons": "0.0.1",
-    "kevoree-library": "0.0.3"
-  }
+    "name": "kevoree-resolvers",
+    "version": "0.0.1",
+    "description": "Standard Kevoree Javascript resolvers",
+    "main": "./kevoree-resolvers.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kevoree/kevoree-js"
+    },
+    "keywords": [
+        "kevoree",
+        "resolver",
+        "npm",
+        "file"
+    ],
+    "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+    "license": "LGPL-3.0",
+    "bugs": {
+        "url": "https://github.com/kevoree/kevoree-js/issues"
+    },
+    "homepage": "https://github.com/kevoree/kevoree-js",
+    "dependencies": {
+        "kevoree-commons": "0.0.1",
+        "kevoree-library": "0.0.3",
+        "npmi":            "0.0.4"
+    }
 }

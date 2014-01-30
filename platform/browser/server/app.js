@@ -24,11 +24,11 @@ app.engine('html', require('ejs').renderFile);
 var knjs = new KevNodeJSRuntime(path.resolve(__dirname, '..'));
 
 knjs.on('started', function () {
-  knjs.deploy();
+    knjs.deploy();
 });
 
 knjs.on('deployed', function (deployedModel) {
-  compare.merge(model, deployedModel).applyOn(model);
+    compare.merge(model, deployedModel).applyOn(model);
 });
 
 knjs.start(config.nodeJSPlatform.nodeName, config.nodeJSPlatform.groupName);
