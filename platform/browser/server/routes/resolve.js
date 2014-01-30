@@ -40,7 +40,6 @@ module.exports = function(req, res) {
                         bundleFile.end();
                     });
 
-                    console.log('BUNDLING...', req.body.name+'-bundle.js');
                     // set kevoree-library and kevoree-kotlin as 'provided externally' because there are bundled with
                     // kevoree-browser-runtime-client, if you don't do that, they will be loaded multiple times
                     // and the whole thing will blew up like crazy, trust me (just lost 2 hours)
@@ -55,7 +54,6 @@ module.exports = function(req, res) {
                         })
                         .pipe(bundleFile)
                         .on('finish', function () {
-                            console.log('BUNDLE OK', req.body.name+'-bundle.js');
                             // zip browser-bundled folder
                             var zip = new AdmZip();
                             zip.addLocalFolder(browserModulePath);
