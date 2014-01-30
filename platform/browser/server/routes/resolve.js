@@ -24,8 +24,10 @@ module.exports = function(req, res) {
                 name: req.body.name,
                 version: req.body.version
             };
+            
             npmi(options, function (err) {
                 if (err) {
+                    console.error('Internal Server Error', err.message);
                     return res.send(500, err.message);
                 }
 
@@ -68,6 +70,7 @@ module.exports = function(req, res) {
                         });
                 });
             });
+
 
         } else {
             // send response
