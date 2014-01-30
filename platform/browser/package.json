@@ -1,6 +1,6 @@
 {
   "name": "kevoree-browser-runtime",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Kevoree Browser Runtime",
   "browser": "./client/kevoree-browser-runtime.js",
   "repository": {
