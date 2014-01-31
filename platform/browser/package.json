@@ -17,7 +17,7 @@
   "license": "LGPL3.0",
   "dependencies": {
     "kevoree-nodejs-runtime": "0.0.4",
-    "kevoree-model-sync": "0.0.3",
+    "kevoree-model-sync": "0.0.4",
     "express": "~3.4.0",
     "ejs": "~0.8.4",
     "adm-zip": "~0.4.3",
