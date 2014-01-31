@@ -51,17 +51,12 @@ var FakeConsole = AbstractComponent.extend({
 
     in_inMsg: function (msg) {
         var proxy = this.dictionary.getValue('proxy');
-        if (typeof proxy !== undefined) {
-            if (proxy) {
-                msg = '> proxying > '+msg;
-                this.out_sendMsg(msg);
-            }
-        }
+        if (typeof proxy !== 'undefined' && proxy) this.out_sendMsg(msg);
 
         this.addMessageUI('>', msg);
     },
 
-    out_sendMsg: function () {},
+    out_sendMsg: function (msg) {},
 
     addMessageUI: function(tag, msg) {
         var root = this.getUIRoot();

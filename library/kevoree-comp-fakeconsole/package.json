@@ -1,6 +1,6 @@
 {
   "name": "kevoree-comp-fakeconsole",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "main": "./kevoree-comp-fakeconsole.js",
   "scripts": {
     "prepublish": "node node_modules/kevoree-gen-model -q"
