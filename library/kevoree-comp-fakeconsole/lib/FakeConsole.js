@@ -3,63 +3,76 @@ var AbstractComponent = require('kevoree-entities').AbstractComponent,
 
 
 var FakeConsole = AbstractComponent.extend({
-  toString: 'FakeConsole',
+    toString: 'FakeConsole',
 
-  start: function (_super) {
-    _super.call(this);
+    dic_proxy: {
+        optional: true,
+        defaultValue: false
+    },
 
-    this.setUIContent(view({btn: 'Send msg!'}), function (err, root) {
-      if (err) {
-        // no KevoreeUI provided by runtime (NodeJS platform obviously)
-        this.log.info(this.toString(), 'FakeConsole setUIContent in NodeJS runtime!');
+    start: function (_super) {
+        _super.call(this);
 
-      } else {
-        // view set successfully
-        var msgInput = root.querySelector('#msg'),
-          sendBtn  = root.querySelector('#send');
-        var sendMsg = function() {
-          if (msgInput.value.length > 0) {
-            // update message list
-            this.addMessageUI('<', msgInput.value);
-            // send it through output port 'sendMsg'
-            this.out_sendMsg(msgInput.value);
-          }
-        }.bind(this);
+        this.setUIContent(view({btn: 'Send msg!'}), function (err, root) {
+            if (err) {
+                // no KevoreeUI provided by runtime (NodeJS platform obviously)
+                this.log.info(this.toString(), 'FakeConsole setUIContent in NodeJS runtime!');
 
-        // send message on click event if value.length > 0
-        sendBtn.onclick = sendMsg;
+            } else {
+                // view set successfully
+                var msgInput = root.querySelector('#msg'),
+                    sendBtn  = root.querySelector('#send');
+                var sendMsg = function() {
+                    if (msgInput.value.length > 0) {
+                        // update message list
+                        this.addMessageUI('<', msgInput.value);
+                        // send it through output port 'sendMsg'
+                        this.out_sendMsg(msgInput.value);
+                    }
+                }.bind(this);
 
-        // send message on 'enter' key keyup event if value.length > 0
-        msgInput.onkeyup = function (e) {
-          if (e && e.keyCode && e.keyCode == 13) {
-            // 'enter' key pressed
-            sendMsg();
-          }
-        };
-      }
-    });
-  },
+                // send message on click event if value.length > 0
+                sendBtn.onclick = sendMsg;
 
-  stop: function (_super) {
-    _super.call(this);
-  },
+                // send message on 'enter' key keyup event if value.length > 0
+                msgInput.onkeyup = function (e) {
+                    if (e && e.keyCode && e.keyCode == 13) {
+                        // 'enter' key pressed
+                        sendMsg();
+                    }
+                };
+            }
+        });
+    },
 
-  in_inMsg: function (msg) {
-    this.addMessageUI('>', msg);
-  },
+    stop: function (_super) {
+        _super.call(this);
+    },
 
-  out_sendMsg: function () {},
+    in_inMsg: function (msg) {
+        var proxy = this.dictionary.getValue('proxy');
+        if (typeof proxy !== undefined) {
+            if (proxy) {
+                msg = '> proxying > '+msg;
+                this.out_sendMsg(msg);
+            }
+        }
 
-  addMessageUI: function(tag, msg) {
-    var root = this.getUIRoot();
-    if (root == null) {
-      // TODO handle no UI version
-      this.log.debug(this.toString(), tag+' '+msg);
-    } else {
-      var msgList = root.querySelector('#msg-list');
-      msgList.innerHTML += '<dt>'+(new Date().toTimeString().split(' ')[0])+' '+tag+'</dt><dd>'+msg+'</dd>';
+        this.addMessageUI('>', msg);
+    },
+
+    out_sendMsg: function () {},
+
+    addMessageUI: function(tag, msg) {
+        var root = this.getUIRoot();
+        if (root == null) {
+            // TODO handle no UI version
+            this.log.debug(this.toString(), tag+' '+msg);
+        } else {
+            var msgList = root.querySelector('#msg-list');
+            msgList.innerHTML += '<dt>'+(new Date().toTimeString().split(' ')[0])+' '+tag+'</dt><dd>'+msg+'</dd>';
+        }
     }
-  }
 });
 
 module.exports = FakeConsole;
