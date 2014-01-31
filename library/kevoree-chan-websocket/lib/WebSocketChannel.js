@@ -2,7 +2,8 @@ var AbstractChannel = require('kevoree-entities').AbstractChannel,
     WebSocket       = require('ws'),
     WebSocketServer = require('ws').Server;
 
-var REGISTER = 42;
+var REGISTER = 'register',
+    MESSAGE  = 'message';
 
 /**
  * Kevoree channel
@@ -14,7 +15,7 @@ var WebSocketChannel = AbstractChannel.extend({
     construct: function () {
         this.server = null;
         this.client = null;
-        this.connectedClients = [];
+        this.connectedClients = {};
         this.timeoutID = null;
     },
 
@@ -50,24 +51,35 @@ var WebSocketChannel = AbstractChannel.extend({
      * @param msg
      */
     onSend: function (fromPortPath, destPortPaths, msg) {
+        // rework msg object a bit
+        var recipients = [];
+        for (var i in destPortPaths) {
+            // extract nodeName from destPortPath
+            // TODO this is ugly :O API should only give nodeName not the whole destPortPath ?
+            recipients.push(/nodes\[([\w_.-]+)\].+/g.exec(destPortPaths[i])[1]);
+        }
+        
+        var msg = JSON.stringify({
+            type: MESSAGE,
+            message: msg,
+            recipients: recipients
+        });
+        
         if (this.client) {
-            console.log("CLIENT SEND "+msg+" to ", destPortPaths);
             // directly send message to server because we can't do much more =)
             if (this.client.readyState === 1) {
                 this.client.send(msg);
             } else {
-                // TODO
+                // TODO client is not connected => put in a queue
             }
 
         } else if (this.server) {
-            console.log("SERVER SEND "+msg+" to ", destPortPaths);
             // broadcast message to each connected clients
-            for (var i in this.connectedClients) {
-                if (this.connectedClients[i].readyState === 1) {
-                    console.log('SENDING MESSAGE TO CONNECTED CLIENT ', this.connectedClients[i]);
-                    this.connectedClients[i].send(msg);
+            for (var nodeName in this.connectedClients) {
+                if (this.connectedClients[nodeName].readyState === 1) {
+                    this.connectedClients[nodeName].send(msg);
                 } else {
-                    // TODO
+                    // TODO client is not connected => put in a queue
                 }
             }
         }
@@ -82,14 +94,16 @@ var WebSocketChannel = AbstractChannel.extend({
             this.log.debug(this.toString(), 'Master server created at '+this.server.options.host+":"+port);
 
             this.server.on('connection', function(ws) {
-                this.connectedClients.push(ws);
-
-                ws.onmessage = localDispatchHandler.bind(this);
+                ws.onmessage = localDispatchHandler.bind(this)(ws);
                 ws.onerror = function () {
-                    this.connectedClients.splice(this.connectedClients.indexOf(ws), 1);
+                    for (var nodeName in this.connectedClients) {
+                        if (this.connectedClients[nodeName] === ws) delete this.connectedClients[nodeName];
+                    }
                 }.bind(this);
                 ws.onclose = function () {
-                    this.connectedClients.splice(this.connectedClients.indexOf(ws), 1);
+                    for (var nodeName in this.connectedClients) {
+                        if (this.connectedClients[nodeName] === ws) delete this.connectedClients[nodeName];
+                    }
                 }.bind(this);
 
             }.bind(this));
@@ -110,9 +124,15 @@ var WebSocketChannel = AbstractChannel.extend({
                     clearTimeout(this.timeoutID);
                     this.timeoutID = null;
                     this.log.info(this.toString(), 'Now connected to master server '+addresses[0]);
+                    
+                    // send registration message
+                    this.client.send(JSON.stringify({
+                        type: REGISTER,
+                        message: this.getNodeName()
+                    }));
                 }.bind(this);
 
-                this.client.onmessage = localDispatchHandler.bind(this);
+                this.client.onmessage = localDispatchHandler.bind(this)();
 
                 this.client.onerror = function() {
                     // if there is an error, retry to initiate connection in 5 seconds
@@ -220,15 +240,49 @@ var WebSocketChannel = AbstractChannel.extend({
  * to be a WebSocketChannel instance)
  * @param data
  */
-var localDispatchHandler = function (data) {
-    if (data.type !== 'binary' || typeof(data.data) === 'string') {
-        // received data is a String
-        this.localDispatch(data.data);
+var localDispatchHandler = function (ws) {
+    return function (data) {
+        if (data.type !== 'binary' || typeof(data.data) === 'string') data = data.data;
+        else data = String.fromCharCode.apply(null, new Uint8Array(data.data));
 
-    } else {
-        // received data is binary
-        this.localDispatch(String.fromCharCode.apply(null, new Uint8Array(data.data)));
-    }
+        var msgObj = JSON.parse(data);
+
+        if (this.client) {
+            // i'm a client, dispatch locally
+            this.localDispatch(msgObj.message);
+        } else {
+            // i'm a server, I need to process the message in order to find the recipient
+            switch (msgObj.type) {
+                case REGISTER:
+                    this.log.info(this.toString(), "New registered client '"+msgObj.message+"' on '"+this.getName()+"' ("+ws._socket.remoteAddress+":"+ws._socket.remotePort+")");
+                    this.connectedClients[msgObj.message] = ws;
+                    break;
+
+                default:
+                case MESSAGE:
+                    for (var i in msgObj.recipients) {
+                        var nodeName = msgObj.recipients[i];
+                        if (nodeName === this.getNodeName()) {
+                            this.localDispatch(msgObj.message);
+                            
+                        } else if (this.connectedClients[nodeName]) {
+                            // this node is already registered
+                            if (this.connectedClients[nodeName].readyState === 1) {
+                                // and still connected
+                                this.connectedClients[nodeName].send(data);
+                                
+                            } else {
+                                // TODO client not connected => put in queue
+                            }
+                        } else {
+                            // recipient never registered on this server
+                            // TODO => put in queue
+                        }
+                    }
+                    break;
+            }
+        }
+    }.bind(this);
 }
 
 module.exports = WebSocketChannel;
