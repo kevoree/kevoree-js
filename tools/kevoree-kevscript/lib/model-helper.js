@@ -16,12 +16,7 @@ function findChanNodeGroupByName(model, name) {
 function findComponent(model, nodeName, compName) {
   var node = model.findNodesByID(nodeName);
   if (node) {
-    var comps = node.components.iterator();
-    while (comps.hasNext()) {
-      var comp = comps.next();
-      if (comp.name === compName) return comp;
-    }
-
+    return node.findComponentsByID(compName);
   } else return null;
 }
 

@@ -29,19 +29,20 @@ module.exports = function (model, statements, stmt, opts, cb) {
         }
     }
 
-    function processNodeAndCompsAttribute(node, compName, attrName) {
-        if (compName === '*') {
+    function processNodeAndHostsAttribute(node, hostName, attrName) {
+        if (hostName === '*') {
             var comps = node.components.iterator();
             while (comps.hasNext()) processInstanceAttribute(comps.next(), attrName);
 
         } else {
-            var comp = helper.findComponentByName(model, node.name, compName);
-            if (comp) {
-                processInstanceAttribute(comp, attrName);
-
-            } else {
-                return cb(new Error('Unable to find component "'+compName+'" in "'+node.name+'" model (set '+attr.toString()+' = "'+value+'")'));
+            var host = node.findComponentsByID(hostName);
+            if (!host) {
+                host = node.findHostsByID(hostName);
+                if (!host) {
+                    return cb(new Error('Unable to find instance "'+hostName+'" in "'+node.name+'" model (set '+attr.toString()+' = "'+value+'")'));
+                }
             }
+            processInstanceAttribute(host, attrName);
         }
     }
 
@@ -85,13 +86,13 @@ module.exports = function (model, statements, stmt, opts, cb) {
                     if (two === '*') {
                         // TODO handle namespaces too when using '*' ?
                         var nodes = model.nodes.iterator();
-                        while (nodes.hasNext()) processNodeAndCompsAttribute(nodes.next(), three, four);
+                        while (nodes.hasNext()) processNodeAndHostsAttribute(nodes.next(), three, four);
 
                     } else {
                         // check whether "two" is a namespace or a node name
                         var nodeInstance = model.findNodesByID(two);
                         if (nodeInstance) {
-                            processNodeAndCompsAttribute(nodeInstance, three, four);
+                            processNodeAndHostsAttribute(nodeInstance, three, four);
 
                         } else {
                             // TODO
