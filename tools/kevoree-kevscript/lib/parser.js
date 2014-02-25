@@ -12,14 +12,15 @@ if (typeof module !== 'undefined') {
 var Parser = (function() {
 
     var parser = function() { return this; };
-    parser.prototype = new waxeye.WaxeyeParser(0, true, [new waxeye.FA("kevScript", [new waxeye.State([new waxeye.Edge(1, 1, false),
-                new waxeye.Edge(37, 5, true)], false),
-            new waxeye.State([new waxeye.Edge(39, 2, false)], false),
-            new waxeye.State([new waxeye.Edge(1, 3, false),
-                new waxeye.Edge(37, 4, true)], true),
-            new waxeye.State([new waxeye.Edge(39, 2, false)], false),
-            new waxeye.State([new waxeye.Edge(38, 3, false)], true),
-            new waxeye.State([new waxeye.Edge(38, 1, false)], false)], waxeye.FA.LEFT),
+    parser.prototype = new waxeye.WaxeyeParser(0, true, [new waxeye.FA("kevScript", [new waxeye.State([new waxeye.Edge(39, 1, false)], false),
+            new waxeye.State([new waxeye.Edge(1, 2, false),
+                new waxeye.Edge(37, 6, true)], false),
+            new waxeye.State([new waxeye.Edge(39, 3, false)], false),
+            new waxeye.State([new waxeye.Edge(1, 4, false),
+                new waxeye.Edge(37, 5, true)], true),
+            new waxeye.State([new waxeye.Edge(39, 3, false)], false),
+            new waxeye.State([new waxeye.Edge(38, 4, false)], true),
+            new waxeye.State([new waxeye.Edge(38, 2, false)], false)], waxeye.FA.LEFT),
         new waxeye.FA("statement", [new waxeye.State([new waxeye.Edge(2, 1, false),
                 new waxeye.Edge(3, 1, false),
                 new waxeye.Edge(4, 1, false),
