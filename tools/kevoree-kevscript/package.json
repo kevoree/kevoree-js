@@ -27,8 +27,8 @@
     "pseudoclass": "~0.2.6",
     "optimist": "~0.6.0",
     "async": "~0.2.9",
-    "kevoree-library": "0.0.3",
-    "kevoree-kotlin": "0.0.1",
+    "kevoree-library": "*",
+    "kevoree-kotlin": "0.0.3",
     "kevoree-commons": "0.0.1",
     "kevoree-resolvers": "0.0.2"
   },
