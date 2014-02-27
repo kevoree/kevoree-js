@@ -20,7 +20,7 @@
   "devDependencies": {},
   "optionalDependencies": {},
   "dependencies": {
-    "kevoree-library": "0.0.3",
+    "kevoree-library": "*",
     "kevoree-commons": "0.0.1",
     "async": "0.2.9",
     "pseudoclass": "0.2.6"

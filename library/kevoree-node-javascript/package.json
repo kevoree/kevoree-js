@@ -1,6 +1,6 @@
 {
   "name": "kevoree-node-javascript",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "./kevoree-node-javascript.js",
   "scripts": {
     "prepublish": "node node_modules/kevoree-gen-model"
@@ -22,8 +22,8 @@
     "url": "https://github.com/kevoree/kevoree-js"
   },
   "dependencies": {
-    "kevoree-library": "0.0.3",
-    "kevoree-kotlin": "0.0.1",
+    "kevoree-library": "*",
+    "kevoree-kotlin": "0.0.3",
     "kevoree-entities": "~0.0.3",
     "kevoree-commons": "0.0.1",
     "pseudoclass": "0.2.6"

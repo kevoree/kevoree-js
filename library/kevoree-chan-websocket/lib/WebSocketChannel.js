@@ -59,7 +59,7 @@ var WebSocketChannel = AbstractChannel.extend({
             recipients.push(/nodes\[([\w_.-]+)\].+/g.exec(destPortPaths[i])[1]);
         }
         
-        var msg = JSON.stringify({
+        var jsonMsg = JSON.stringify({
             type: MESSAGE,
             message: msg,
             recipients: recipients
@@ -68,7 +68,7 @@ var WebSocketChannel = AbstractChannel.extend({
         if (this.client) {
             // directly send message to server because we can't do much more =)
             if (this.client.readyState === 1) {
-                this.client.send(msg);
+                this.client.send(jsonMsg);
             } else {
                 // TODO client is not connected => put in a queue
             }
@@ -77,7 +77,7 @@ var WebSocketChannel = AbstractChannel.extend({
             // broadcast message to each connected clients
             for (var nodeName in this.connectedClients) {
                 if (this.connectedClients[nodeName].readyState === 1) {
-                    this.connectedClients[nodeName].send(msg);
+                    this.connectedClients[nodeName].send(jsonMsg);
                 } else {
                     // TODO client is not connected => put in a queue
                 }

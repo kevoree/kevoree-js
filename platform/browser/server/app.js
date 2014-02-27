@@ -6,9 +6,9 @@ var express          = require('express'),
     kevoree          = require('kevoree-library').org.kevoree,
     config           = require('./config');
 
-var compare    = new kevoree.compare.DefaultModelCompare();
-var factory    = new kevoree.impl.DefaultKevoreeFactory();
-var model      = factory.createContainerRoot();
+var compare = new kevoree.compare.DefaultModelCompare();
+var factory = new kevoree.impl.DefaultKevoreeFactory();
+var model   = factory.createContainerRoot();
 
 var app = express();
 

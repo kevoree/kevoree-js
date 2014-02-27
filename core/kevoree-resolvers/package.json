@@ -24,7 +24,7 @@
   "homepage": "https://github.com/kevoree/kevoree-js",
   "dependencies": {
     "kevoree-commons": "0.0.1",
-    "kevoree-library": "0.0.3",
+    "kevoree-library": "*",
     "npmi": "0.0.4"
   }
 }

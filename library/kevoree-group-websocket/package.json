@@ -24,7 +24,7 @@
     "url": "https://github.com/kevoree/kevoree-js"
   },
   "dependencies": {
-    "kevoree-library": "0.0.3",
+    "kevoree-library": "*",
     "kevoree-entities": "~0.0.3",
     "kevoree-commons": "0.0.1",
     "pseudoclass": "0.2.6",
