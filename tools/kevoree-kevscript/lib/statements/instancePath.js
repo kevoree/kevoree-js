@@ -33,6 +33,10 @@ module.exports = function (model, statements, stmt, opts, cb) {
       for (var i=instancePath.length-1; i < max; i++) instancePath.unshift(null);
       return callback.apply(null, instancePath);
     },
-    toString:   function () { return instancePath.join('.').substr(1); }
+    toString:   function () {
+        var str = instancePath.join('.');
+        if (str[0] === '.') return str.substr(1)
+        else return str;
+    }
   };
 }
