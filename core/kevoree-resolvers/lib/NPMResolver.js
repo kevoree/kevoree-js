@@ -96,24 +96,4 @@ var NPMResolver = Resolver.extend({
     }
 });
 
-function isAvailable(modulePath) {
-    try {
-        require.resolve(modulePath);
-        return true;
-    } catch (err) {}
-    return false;
-}
-
-function npmInstall(installPath, module, callback) {
-    npm.load({}, function (err) {
-        if (err) return callback(err);
-
-        npm.commands.install(installPath, [module], function (err) {
-            if (err) return callback(err);
-
-            return callback();
-        })
-    });
-}
-
 module.exports = NPMResolver;

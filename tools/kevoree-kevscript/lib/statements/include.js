@@ -5,7 +5,7 @@ var factory = new kevoree.impl.DefaultKevoreeFactory();
 var compare = new kevoree.compare.DefaultModelCompare();
 
 module.exports = function (model, statements, stmt, opts, cb) {
-  if (!opts.resolvers) {
+  if (!cb) {
     // if "cb" is undefined, then  there is no "opts" parameter given, so no resolver, so :/
     return opts(new Error('You must give resolvers as options to "include.js" statement processor'));
   }
