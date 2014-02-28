@@ -30,7 +30,7 @@
     "kevoree-library": "*",
     "kevoree-kotlin": "0.0.3",
     "kevoree-commons": "0.0.1",
-    "kevoree-resolvers": "0.0.2"
+    "kevoree-resolvers": "0.0.3"
   },
   "devDependencies": {
     "browserify": "~2.35.2",

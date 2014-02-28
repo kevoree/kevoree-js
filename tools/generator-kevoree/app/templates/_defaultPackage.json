@@ -7,10 +7,10 @@
     "kevoree": "node node_modules/kevoree-nodejs-runtime/cli.js -n node0 -g sync -k kevs/main.kevs"
   },
   "dependencies": {
-    "kevoree-entities": ">= 0.0.3"
+    "kevoree-entities": "*"
   },
   "devDependencies": {
-    "kevoree-gen-model": "0.0.2",
-    "kevoree-nodejs-runtime": "0.0.3"
+    "kevoree-gen-model": "*",
+    "kevoree-nodejs-runtime": "*"
   }
 }
