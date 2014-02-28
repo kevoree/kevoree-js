@@ -1,6 +1,6 @@
 {
   "name": "kevoree-browser-runtime",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Kevoree Browser Runtime",
   "browser": "./client/kevoree-browser-runtime.js",
   "repository": {
@@ -16,7 +16,7 @@
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "license": "LGPL3.0",
   "dependencies": {
-    "kevoree-nodejs-runtime": "0.0.4",
+    "kevoree-nodejs-runtime": "0.0.5",
     "kevoree-model-sync": "0.0.4",
     "express": "~3.4.0",
     "ejs": "~0.8.4",
