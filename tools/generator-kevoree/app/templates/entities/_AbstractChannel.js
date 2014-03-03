@@ -11,6 +11,12 @@ var AbstractChannel = require('kevoree-entities').AbstractChannel;
 var <%= entityName %> = <%= entityType %>.extend({
   toString: '<%= entityName %>',
 
+  /* This is an example of dictionary attribute that you can set for your entity */
+//dic_yourAttrName: {
+//  optional: true,
+//  defaultValue: false
+//},
+
   /**
    * this method will be called by the Kevoree platform when your channel has to start
    */
