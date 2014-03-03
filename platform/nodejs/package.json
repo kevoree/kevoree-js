@@ -1,6 +1,6 @@
 {
   "name": "kevoree-nodejs-runtime",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "main": "kevoree-nodejs-runtime.js",
   "scripts": {
@@ -13,8 +13,8 @@
     "pseudoclass": "0.2.6",
     "npm": "1.4.4",
     "optimist": "~0.6.0",
-    "kevoree-kevscript": "0.0.10",
-    "kevoree-resolvers": "0.0.3"
+    "kevoree-kevscript": "0.0.11",
+    "kevoree-resolvers": "0.0.4"
   },
   "license": "LGPL-3.0"
 }
