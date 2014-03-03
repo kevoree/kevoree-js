@@ -1,7 +1,9 @@
 var AbstractGroup   = require('kevoree-entities').AbstractGroup,
     kevoree         = require('kevoree-library').org.kevoree,
     WebSocket       = require('ws'),
+    async           = require('async'),
     WSServer        = require('ws').Server,
+    SmartSocket     = require('smart-socket'),
 
 // protocol constants
     PULL        = 'pull',
@@ -35,13 +37,18 @@ var WebSocketGroup = AbstractGroup.extend({
         this.client = null;
         this.connectedNodes = {};
         this.timeoutID = null;
+        this.stopped = false;
     },
 
     start: function (_super) {
         _super.call(this);
 
+        this.stopped = false;
+
         // assert('one and only one master server defined between all subnodes')
         this.checkNoMultipleMasterServer();
+
+        console.log(this.getMasterServerAddresses(), this.getMasterServerNode().name);
 
         if (this.dictionary.getValue('port') != undefined) {
             this.server = this.startWSServer(this.dictionary.getValue('port'));
@@ -62,11 +69,12 @@ var WebSocketGroup = AbstractGroup.extend({
             this.client.close();
             // remove reconnection task because we closed on purpose
             clearTimeout(this.timeoutID);
+            this.stopped = true;
         }
     },
 
     push: function (model, targetNodeName) {
-        if (targetNodeName == this.getMasterServerNodeName()) {
+        if (targetNodeName == this.getMasterServerNode().name) {
             this.onServerPush(model, this.getMasterServerAddresses());
         } else {
             this.onClientPush(model, targetNodeName);
@@ -74,7 +82,7 @@ var WebSocketGroup = AbstractGroup.extend({
     },
 
     pull: function (targetNodeName, callback) {
-        if (targetNodeName == this.getMasterServerNodeName()) {
+        if (targetNodeName == this.getMasterServerNode().name) {
             // pull request is for the master server, forward the request to it
             this.onServerPull(this.getMasterServerAddresses(), callback);
         } else {
@@ -170,101 +178,90 @@ var WebSocketGroup = AbstractGroup.extend({
 
     startWSClient: function () {
         var addresses = this.getMasterServerAddresses();
-        if (addresses && addresses.length > 0) {
-            var group = this;
-            var connectToServer = function () {
-                var ws = new WebSocket('ws://'+addresses[0]); // TODO change that => to try each different addresses not only the first one
+        if (addresses.length > 0) {
+            SmartSocket({
+                addresses: addresses,
+                timeout: 5000,
+                handlers: {
+                    onopen: function (ws, event) {
+                        ws.send(REGISTER+'/'+this.getNodeName());
+                        this.log.info(this.toString(), 'Now connected & registered on master server '+ws.url);
+                    }.bind(this),
 
-                ws.onopen = function onOpen() {
-                    clearTimeout(group.timeoutID);
-                    group.timeoutID = null;
-                    ws.send(REGISTER+'/'+group.getNodeName());
-                    group.log.info(group.toString(), 'Now connected & registered on master server '+addresses[0]);
-                };
-                ws.onmessage = function onMessage(e) {
-                    var data = '';
-                    if (typeof(e) === 'string') data = e;
-                    else data = e.data;
-                    var jsonLoader = new kevoree.loader.JSONModelLoader();
-                    var model = jsonLoader.loadModelFromString(data).get(0);
-                    group.kCore.deploy(model);
-                };
+                    onmessage: function (ws, event) {
+                        var data = '';
+                        if (typeof(event) === 'string') data = event;
+                        else data = event.data;
+                        var jsonLoader = new kevoree.loader.JSONModelLoader();
+                        var model = jsonLoader.loadModelFromString(data).get(0);
+                        this.kCore.deploy(model);
+                    }.bind(this),
 
-                ws.onerror = function onError() {
-                    // if there is an error, retry to initiate connection in 5 seconds
-                    clearTimeout(group.timeoutID);
-                    group.timeoutID = null;
-                    group.timeoutID = setTimeout(connectToServer, 5000);
+                    onclose: function (ws, event) {
+                        this.log.debug(this.toString(), "Connection closed with server "+ws.url+". Retry attempt in 5 seconds");
+                    }.bind(this)
                 }
-
-                ws.onclose = function onClose() {
-                    group.log.debug(group.toString(), "Connection closed with server "+addresses[0]+". Retry attempt in 5 seconds");
-                    // when websocket is closed, retry connection in 5 seconds
-                    // TODO protect this so that it wont restart all over again on group stop
-                    clearTimeout(group.timeoutID);
-                    group.timeoutID = null;
-                    group.timeoutID = setTimeout(connectToServer, 5000);
-                }
-            }
-            connectToServer();
+            });
 
         } else {
-            throw new Error("There is no master server in your model. You must specify a master server by giving a value to one port attribute.");
+            throw new Error("No NetworkInformation specified for master server node. Can't connect to it :/");
         }
     },
 
     getMasterServerAddresses: function () {
-        var ret = [],
-            port = null;
+        var addresses = [];
+        var port = null;
 
-        var kGroup = this.getModelEntity();
-        if (kGroup) {
-            var fragDics = kGroup.fragmentDictionary.iterator();
-            while (fragDics.hasNext()) {
-                var val = fragDics.next().findValuesByID('port');
-                if (val) port = val.value;
-                if (port && port.length > 0) {
-                    var nodeNetworks = this.getKevoreeCore().getDeployModel().nodeNetworks.iterator();
-                    while (nodeNetworks.hasNext()) {
-                        var links = nodeNetworks.next().link.iterator();
-                        while (links.hasNext()) {
-                            var netProps = links.next().networkProperties.iterator();
-                            while (netProps.hasNext()) {
-                                ret.push(netProps.next().value+':'+port);
-                            }
-                        }
+        var group = this.getModelEntity();
+        var fragDics = group.fragmentDictionary.iterator();
+        while (fragDics.hasNext()) {
+            var fragDic = fragDics.next();
+            var values = fragDic.values.iterator();
+            while (values.hasNext()) {
+                var val = values.next();
+                if (val.name === 'port' && val.value.length > 0) {
+                    // found port attribute
+                    port = val.value;
+                    break;
+                }
+            }
+        }
+
+        if (port) {
+            var nets = this.getNetworkInfos();
+            while (nets.hasNext()) {
+                var net = nets.next();
+                var props = net.values.iterator();
+                while (props.hasNext()) {
+                    var prop = props.next();
+                    if (net.name.toLowerCase().indexOf('ip') != -1 ||
+                        prop.name.toLowerCase().indexOf('ip') != -1) {
+                        addresses.push(prop.value+':'+port);
                     }
-                    break; // we don't need to process other attributes we were looking for a valid 'port' that's all
                 }
             }
         } else {
-            throw new Error("WebSocketGroup error: Unable to find group instance in model (??)");
+            throw new Error("WebSocketGroup error: no master server defined. You should specify a node to be the master server (in order to do that, give to a node a value to its 'port' attribute)");
         }
 
-        // if no address found, give it a try locally
-        if (ret.length == 0) ret.push('127.0.0.1:'+port);
-
-        return ret;
+        return addresses;
     },
 
-    getMasterServerNodeName: function () {
-        var ret = null;
+    getMasterServerNode: function () {
         var group = this.getModelEntity();
-        if (group != null) {
-            if (group.dictionary.values && group.dictionary.values.size() > 0) {
-                var dicVals = group.dictionary.values.iterator();
-                while (dicVals.hasNext()) {
-                    var val = dicVals.next();
-                    if (val.attribute.name == 'port') {
-                        if (typeof(val.value) !== 'undefined' && val.value != null && val.value.length > 0) {
-                            ret = val.targetNode.name;
-                            break; // we can stop the looping there, we found the master server node name
-                        }
-                    }
+        var fragDics = group.fragmentDictionary.iterator();
+        while (fragDics.hasNext()) {
+            var fragDic = fragDics.next();
+            var values = fragDic.values.iterator();
+            while (values.hasNext()) {
+                var val = values.next();
+                if (val.name === 'port' && val.value.length > 0) {
+                    // found a port attribute with a set value
+                    return this.getKevoreeCore().getDeployModel().findNodesByID(fragDic.name);
                 }
             }
         }
-        return ret;
+        return null;
     },
 
     processMessage: function (clientSocket, data) {
