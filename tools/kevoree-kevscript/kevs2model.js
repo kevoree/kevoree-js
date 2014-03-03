@@ -11,17 +11,13 @@ var path = require('path'),
               .argv,
     KevScript    = require('./lib/KevScript'),
     kevoree      = require('kevoree-library').org.kevoree,
-    NPMResolver  = require('kevoree-resolvers').NPMResolver,
-    FileResolver = require('kevoree-resolvers').FileResolver;
+    NPMResolver  = require('kevoree-resolvers').NPMResolver;
 
 var input = path.resolve(argv.k);
 var output = path.resolve(argv.o);
 var serializer = new kevoree.serializer.JSONModelSerializer();
 var options = {
-  resolvers: {
-    npm: new NPMResolver(),
-    file: new FileResolver()
-  }
+  resolvers: { npm: new NPMResolver() }
 };
 var kevs = new KevScript(options);
 
