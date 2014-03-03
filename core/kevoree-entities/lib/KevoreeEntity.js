@@ -86,6 +86,12 @@ var KevoreeEntity = Class({
 
     getModelEntity: function () {
         return this.kCore.getDeployModel().findByPath(this.path);
+    },
+
+    getNetworkInfos: function (name) {
+        var node = this.kCore.getDeployModel().findNodesByID(this.getNodeName());
+        if (name) return node.findNetworkInformationByID(name);
+        else return node.networkInformation.iterator();
     }
 });
 
