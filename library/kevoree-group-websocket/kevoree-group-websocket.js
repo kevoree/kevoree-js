@@ -36,7 +36,6 @@ var WebSocketGroup = AbstractGroup.extend({
         this.server = null;
         this.client = null;
         this.connectedNodes = {};
-        this.timeoutID = null;
         this.stopped = false;
     },
 
@@ -68,7 +67,6 @@ var WebSocketGroup = AbstractGroup.extend({
             // close client connection
             this.client.close();
             // remove reconnection task because we closed on purpose
-            clearTimeout(this.timeoutID);
             this.stopped = true;
         }
     },
