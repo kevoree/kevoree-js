@@ -3,14 +3,13 @@
   "version": "0.0.1",
   "main": "./kevoree-<%= rawEntityType %>-<%= _.slugify(entityName) %>.js",
   "scripts": {
-    "prepublish": "node node_modules/kevoree-gen-model -q",
-    "kevoree": "node node_modules/kevoree-nodejs-runtime/cli.js -n node0 -g sync -k kevs/main.kevs"
+    "prepublish": "node node_modules/kevoree-gen-model -q"
   },
   "dependencies": {
     "kevoree-entities": "*"
   },
   "devDependencies": {
     "kevoree-gen-model": "*",
-    "kevoree-nodejs-runtime": "*"
+    "grunt-kevoree": "*"
   }
 }

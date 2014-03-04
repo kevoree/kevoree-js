@@ -1,18 +1,17 @@
 {
-  "name": "kevoree-<%= rawEntityType %>-<%= _.slugify(entityName) %>",
-  "version": "0.0.1",
-  "main": "./kevoree-<%= rawEntityType %>-<%= _.slugify(entityName) %>.js",
-  "scripts": {
-    "prepublish": "node node_modules/kevoree-gen-model -q",
-    "kevoree": "node node_modules/kevoree-nodejs-runtime/cli.js -n node0 -g sync -k kevs/main.kevs"
-  },
-  "dependencies": {
-    "kevoree-entities": "*"
-  },
-  "devDependencies": {
-    "kevoree-gen-model": "*",
-    "kevoree-nodejs-runtime": "*",
-    "grunt": "~0.4.1",
-    "grunt-jade": "~0.4.0"
-  }
+    "name": "kevoree-<%= rawEntityType %>-<%= _.slugify(entityName) %>",
+    "version": "0.0.1",
+    "main": "./kevoree-<%= rawEntityType %>-<%= _.slugify(entityName) %>.js",
+    "scripts": {
+        "prepublish": "node node_modules/kevoree-gen-model -q"
+    },
+    "dependencies": {
+        "kevoree-entities": "*"
+    },
+    "devDependencies": {
+        "kevoree-gen-model": "*",
+        "grunt": "~0.4.1",
+        "grunt-jade": "~0.4.0",
+        "grunt-kevoree": "*"
+    }
 }
