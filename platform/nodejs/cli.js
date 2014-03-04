@@ -22,7 +22,6 @@ var config      = require('./config.json'),
 var kRuntime = new NodeJSRuntime(__dirname);
 var loader   = new kevoree.loader.JSONModelLoader();
 var log      = new KevoreeLogger('NodeJSRuntime');
-var compare  = new kevoree.compare.DefaultModelCompare();
 
 // Kevoree Runtime started event listener
 kRuntime.on('started', function () {

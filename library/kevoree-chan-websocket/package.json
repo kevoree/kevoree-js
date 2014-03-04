@@ -13,7 +13,6 @@
     "smart-socket": "0.0.3"
   },
   "devDependencies": {
-    "kevoree-gen-model": ">= 0.0.1",
-    "kevoree-nodejs-runtime": "0.0.9"
+    "kevoree-gen-model": ">= 0.0.1"
   }
 }
