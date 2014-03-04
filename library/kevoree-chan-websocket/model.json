@@ -1,0 +1,369 @@
+{
+    "eClass": "org.kevoree.ContainerRoot",
+    "generated_KMF_ID": "0.30468787485733631389021758496",
+    "nodes": [
+        {
+            "eClass": "org.kevoree.ContainerNode",
+            "name": "node0",
+            "started": "true",
+            "metaData": "",
+            "typeDefinition": [
+                "typeDefinitions[JavascriptNode/0.0.4]"
+            ],
+            "hosts": [],
+            "host": [],
+            "groups": [
+                "groups[sync]"
+            ],
+            "dictionary": [],
+            "fragmentDictionary": [],
+            "components": [
+                {
+                    "eClass": "org.kevoree.ComponentInstance",
+                    "name": "comp0",
+                    "started": "true",
+                    "metaData": "",
+                    "typeDefinition": [
+                        "typeDefinitions[HelloWorldComponent/0.0.3]"
+                    ],
+                    "namespace": [],
+                    "dictionary": [],
+                    "fragmentDictionary": [],
+                    "provided": [],
+                    "required": [
+                        {
+                            "eClass": "org.kevoree.Port",
+                            "generated_KMF_ID": "0.2945537483319641393927550005",
+                            "bindings": [
+                                "mBindings[0.111348409904167061393927550008]"
+                            ],
+                            "portTypeRef": [
+                                "typeDefinitions[HelloWorldComponent/0.0.3]/required[sendText]"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "networkInformation": []
+        },
+        {
+            "eClass": "org.kevoree.ContainerNode",
+            "name": "node1",
+            "started": "true",
+            "metaData": "",
+            "typeDefinition": [
+                "typeDefinitions[JavascriptNode/0.0.4]"
+            ],
+            "hosts": [],
+            "host": [],
+            "groups": [
+                "groups[sync]"
+            ],
+            "dictionary": [],
+            "fragmentDictionary": [],
+            "components": [
+                {
+                    "eClass": "org.kevoree.ComponentInstance",
+                    "name": "comp1",
+                    "started": "true",
+                    "metaData": "",
+                    "typeDefinition": [
+                        "typeDefinitions[HelloWorldComponent/0.0.3]"
+                    ],
+                    "namespace": [],
+                    "dictionary": [],
+                    "fragmentDictionary": [],
+                    "provided": [
+                        {
+                            "eClass": "org.kevoree.Port",
+                            "generated_KMF_ID": "0.65981699968688191393927550012",
+                            "bindings": [
+                                "mBindings[0.38650140212848781393927550014]"
+                            ],
+                            "portTypeRef": [
+                                "typeDefinitions[HelloWorldComponent/0.0.3]/provided[fake]"
+                            ]
+                        }
+                    ],
+                    "required": []
+                }
+            ],
+            "networkInformation": []
+        }
+    ],
+    "typeDefinitions": [
+        {
+            "eClass": "org.kevoree.NodeType",
+            "abstract": "false",
+            "bean": "",
+            "name": "JavascriptNode",
+            "factoryBean": "",
+            "version": "0.0.4",
+            "deployUnit": [
+                "deployUnits[//kevoree-node-javascript/0.0.4]"
+            ],
+            "superTypes": [],
+            "dictionaryType": [
+                {
+                    "eClass": "org.kevoree.DictionaryType",
+                    "generated_KMF_ID": "0.4208012460730971391620000845",
+                    "attributes": []
+                }
+            ]
+        },
+        {
+            "eClass": "org.kevoree.GroupType",
+            "abstract": "false",
+            "bean": "",
+            "name": "WebSocketGroup",
+            "factoryBean": "",
+            "version": "0.0.10",
+            "deployUnit": [
+                "deployUnits[//kevoree-group-websocket/0.0.10]"
+            ],
+            "superTypes": [],
+            "dictionaryType": [
+                {
+                    "eClass": "org.kevoree.DictionaryType",
+                    "generated_KMF_ID": "0.46295436425134541393865680133",
+                    "attributes": [
+                        {
+                            "eClass": "org.kevoree.DictionaryAttribute",
+                            "fragmentDependant": "true",
+                            "optional": "true",
+                            "name": "port",
+                            "state": "false",
+                            "datatype": "",
+                            "defaultValue": "",
+                            "genericTypes": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "eClass": "org.kevoree.ChannelType",
+            "upperFragments": "0",
+            "abstract": "false",
+            "upperBindings": "0",
+            "lowerBindings": "0",
+            "bean": "",
+            "lowerFragments": "0",
+            "name": "WebSocketChannel",
+            "factoryBean": "",
+            "version": "0.0.7",
+            "deployUnit": [
+                "deployUnits[//kevoree-chan-websocket/0.0.7]"
+            ],
+            "superTypes": [],
+            "dictionaryType": [
+                {
+                    "eClass": "org.kevoree.DictionaryType",
+                    "generated_KMF_ID": "0.8829124330077321393927549523",
+                    "attributes": [
+                        {
+                            "eClass": "org.kevoree.DictionaryAttribute",
+                            "fragmentDependant": "true",
+                            "optional": "true",
+                            "name": "port",
+                            "state": "false",
+                            "datatype": "",
+                            "defaultValue": "",
+                            "genericTypes": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "eClass": "org.kevoree.ComponentType",
+            "abstract": "false",
+            "bean": "",
+            "name": "HelloWorldComponent",
+            "factoryBean": "",
+            "version": "0.0.3",
+            "deployUnit": [
+                "deployUnits[//kevoree-comp-helloworld/0.0.3]"
+            ],
+            "superTypes": [],
+            "dictionaryType": [
+                {
+                    "eClass": "org.kevoree.DictionaryType",
+                    "generated_KMF_ID": "0.129006770905107261389021758505",
+                    "attributes": []
+                }
+            ],
+            "required": [
+                {
+                    "eClass": "org.kevoree.PortTypeRef",
+                    "noDependency": "true",
+                    "optional": "true",
+                    "name": "sendText",
+                    "ref": [],
+                    "mappings": []
+                }
+            ],
+            "provided": [
+                {
+                    "eClass": "org.kevoree.PortTypeRef",
+                    "noDependency": "true",
+                    "optional": "true",
+                    "name": "fake",
+                    "ref": [],
+                    "mappings": []
+                }
+            ]
+        }
+    ],
+    "repositories": [],
+    "dataTypes": [],
+    "libraries": [
+        {
+            "eClass": "org.kevoree.TypeLibrary",
+            "name": "Javascript",
+            "subTypes": [
+                "typeDefinitions[JavascriptNode/0.0.4]",
+                "typeDefinitions[WebSocketGroup/0.0.10]",
+                "typeDefinitions[WebSocketChannel/0.0.7]",
+                "typeDefinitions[HelloWorldComponent/0.0.3]"
+            ]
+        }
+    ],
+    "hubs": [
+        {
+            "eClass": "org.kevoree.Channel",
+            "name": "chan",
+            "started": "true",
+            "metaData": "",
+            "typeDefinition": [
+                "typeDefinitions[WebSocketChannel/0.0.7]"
+            ],
+            "bindings": [
+                "mBindings[0.111348409904167061393927550008]",
+                "mBindings[0.38650140212848781393927550014]"
+            ],
+            "dictionary": [],
+            "fragmentDictionary": [
+                {
+                    "eClass": "org.kevoree.FragmentDictionary",
+                    "name": "node0",
+                    "generated_KMF_ID": "",
+                    "values": [
+                        {
+                            "eClass": "org.kevoree.DictionaryValue",
+                            "name": "port",
+                            "value": "9001"
+                        }
+                    ]
+                },
+                {
+                    "eClass": "org.kevoree.FragmentDictionary",
+                    "name": "node1",
+                    "generated_KMF_ID": "",
+                    "values": [
+                        {
+                            "eClass": "org.kevoree.DictionaryValue",
+                            "name": "port",
+                            "value": "9002"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "mBindings": [
+        {
+            "eClass": "org.kevoree.MBinding",
+            "generated_KMF_ID": "0.111348409904167061393927550008",
+            "port": [
+                "nodes[node0]/components[comp0]/required[0.2945537483319641393927550005]"
+            ],
+            "hub": [
+                "hubs[chan]"
+            ]
+        },
+        {
+            "eClass": "org.kevoree.MBinding",
+            "generated_KMF_ID": "0.38650140212848781393927550014",
+            "port": [
+                "nodes[node1]/components[comp1]/provided[0.65981699968688191393927550012]"
+            ],
+            "hub": [
+                "hubs[chan]"
+            ]
+        }
+    ],
+    "deployUnits": [
+        {
+            "eClass": "org.kevoree.DeployUnit",
+            "groupName": "",
+            "name": "kevoree-node-javascript",
+            "hashcode": "",
+            "type": "npm",
+            "url": "",
+            "version": "0.0.4",
+            "requiredLibs": []
+        },
+        {
+            "eClass": "org.kevoree.DeployUnit",
+            "groupName": "",
+            "name": "kevoree-group-websocket",
+            "hashcode": "",
+            "type": "npm",
+            "url": "",
+            "version": "0.0.10",
+            "requiredLibs": []
+        },
+        {
+            "eClass": "org.kevoree.DeployUnit",
+            "groupName": "",
+            "name": "kevoree-chan-websocket",
+            "hashcode": "",
+            "type": "npm",
+            "url": "",
+            "version": "0.0.7",
+            "requiredLibs": []
+        },
+        {
+            "eClass": "org.kevoree.DeployUnit",
+            "groupName": "",
+            "name": "kevoree-comp-helloworld",
+            "hashcode": "",
+            "type": "npm",
+            "url": "",
+            "version": "0.0.3",
+            "requiredLibs": []
+        }
+    ],
+    "nodeNetworks": [],
+    "groups": [
+        {
+            "eClass": "org.kevoree.Group",
+            "name": "sync",
+            "started": "true",
+            "metaData": "",
+            "typeDefinition": [
+                "typeDefinitions[WebSocketGroup/0.0.10]"
+            ],
+            "subNodes": [
+                "nodes[node0]",
+                "nodes[node1]"
+            ],
+            "dictionary": [],
+            "fragmentDictionary": [
+                {
+                    "eClass": "org.kevoree.FragmentDictionary",
+                    "name": "node0",
+                    "generated_KMF_ID": "",
+                    "values": [
+                        {
+                            "eClass": "org.kevoree.DictionaryValue",
+                            "name": "port",
+                            "value": "9000"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

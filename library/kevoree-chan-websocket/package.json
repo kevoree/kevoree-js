@@ -3,14 +3,17 @@
   "version": "0.0.7",
   "main": "./kevoree-chan-websocket.js",
   "scripts": {
-    "prepublish": "node node_modules/kevoree-gen-model"
+    "prepublish": "node node_modules/kevoree-gen-model",
+    "kevoree": "node node_modules/kevoree-nodejs-runtime/cli.js -n node1 -g sync -k kevs/main.kevs"
   },
   "dependencies": {
     "kevoree-entities": ">= 0.0.3",
     "kevoree-commons": ">= 0.0.1",
-    "ws": "~0.4.31"
+    "ws": "~0.4.31",
+    "smart-socket": "0.0.3"
   },
   "devDependencies": {
-    "kevoree-gen-model": ">= 0.0.1"
+    "kevoree-gen-model": ">= 0.0.1",
+    "kevoree-nodejs-runtime": "0.0.9"
   }
 }

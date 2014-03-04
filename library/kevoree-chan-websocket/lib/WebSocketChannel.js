@@ -1,6 +1,7 @@
 var AbstractChannel = require('kevoree-entities').AbstractChannel,
     WebSocket       = require('ws'),
-    WebSocketServer = require('ws').Server;
+    WebSocketServer = require('ws').Server,
+    SmartSocket     = require('smart-socket');
 
 var REGISTER = 'register',
     MESSAGE  = 'message';
@@ -16,7 +17,6 @@ var WebSocketChannel = AbstractChannel.extend({
         this.server = null;
         this.client = null;
         this.connectedClients = {};
-        this.timeoutID = null;
     },
 
     /**
@@ -38,9 +38,6 @@ var WebSocketChannel = AbstractChannel.extend({
     stop: function () {
         this.log.warn(this.toString(), 'stop() method not implemented yet.');
         // TODO
-        if (this.client != null) {
-            clearTimeout(this.timeoutID);
-        }
     },
 
     /**
@@ -117,42 +114,37 @@ var WebSocketChannel = AbstractChannel.extend({
     startWSClient: function () {
         var addresses = this.getMasterServerAddresses();
         if (addresses && addresses.length > 0) {
-            var connectToServer = function() {
-                this.client = new WebSocket('ws://'+addresses[0]); // TODO change that => to try each different addresses not only the first one
+            SmartSocket({
+                addresses: addresses,
+                timeout: 5000,
+                handlers: {
+                    onopen: function (ws) {
+                        // save a ref of connected client
+                        this.client = ws;
+                        this.log.info(this.toString(), 'Now connected to master server '+addresses[0]);
+                        // send registration message
+                        this.client.send(JSON.stringify({
+                            type: REGISTER,
+                            message: this.getNodeName()
+                        }));
+                    }.bind(this),
 
-                this.client.onopen = function() {
-                    clearTimeout(this.timeoutID);
-                    this.timeoutID = null;
-                    this.log.info(this.toString(), 'Now connected to master server '+addresses[0]);
-                    
-                    // send registration message
-                    this.client.send(JSON.stringify({
-                        type: REGISTER,
-                        message: this.getNodeName()
-                    }));
-                }.bind(this);
+                    onmessage: function (ws, event) {
+                        localDispatchHandler.bind(this)(ws)(event);
+                    }.bind(this),
 
-                this.client.onmessage = localDispatchHandler.bind(this)();
+                    onerror: function () {
 
-                this.client.onerror = function() {
-                    // if there is an error, retry to initiate connection in 5 seconds
-                    clearTimeout(this.timeoutID);
-                    this.timeoutID = null;
-                    this.timeoutID = setTimeout(connectToServer, 5000);
-                }.bind(this);
+                    }.bind(this),
 
-                this.client.onclose = function() {
-                    this.log.info(this.toString(), "Connection closed with server "+addresses[0]+". Retry attempt in 5 seconds");
-                    // when websocket is closed, retry connection in 5 seconds
-                    clearTimeout(this.timeoutID);
-                    this.timeoutID = null;
-                    this.timeoutID = setTimeout(connectToServer, 5000);
-                }.bind(this);
-            }.bind(this);
-            connectToServer();
+                    onclose: function () {
+                        this.log.info(this.toString(), "Connection closed with server "+addresses[0]+". Retry attempt in 5 seconds");
+                    }.bind(this)
+                }
+            });
 
         } else {
-            throw new Error("There is no master server in your model. You must specify a master server by giving a value to one port attribute.");
+            throw new Error("No NetworkInformation specified for master server node. Can't connect to it :/");
         }
     },
 
@@ -183,20 +175,18 @@ var WebSocketChannel = AbstractChannel.extend({
         var model = this.getKevoreeCore().getDeployModel();
         var hosts = [];
 
-        var nets = model.nodeNetworks.iterator();
+        var node = model.findNodesByID(targetNode);
+        var nets = node.networkInformation.iterator();
         while (nets.hasNext()) {
-            var links = nets.next().link.iterator();
-            while (links.hasNext()) {
-                var props = links.next().networkProperties.iterator();
-                while (props.hasNext()) {
-                    hosts.push(props.next().value);
+            var net = nets.next();
+            var values = net.values.iterator();
+            while (values.hasNext()) {
+                var val = values.next();
+                if (net.name.toLowerCase().indexOf('ip') != -1 ||
+                    val.name.toLowerCase().indexOf('ip') != -1) {
+                    hosts.push(val.value);
                 }
             }
-        }
-
-        if (hosts.length === 0) {
-            // no host found for this portPath in model, lets give it a try locally
-            hosts.push('127.0.0.1');
         }
 
         return hosts;
@@ -206,12 +196,10 @@ var WebSocketChannel = AbstractChannel.extend({
         var chan = this.getModelEntity();
         if (chan != null) {
             var portDefined = 0;
-            var kFragDics = (chan.fragmentDictionary) ? chan.fragmentDictionary.iterator() : null;
-            if (kFragDics) {
-                while (kFragDics.hasNext()) {
-                    var val = kFragDics.next().findValuesByID('port');
-                    if (val && val.value && val.value.length > 0) portDefined++;
-                }
+            var fragDics = chan.fragmentDictionary.iterator();
+            while (fragDics.hasNext()) {
+                var val = fragDics.next().findValuesByID('port');
+                if (val && val.value && val.value.length > 0) portDefined++;
             }
 
             if (portDefined > 1) {
