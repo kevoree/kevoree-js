@@ -47,8 +47,6 @@ var WebSocketGroup = AbstractGroup.extend({
         // assert('one and only one master server defined between all subnodes')
         this.checkNoMultipleMasterServer();
 
-        console.log(this.getMasterServerAddresses(), this.getMasterServerNode().name);
-
         if (this.dictionary.getValue('port') != undefined) {
             this.server = this.startWSServer(this.dictionary.getValue('port'));
         } else {
