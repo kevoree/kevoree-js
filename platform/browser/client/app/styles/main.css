@@ -1,0 +1,156 @@
+.browsehappy {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
+}
+
+body {
+    position: absolute;
+    left: 0;
+    top: 51px;
+    right: 0;
+    bottom: 0;
+    overflow-y: hidden;
+    background-image: url('../images/background.jpg');
+}
+
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header,
+.marketing,
+.footer {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Custom page header */
+.header {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+/* Make the masthead heading the same height as the navigation */
+.header h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 40px;
+    padding-bottom: 19px;
+}
+
+#navbar-logo {
+    padding: 8px 15px 0px;
+}
+
+#content {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+}
+
+.nav > li > a {
+    padding: 5px 10px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.nav > li > a:hover, .nav > li > a:focus {
+    color: #555;
+}
+
+.tab-content {
+    position: absolute;
+    top: 32px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.tab-pane {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 15px;
+    color: #f5f5f5;
+    overflow-y: scroll;
+}
+
+.tab-pane .list-group-item {
+    background-color: transparent;
+    border-left: none;
+    border-right: none;
+    padding: 5px 8px;
+}
+
+.tab-pane .list-group-item:first-child {
+    border-top: none;
+}
+
+.tab-pane .list-group-item:last-child {
+    border-bottom: none;
+}
+
+.tab-pane .list-group-item:hover, .tab-pane .list-group-item:focus {
+    background-color: #404040;
+}
+
+/* Custom page footer */
+.footer {
+    padding-top: 19px;
+    color: #777;
+    border-top: 1px solid #e5e5e5;
+}
+
+.container-narrow > hr {
+    margin: 30px 0;
+}
+
+/* Main marketing message and sign up button */
+.jumbotron {
+    text-align: center;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.jumbotron .btn {
+    font-size: 21px;
+    padding: 14px 24px;
+}
+
+/* Supporting marketing content */
+.marketing {
+    margin: 40px 0;
+}
+
+.marketing p + h4 {
+    margin-top: 28px;
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+    .container {
+        max-width: 730px;
+    }
+
+    /* Remove the padding we set earlier */
+    .header,
+    .marketing,
+    .footer {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    /* Space out the masthead */
+    .header {
+        margin-bottom: 30px;
+    }
+    
+    /* Remove the bottom border on the jumbotron for visual effect */
+    .jumbotron {
+        border-bottom: 0;
+    }
+}
