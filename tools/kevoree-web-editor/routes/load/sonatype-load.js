@@ -3,11 +3,11 @@ var http = require('http');
 var semver = require('semver');
 var config = require('../../config');
 
-var libraries = [];
-var canClear = true;
-var clearId = null;
-
 module.exports = function (platform) {
+    var libraries = [];
+    var canClear = true;
+    var clearId = null;
+
     // clear libraries cache function loop
     setInterval(function clearCache() {
         if (libraries.length > 0) {
