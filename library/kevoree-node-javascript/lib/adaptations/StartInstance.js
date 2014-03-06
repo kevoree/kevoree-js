@@ -1,5 +1,8 @@
 var AdaptationPrimitive = require('./AdaptationPrimitive'),
+    kevoree             = require('kevoree-library').org.kevoree,
     StopInstance        = require('./StopInstance');
+
+var factory = new kevoree.impl.DefaultKevoreeFactory();
 
 module.exports = AdaptationPrimitive.extend({
     toString: 'StartInstance',
