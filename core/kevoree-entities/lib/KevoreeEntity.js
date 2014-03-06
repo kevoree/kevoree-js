@@ -36,7 +36,7 @@ var KevoreeEntity = Class({
 
     construct: function () {
         this.kCore = null;
-        this.dictionary = new Dictionary();
+        this.dictionary = new Dictionary(this);
         this.name = null;
         this.path = null;
         this.nodeName = null;

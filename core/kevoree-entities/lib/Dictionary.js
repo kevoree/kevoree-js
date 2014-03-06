@@ -6,7 +6,8 @@ var ADD_EVENT = 'dictionary_add';
 var Dictionary = Class({
   toString: 'Dictionary',
 
-  construct: function () {
+  construct: function (entity) {
+    this.entity = entity;
     this.emitter = new EventEmitter();
     this.map = {};
     this.length = 0;
@@ -20,7 +21,7 @@ var Dictionary = Class({
    * @param callback function (attrNewValue, attrOldValue)
    */
   on: function (attrName, callback) {
-    this.emitter.addListener(attrName, callback);
+    this.emitter.addListener(attrName, callback.bind(this.entity));
   },
 
   /**
