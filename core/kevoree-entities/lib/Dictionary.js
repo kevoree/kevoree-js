@@ -45,7 +45,14 @@ var Dictionary = Class({
     },
 
     setValue: function (name, value) {
-        var value = this.entity.getModelEntity().dictionary.findValuesByID(name);
+        var entity = this.entity.getModelEntity();
+        if (!entity.dictionary) entity.dictionary = factory.createDictionary();
+        var value = entity.dictionary.findValuesByID(name);
+        if (!value) {
+            value = factory.createDictionaryValue();
+            value.name = name;
+            entity.dictionary.addValues(value);
+        }
         value.value = value;
         this.setEntry(name, value);
     },
