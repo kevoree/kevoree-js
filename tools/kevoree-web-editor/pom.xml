@@ -10,7 +10,7 @@
     <properties>
         <metamodel.ecore>${basedir}/target/metamodel/kevoree.ecore</metamodel.ecore>
         <kotlin.version>0.6.602</kotlin.version>
-        <kevoree.version>3.1.0</kevoree.version>
+        <kevoree.version>3.4.1</kevoree.version>
     </properties>
 
     <dependencies>

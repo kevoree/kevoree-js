@@ -20,7 +20,7 @@
   "optionalDependencies": {},
   "dependencies": {
     "pseudoclass": "0.2.6",
-    "kevoree-commons": "0.0.1",
+    "kevoree-commons": "0.0.2",
     "kevoree-library": "*"
   },
   "license": "LGPL-3.0"

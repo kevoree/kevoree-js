@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "kevoree-entities": "*",
-    "kevoree-commons": "0.0.1",
+    "kevoree-commons": "0.0.2",
     "pseudoclass": "0.2.6"
   },
   "devDependencies": {

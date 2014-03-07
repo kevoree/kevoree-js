@@ -29,8 +29,8 @@
     "async": "~0.2.9",
     "kevoree-library": "*",
     "kevoree-kotlin": "0.0.3",
-    "kevoree-commons": "0.0.1",
-    "kevoree-resolvers": "0.0.5"
+    "kevoree-commons": "0.0.2",
+    "kevoree-resolvers": "0.0.6"
   },
   "devDependencies": {
     "browserify": "~2.35.2",

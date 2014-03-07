@@ -9,12 +9,12 @@
   "dependencies": {
     "kevoree-core": "0.0.4",
     "kevoree-library": "*",
-    "kevoree-commons": "0.0.1",
+    "kevoree-commons": "0.0.2",
     "pseudoclass": "0.2.6",
     "npm": "1.4.4",
     "optimist": "~0.6.0",
-    "kevoree-kevscript": "0.0.11",
-    "kevoree-resolvers": "0.0.4"
+    "kevoree-kevscript": "0.0.12",
+    "kevoree-resolvers": "0.0.6"
   },
   "license": "LGPL-3.0"
 }

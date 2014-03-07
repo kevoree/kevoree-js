@@ -27,7 +27,7 @@
   "dependencies": {
     "kevoree-library": "*",
     "kevoree-entities": "*",
-    "kevoree-commons": "0.0.1",
+    "kevoree-commons": "0.0.2",
     "pseudoclass": "0.2.6",
     "ws": "0.4.30",
     "async": "^0.2.10",

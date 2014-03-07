@@ -30,7 +30,7 @@
     "kevoree-library": "*",
     "kevoree-core": "0.0.4",
     "kevoree-kotlin": "0.0.3",
-    "kevoree-commons": "0.0.1",
+    "kevoree-commons": "0.0.2",
     "pseudoclass": "0.2.6",
     "async": "~0.2.9",
     "date-format-lite": "~0.5.0",
