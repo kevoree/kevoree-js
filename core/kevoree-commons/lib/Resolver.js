@@ -1,4 +1,5 @@
-var Class = require('pseudoclass');
+var Class = require('pseudoclass'),
+    KevoreeLogger = require('./KevoreeLogger');
 
 /**
  * Resolver API
@@ -6,6 +7,12 @@ var Class = require('pseudoclass');
  */
 var Resolver = Class({
     toString: 'Resolver',
+
+    construct: function (modulesPath, logger) {
+        this.modulesPath = modulesPath || '';
+        this.log = logger || new KevoreeLogger(this.toString());
+        this.repositories = [];
+    },
 
     /**
      *
@@ -15,7 +22,11 @@ var Resolver = Class({
      */
     resolve: function (deployUnit, force, callback) {},
 
-    uninstall: function (deployUnit, force, callback) {}
+    uninstall: function (deployUnit, force, callback) {},
+
+    addRepository: function (url) {
+        if (this.repositories.indexOf(url) === -1) this.repositories.push(url);
+    }
 });
 
 module.exports = Resolver;
