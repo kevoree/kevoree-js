@@ -1,12 +1,40 @@
 {
-  "engines": {
-    "node": ">= 0.10.0"
+  "name": "kevoree-js",
+  "version": "0.1.0",
+  "description": "Kevoree platforms, tools, library written in Javascript",
+  "scripts": {},
+  "keywords": [
+    "kevoree",
+    "platform",
+    "runtime",
+    "tool",
+    "library"
+  ],
+  "author": {
+    "name": "Maxime Tricoire",
+    "email": "max.tricoire@gmail.com"
   },
+  "contributors": [],
+  "bugs": {
+    "url": "https://github.com/kevoree/kevoree-js/issues"
+  },
+  "license": "LGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kevoree/kevoree-js"
+  },
+  "dependencies": {},
   "devDependencies": {
-    "grunt": "~0.4.2",
-    "grunt-contrib-jshint": "~0.7.2",
-    "grunt-contrib-watch": "~0.5.3",
-    "grunt-contrib-nodeunit": "~0.2.2",
     "grunt-version": "^0.3.0"
-  }
+  },
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  },
+  "maintainers": [
+    {
+      "name": "leiko",
+      "email": "max.tricoire@gmail.com"
+    }
+  ]
 }
