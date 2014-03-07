@@ -1,12 +1,12 @@
 {
   "name": "kevoree-comp-fakeconsole",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "main": "./kevoree-comp-fakeconsole.js",
   "scripts": {
     "prepublish": "node node_modules/kevoree-gen-model -q"
   },
   "dependencies": {
-    "kevoree-entities": "~0.0.3",
+    "kevoree-entities": "*",
     "kevoree-commons": "~0.0.1"
   },
   "devDependencies": {

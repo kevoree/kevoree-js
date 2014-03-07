@@ -19,7 +19,7 @@ module.exports = function (model, statements, stmt, opts, cb) {
                 }
 
             } else {
-                var prop = net.findValuesByID(propName+'/'+propName);
+                var prop = net.findValuesByID(propName);
                 if (prop) {
                     prop.value = value;
                 } else {

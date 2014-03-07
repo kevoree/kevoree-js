@@ -47,6 +47,6 @@
     "kevoree-commons": "0.0.1",
     "kevoree-resolvers": "0.0.5",
     "kevoree-kotlin": "0.0.3",
-    "kevoree-library": "0.0.6"
+    "kevoree-library": "*"
   }
 }

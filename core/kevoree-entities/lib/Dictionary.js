@@ -1,5 +1,8 @@
 var Class           = require('pseudoclass'),
+    kevoree         = require('kevoree-library').org.kevoree,
     EventEmitter    = require('events').EventEmitter;
+
+var factory = new kevoree.impl.DefaultKevoreeFactory();
 
 var ADD_EVENT = 'dictionary_add';
 
