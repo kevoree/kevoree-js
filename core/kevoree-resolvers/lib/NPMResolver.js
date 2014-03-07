@@ -10,9 +10,7 @@ var NPMResolver = Resolver.extend({
     toString: 'NPMResolver',
 
     construct: function (modulesPath, logger) {
-        this.modulesPath = modulesPath || '';
-        this.log = logger || new KevoreeLogger(this.toString());
-        this.log.debug(this.toString(), 'modulesPath= '+this.modulesPath);
+        logger.debug(this.toString(), 'modulesPath= '+modulesPath);
     },
 
     resolve: function (deployUnit, forceInstall, callback) {
