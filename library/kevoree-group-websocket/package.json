@@ -25,18 +25,18 @@
     "url": "https://github.com/kevoree/kevoree-js"
   },
   "dependencies": {
-    "kevoree-library": "*",
-    "kevoree-entities": "*",
+    "kevoree-library": "0.1.0",
+    "kevoree-entities": "0.1.0",
     "kevoree-commons": "0.1.0",
     "pseudoclass": "^1.0.0",
     "ws": "^0.4.31",
     "async": "^0.2.10",
     "smart-socket": "0.0.3",
-    "kevoree-gen-model": "0.0.3",
+    "kevoree-gen-model": "0.1.0",
     "kevoree-nodejs-runtime": "0.1.0"
   },
   "devDependencies": {
-    "kevoree-gen-model": "~0.1.0",
+    "kevoree-gen-model": "0.1.0",
     "kevoree-nodejs-runtime": "0.1.0"
   },
   "optionalDependencies": {},

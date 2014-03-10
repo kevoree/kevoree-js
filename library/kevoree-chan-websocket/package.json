@@ -7,13 +7,13 @@
     "kevoree": "node node_modules/kevoree-nodejs-runtime/cli.js -n node1 -g sync -k kevs/main.kevs"
   },
   "dependencies": {
-    "kevoree-entities": "*",
-    "kevoree-commons": ">= 0.0.1",
+    "kevoree-entities": "0.1.0",
+    "kevoree-commons": "0.1.0",
     "ws": "~0.4.31",
     "smart-socket": "0.0.3"
   },
   "devDependencies": {
-    "kevoree-gen-model": ">= 0.0.1",
+    "kevoree-gen-model": "0.1.0",
     "grunt": "^0.4.2",
     "grunt-kevoree": "0.0.1"
   }

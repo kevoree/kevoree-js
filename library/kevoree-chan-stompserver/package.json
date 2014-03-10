@@ -6,10 +6,10 @@
     "prepublish": "node node_modules/kevoree-gen-model"
   },
   "dependencies": {
-    "kevoree-entities": "*",
+    "kevoree-entities": "0.1.0",
     "ws": "~0.4.31"
   },
   "devDependencies": {
-    "kevoree-gen-model": "~0.0.1"
+    "kevoree-gen-model": "0.1.0"
   }
 }

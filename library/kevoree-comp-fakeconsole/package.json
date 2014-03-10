@@ -6,11 +6,11 @@
     "prepublish": "node node_modules/kevoree-gen-model -q"
   },
   "dependencies": {
-    "kevoree-entities": "*",
-    "kevoree-commons": "~0.0.1"
+    "kevoree-entities": "0.1.0",
+    "kevoree-commons": "0.1.0"
   },
   "devDependencies": {
-    "kevoree-gen-model": "~0.0.1",
+    "kevoree-gen-model": "0.1.0",
     "grunt": "~0.4.1",
     "grunt-jade": "~0.4.0"
   }

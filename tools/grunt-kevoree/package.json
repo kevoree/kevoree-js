@@ -42,11 +42,11 @@
     "kevs"
   ],
   "dependencies": {
-    "kevoree-nodejs-runtime": "0.0.9",
-    "kevoree-kevscript": "0.0.12",
-    "kevoree-commons": "0.0.2",
-    "kevoree-resolvers": "0.0.6",
-    "kevoree-kotlin": "0.0.3",
-    "kevoree-library": "*"
+    "kevoree-nodejs-runtime": "0.1.0",
+    "kevoree-kevscript": "0.1.0",
+    "kevoree-commons": "0.1.0",
+    "kevoree-resolvers": "0.1.0",
+    "kevoree-kotlin": "0.1.0",
+    "kevoree-library": "0.1.0"
   }
 }

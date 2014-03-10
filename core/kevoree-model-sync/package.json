@@ -23,9 +23,9 @@
     "url": "https://github.com/kevoree/kevoree-js/issues"
   },
   "dependencies": {
-    "kevoree-core": "0.0.4",
+    "kevoree-core": "0.1.0",
     "ws": "~0.4.31",
-    "kevoree-library": "*",
+    "kevoree-library": "0.1.0",
     "npmi": "0.0.4"
   }
 }

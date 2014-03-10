@@ -7,14 +7,14 @@
     "start": "node cli.js"
   },
   "dependencies": {
-    "kevoree-core": "0.0.4",
-    "kevoree-library": "*",
-    "kevoree-commons": "0.0.2",
+    "kevoree-core": "0.1.0",
+    "kevoree-library": "0.1.0",
+    "kevoree-commons": "0.1.0",
     "pseudoclass": "0.2.6",
     "npm": "1.4.4",
     "optimist": "~0.6.0",
-    "kevoree-kevscript": "0.0.12",
-    "kevoree-resolvers": "0.0.6"
+    "kevoree-kevscript": "0.1.0",
+    "kevoree-resolvers": "0.1.0"
   },
   "license": "LGPL-3.0"
 }

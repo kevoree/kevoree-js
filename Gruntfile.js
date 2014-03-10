@@ -1,16 +1,25 @@
-/*global module:false*/
 module.exports = function(grunt) {
+
+    var packages = [
+        'core/{**,}/package.json',
+        'extras/{**,}/package.json',
+        'library/{**,}/package.json',
+        'platform/{**,}/package.json',
+        'tools/{**,}/package.json'
+    ];
 
     // Project configuration.
     grunt.initConfig({
+        pkg: grunt.file.readJSON('./package.json'),
         version: {
-            src: [
-                'core/{**,}/package.json',
-                'extras/{**,}/package.json',
-                'library/{**,}/package.json',
-                'platform/{**,}/package.json',
-                'tools/{**,}/package.json'
-            ]
+            src: packages
+        },
+        deps_manager: {
+            options: {
+                version: '<%= pkg.version %>',
+                pattern: 'kevoree-.*'
+            },
+            src: packages
         },
         publish: {
             options: {
@@ -25,4 +34,5 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-version');
     grunt.loadNpmTasks('grunt-publish');
+    grunt.loadNpmTasks('grunt-deps-manager');
 };
