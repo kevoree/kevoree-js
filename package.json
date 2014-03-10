@@ -1,40 +1,43 @@
 {
-  "name": "kevoree-js",
-  "version": "0.1.0",
-  "description": "Kevoree platforms, tools, library written in Javascript",
-  "scripts": {},
-  "keywords": [
-    "kevoree",
-    "platform",
-    "runtime",
-    "tool",
-    "library"
-  ],
-  "author": {
-    "name": "Maxime Tricoire",
-    "email": "max.tricoire@gmail.com"
-  },
-  "contributors": [],
-  "bugs": {
-    "url": "https://github.com/kevoree/kevoree-js/issues"
-  },
-  "license": "LGPL-3.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kevoree/kevoree-js"
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "grunt-version": "^0.3.0"
-  },
-  "optionalDependencies": {},
-  "engines": {
-    "node": "*"
-  },
-  "maintainers": [
-    {
-      "name": "leiko",
-      "email": "max.tricoire@gmail.com"
-    }
-  ]
+    "name": "kevoree-js",
+    "version": "0.1.0",
+    "description": "Kevoree platforms, tools, library written in Javascript",
+    "private": true,
+    "scripts": {},
+    "keywords": [
+        "kevoree",
+        "platform",
+        "runtime",
+        "tool",
+        "library"
+    ],
+    "author": {
+        "name": "Maxime Tricoire",
+        "email": "max.tricoire@gmail.com"
+    },
+    "contributors": [],
+    "bugs": {
+        "url": "https://github.com/kevoree/kevoree-js/issues"
+    },
+    "license": "LGPL-3.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kevoree/kevoree-js"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "grunt": "^0.4.2",
+        "grunt-publish": "0.0.1",
+        "grunt-version": "^0.3.0"
+    },
+    "optionalDependencies": {},
+    "engines": {
+        "node": "*"
+    },
+    "maintainers": [
+        {
+            "name": "leiko",
+            "email": "max.tricoire@gmail.com"
+        }
+    ]
 }

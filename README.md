@@ -278,7 +278,7 @@ start: function (_super) {
     });
 },
 ```
-And then, do the changes for `inMsg` input port.
+And then, do the changes for `inMsg` input port.
 
 ```js
 /* Input port: prints to the console the received message */

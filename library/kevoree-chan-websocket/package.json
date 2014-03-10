@@ -1,6 +1,6 @@
 {
   "name": "kevoree-chan-websocket",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "main": "./kevoree-chan-websocket.js",
   "scripts": {
     "prepublish": "node node_modules/kevoree-gen-model",

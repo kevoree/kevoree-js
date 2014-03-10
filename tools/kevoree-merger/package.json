@@ -1,6 +1,6 @@
 {
   "name": "kevoree-merger",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Command-line tool that helps merging XMI or Json models together and generate a merged JSON model",
   "main": "./kevoree-merger.js",
   "scripts": {

@@ -5,17 +5,24 @@ module.exports = function(grunt) {
     grunt.initConfig({
         version: {
             src: [
-                'core/{*,}/package.json',
-                'extras/{*,}/package.json',
-                'library/{*,}/package.json',
-                'platform/{*,}/package.json',
-                'tools/{*,}/package.json'
+                'core/{**,}/package.json',
+                'extras/{**,}/package.json',
+                'library/{**,}/package.json',
+                'platform/{**,}/package.json',
+                'tools/{**,}/package.json'
             ]
+        },
+        publish: {
+            options: {
+                ignore: [
+                    'node_modules',
+                    'org.kevoree.model.js'
+                ]
+            },
+            src: [ '**/*' ]
         }
     });
 
     grunt.loadNpmTasks('grunt-version');
-
-//    grunt.registerTask('default', ['']);
-    grunt.registerTask('version', 'version')
+    grunt.loadNpmTasks('grunt-publish');
 };

@@ -1,6 +1,6 @@
 {
   "name": "kevoree-chan-remotews",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "main": "./kevoree-chan-remotews.js",
   "scripts": {
     "prepublish": "node node_modules/kevoree-gen-model"
