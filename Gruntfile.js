@@ -35,4 +35,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-version');
     grunt.loadNpmTasks('grunt-publish');
     grunt.loadNpmTasks('grunt-deps-manager');
+
+    grunt.registerTask('release', ['version', 'deps_manager', 'publish']);
 };
