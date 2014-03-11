@@ -5,14 +5,15 @@ var kevoree = require('kevoree-library').org.kevoree;
 java.classpath.push(config.KEV_JAR);
 
 var resolver   = java.newInstanceSync('org.kevoree.resolver.MavenResolver'),
-    list       = java.newInstanceSync('java.util.ArrayList'),
     serializer = new kevoree.serializer.JSONModelSerializer(),
     loader     = new kevoree.loader.JSONModelLoader(),
     compare    = new kevoree.compare.DefaultModelCompare(),
     factory    = new kevoree.impl.DefaultKevoreeFactory();
-list.addSync("http://oss.sonatype.org/content/groups/public");
 
 module.exports = function (repos, libraries, callback) {
+    var list = java.newInstanceSync('java.util.ArrayList');
+//    list.addSync("http://oss.sonatype.org/content/groups/public");
+
     if (repos) for (var i in repos) list.addSync(repos[i]);
 
     console.log(list.toStringSync());
