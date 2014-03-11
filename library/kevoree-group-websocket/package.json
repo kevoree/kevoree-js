@@ -37,7 +37,9 @@
   },
   "devDependencies": {
     "kevoree-gen-model": "0.1.1",
-    "kevoree-nodejs-runtime": "0.1.1"
+    "kevoree-nodejs-runtime": "0.1.1",
+    "grunt": "^0.4.3",
+    "grunt-kevoree": "^0.1.1"
   },
   "optionalDependencies": {},
   "engines": {

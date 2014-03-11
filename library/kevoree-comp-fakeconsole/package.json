@@ -12,6 +12,7 @@
   "devDependencies": {
     "kevoree-gen-model": "0.1.1",
     "grunt": "~0.4.1",
-    "grunt-jade": "~0.4.0"
+    "grunt-jade": "~0.4.0",
+    "grunt-kevoree": "^0.1.1"
   }
 }
