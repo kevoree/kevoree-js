@@ -1,0 +1,18 @@
+include npm:kevoree-node-javascript:latest
+include npm:kevoree-group-websocket:latest
+include npm:kevoree-chan-websocket:latest
+include npm:kevoree-comp-fakeconsole:latest
+
+add node0 : JavascriptNode
+add group0 : WebSocketGroup
+add chan0 : WebSocketChannel
+add node0.comp : FakeConsole
+
+attach node0 group0
+
+bind node0.comp.* chan0
+
+set group0.port/node0 = '8000'
+set chan0.port/node0 = '8000'
+
+remove node0
