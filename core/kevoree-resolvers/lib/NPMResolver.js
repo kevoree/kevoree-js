@@ -10,7 +10,7 @@ var NPMResolver = Resolver.extend({
     toString: 'NPMResolver',
 
     construct: function (modulesPath, logger) {
-        logger.debug(this.toString(), 'modulesPath= '+modulesPath);
+        this.log.debug(this.toString(), 'modulesPath= '+this.modulesPath);
     },
 
     resolve: function (deployUnit, forceInstall, callback) {
