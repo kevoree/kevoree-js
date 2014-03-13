@@ -18,7 +18,18 @@ module.exports = AdaptationPrimitive.extend({
                     while (attrs.hasNext()) {
                         var attr = attrs.next();
                         var val = instance.dictionary.getValue(attr.name);
-                        if (!val) instance.dictionary.setEntry(attr.name, attr.defaultValue);
+                        if (!val) {
+                            // there is no value set for this attribute
+                            if (attr.optional) {
+                                // the attribute is optional, we will only add the value if defaultValue is set
+                                if (attr.defaultValue.length > 0) {
+                                    instance.dictionary.setEntry(attr.name, attr.defaultValue);
+                                }
+                            } else {
+                                // attribute is not optional, we have to have a value, then set defaultValue
+                                instance.dictionary.setEntry(attr.name, attr.defaultValue);
+                            }
+                        }
                     }
                 }
 
