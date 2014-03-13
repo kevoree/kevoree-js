@@ -1,6 +1,8 @@
 // Generated on 2014-03-05 using generator-webapp 0.4.7
 'use strict';
 
+var path = require('path');
+
 // # Globbing
 // for performance reasons we're only matching one level down:
 // 'test/spec/{,*/}*.js'
@@ -28,8 +30,8 @@ module.exports = function (grunt) {
         // Watches files for changes and runs tasks based on the changed files
         watch: {
             js: {
-                files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
-                tasks: ['jshint'],
+                files: ['<%= yeoman.app %>/scripts/{,*/}*.js', 'lib/**/*'],
+                tasks: ['jshint', 'browserify'],
                 options: {
                     livereload: true
                 }
@@ -39,7 +41,15 @@ module.exports = function (grunt) {
                 tasks: ['test:watch']
             },
             gruntfile: {
-                files: ['Gruntfile.js']
+                files: ['Gruntfile.js'],
+                tasks: ['browserify', 'hogan']
+            },
+            hogan: {
+                files: ['templates/**/*'],
+                tasks: ['hogan'],
+                options: {
+                    livereload: true
+                }
             },
             styles: {
                 files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
@@ -160,19 +170,19 @@ module.exports = function (grunt) {
             }
         },
 
-        // Renames files for browser caching purposes
-        rev: {
-            dist: {
-                files: {
-                    src: [
-                        '<%= yeoman.dist %>/scripts/{,*/}*.js',
-                        '<%= yeoman.dist %>/styles/{,*/}*.css',
-                        '<%= yeoman.dist %>/images/{,*/}*.{gif,jpeg,jpg,png,webp}',
-                        '<%= yeoman.dist %>/styles/fonts/{,*/}*.*'
-                    ]
-                }
-            }
-        },
+//        // Renames files for browser caching purposes
+//        rev: {
+//            dist: {
+//                files: {
+//                    src: [
+//                        '<%= yeoman.dist %>/scripts/{,*/}*.js',
+//                        '<%= yeoman.dist %>/styles/{,*/}*.css',
+//                        '<%= yeoman.dist %>/images/{,*/}*.{gif,jpeg,jpg,png,webp}',
+//                        '<%= yeoman.dist %>/styles/fonts/{,*/}*.*'
+//                    ]
+//                }
+//            }
+//        },
 
         // Reads HTML for usemin blocks to enable smart builds that automatically
         // concat, minify and revision files. Creates configurations in memory so
@@ -182,6 +192,14 @@ module.exports = function (grunt) {
                 dest: '<%= yeoman.dist %>'
             },
             html: '<%= yeoman.app %>/index.html'
+        },
+
+        uglify: {
+            options: {
+                mangle: {
+                    except: ['_super']
+                }
+            }
         },
 
         // Performs rewrites based on rev and the useminPrepare configuration
@@ -293,7 +311,9 @@ module.exports = function (grunt) {
         // Run some tasks in parallel to speed up build process
         concurrent: {
             server: [
-                'copy:styles'
+                'copy:styles',
+                'browserify',
+                'hogan'
             ],
             test: [
                 'copy:styles'
@@ -301,8 +321,37 @@ module.exports = function (grunt) {
             dist: [
                 'copy:styles',
                 'imagemin',
-                'svgmin'
+                'svgmin',
+                'browserify',
+                'hogan'
             ]
+        },
+
+        browserify: {
+            main: {
+                src: 'app/scripts/main.js',
+                dest: '.tmp/scripts/main.js',
+                options: {
+                    alias: ['kevoree-library:kevoree-library']
+                }
+            }
+        },
+
+        // Creates compiled templates from templates/**/*.html using hogan (mustachejs-like)
+        // Makes your-template.html compiled js script available in window Global Scope as EditorTemplates['your-template']
+        hogan: {
+            main: {
+                options: {
+                    prettify: true,
+                    namespace: 'RuntimeTemplates',
+                    defaultName: function(file) {
+                        return path.basename(file, '.html');
+                    }
+                },
+                files: {
+                    '.tmp/scripts/templates.js': ['templates/**/*.html']
+                }
+            }
         }
     });
 
@@ -350,7 +399,7 @@ module.exports = function (grunt) {
         'cssmin',
         'uglify',
         'copy:dist',
-        'rev',
+//        'rev',
         'usemin',
         'htmlmin'
     ]);

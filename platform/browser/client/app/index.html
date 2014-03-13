@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>client</title>
+    <title>Kevoree Browser Runtime</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
@@ -38,11 +38,30 @@
                 </a>
             </div>
             <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <!--<li class="dropdown">-->
+                        <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown">File <b class="caret"></b></a>-->
+                        <!--<ul class="dropdown-menu">-->
+                            <!--<li class="dropdown-header">Load actions</li>-->
+                            <!--<li><a href="#" id="load">Load</a></li>-->
+                            <!--<li><a href="#" id="merge">Merge</a></li>-->
+                            <!--<li><a href="#" id="open-from-node">Open from node</a></li>-->
+                            <!--<li><a href="#" id="merge-from-node">Merge from node</a></li>-->
+                            <!--<li class="divider"></li>-->
+                            <!--<li class="dropdown-header">Save actions</li>-->
+                            <!--<li><a href="#" id="save-json">Save as JSON</a></li>-->
+                        <!--</ul>-->
+                    <!--</li>-->
+                    <li>
+                        <a href="#" id="clear-logs">Clear Logs</a>
+                    </li>
+                </ul>
                 <div class="navbar-form navbar-right">
                     <div class="form-group">
-                        <input type="text" placeholder="Node name" class="form-control">
+                        <input id="platform-node-name" type="text" placeholder="Node name" class="form-control">
                     </div>
-                    <button type="button" class="btn btn-success">Start</button>
+                    <button id="start-runtime" type="button" class="btn btn-success">Start</button>
+                    <button id="stop-runtime" type="button" class="btn btn-warning" disabled>Stop</button>
                 </div>
             </div><!--/.navbar-collapse -->
         </div>
@@ -50,27 +69,19 @@
 
     <div id="content">
         <!-- Nav tabs -->
-        <ul class="nav nav-tabs">
+        <ul id="tabs-host" class="nav nav-tabs">
             <li class="active"><a href="#logs" data-toggle="tab">Logs</a></li>
-            <li><a href="#profile" data-toggle="tab">Profile</a></li>
-            <li><a href="#messages" data-toggle="tab">Messages</a></li>
-            <li><a href="#settings" data-toggle="tab">Settings</a></li>
         </ul>
 
         <!-- Tab panes -->
-        <div class="tab-content">
+        <div id="tabs-content-host" class="tab-content">
             <div class="tab-pane active" id="logs">
-                <div>
-                    <div class="list-group-item">Foo bar</div>
-                    <div class="list-group-item">Foo bar</div>
-                    <div class="list-group-item">Foo bar</div>
-                    <div class="list-group-item">Foo bar</div>
-                    <div class="list-group-item">Foo bar</div>
-                    <div class="list-group-item">Foo bar</div>
-                    <div class="list-group-item">Foo bar</div>
-                </div>
+                <div id="logger"></div>
             </div>
             <div class="tab-pane" id="profile">...</div>
+            <div class="tab-pane" id="profile0">...</div>
+            <div class="tab-pane" id="profile1">...</div>
+            <div class="tab-pane" id="profile2">...</div>
             <div class="tab-pane" id="messages">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque venenatis sodales varius. Aliquam lobortis luctus elit, commodo elementum nisl rhoncus fermentum. Mauris eget neque leo. Integer convallis urna et ornare imperdiet. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus ornare suscipit dolor, sit amet congue risus pulvinar vitae. Morbi sed felis massa. Nulla id eros ut nisl aliquam euismod. Morbi vitae tincidunt risus. Sed vel tristique dui, eu faucibus justo. Phasellus elit leo, tristique quis mi eu, blandit placerat tellus. Pellentesque eget neque eu magna varius interdum vel sed lorem.
 
                 Nunc eget consectetur lorem. In tristique rhoncus felis a iaculis. Nam id nisi sed felis gravida fermentum eget non velit. Nunc diam lorem, suscipit at gravida sit amet, lacinia tristique mauris. Sed vitae elementum velit. In vitae bibendum enim. Nam vel volutpat velit, ut vehicula ligula.
@@ -127,6 +138,8 @@
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/jquery.js"></script>
+    <script src="bower_components/hogan/web/builds/2.0.0/hogan-2.0.0.mustache.js"></script>
+    <script src="bower_components/jszip/jszip.min.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -145,7 +158,12 @@
     <script src="bower_components/bootstrap/js/tab.js"></script>
     <!-- endbuild -->
 
-    <!-- build:js({app,.tmp}) scripts/main.js -->
+    <!-- build:js(.tmp) scripts/templates.js -->
+    <!--This file is generated by grunt-contrib-hogan task -->
+    <script src="scripts/templates.js"></script>
+    <!-- endbuild -->
+
+    <!-- build:js(.tmp) scripts/main.js -->
     <script src="scripts/main.js"></script>
     <!-- endbuild -->
 </body>
