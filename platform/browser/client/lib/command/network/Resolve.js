@@ -7,6 +7,7 @@ var Resolve = AbstractCommand.extend({
     toString: 'Resolve',
 
     execute: function (deployUnit, forceInstall, callback) {
+        console.log("RESOLVE", deployUnit.name);
         $.ajax({
             type: 'POST',
             url: 'http://127.0.0.1:9040/resolve',

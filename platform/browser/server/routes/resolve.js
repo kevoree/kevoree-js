@@ -1,18 +1,19 @@
 /**
  * Created by leiko on 12/03/14.
  */
-var http       = require('http'),
-    fs         = require('fs'),
-    zlib       = require('zlib'),
-    tar        = require('tar'),
-    AdmZip     = require('adm-zip'),
-    rimraf     = require('rimraf'),
-    mkdirp     = require('mkdirp'),
-    browserify = require('browserify'),
-    npm        = require('npm'),
-    config     = require('./../config.js'),
-    npmi       = require('npmi'),
-    path       = require('path');
+var http            = require('http'),
+    fs              = require('fs'),
+    zlib            = require('zlib'),
+    tar             = require('tar'),
+    AdmZip          = require('adm-zip'),
+    rimraf          = require('rimraf'),
+    mkdirp          = require('mkdirp'),
+    browserify      = require('browserify'),
+    npm             = require('npm'),
+    config          = require('./../config.js'),
+    npmi            = require('npmi'),
+    path            = require('path'),
+    browserifyer    = require('../lib/browserifyer');
 
 module.exports = function(req, res) {
     // handle POST & GET
@@ -36,36 +37,26 @@ module.exports = function(req, res) {
 
             npmi(options, function (err) {
                 if (err) {
-                    console.error('Internal Server Error', err.message);
-                    return res.jsonp(JSON.parse(err));
+                    console.error('Unable to install '+req.body.name);
+                    return res.send(500, 'Unable to install '+req.body.name);
                 }
 
-                // installation succeeded
-                mkdirp(browserModulePath, function () {
-                    // browserify module
-                    var b = browserify();
-                    var bundleFile = fs.createWriteStream(path.resolve(browserModulePath, req.body.name+'-bundle.js'));
-                    bundleFile.on('end', function () {
-                        bundleFile.end();
-                    });
-
-                    // set kevoree-library and kevoree-kotlin as 'provided externally' because there are bundled with
-                    // kevoree-browser-runtime-client, if you don't do that, they will be loaded multiple times
-                    // and the whole thing will blew up like crazy, trust me (just lost 2 hours)
-                    b.external(path.resolve(npmInstallDir, 'kevoree-library'), {expose: 'kevoree-library'})
-                        .require(modulePath, { expose: req.body.name })
-                        .transform('brfs')// will try to get content from fs.readFileSync() into a function (to be available as a string later on)
-                        .bundle({detectGlobals: false}, function (err) {
-                            if (err) {
-                                return res.jsonp(JSON.parse(err));
+                setTimeout(function () {
+                    // installation succeeded
+                    mkdirp(browserModulePath, function () {
+                        // browserify module
+                        var options = {
+                            installDir: installDir,
+                            npmInstallDir: npmInstallDir,
+                            external: {
+                                'kevoree-library': path.resolve(npmInstallDir, 'kevoree-library')
                             }
-                        })
-                        .pipe(bundleFile)
-                        .on('finish', function () {
-                            // zip browser-bundled folder
-                            var zip = new AdmZip();
-                            zip.addLocalFolder(browserModulePath);
-                            zip.writeZip(browserModulePath+'.zip');
+                        }
+                        browserifyer(req.body.name, options, function (err) {
+                            if (err) {
+                                console.error('Unable to browserify '+req.body.name);
+                                return res.send(500, 'Unable to browserify '+req.body.name);
+                            }
 
                             // send response
                             return res.jsonp({
@@ -74,7 +65,8 @@ module.exports = function(req, res) {
                                 requireName: modulePath
                             });
                         });
-                });
+                    });
+                }, 1000);
             });
 
 
