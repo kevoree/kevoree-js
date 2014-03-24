@@ -10,6 +10,8 @@ var Resolve = AbstractCommand.extend({
         console.log("RESOLVE", deployUnit.name);
         $.ajax({
             type: 'POST',
+            timeout: 15000,
+            crossDomain: true,
             url: 'http://127.0.0.1:9040/resolve',
             data: {
                 type: deployUnit.type,
@@ -22,7 +24,11 @@ var Resolve = AbstractCommand.extend({
                 callback(null, res);
             },
             error: function (err) {
-                callback(new Error(err.responseText + ' ('+err.status+' '+err.statusText+')'));
+                if (err.statusText === 'timeout') {
+                    callback(new Error('Unable to reach http://127.0.0.1:9040/resolve (connection timeout)'));
+                } else {
+                    callback(new Error(err.responseText + ' ('+err.status+' '+err.statusText+')'));
+                }
             }
         });
     }

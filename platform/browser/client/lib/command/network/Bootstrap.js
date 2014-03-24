@@ -11,6 +11,8 @@ var Bootstrap = AbstractCommand.extend({
         $.ajax({
             type: 'POST',
             url: 'http://127.0.0.1:9040/bootstrap',
+            crossDomain: true,
+            timeout: 1500,
             data: { nodename: nodeName },
             dataType: 'jsonp',
             success: function (res) {
@@ -19,7 +21,11 @@ var Bootstrap = AbstractCommand.extend({
                 callback(null, model);
             },
             error: function (err) {
-                callback(new Error(err.responseText + ' ('+err.status+' '+err.statusText+')'));
+                if (err.statusText === 'timeout') {
+                    callback(new Error('Unable to reach http://127.0.0.1:9040/bootstrap (connection timeout)'));
+                } else {
+                    callback(new Error(err.responseText + ' ('+err.status+' '+err.statusText+')'));
+                }
             }
         });
     }

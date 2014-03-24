@@ -118,7 +118,7 @@ var installZip = function installZip(zipPath, zipName, callback) {
             });
         }, callback);
     });
-}
+};
 
 /**
  * Only processes 'file' entries in zip
@@ -155,7 +155,7 @@ var processEntries = function processEntries(entries, zipDir, callback) {
         // all tasks run without error : cool =)
         callback();
     });
-}
+};
 
 /**
  * Will recursively create needed directories for the file entry given
@@ -167,19 +167,18 @@ var processEntries = function processEntries(entries, zipDir, callback) {
  * @param callback
  */
 var processFileEntry = function processFileEntry(entry, zipDir, callback) {
-    console.log('entry', entry);
     getDir(entry.name, zipDir, function (dir) {
         dir.getFile(entry.name, {create: true, exclusive: false}, function(fileEntry) {
             // Create a FileWriter object for our FileEntry (log.txt).
             fileEntry.createWriter(function(fileWriter) {
 
                 fileWriter.onwriteend = function(e) {
-                    console.log('Write completed: ', zipDir);
+                    console.debug('Write completed: ', zipDir);
                     callback(null, fileEntry);
                 };
 
                 fileWriter.onerror = function(e) {
-                    console.log('Write failed: ' + e.toString());
+                    console.debug('Write failed: ' + e.toString());
                     callback(e);
                 };
 
@@ -216,7 +215,7 @@ var getDir = function getDir(path, dir, callback, errorCallback) {
             getDir(splittedPath.slice(1, splittedPath.length).join('/'), newDir, callback, errorCallback);
         }, errorHandler);
     }
-}
+};
 
 var errorHandler = function errorHandler(e) {
     var msg = '';
@@ -239,9 +238,9 @@ var errorHandler = function errorHandler(e) {
         default:
             msg = e.message;
             return;
-    };
+    }
 
     console.log('Error: ' + msg);
-}
+};
 
 module.exports = NPMResolver;

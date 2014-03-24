@@ -51,7 +51,7 @@ module.exports = function(req, res) {
                             external: {
                                 'kevoree-library': path.resolve(npmInstallDir, 'kevoree-library')
                             }
-                        }
+                        };
                         browserifyer(req.body.name, options, function (err) {
                             if (err) {
                                 console.error('Unable to browserify '+req.body.name);
@@ -66,7 +66,8 @@ module.exports = function(req, res) {
                             });
                         });
                     });
-                }, 1000);
+                }, 2500); // TODO find out why we need to let server breathe after install in order to browserify bundles
+                          // because if we don't do that, it will fail to bundle the modules
             });
 
 
