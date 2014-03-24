@@ -1,3 +1,6 @@
+/**
+ * Created by leiko on 12/03/14.
+ */
 var http       = require('http'),
     kevoree    = require('kevoree-library').org.kevoree,
     modelSync  = require('kevoree-model-sync'),
@@ -8,6 +11,8 @@ var factory    = new kevoree.impl.DefaultKevoreeFactory();
 
 module.exports = function (model) {
     return function (req, res) {
+        req.body.nodename = req.body.nodename || req.query.nodename; // handle POST & GET
+
         var serverNode = model.findNodesByID(config.nodeJSPlatform.nodeName);
         if (serverNode) {
             // let's be really cautious about given name
@@ -40,13 +45,13 @@ module.exports = function (model) {
             var val = dic.findValuesByID('port');
 
             modelSync.push({model: model, host: '127.0.0.1', port: val.value}, function (err) {
-                if (err) return res.send(500, 'Unable to push model to "server-node" :/');
+                if (err) return res.jsonp(JSON.parse(new Error('Unable to push model to "server-node" :/')));
 
                 var modelStr = serializer.serialize(model);
-                return res.json({model: modelStr});
+                return res.jsonp({model: modelStr});
             });
         } else {
-            return res.send(5000, '"server-node" is not reachable. Something crashed server-side obviously :/');
+            return res.jsonp(JSON.parse(new Error('"server-node" is not reachable. Something crashed server-side obviously :/')));
         }
     }
 }

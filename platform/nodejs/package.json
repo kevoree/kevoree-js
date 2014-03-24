@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "kevoree-core": "0.1.3",
-    "kevoree-library": "0.1.3",
+    "kevoree-library": "*",
     "kevoree-commons": "0.1.3",
     "pseudoclass": "0.2.6",
     "npm": "1.4.4",
