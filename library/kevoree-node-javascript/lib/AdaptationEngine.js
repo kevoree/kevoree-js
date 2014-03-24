@@ -218,11 +218,7 @@ var AdaptationEngine = Class({
         });
 
         return list;
-    },
-
-    getModelObjectMapper: function () {
-        return this.modelObjMapper;
-    },
+    }
 
     setLogger: function (logger) {
         this.log = logger;

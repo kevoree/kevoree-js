@@ -1,5 +1,6 @@
 var AbstractNode        = require('kevoree-entities').AbstractNode,
-    AdaptationEngine    = require('./lib/AdaptationEngine');
+    AdaptationEngine    = require('./lib/AdaptationEngine'),
+    kevoree             = require('kevoree-library').org.kevoree;
 
 var JavascriptNode = AbstractNode.extend({
     toString: 'JavascriptNode',
@@ -13,13 +14,8 @@ var JavascriptNode = AbstractNode.extend({
         this.adaptationEngine.setLogger(this.getKevoreeCore().getLogger());
     },
 
-    stop: function () {
-        var map = this.adaptationEngine.getModelObjectMapper().getMap();
-        for (var key in map) {
-            if (map[key].stop && typeof(map[key].stop) === 'function') {
-                map[key].stop();
-            }
-        }
+    stop: function (_super) {
+        // TODO
     },
 
     /**
