@@ -7,7 +7,6 @@ module.exports = AdaptationPrimitive.extend({
     execute: function (_super, callback) {
         _super.call(this, callback);
 
-        console.log('StopInstance', this.modelElement.name, this.modelElement.path());
         var instance = this.mapper.getObject(this.modelElement.path());
         if (instance) {
             instance.stop();
