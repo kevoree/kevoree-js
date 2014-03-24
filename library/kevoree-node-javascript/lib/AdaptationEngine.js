@@ -24,28 +24,28 @@ var AddInstance         = require('./adaptations/AddInstance'),
 
 // CONSTANTS
 var INSTANCE_TRACE  = [
-        'org.kevoree.Group',
-        'org.kevoree.Node',
-        'org.kevoree.ComponentInstance',
-        'org.kevoree.Channel'
+        'groups',
+        'nodes',
+        'components',
+        'hubs'
     ],
     DEPLOY_UNIT     = [
-        'org.kevoree.DeployUnit'
+        'deployUnits'
     ],
     COMMAND_RANK = {
         // highest priority
-        "StopInstance":     0,
-        "RemoveBinding":    1,
-        "RemoveInstance":   2,
-        "RemoveTypeDef":    3,
-        "RemoveDeployUnit": 4,
-        "AddDeployUnit":    5,
-        "AddTypeDef":       6,
-        "AddInstance":      7,
-        "AddBinding":       8,
-        "UpdateDictionary": 9,
-        "StartInstance":    10,
-        "Noop":             42
+        StopInstance:     0,
+        RemoveBinding:    1,
+        RemoveInstance:   2,
+        RemoveTypeDef:    3,
+        RemoveDeployUnit: 4,
+        AddDeployUnit:    5,
+        AddTypeDef:       6,
+        AddInstance:      7,
+        AddBinding:       8,
+        UpdateDictionary: 9,
+        StartInstance:    10,
+        Noop:             42
         // lowest priority
     };
 
@@ -99,23 +99,22 @@ var AdaptationEngine = Class({
     processTrace: function (trace, model, cmdList) {
         var addProcessedTrace = function (path, cmd) {
             this.alreadyProcessedTraces[path] = this.alreadyProcessedTraces[path] || {};
-            this.alreadyProcessedTraces[path][cmd.toString()] = 1;
+            this.alreadyProcessedTraces[path][cmd.toString()] = true;
         }.bind(this);
 
         var traceAlreadyProcessed = function (path, cmd) {
-            return this.alreadyProcessedTraces[path] && this.alreadyProcessedTraces[path][cmd.toString()];
+            return this.alreadyProcessedTraces[path] && this.alreadyProcessedTraces[path][cmd];
         }.bind(this);
-
 
         // ADD - TRACES HANDLING
         if (Kotlin.isType(trace, ModelAddTrace)) {
-            if (INSTANCE_TRACE.indexOf(trace.typeName) != -1) {
+            if (INSTANCE_TRACE.indexOf(trace.refName) != -1) {
                 // Add instance
                 var cmd = new AddInstance(this.node, this.modelObjMapper, model, model.findByPath(trace.previousPath));
                 cmdList.push(cmd);
                 addProcessedTrace(trace.previousPath, cmd);
 
-            } else if (DEPLOY_UNIT.indexOf(trace.typeName) != -1) {
+            } else if (trace.refName === 'deployUnits') {
                 // Add deploy unit
                 var cmd = new AddDeployUnit(this.node, this.modelObjMapper, model, model.findByPath(trace.previousPath));
                 cmdList.push(cmd);
@@ -184,21 +183,34 @@ var AdaptationEngine = Class({
             // REMOVE - TRACES HANDLING
         } else if (Kotlin.isType(trace, ModelRemoveTrace)) {
             var tracePath = trace.previousPath || trace.objPath;
-            if (INSTANCE_TRACE.indexOf(trace.typeName) != -1) {
+            var elem = this.node.getKevoreeCore().getCurrentModel().findByPath(tracePath);
+
+            if (INSTANCE_TRACE.indexOf(trace.refName) != -1) {
                 // Remove instance
-                var cmd = new RemoveInstance(this.node, this.modelObjMapper, model, this.node.getKevoreeCore().getCurrentModel().findByPath(tracePath));
+                // first of all, check if instance is stopped
+                if (elem.started) {
+                    // instance is in "started" state, but maybe we've already added a StopInstance primitive for it
+                    if (!traceAlreadyProcessed(tracePath, StopInstance.prototype.toString())) {
+                        // instance is started and there is no "StopInstance" primitive for it yet: add it
+                        var stopCmd = new StopInstance(this.node, this.modelObjMapper, model, elem);
+                        cmdList.push(stopCmd);
+                        addProcessedTrace(tracePath, stopCmd);
+                    }
+                }
+                // add RemoveInstance primitive
+                var cmd = new RemoveInstance(this.node, this.modelObjMapper, model, elem);
                 cmdList.push(cmd);
                 addProcessedTrace(tracePath, cmd);
 
             } else if (DEPLOY_UNIT.indexOf(trace.typeName) != -1) {
                 // Remove deploy unit
-                var cmd = new RemoveDeployUnit(this.node, this.modelObjMapper, model, this.node.getKevoreeCore().getCurrentModel().findByPath(tracePath));
+                var cmd = new RemoveDeployUnit(this.node, this.modelObjMapper, model, elem);
                 cmdList.push(cmd);
                 addProcessedTrace(tracePath, cmd);
 
             } else if (trace.refName === 'mBindings') {
                 // Remove binding
-                var cmd = new RemoveBinding(this.node, this.modelObjMapper, model, this.node.getKevoreeCore().getCurrentModel().findByPath(tracePath));
+                var cmd = new RemoveBinding(this.node, this.modelObjMapper, model, elem);
                 cmdList.push(cmd);
                 addProcessedTrace(tracePath, cmd);
             }
@@ -218,7 +230,7 @@ var AdaptationEngine = Class({
         });
 
         return list;
-    }
+    },
 
     setLogger: function (logger) {
         this.log = logger;
