@@ -16,7 +16,6 @@ var BrowserRuntime = Class({
         this.core = new KevoreeCore(__dirname, this.logger);
 
         this.core.setUICommand(function (ui, callback) {
-            console.log('UICommand', ui);
             try {
                 var data = {
                     headerID:   'header'+parseInt(Math.random()*1000),
