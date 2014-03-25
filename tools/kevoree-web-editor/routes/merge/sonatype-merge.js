@@ -12,11 +12,17 @@ var resolver   = java.newInstanceSync('org.kevoree.resolver.MavenResolver'),
 
 module.exports = function (repos, libraries, callback) {
     var list = java.newInstanceSync('java.util.ArrayList');
-//    list.addSync("http://oss.sonatype.org/content/groups/public");
 
-    if (repos) for (var i in repos) list.addSync(repos[i]);
+    if (repos) {
+        for (var i in repos) {
+            list.addSync(repos[i]);
+        }
+    }
 
-    console.log(list.toStringSync());
+    if (list.sizeSync() == 0) {
+        // add sonatype as a default central repo if there is 0 repo given (just in case)
+        list.addSync("http://oss.sonatype.org/content/groups/public");
+    }
 
     var mergedModel = factory.createContainerRoot();
     for (var i in libraries) {
