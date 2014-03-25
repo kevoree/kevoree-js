@@ -44,7 +44,7 @@ var BrowserRuntime = Class({
             }
         });
 
-        var bootstrapper = new BrowserBootstrapper(__dirname);
+        var bootstrapper = new BrowserBootstrapper(__dirname, this.logger);
         this.core.setBootstrapper(bootstrapper);
         this.ui = new UIBrowserRuntime(this);
 
@@ -61,6 +61,11 @@ var BrowserRuntime = Class({
                 }
                 this.core.deploy(model);
             }.bind(this));
+        }.bind(this));
+
+        this.core.on('deployed', function () {
+            // TODO remove that
+            console.log(this.core.nodeInstance);
         }.bind(this));
 
         this.core.on('stopped', function () {

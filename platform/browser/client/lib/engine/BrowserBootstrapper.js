@@ -8,10 +8,10 @@ var Bootstrapper    = require('kevoree-commons').Bootstrapper,
 var BrowserBootstrapper = Bootstrapper.extend({
     toString: 'BrowserBootstrapper',
 
-    construct: function (modulesPath) {
+    construct: function (modulesPath, logger) {
         this.modulesPath = modulesPath;
-        this.log = new BrowserLogger(this.toString());
-        this.resolver = new NPMResolver(modulesPath);
+        this.log = logger;
+        this.resolver = new NPMResolver(modulesPath, this.log);
     },
 
     /**
@@ -31,7 +31,7 @@ var BrowserBootstrapper = Bootstrapper.extend({
         var bootstrapper = this;
         this.resolver.resolve(deployUnit, forceInstall, function (err, EntityClass) {
             if (err) {
-                bootstrapper.log.error(err.message);
+                bootstrapper.log.error(bootstrapper.toString(), err.message);
                 return callback(new Error("'"+deployUnit.name+"' bootstrap failed!"));
             }
 
@@ -44,7 +44,7 @@ var BrowserBootstrapper = Bootstrapper.extend({
         var bootstrapper = this;
         this.resolver.uninstall(deployUnit, function (err) {
             if (err) {
-                bootstrapper.log.error(err.message);
+                bootstrapper.log.error(bootstrapper.toString(), err.message);
                 return callback(new Error("'"+deployUnit.name+"' uninstall failed!"));
             }
 

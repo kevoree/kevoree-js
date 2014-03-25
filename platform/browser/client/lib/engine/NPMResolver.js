@@ -13,9 +13,9 @@ var Resolver        = require('kevoree-commons').Resolver,
 var NPMResolver = Resolver.extend({
     toString: 'NPMResolver',
 
-    construct: function (modulesPath) {
+    construct: function (modulesPath, logger) {
         this.modulesPath = modulesPath;
-        this.log = new KevoreeLogger(this.toString());
+        this.log = logger;
         this.resolveCmd = new Resolve();
     },
 
