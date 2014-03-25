@@ -29,11 +29,17 @@ var UIBrowserRuntime = Class({
     started: function () {
         $('#start-runtime').prop('disabled', true);
         $('#stop-runtime').prop('disabled', false);
+
+        $(window).on('beforeunload', function() {
+            return 'Kevoree Browser Runtime will be stopped if you leave.';
+        });
     },
 
     stopped: function () {
         $('#start-runtime').prop('disabled', false);
         $('#stop-runtime').prop('disabled', true);
+
+        $(window).off('beforeunload');
     }
 });
 

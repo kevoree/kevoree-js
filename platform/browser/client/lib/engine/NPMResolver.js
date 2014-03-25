@@ -27,33 +27,49 @@ var NPMResolver = Resolver.extend({
             forceInstall = false;
         }
 
-        // forward resolving request to server
-        this.resolveCmd.execute(deployUnit, forceInstall, function (err, resp) {
-            if (err) {
-                if (err.responseText.length == 0) {
-                    err.responseText = "Kevoree Runtime server was not able to process '/resolve' request ("+deployUnit.name+":"+deployUnit.version+")";
-                }
-                return callback(new Error(err.responseText));
-            }
+        function loadSuccess(script) {
+            $.globalEval(script);
+            var ModuleEntry = require(deployUnit.name);
+            return callback(null, ModuleEntry);
+        }
 
-            // server response contains a zipPath & name of the requested module package
-            // (retrieved server-side from npm registry)
-            installZip(resp.zipPath, resp.zipName, function (err) {
-                if (err) {
-                    errorHandler(err);
-                    callback(err);
-                    return;
-                }
+        $.ajax({
+            type: 'GET',
+            url: 'filesystem:'+window.location.origin+'/persistent/kev_libraries/'+deployUnit.name+'@'+deployUnit.version+'/'+deployUnit.name+'-bundle.js',
+            success: loadSuccess,
+            error: function (e) {
+                self.log.debug(self.toString(), "Unable to find '"+deployUnit.name+"@"+deployUnit.version+"' zip locally. Remote resolve in progress...");
+                // forward resolving request to server
+                this.resolveCmd.execute(deployUnit, forceInstall, function (err, resp) {
+                    if (err) {
+                        if (err.responseText.length === 0) {
+                            err.responseText = "Kevoree Runtime server was not able to process '/resolve' request ("+deployUnit.name+":"+deployUnit.version+")";
+                        }
+                        return callback(new Error(err.responseText));
+                    }
 
-                // zip installed successfully
-                $.getScript('filesystem:'+window.location.origin+'/persistent/kev_libraries/'+deployUnit.name+'@'+deployUnit.version+'/'+deployUnit.name+'-bundle.js', function () {
-                    self.log.info(self.toString(), "Zip '"+deployUnit.name+"' installed and module loaded successfully");
+                    // server response contains a zipPath & name of the requested module package
+                    // (retrieved server-side from npm registry)
+                    installZip(resp.zipPath, resp.zipName, function (err) {
+                        if (err) {
+                            errorHandler(err);
+                            callback(err);
+                            return;
+                        }
 
-                    var ModuleEntry = require(deployUnit.name);
-
-                    callback(null, ModuleEntry);
+                        // zip installed successfully
+                        $.ajax({
+                            type: 'GET',
+                            url: 'filesystem:'+window.location.origin+'/persistent/kev_libraries/'+deployUnit.name+'@'+deployUnit.version+'/'+deployUnit.name+'-bundle.js',
+                            success: loadSuccess,
+                            error: function (e) {
+                                console.log('Unable to find filesystem:'+window.location.origin+'/persistent/kev_libraries/'+deployUnit.name+'@'+deployUnit.version+'/'+deployUnit.name+'-bundle.js');
+                                return callback(new Error('Unable to load \''+deployUnit.name+'@'+deployUnit.version+'\' locally :/'));
+                            }
+                        });
+                    });
                 });
-            });
+            }.bind(this)
         });
     },
 
