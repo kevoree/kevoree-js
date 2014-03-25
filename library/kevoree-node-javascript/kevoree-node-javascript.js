@@ -41,8 +41,8 @@ var JavascriptNode = AbstractNode.extend({
 
         async.eachSeries(primitives, execPrimitive, function (err) {
             if (err) {
-                // something went wrong while stoping node
-                this.log.error(this.toString(), 'Something went wrong while stoping '+this.getName());
+                // something went wrong while stopping node
+                this.log.error(this.toString(), 'Something went wrong while stopping '+this.getName());
                 return;
             }
 
