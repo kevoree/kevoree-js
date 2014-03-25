@@ -1,6 +1,7 @@
 var AbstractNode        = require('kevoree-entities').AbstractNode,
     AdaptationEngine    = require('./lib/AdaptationEngine'),
-    kevoree             = require('kevoree-library').org.kevoree;
+    kevoree             = require('kevoree-library').org.kevoree,
+    async               = require('async');
 
 var JavascriptNode = AbstractNode.extend({
     toString: 'JavascriptNode',
@@ -15,7 +16,38 @@ var JavascriptNode = AbstractNode.extend({
     },
 
     stop: function (_super) {
-        // TODO
+        _super.call(this);
+
+        // clone current model
+        var cloner = new kevoree.cloner.DefaultModelCloner();
+        var emptyNodeModel = cloner.clone(this.getKevoreeCore().getCurrentModel(), false);
+        var node = emptyNodeModel.findNodesByID(this.getName());
+        // delete everything from cloned model that is related to this node
+        node.delete();
+
+        // re-add this "empty" node to the cloned model
+        var factory = new kevoree.impl.DefaultKevoreeFactory();
+        node = factory.createContainerNode();
+        node.name = this.getName();
+
+        // compare emptyNodeModel with currentModel in order to create primitives for this platform fragments stops
+        var compare = new kevoree.compare.DefaultModelCompare();
+        var diffSeq = compare.diff(this.getKevoreeCore().getCurrentModel(), emptyNodeModel);
+        var primitives = this.processTraces(diffSeq, emptyNodeModel);
+
+        function execPrimitive(primitive, cb) {
+            primitive.execute(cb);
+        }
+
+        async.eachSeries(primitives, execPrimitive, function (err) {
+            if (err) {
+                // something went wrong while stoping node
+                this.log.error(this.toString(), 'Something went wrong while stoping '+this.getName());
+                return;
+            }
+
+            // all good
+        }.bind(this));
     },
 
     /**
