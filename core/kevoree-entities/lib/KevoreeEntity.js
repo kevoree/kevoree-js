@@ -43,7 +43,7 @@ var KevoreeEntity = Class({
     },
 
     start: function () {
-      this.log = this.kCore.getLogger();
+        this.log = this.kCore.getLogger();
     },
 
     stop: function () {},
