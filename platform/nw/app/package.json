@@ -2,6 +2,14 @@
     "name": "kevoree-browser-runtime",
     "main": "index.html",
     "version": "0.1.0",
+    "single-instance": false,
+    "window": {
+        "frame": true,
+        "toolbar": false,
+        "position": "center",
+        "width": 1200,
+        "height": 800
+    },
     "dependencies": {
         "pseudoclass": "^1.0.0",
         "kevoree-library": "^0.1.3",
@@ -11,12 +19,5 @@
         "kevoree-kevscript": "^0.1.3",
         "kevoree-resolvers": "^0.1.3",
         "npmi": "0.0.5"
-    },
-    "window": {
-        "frame": true,
-        "toolbar": false,
-        "position": "center",
-        "width": 1200,
-        "height": 800
     }
 }

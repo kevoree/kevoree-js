@@ -181,7 +181,7 @@ module.exports = Class({
                                 }
 
                                 // adaptations succeed : woot
-                                core.log.debug(core.toString(), "Model deployed successfully.");
+                                core.log.info(core.toString(), "Model deployed successfully.");
                                 // save old model
                                 pushInArray(core.models, core.currentModel);
                                 // set new model to be the current deployed one

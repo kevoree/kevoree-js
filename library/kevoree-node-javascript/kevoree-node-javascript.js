@@ -13,6 +13,10 @@ var JavascriptNode = AbstractNode.extend({
     start: function (_super) {
         _super.call(this);
         this.adaptationEngine.setLogger(this.getKevoreeCore().getLogger());
+
+        this.getKevoreeCore().on('deployed', function () {
+
+        }.bind(this));
     },
 
     stop: function (_super) {
