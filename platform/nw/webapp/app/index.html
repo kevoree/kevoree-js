@@ -1,0 +1,134 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Kevoree Browser Runtime</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css styles/vendor.css -->
+    <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+</head>
+<body>
+    <!--[if lt IE 10]>
+    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <div id="navbar" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="#" id="navbar-logo" class="navbar-brand">
+                    <img src="images/logo.png" />
+                </a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <!--<li class="dropdown">-->
+                    <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown">File <b class="caret"></b></a>-->
+                    <!--<ul class="dropdown-menu">-->
+                    <!--<li class="dropdown-header">Load actions</li>-->
+                    <!--<li><a href="#" id="load">Load</a></li>-->
+                    <!--<li><a href="#" id="merge">Merge</a></li>-->
+                    <!--<li><a href="#" id="open-from-node">Open from node</a></li>-->
+                    <!--<li><a href="#" id="merge-from-node">Merge from node</a></li>-->
+                    <!--<li class="divider"></li>-->
+                    <!--<li class="dropdown-header">Save actions</li>-->
+                    <!--<li><a href="#" id="save-json">Save as JSON</a></li>-->
+                    <!--</ul>-->
+                    <!--</li>-->
+                    <li><a href="#" id="clear-logs">Clear Logs</a></li>
+                </ul>
+                <div class="navbar-form navbar-right">
+                    <div class="form-group">
+                        <input id="platform-node-name" type="text" placeholder="Node name" class="form-control">
+                    </div>
+                    <button id="start-runtime" type="button" class="btn btn-success">Start</button>
+                    <button id="stop-runtime" type="button" class="btn btn-warning" disabled>Stop</button>
+                </div>
+            </div><!--/.navbar-collapse -->
+        </div>
+    </div>
+
+    <div id="content">
+        <!-- Nav tabs -->
+        <ul id="tabs-host" class="nav nav-tabs">
+            <li class="active"><a href="#logs" data-toggle="tab">Logs</b></a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div id="tabs-content-host" class="tab-content">
+            <div class="tab-pane active" id="logs">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="pull-right">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="logLevels" id="log-level-info" value="info" checked>Info
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="logLevels" id="log-level-debug" value="debug" checked>Debug
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="logLevels" id="log-level-warning" value="warning" checked>Warning
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="logLevels" id="log-level-error" value="error" checked>Error
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="logger"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- build:js scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="bower_components/hogan/web/builds/2.0.0/hogan-2.0.0.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:js scripts/plugins.js -->
+    <script src="bower_components/bootstrap/js/affix.js"></script>
+    <script src="bower_components/bootstrap/js/alert.js"></script>
+    <script src="bower_components/bootstrap/js/dropdown.js"></script>
+    <script src="bower_components/bootstrap/js/tooltip.js"></script>
+    <script src="bower_components/bootstrap/js/modal.js"></script>
+    <script src="bower_components/bootstrap/js/transition.js"></script>
+    <script src="bower_components/bootstrap/js/button.js"></script>
+    <script src="bower_components/bootstrap/js/popover.js"></script>
+    <script src="bower_components/bootstrap/js/carousel.js"></script>
+    <script src="bower_components/bootstrap/js/scrollspy.js"></script>
+    <script src="bower_components/bootstrap/js/collapse.js"></script>
+    <script src="bower_components/bootstrap/js/tab.js"></script>
+    <!-- endbuild -->
+
+    <!-- build:js(.tmp) scripts/templates.js -->
+    <!--This file is generated by grunt-contrib-hogan task -->
+    <script src="scripts/templates.js"></script>
+    <!-- endbuild -->
+
+    <!-- build:js scripts/main.js -->
+    <script src="scripts/main.js"></script>
+    <!-- endbuild -->
+</body>
+</html>
