@@ -1,0 +1,33 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Kevoree Browser Runtime</h4>
+        </div>
+        <div class="modal-body">
+            <div id="modal-error" class="alert alert-danger hide">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <div id="modal-error-content"></div>
+            </div>
+            <div class="form-group">
+                <label for="file-input">{{type}}</label>
+                <input id="file-input" type="file" class="form-control">
+            </div>
+            <div id="model-loading" class="hide">
+                <p>Parsing model in order to find node instances...</p>
+                <div class="progress progress-striped active">
+                    <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                </div>
+            </div>
+            <div id="model-loaded" class="hide">
+                <div class="form-group">
+                    <label for="node-name-list">Node to start on</label>
+                    <select id="node-name-list" class="form-control"></select>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="back" type="button" class="btn btn-default">Back</button>
+            <button id="ready" type="button" class="btn btn-primary">Ready</button>
+        </div>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->

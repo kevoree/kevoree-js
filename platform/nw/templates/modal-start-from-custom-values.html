@@ -1,0 +1,29 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Kevoree Browser Runtime</h4>
+        </div>
+        <div class="modal-body">
+            <div id="modal-error" class="alert alert-danger hide">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <div id="modal-error-content"></div>
+            </div>
+            <div class="form-group">
+                <label for="node-name">Node name</label>
+                <input type="text" class="form-control" id="node-name" placeholder="Node name" value="node0">
+            </div>
+            <div class="form-group">
+                <label for="group-name">Group name</label>
+                <input type="text" class="form-control" id="group-name" placeholder="Group name" value="sync">
+            </div>
+            <div class="form-group">
+                <label for="group-port">Group port</label>
+                <input type="number" class="form-control" id="group-port" placeholder="Group port" value="9000">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="back" type="button" class="btn btn-default">Back</button>
+            <button id="ready" type="button" class="btn btn-primary">Ready</button>
+        </div>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
