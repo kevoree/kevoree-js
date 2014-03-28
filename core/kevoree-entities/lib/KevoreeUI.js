@@ -5,70 +5,71 @@ var Class         = require('pseudoclass'),
     EventEmitter  = require('events').EventEmitter;
 
 var KevoreeUI = Class({
-  toString: 'KevoreeUI',
+    toString: 'KevoreeUI',
 
-  construct: function (comp) {
-    this.comp = comp;
-    this.root = null;
-    this.log = new KevoreeLogger(this.toString());
-    this.name = null;
-    this.destroyCmd = null;
-    this.emitter = new EventEmitter();
-  },
+    construct: function (comp) {
+        this.comp = comp;
+        this.root = null;
+        this.log = new KevoreeLogger(this.toString());
+        this.name = null;
+        this.destroyCmd = null;
+        this.emitter = new EventEmitter();
+    },
 
-  isReady: function () {
-    return (this.root != null);
-  },
+    isReady: function () {
+        return (this.root != null);
+    },
 
-  setRoot: function (root) {
-    this.root = root;
-  },
+    setRoot: function (root) {
+        this.root = root;
+    },
 
-  getRoot: function () {
-    return this.root;
-  },
+    getRoot: function () {
+        return this.root;
+    },
 
-  initialize: function (comp, initCmd, callback) {
-    var self = this;
+    initialize: function (comp, initCmd, callback) {
+        var self = this;
 
-    if (typeof(initCmd) == 'undefined' || initCmd == null) return callback(new Error('KevoreeUI init command unset in KevoreeCore.'));
+        if (typeof(initCmd) == 'undefined' || initCmd == null) return callback(new Error('KevoreeUI init command unset in KevoreeCore.'));
 
-    initCmd(this, function (err) {
-      if (err) {
-        self.log.error(err.message);
-        self.root = null;
-        return callback(err);
-      }
+        initCmd(this, function (err) {
+            if (err) {
+                self.log.error(err.message);
+                self.root = null;
+                return callback(err);
+            }
 
-      return callback();
-    });
-  },
+            return callback();
+        });
+    },
 
-  setContent: function (content) {
-    this.root.innerHTML = content;
-    this.emitter.emit('contentChanged', content);
-  },
+    setContent: function (content) {
+        this.root.innerHTML = content;
+        this.emitter.emit('contentChanged', content);
+    },
 
-  destroy: function () {
-    if (this.destroyCmd) this.destroyCmd();
-  },
+    destroy: function () {
+        if (this.destroyCmd) this.destroyCmd();
+        this.root = null;
+    },
 
-  setDestroyCmd: function (cmd) {
-    this.destroyCmd = cmd;
-  },
+    setDestroyCmd: function (cmd) {
+        this.destroyCmd = cmd;
+    },
 
-  getName: function () {
-    return this.name;
-  },
+    getName: function () {
+        return this.name;
+    },
 
-  setName: function (name) {
-    this.name = name;
-    this.emitter.emit('nameChanged', name);
-  },
+    setName: function (name) {
+        this.name = name;
+        this.emitter.emit('nameChanged', name);
+    },
 
-  on: function (event, callback) {
-    this.emitter.addListener(event, callback);
-  }
+    on: function (event, callback) {
+        this.emitter.addListener(event, callback);
+    }
 });
 
 module.exports = KevoreeUI;
