@@ -51,7 +51,15 @@ var FakeConsole = AbstractComponent.extend({
 
     in_inMsg: function (msg) {
         var proxy = this.dictionary.getValue('proxy');
-        if (typeof proxy !== 'undefined' && proxy) this.out_sendMsg(msg);
+        if (typeof(proxy) === 'boolean') {
+            if (proxy) {
+                this.out_sendMsg(msg);
+            }
+        } else if (typeof(proxy) === 'string') {
+            if (proxy === 'true') {
+                this.out_sendMsg(msg);
+            }
+        }
 
         this.addMessageUI('>', msg);
     },

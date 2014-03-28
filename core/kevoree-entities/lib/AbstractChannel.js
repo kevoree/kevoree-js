@@ -15,7 +15,14 @@ module.exports = KevoreeEntity.extend({
     internalSend: function (outputPath, msg) {
         var paths = [];
         for (var inputPath in this.inputs) {
-            paths.push(inputPath);
+            // do not send message to stopped component
+            var port = this.getKevoreeCore().getCurrentModel().findByPath(inputPath);
+            if (port) {
+                var comp = port.eContainer();
+                if (comp && comp.started) {
+                    paths.push(inputPath);
+                }
+            }
         }
         this.onSend(outputPath, paths, msg);
     },
