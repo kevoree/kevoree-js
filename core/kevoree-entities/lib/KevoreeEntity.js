@@ -88,12 +88,11 @@ var KevoreeEntity = Class({
         return this.kCore.getDeployModel().findByPath(this.path);
     },
 
-    getNetworkInfos: function (name) {
+    getNetworkInfos: function (nodeName) {
         var model = this.kCore.getDeployModel();
         if (!model) this.kCore.getCurrentModel();
-        var node = model.findNodesByID(this.getNodeName());
-        if (name) return node.findNetworkInformationByID(name);
-        else return node.networkInformation.iterator();
+        var node = model.findNodesByID(nodeName);
+        return node.networkInformation.iterator();
     }
 });
 
