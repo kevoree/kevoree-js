@@ -21,37 +21,39 @@ var JavascriptNode = AbstractNode.extend({
 
     stop: function (_super) {
         _super.call(this);
-
+        // TODO improve that, this is not a "stop" this is a complete "destroy"
         // clone current model
         var cloner = new kevoree.cloner.DefaultModelCloner();
         var emptyNodeModel = cloner.clone(this.getKevoreeCore().getCurrentModel(), false);
         var node = emptyNodeModel.findNodesByID(this.getName());
-        // delete everything from cloned model that is related to this node
-        node.delete();
+        if (node) {
+            // delete everything from cloned model that is related to this node
+            node.delete();
 
-        // re-add this "empty" node to the cloned model
-        var factory = new kevoree.impl.DefaultKevoreeFactory();
-        node = factory.createContainerNode();
-        node.name = this.getName();
+            // re-add this "empty" node to the cloned model
+            var factory = new kevoree.impl.DefaultKevoreeFactory();
+            node = factory.createContainerNode();
+            node.name = this.getName();
 
-        // compare emptyNodeModel with currentModel in order to create primitives for this platform fragments stops
-        var compare = new kevoree.compare.DefaultModelCompare();
-        var diffSeq = compare.diff(this.getKevoreeCore().getCurrentModel(), emptyNodeModel);
-        var primitives = this.processTraces(diffSeq, emptyNodeModel);
+            // compare emptyNodeModel with currentModel in order to create primitives for this platform fragments stops
+            var compare = new kevoree.compare.DefaultModelCompare();
+            var diffSeq = compare.diff(this.getKevoreeCore().getCurrentModel(), emptyNodeModel);
+            var primitives = this.processTraces(diffSeq, emptyNodeModel);
 
-        function execPrimitive(primitive, cb) {
-            primitive.execute(cb);
-        }
-
-        async.eachSeries(primitives, execPrimitive, function (err) {
-            if (err) {
-                // something went wrong while stopping node
-                this.log.error(this.toString(), 'Something went wrong while stopping '+this.getName());
-                return;
+            function execPrimitive(primitive, cb) {
+                primitive.execute(cb);
             }
 
-            // all good
-        }.bind(this));
+            async.eachSeries(primitives, execPrimitive, function (err) {
+                if (err) {
+                    // something went wrong while stopping node
+                    this.log.error(this.toString(), 'Something went wrong while stopping '+this.getName());
+                    return;
+                }
+
+                // all good
+            }.bind(this));
+        }
     },
 
     /**
