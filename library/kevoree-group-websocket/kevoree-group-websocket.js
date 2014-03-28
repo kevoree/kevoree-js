@@ -208,6 +208,7 @@ var WebSocketGroup = AbstractGroup.extend({
     getMasterServerAddresses: function () {
         var addresses = [];
         var port = null;
+        var masterServerNodeName = null;
 
         var group = this.getModelEntity();
         var fragDics = group.fragmentDictionary.iterator();
@@ -218,6 +219,7 @@ var WebSocketGroup = AbstractGroup.extend({
                 var val = values.next();
                 if (val.name === 'port' && val.value.length > 0) {
                     // found port attribute
+                    masterServerNodeName = fragDic.name;
                     port = val.value;
                     break;
                 }
@@ -225,7 +227,7 @@ var WebSocketGroup = AbstractGroup.extend({
         }
 
         if (port) {
-            var nets = this.getNetworkInfos();
+            var nets = this.getNetworkInfos(masterServerNodeName);
             while (nets.hasNext()) {
                 var net = nets.next();
                 var props = net.values.iterator();
