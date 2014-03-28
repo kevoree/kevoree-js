@@ -17,6 +17,9 @@ var BrowserRuntime = Class({
         var modulesPath = path.resolve(__dirname, '..', '..');
         this.logger = new BrowserLogger(this.toString());
         this.core = new KevoreeCore(modulesPath, this.logger);
+        this.bootstrapModel = null;
+        this.groupName = null;
+        this.groupPort = null;
 
         this.core.setUICommand(function (ui, callback) {
             try {
@@ -52,20 +55,29 @@ var BrowserRuntime = Class({
         var bootstrapCmd = new Bootstrap(this, resolver);
 
         this.core.setBootstrapper(bootstrapper);
-        this.ui = new UIBrowserRuntime(this);
+        this.ui = new UIBrowserRuntime(this, resolver);
 
         this.core.on('started', function () {
             this.ui.started();
 
             // platform node started
-            bootstrapCmd.execute(this.core.getNodeName(), function (err, model) {
-                if (err) {
-                    this.logger.error(this.toString(), err.message);
-                    this.core.stop();
-                    return;
-                }
-                this.core.deploy(model);
-            }.bind(this));
+            if (this.bootstrapModel) {
+                this.core.deploy(this.bootstrapModel);
+            } else {
+                var options = {
+                    nodeName: this.core.getNodeName(),
+                    groupName: this.groupName,
+                    groupPort: this.groupPort
+                };
+                bootstrapCmd.execute(options, function (err, model) {
+                    if (err) {
+                        this.logger.error(this.toString(), err.message);
+                        this.core.stop();
+                        return;
+                    }
+                    this.core.deploy(model);
+                }.bind(this));
+            }
         }.bind(this));
 
         this.core.on('deployed', function () {
@@ -83,12 +95,18 @@ var BrowserRuntime = Class({
         }.bind(this));
     },
 
-    start: function (nodeName) {
+    start: function (nodeName, groupName, groupPort) {
+        this.groupName = groupName;
+        this.groupPort = groupPort;
         this.core.start(nodeName);
     },
 
     stop: function () {
         this.core.stop();
+    },
+
+    setBootstrapModel: function (model) {
+        this.bootstrapModel = model;
     },
 
     clearLogs: function () {

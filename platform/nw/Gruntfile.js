@@ -28,86 +28,6 @@ module.exports = function (grunt) {
             dist: 'dist'
         },
 
-        // Watches files for changes and runs tasks based on the changed files
-        watch: {
-            bower: {
-                files: ['bower.json'],
-                tasks: ['bowerInstall']
-            },
-            js: {
-                files: ['<%= config.app %>/scripts/{,*/}*.js'],
-                tasks: ['jshint'],
-                options: {
-                    livereload: true
-                }
-            },
-            jstest: {
-                files: ['test/spec/{,*/}*.js'],
-                tasks: ['test:watch']
-            },
-            gruntfile: {
-                files: ['Gruntfile.js'],
-                tasks: ['hogan']
-            },
-            hogan: {
-                files: ['templates/**/*'],
-                tasks: ['hogan'],
-                options: {
-                    livereload: true
-                }
-            },
-            styles: {
-                files: ['<%= config.app %>/styles/{,*/}*.css'],
-                tasks: ['newer:copy:styles', 'autoprefixer']
-            },
-            livereload: {
-                options: {
-                    livereload: '<%= connect.options.livereload %>'
-                },
-                files: [
-                    '<%= config.app %>/{,*/}*.html',
-                    '.tmp/styles/{,*/}*.css',
-                    '<%= config.app %>/images/{,*/}*'
-                ]
-            }
-        },
-
-        // The actual grunt server settings
-        connect: {
-            options: {
-                port: 9000,
-                livereload: 35729,
-                // Change this to '0.0.0.0' to access the server from outside
-                hostname: 'localhost'
-            },
-            livereload: {
-                options: {
-                    open: true,
-                    base: [
-                        '.tmp',
-                        '<%= config.app %>'
-                    ]
-                }
-            },
-            test: {
-                options: {
-                    port: 9001,
-                    base: [
-                        '.tmp',
-                        'test',
-                        '<%= config.app %>'
-                    ]
-                }
-            },
-            dist: {
-                options: {
-                    open: true,
-                    base: '<%= config.dist %>',
-                    livereload: false
-                }
-            }
-        },
-
         // Empties folders to start fresh
         clean: {
             dist: {
@@ -135,16 +55,6 @@ module.exports = function (grunt) {
                 '!<%= config.app %>/scripts/vendor/*',
                 'test/spec/{,*/}*.js'
             ]
-        },
-
-        // Mocha testing framework configuration options
-        mocha: {
-            all: {
-                options: {
-                    run: true,
-                    urls: ['http://<%= connect.test.options.hostname %>:<%= connect.test.options.port %>/index.html']
-                }
-            }
         },
 
         // Add vendor prefixed styles
@@ -261,13 +171,6 @@ module.exports = function (grunt) {
 
         // Run some tasks in parallel to speed up build process
         concurrent: {
-            server: [
-                'copy:styles',
-                'hogan'
-            ],
-            test: [
-                'copy:styles'
-            ],
             dist: [
                 'copy:styles',
                 'svgmin',
@@ -295,9 +198,9 @@ module.exports = function (grunt) {
         nodewebkit: {
             options: {
                 build_dir: 'builds', // Where the build version of my node-webkit app is saved
-                mac: true,
-                win: true,
-                linux32: true,
+                mac: false,
+                win: false,
+                linux32: false,
                 linux64: true
             },
             src: ['dist/**'] // Your node-webkit app

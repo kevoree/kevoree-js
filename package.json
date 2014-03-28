@@ -1,6 +1,6 @@
 {
   "name": "kevoree-js",
-  "version": "0.2.0",
+  "version": "0.2.4",
   "description": "Kevoree platforms, tools, library written in Javascript",
   "private": true,
   "scripts": {},

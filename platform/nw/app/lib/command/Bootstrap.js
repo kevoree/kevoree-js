@@ -15,9 +15,11 @@ var Bootstrap = AbstractCommand.extend({
         });
     },
 
-    execute: function (nodeName, callback) {
-        var grpName = 'sync';
-        var port = 9000;
+    execute: function (options, callback) {
+        var nodeName = options.nodeName  || 'node0',
+            grpName  = options.groupName || 'sync',
+            port     = options.groupPort || 9000;
+
         var kevsModel = '' +
             'include npm:kevoree-node-javascript:latest' + '\n' +
             'include npm:kevoree-group-websocket:latest' + '\n' +

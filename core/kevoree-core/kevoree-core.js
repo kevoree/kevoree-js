@@ -48,10 +48,15 @@ module.exports = Class({
      * @param nodeName
      */
     start: function (nodeName) {
-        if (nodeName == undefined || nodeName.length == 0) nodeName = "node0";
+        if (nodeName || nodeName.length === 0) nodeName = "node0";
 
         this.nodeName = nodeName;
         this.currentModel = this.factory.createContainerRoot();
+
+        var node = this.factory.createContainerNode();
+        node.name = this.nodeName;
+        node.started = false;
+        this.currentModel.addNodes(node);
 
         // starting loop function
         this.intervalId = setInterval(function () {}, 1e8);

@@ -17,7 +17,7 @@ var Bootstrapper = Class({
         callback = callback || function () {};
 
         var nodeInstance = model.findNodesByID(nodeName);
-        if (nodeInstance != undefined && nodeInstance != null) {
+        if (nodeInstance) {
             var deployUnit = nodeInstance.typeDefinition.deployUnit;
             if (deployUnit) {
                 // bootstrap node deploy unit
