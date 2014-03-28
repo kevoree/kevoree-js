@@ -29,7 +29,7 @@ module.exports = function(grunt) {
                     'org.kevoree.model.js'
                 ]
             },
-            src: [ '**/*' ]
+            src: [ '**' ]
         }
     });
 
