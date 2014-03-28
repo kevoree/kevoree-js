@@ -1,6 +1,6 @@
 {
   "name": "kevoree-resolvers",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Standard Kevoree Javascript resolvers",
   "main": "./kevoree-resolvers.js",
   "scripts": {
@@ -23,8 +23,8 @@
   },
   "homepage": "https://github.com/kevoree/kevoree-js",
   "dependencies": {
-    "kevoree-commons": "0.2.4",
-    "kevoree-library": "0.2.4",
+    "kevoree-commons": "0.2.5",
+    "kevoree-library": "0.2.5",
     "npmi": "0.0.5",
     "npm": "1.4.4"
   }

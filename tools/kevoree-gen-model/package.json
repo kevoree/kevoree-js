@@ -1,14 +1,14 @@
 {
   "name": "kevoree-gen-model",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Kevoree Generate Model Tool - Generates a Kevoree model from a kevoree-entity like module",
   "main": "kevoree-gen-model.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "kevoree-entities": "0.2.4",
-    "kevoree-library": "0.2.4",
+    "kevoree-entities": "0.2.5",
+    "kevoree-library": "0.2.5",
     "optimist": ">= 0.6.0",
     "npm": "1.4.4"
   },

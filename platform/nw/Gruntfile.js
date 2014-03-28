@@ -220,21 +220,8 @@ module.exports = function (grunt) {
         'htmlmin'
     ]);
 
-    grunt.registerTask('installApp', 'Run npm install in app/ directory', function () {
-        var done = this.async();
-        npmi({path: 'app'}, function (err) {
-            if (err) {
-                grunt.log.error(err.message);
-                return done();
-            }
-
-            done();
-        });
-    });
-
     grunt.registerTask('default', [
         'build',
-        'installApp',
         'nodewebkit'
     ]);
 };
