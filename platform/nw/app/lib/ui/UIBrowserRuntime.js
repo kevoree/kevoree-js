@@ -137,6 +137,8 @@ var UIBrowserRuntime = Class({
     },
 
     started: function () {
+        $('#navbar.navbar-collapse').append(RuntimeTemplates['navbar-start-stop'].render());
+
         $('#start-runtime').prop('disabled', true);
         $('#stop-runtime').prop('disabled', false);
     },
