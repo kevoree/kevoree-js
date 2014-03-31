@@ -48,7 +48,7 @@ module.exports = Class({
      * @param nodeName
      */
     start: function (nodeName) {
-        if (nodeName || nodeName.length === 0) nodeName = "node0";
+        if (!nodeName || nodeName.length === 0) nodeName = "node0";
 
         this.nodeName = nodeName;
         this.currentModel = this.factory.createContainerRoot();
