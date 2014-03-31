@@ -16,6 +16,8 @@ var BrowserRuntime = Class({
         var modulesPath = process.cwd();
 
         this.logger = new BrowserLogger(this.toString());
+        this.resolver = new NPMResolver(modulesPath, this.logger);
+
         this.core = new KevoreeCore(modulesPath, this.logger);
         this.bootstrapModel = null;
         this.groupName = null;
@@ -50,12 +52,11 @@ var BrowserRuntime = Class({
             }
         });
 
-        var resolver = new NPMResolver(modulesPath, this.logger);
-        var bootstrapper = new BrowserBootstrapper(this.logger, resolver);
-        var bootstrapCmd = new Bootstrap(this, resolver);
+        var bootstrapper = new BrowserBootstrapper(this.logger, this.resolver);
+        var bootstrapCmd = new Bootstrap(this, this.resolver);
 
         this.core.setBootstrapper(bootstrapper);
-        this.ui = new UIBrowserRuntime(this, resolver);
+        this.ui = new UIBrowserRuntime(this);
 
         this.core.on('started', function () {
             this.ui.started();
@@ -107,6 +108,10 @@ var BrowserRuntime = Class({
 
     setBootstrapModel: function (model) {
         this.bootstrapModel = model;
+    },
+
+    getResolver: function () {
+        return this.resolver;
     },
 
     clearLogs: function () {

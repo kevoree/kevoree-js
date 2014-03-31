@@ -153,10 +153,19 @@ module.exports = function (grunt) {
                         'images/**',
                         '{,*/}*.html',
                         'styles/fonts/{,*/}*.*',
-                        'bower_components/bootstrap/dist/fonts/*.*',
                         'package.json',
                         'node_modules/**',
                         'lib/**'
+                    ]
+                }]
+            },
+            bootstrap: {
+                files: [{
+                    expand: true,
+                    cwd: '<%= config.app %>/bower_components/bootstrap/dist',
+                    dest: '<%= config.dist %>',
+                    src: [
+                        'fonts/**'
                     ]
                 }]
             },
@@ -216,6 +225,7 @@ module.exports = function (grunt) {
         'cssmin',
         'uglify',
         'copy:dist',
+        'copy:bootstrap',
         'usemin',
         'htmlmin'
     ]);

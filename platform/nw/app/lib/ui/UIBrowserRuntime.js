@@ -33,7 +33,7 @@ function readFile(callback) {
 var UIBrowserRuntime = Class({
     toString: 'UIBrowserRuntime',
 
-    construct: function (runtime, resolver) {
+    construct: function (runtime) {
         this.runtime = runtime;
 
         $('#platform-node-name').val('node'+parseInt(Math.random()*1000));
@@ -41,6 +41,13 @@ var UIBrowserRuntime = Class({
         $('#clear-logs').on('click', function () {
             runtime.clearLogs();
         });
+
+        this.configUI();
+    },
+
+    configUI: function () {
+        var runtime = this.runtime;
+        var resolver = this.runtime.getResolver();
 
         $('#modal').html(RuntimeTemplates['modal-start-menu'].render());
         $('#modal').modal();
@@ -58,7 +65,6 @@ var UIBrowserRuntime = Class({
 
                 $('#start-runtime').on('click', function () {
                     var nodeName = $('#node-name-list option:selected').attr('value');
-                    console.log("START CLICKED", nodeName);
                     runtime.setBootstrapModel(model);
                     runtime.start(nodeName);
                     $('#modal').modal('hide');
@@ -137,15 +143,11 @@ var UIBrowserRuntime = Class({
     },
 
     started: function () {
-        $('#navbar.navbar-collapse').append(RuntimeTemplates['navbar-start-stop'].render());
 
-        $('#start-runtime').prop('disabled', true);
-        $('#stop-runtime').prop('disabled', false);
     },
 
     stopped: function () {
-        $('#start-runtime').prop('disabled', false);
-        $('#stop-runtime').prop('disabled', true);
+
     }
 });
 
