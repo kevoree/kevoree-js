@@ -4,8 +4,7 @@ var Class               = require('pseudoclass'),
     BrowserBootstrapper = require('./BrowserBootstrapper'),
     UIBrowserRuntime    = require('../ui/UIBrowserRuntime'),
     NPMResolver         = require('kevoree-resolvers').NPMResolver,
-    Bootstrap           = require('../command/Bootstrap'),
-    path                = require('path');
+    Bootstrap           = require('../command/Bootstrap');
 
 /**
  * Created by leiko on 12/03/14.
@@ -14,7 +13,8 @@ var BrowserRuntime = Class({
     toString: 'BrowserRuntime',
 
     construct: function () {
-        var modulesPath = path.resolve(__dirname, '..', '..');
+        var modulesPath = process.cwd();
+
         this.logger = new BrowserLogger(this.toString());
         this.core = new KevoreeCore(modulesPath, this.logger);
         this.bootstrapModel = null;

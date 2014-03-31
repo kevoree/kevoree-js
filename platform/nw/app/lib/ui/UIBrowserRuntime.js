@@ -56,8 +56,9 @@ var UIBrowserRuntime = Class({
                 $('#model-loading').addClass('hide');
                 $('#model-loaded').removeClass('hide');
 
-                $('#ready').on('click', function () {
+                $('#start-runtime').on('click', function () {
                     var nodeName = $('#node-name-list option:selected').attr('value');
+                    console.log("START CLICKED", nodeName);
                     runtime.setBootstrapModel(model);
                     runtime.start(nodeName);
                     $('#modal').modal('hide');
@@ -121,7 +122,7 @@ var UIBrowserRuntime = Class({
             $('#modal').html(RuntimeTemplates['modal-start-from-custom-values'].render());
             backBtnListener();
 
-            $('#ready').on('click', function () {
+            $('#start-runtime').on('click', function () {
                 var nodeName = $('#node-name').val();
                 var groupName = $('#group-name').val();
                 var groupPort = $('#group-port').val();
