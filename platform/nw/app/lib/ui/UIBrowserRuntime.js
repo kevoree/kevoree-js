@@ -1,6 +1,7 @@
 var Class       = require('pseudoclass'),
     kevoree     = require('kevoree-library').org.kevoree,
     KevScript   = require('kevoree-kevscript');
+//    npm         = require('npm');
 
 // helper function to read file content from <input type="file">
 function readFile(callback) {
@@ -63,6 +64,7 @@ var UIBrowserRuntime = Class({
                 $('#model-loading').addClass('hide');
                 $('#model-loaded').removeClass('hide');
 
+                $('#start-runtime').prop('disabled', false);
                 $('#start-runtime').on('click', function () {
                     var nodeName = $('#node-name-list option:selected').attr('value');
                     runtime.setBootstrapModel(model);
@@ -128,6 +130,38 @@ var UIBrowserRuntime = Class({
             $('#modal').html(RuntimeTemplates['modal-start-from-custom-values'].render());
             backBtnListener();
 
+//            npm.load({}, function (err) {
+//                if (err) {
+//                    throw err;
+//                }
+//
+//                npm.commands.search('/kevoree-group-|kevoree-node-/', true, function (err, modules) {
+//                    if (err) {
+//                        throw err;
+//                    }
+//
+//                    for (var module in modules) {
+//                        if (module.startsWith('kevoree-group-')) {
+//                            $('#group-type').append(RuntimeTemplates['select-option'].render({name: module}));
+//                        } else if (module.startsWith('kevoree-node-')) {
+//                            $('#node-type').append(RuntimeTemplates['select-option'].render({name: module}));
+//                        }
+//                    }
+//
+//                    $('#loading-libraries').addClass('hide');
+//                    $('#loaded-libraries').removeClass('hide');
+//                    $('#start-runtime').prop('disabled', false);
+//                    $('#start-runtime').on('click', function () {
+//                        var nodeName = $('#node-name').val();
+//                        var groupName = $('#group-name').val();
+//                        var groupPort = $('#group-port').val();
+//                        runtime.start(nodeName, groupName, groupPort);
+//                        $('#modal').modal('hide');
+//                    });
+//                });
+//            });
+
+            $('#start-runtime').prop('disabled', false);
             $('#start-runtime').on('click', function () {
                 var nodeName = $('#node-name').val();
                 var groupName = $('#group-name').val();
