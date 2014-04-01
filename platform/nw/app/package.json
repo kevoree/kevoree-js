@@ -1,7 +1,7 @@
 {
   "name": "kevoree-browser-runtime",
   "main": "index.html",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "private": true,
   "single-instance": false,
   "window": {
@@ -13,12 +13,12 @@
   },
   "dependencies": {
     "pseudoclass": "^1.0.0",
-    "kevoree-library": "0.2.5",
+    "kevoree-library": "0.2.6",
     "kevoree-core": "0.2.6",
-    "kevoree-commons": "0.2.5",
+    "kevoree-commons": "0.2.6",
     "async": "^0.2.10",
-    "kevoree-kevscript": "0.2.5",
-    "kevoree-resolvers": "0.2.5",
+    "kevoree-kevscript": "0.2.6",
+    "kevoree-resolvers": "0.2.6",
     "npmi": "0.0.5"
   }
 }

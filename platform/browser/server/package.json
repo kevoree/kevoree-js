@@ -1,6 +1,6 @@
 {
   "name": "kevoree-browser-runtime-server",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Kevoree Browser Runtime - Web Services",
   "main": "server.js",
   "scripts": {
@@ -24,10 +24,10 @@
   },
   "homepage": "https://github.com/kevoree/kevoree-js",
   "dependencies": {
-    "kevoree-nodejs-runtime": "0.2.5",
+    "kevoree-nodejs-runtime": "0.2.6",
     "express": "^3.4.8",
-    "kevoree-library": "0.2.5",
-    "kevoree-model-sync": "0.2.5",
+    "kevoree-library": "0.2.6",
+    "kevoree-model-sync": "0.2.6",
     "tar": "^0.1.19",
     "npmi": "0.0.5",
     "rimraf": "^2.2.6",

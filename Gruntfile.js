@@ -17,7 +17,7 @@ module.exports = function(grunt) {
         deps_manager: {
             options: {
                 version: '<%= pkg.version %>',
-                pattern: 'kevoree-.*',
+                pattern: ['kevoree-.*', 'grunt-kevoree', 'generator-kevoree'],
                 ignore: 'kevoree-web-editor-client' // kevoree editor static client isn't in this project repository
             },
             src: packages

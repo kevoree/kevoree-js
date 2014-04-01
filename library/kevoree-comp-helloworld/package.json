@@ -1,6 +1,6 @@
 {
   "name": "kevoree-comp-helloworld",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "main": "./kevoree-comp-helloworld.js",
   "description": "A Kevoree component that displays an hello world",
   "scripts": {
@@ -22,14 +22,14 @@
     "url": "https://github.com/kevoree/kevoree-js"
   },
   "dependencies": {
-    "kevoree-entities": "0.2.5",
-    "kevoree-commons": "0.2.5",
+    "kevoree-entities": "0.2.6",
+    "kevoree-commons": "0.2.6",
     "pseudoclass": "0.2.6"
   },
   "devDependencies": {
-    "kevoree-gen-model": "0.2.5",
+    "kevoree-gen-model": "0.2.6",
     "grunt": "^0.4.2",
-    "grunt-kevoree": "0.0.1"
+    "grunt-kevoree": "0.2.6"
   },
   "optionalDependencies": {},
   "engines": {

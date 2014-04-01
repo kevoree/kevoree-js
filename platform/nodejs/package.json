@@ -1,20 +1,20 @@
 {
   "name": "kevoree-nodejs-runtime",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "main": "kevoree-nodejs-runtime.js",
   "scripts": {
     "start": "node cli.js"
   },
   "dependencies": {
-    "kevoree-core": "0.2.5",
-    "kevoree-library": "0.2.5",
-    "kevoree-commons": "0.2.5",
+    "kevoree-core": "0.2.6",
+    "kevoree-library": "0.2.6",
+    "kevoree-commons": "0.2.6",
     "pseudoclass": "0.2.6",
     "npm": "1.4.4",
     "optimist": "~0.6.0",
-    "kevoree-kevscript": "0.2.5",
-    "kevoree-resolvers": "0.2.5"
+    "kevoree-kevscript": "0.2.6",
+    "kevoree-resolvers": "0.2.6"
   },
   "license": "LGPL-3.0"
 }

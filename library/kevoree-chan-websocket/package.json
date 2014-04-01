@@ -1,20 +1,20 @@
 {
   "name": "kevoree-chan-websocket",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "main": "./kevoree-chan-websocket.js",
   "scripts": {
     "prepublish": "node node_modules/kevoree-gen-model",
     "kevoree": "node node_modules/kevoree-nodejs-runtime/cli.js -n node1 -g sync -k kevs/main.kevs"
   },
   "dependencies": {
-    "kevoree-entities": "0.2.5",
-    "kevoree-commons": "0.2.5",
+    "kevoree-entities": "0.2.6",
+    "kevoree-commons": "0.2.6",
     "ws": "~0.4.31",
     "smart-socket": "0.0.3"
   },
   "devDependencies": {
-    "kevoree-gen-model": "0.2.5",
+    "kevoree-gen-model": "0.2.6",
     "grunt": "^0.4.2",
-    "grunt-kevoree": "0.0.1"
+    "grunt-kevoree": "0.2.6"
   }
 }
