@@ -1,5 +1,5 @@
 var parseString = require('xml2js').parseString;
-var http = require('http');
+var http = require('https');
 var semver = require('semver');
 var config = require('../../config');
 
@@ -38,7 +38,7 @@ module.exports = function (platform) {
             var options = {
                 host: 'oss.sonatype.org',
                 path: '/service/local/data_index?g=org.kevoree.library.'+platform
-            }
+            };
             var request = http.request(options, function (result) {
                 var data = '';
                 result.on('data', function (chunk) {
@@ -50,7 +50,10 @@ module.exports = function (platform) {
                     canClear = false;
                     parseString(data, function (err, xml) {
                         if (err) {
-                            callback(new Error('Unable to parse XML file.'));
+                            console.error('ERROR: /load (platform: '+platform+')');
+                            console.error('  > http://'+options.host+options.path);
+                            console.error(err.stack);
+                            callback(new Error('Server unable to parse XML file from Sonatype.'));
                             canClear = true;
                             return;
                         }
