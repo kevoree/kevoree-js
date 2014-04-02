@@ -21,7 +21,7 @@ module.exports = function (repos, libraries, callback) {
 
     if (list.sizeSync() == 0) {
         // add sonatype as a default central repo if there is 0 repo given (just in case)
-        list.addSync("http://oss.sonatype.org/content/groups/public");
+        list.addSync("https://oss.sonatype.org/content/groups/public");
     }
 
     var mergedModel = factory.createContainerRoot();

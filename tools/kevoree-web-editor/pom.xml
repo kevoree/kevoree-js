@@ -9,17 +9,11 @@
 
     <properties>
         <metamodel.ecore>${basedir}/target/metamodel/kevoree.ecore</metamodel.ecore>
-        <kotlin.version>0.6.602</kotlin.version>
-        <kevoree.version>3.4.1</kevoree.version>
+        <kotlin.version>0.7.271</kotlin.version>
+        <kevoree.version>3.5.4</kevoree.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
-            <version>${kotlin.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
