@@ -60,6 +60,7 @@ module.exports = function (platform) {
 
                         var artifacts = xml['search-results']['data'][0]['artifact'];
                         var libz = {};
+                        // iterate over all artifacts
                         for (var i in artifacts) {
                             if (artifacts[i]['classifier'] === undefined) {
                                 var artId = artifacts[i]['artifactId'][0];
@@ -75,14 +76,19 @@ module.exports = function (platform) {
                                     };
                                     libz[artId] = lib;
                                 }
-                                lib.versions.push(artifacts[i]['version'][0]);
+
+                                if (lib.versions.indexOf(artifacts[i]['version'][0]) === -1) {
+                                    // do not duplicate versions
+                                    lib.versions.push(artifacts[i]['version'][0]);
+                                }
                             }
                         }
 
+                        // iterate over libraries in order to determine latest version
                         for (var artId in libz) {
                             libz[artId].latest = libz[artId].versions[0];
                             for (var i=1; i < libz[artId].versions.length; i++) {
-                                if (semver.gt(libz[artId].versions[i], libz[artId].latest)) {
+                                if (!libz[artId].versions[i].contains('SNAPSHOT') && semver.gt(libz[artId].versions[i], libz[artId].latest)) {
                                     libz[artId].latest = libz[artId].versions[i];
                                 }
                             }
@@ -91,7 +97,6 @@ module.exports = function (platform) {
 
                         callback(null, libraries);
                         canClear = true;
-                        return;
                     });
                 });
             });
