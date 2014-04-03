@@ -9,7 +9,6 @@ var genDictionary = require('./genDictionary');
  * @param model
  */
 module.exports = function (deployUnit, obj, model) {
-  console.log('genNode', deployUnit.name, obj);
   var factory = new kevoree.impl.DefaultKevoreeFactory();
 
   // create a new group type
