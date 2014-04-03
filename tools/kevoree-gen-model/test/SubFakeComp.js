@@ -4,7 +4,7 @@ var SubFakeComp = FakeComp.extend({
     toString: "SubFakeComp",
 
     dic_potato: {
-        defaultValue: "bar"
+        defaultValue: true
     }
 });
 

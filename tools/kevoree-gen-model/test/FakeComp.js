@@ -22,7 +22,6 @@ var FakeComp = AbstractComponent.extend({
     },
 
     dic_attr0: {
-        optional: false,
         fragmentDependant: true,
         defaultValue: "foo"
     },
