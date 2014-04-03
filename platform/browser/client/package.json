@@ -3,9 +3,9 @@
   "version": "0.2.6",
   "dependencies": {
     "pseudoclass": "^1.0.0",
-    "kevoree-library": "0.2.6",
-    "kevoree-core": "0.2.6",
-    "kevoree-commons": "0.2.6",
+    "kevoree-library": ">=0.2.6",
+    "kevoree-core": ">=0.2.6",
+    "kevoree-commons": ">=0.2.6",
     "async": "^0.2.10"
   },
   "devDependencies": {

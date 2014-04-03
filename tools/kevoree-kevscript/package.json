@@ -27,10 +27,10 @@
     "pseudoclass": "~0.2.6",
     "optimist": "~0.6.0",
     "async": "~0.2.9",
-    "kevoree-library": "0.2.6",
-    "kevoree-kotlin": "0.2.6",
-    "kevoree-commons": "0.2.6",
-    "kevoree-resolvers": "0.2.6"
+    "kevoree-library": ">=0.2.6",
+    "kevoree-kotlin": ">=0.2.6",
+    "kevoree-commons": ">=0.2.6",
+    "kevoree-resolvers": ">=0.2.6"
   },
   "devDependencies": {
     "browserify": "~2.35.2",

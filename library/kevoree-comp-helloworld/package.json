@@ -22,14 +22,14 @@
     "url": "https://github.com/kevoree/kevoree-js"
   },
   "dependencies": {
-    "kevoree-entities": "0.2.6",
-    "kevoree-commons": "0.2.6",
+    "kevoree-entities": ">=0.2.6",
+    "kevoree-commons": ">=0.2.6",
     "pseudoclass": "0.2.6"
   },
   "devDependencies": {
-    "kevoree-gen-model": "0.2.6",
+    "kevoree-gen-model": ">=0.2.6",
     "grunt": "^0.4.2",
-    "grunt-kevoree": "0.2.6"
+    "grunt-kevoree": ">=0.2.6"
   },
   "optionalDependencies": {},
   "engines": {

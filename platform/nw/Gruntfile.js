@@ -8,7 +8,8 @@
 // 'test/spec/**/*.js'
 
 var path = require('path'),
-    npmi = require('npmi');
+    npmi = require('npmi'),
+    exec = require('child_process').exec;
 
 module.exports = function (grunt) {
 
@@ -231,7 +232,26 @@ module.exports = function (grunt) {
         'htmlmin'
     ]);
 
+    grunt.registerTask('checkKevoreeLibrary', 'Check if app/node_modules is valid (only one kevoree-library module)', function () {
+        var done = this.async();
+        var findPath = 'app/node_modules';
+        exec('find '+findPath+' -name kevoree-library|wc -l', function (err, stdout) {
+            if (err) {
+                grunt.fail.warn(err);
+                done();
+            }
+
+            if (parseInt(stdout) !== 1) {
+                grunt.fail.fatal('There is more than one kevoree-library module in '+findPath);
+            } else {
+                grunt.log.writeln(findPath+' contains only 1 kevoree-library module');
+            }
+            done();
+        });
+    });
+
     grunt.registerTask('default', [
+        'checkKevoreeLibrary',
         'build',
         'nodewebkit'
     ]);

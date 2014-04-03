@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "kevoree-entities": "0.2.6",
-    "kevoree-library": "0.2.6",
+    "kevoree-entities": ">=0.2.6",
+    "kevoree-library": ">=0.2.6",
     "optimist": ">= 0.6.0",
     "npm": "1.4.4"
   },
