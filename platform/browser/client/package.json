@@ -1,11 +1,11 @@
 {
   "name": "client",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "dependencies": {
     "pseudoclass": "^1.0.0",
-    "kevoree-library": ">=0.2.6",
-    "kevoree-core": ">=0.2.6",
-    "kevoree-commons": ">=0.2.6",
+    "kevoree-library": ">=0.3.0",
+    "kevoree-core": ">=0.3.0",
+    "kevoree-commons": ">=0.3.0",
     "async": "^0.2.10"
   },
   "devDependencies": {

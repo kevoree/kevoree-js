@@ -1,18 +1,18 @@
 {
   "name": "kevoree-comp-fakeconsole",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "main": "./kevoree-comp-fakeconsole.js",
   "scripts": {
     "prepublish": "node node_modules/kevoree-gen-model -q"
   },
   "dependencies": {
-    "kevoree-entities": ">=0.2.6",
-    "kevoree-commons": ">=0.2.6"
+    "kevoree-entities": ">=0.3.0",
+    "kevoree-commons": ">=0.3.0"
   },
   "devDependencies": {
-    "kevoree-gen-model": ">=0.2.6",
+    "kevoree-gen-model": ">=0.3.0",
     "grunt": "~0.4.1",
     "grunt-jade": "~0.4.0",
-    "grunt-kevoree": ">=0.2.6"
+    "grunt-kevoree": ">=0.3.0"
   }
 }

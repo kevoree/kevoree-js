@@ -1,15 +1,15 @@
 {
   "name": "kevoree-chan-stompserver",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "main": "./kevoree-chan-stompserver.js",
   "scripts": {
     "prepublish": "node node_modules/kevoree-gen-model"
   },
   "dependencies": {
-    "kevoree-entities": ">=0.2.6",
+    "kevoree-entities": ">=0.3.0",
     "ws": "~0.4.31"
   },
   "devDependencies": {
-    "kevoree-gen-model": ">=0.2.6"
+    "kevoree-gen-model": ">=0.3.0"
   }
 }
