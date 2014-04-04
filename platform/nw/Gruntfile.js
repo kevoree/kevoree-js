@@ -210,8 +210,8 @@ module.exports = function (grunt) {
                 version: '0.9.2', // node-webkit version
                 build_dir: 'builds', // Where the build version of my node-webkit app is saved
                 mac: true,
-                win: true,
-                linux64: true
+                win: false,
+                linux64: false
             },
             src: ['dist/**'] // Your node-webkit app
         }
@@ -237,7 +237,7 @@ module.exports = function (grunt) {
         exec('find '+findPath+' -name kevoree-library|wc -l', function (err, stdout) {
             if (err) {
                 grunt.fail.warn(err);
-                done();
+                return done();
             }
 
             if (parseInt(stdout) !== 1) {
@@ -249,9 +249,40 @@ module.exports = function (grunt) {
         });
     });
 
+    grunt.registerTask('dlNodeWebkit', 'Download node-webkit from official website', function () {
+        var done = this.async();
+        var childprocess = exec('sh dl-node-webkit.sh', function (err, stdout) {
+            if (err) {
+                grunt.fail.warn(err);
+                return done();
+            }
+            done();
+        });
+
+        childprocess.stdout.on('data', function (data) {
+            grunt.log.writeln(data);
+        });
+    });
+
+    grunt.registerTask('buildRuntimes', 'Build Kevoree Browser Runtime for Linux (32, 64), Windows & Mac', function () {
+        var done = this.async();
+        var childprocess = exec('sh build-runtimes.sh', function (err, stdout) {
+            if (err) {
+                grunt.fail.warn(err);
+                return done();
+            }
+            done();
+        });
+
+        childprocess.stdout.on('data', function (data) {
+            grunt.log.writeln(data);
+        });
+    });
+
     grunt.registerTask('default', [
         'checkKevoreeLibrary',
         'build',
-        'nodewebkit'
+        'dlNodeWebkit',
+        'buildRuntimes'
     ]);
 };
