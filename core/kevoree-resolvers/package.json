@@ -23,9 +23,11 @@
   },
   "homepage": "https://github.com/kevoree/kevoree-js",
   "dependencies": {
+    "async": "^0.6.2",
     "kevoree-commons": ">=0.3.0",
     "kevoree-library": ">=0.3.0",
+    "npm": "1.4.4",
     "npmi": "0.0.5",
-    "npm": "1.4.4"
+    "rimraf": "^2.2.6"
   }
 }

@@ -6,6 +6,14 @@ var AbstractNode        = require('kevoree-entities').AbstractNode,
 var JavascriptNode = AbstractNode.extend({
     toString: 'JavascriptNode',
 
+    dic_logLevel: {
+        defaultValue: 'INFO',
+        optional: false,
+        update: function (oldValue) {
+            console.log('logLevel updated to', this.dic_logLevel.value, oldValue);
+        }
+    },
+
     construct: function () {
         this.adaptationEngine = new AdaptationEngine(this);
     },
@@ -13,10 +21,6 @@ var JavascriptNode = AbstractNode.extend({
     start: function (_super) {
         _super.call(this);
         this.adaptationEngine.setLogger(this.getKevoreeCore().getLogger());
-
-        this.getKevoreeCore().on('deployed', function () {
-
-        }.bind(this));
     },
 
     stop: function (_super) {

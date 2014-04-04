@@ -40,7 +40,7 @@ module.exports = function(grunt) {
             var kevs = grunt.file.read(this.data.kevscript);
             kevsEngine.parse(kevs, function (err, model) {
                 if (err) {
-                    grunt.log.error(err.message);
+                    grunt.fail.fatal(err.message);
                     done();
                 }
 

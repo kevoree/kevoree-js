@@ -3,7 +3,7 @@
   "version": "0.3.0",
   "main": "./kevoree-node-javascript.js",
   "scripts": {
-    "prepublish": "node node_modules/kevoree-gen-model"
+    "prepublish": "node node_modules/kevoree-gen-model -q"
   },
   "description": "A Kevoree platform to run Javascript code",
   "keywords": [
@@ -22,12 +22,12 @@
     "url": "https://github.com/kevoree/kevoree-js"
   },
   "dependencies": {
-    "kevoree-library": ">=0.3.0",
-    "kevoree-kotlin": ">=0.3.0",
-    "kevoree-entities": ">=0.3.0",
+    "async": "^0.2.10",
     "kevoree-commons": ">=0.3.0",
-    "pseudoclass": "0.2.6",
-    "async": "^0.2.10"
+    "kevoree-entities": ">=0.3.0",
+    "kevoree-kotlin": ">=0.3.0",
+    "kevoree-library": ">=0.3.0",
+    "pseudoclass": "0.2.6"
   },
   "devDependencies": {
     "kevoree-gen-model": ">=0.3.0",

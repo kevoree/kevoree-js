@@ -50,7 +50,7 @@ var Dictionary = Class({
     setValue: function (name, value) {
         var entity = this.entity.getModelEntity();
         if (!entity.dictionary) entity.dictionary = factory.createDictionary();
-        var value = entity.dictionary.findValuesByID(name);
+        value = entity.dictionary.findValuesByID(name);
         if (!value) {
             value = factory.createDictionaryValue();
             value.name = name;
@@ -67,6 +67,7 @@ var Dictionary = Class({
             this.map[name] = value;
             // emit update event with the name, oldValue and newValue
             this.emitter.emit(name, value, oldValue);
+            this.entity['dic_'+name].update(oldValue).bind(this.entity);
 
         } else {
             // no entry with that name exists in the dictionary : add it
@@ -78,12 +79,13 @@ var Dictionary = Class({
     },
 
     setMap: function (map) {
+        var name;
         if (this.length > 0) {
             // current map is not empty
             for (var newName in map) {
                 var alreadyAdded = false;
 
-                for (var name in this.map) {
+                for (name in this.map) {
                     if (newName == name) {
                         // oldMap and newMap both have this attribute : update needed ?
                         var oldValue = this.map[name];
@@ -108,10 +110,14 @@ var Dictionary = Class({
             this.map = map;
 
             // compute map length
-            for (var name in this.map) this.length++;
+            for (name in this.map) {
+                this.length++;
+            }
 
             // emit add event for each value added in the dictionary
-            for (var name in this.map) this.emitter.emit(ADD_EVENT, name, this.map[name]);
+            for (name in this.map) {
+                this.emitter.emit(ADD_EVENT, name, this.map[name]);
+            }
         }
     },
 

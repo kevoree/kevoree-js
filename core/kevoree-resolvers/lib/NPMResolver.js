@@ -4,12 +4,14 @@ var Resolver      = require('kevoree-commons').Resolver,
     npm           = require('npm'),
     npmi          = require('npmi'),
     fs            = require('fs'),
+    rimraf        = require('rimraf'),
+    async         = require('async'),
     path          = require('path');
 
 var NPMResolver = Resolver.extend({
     toString: 'NPMResolver',
 
-    construct: function (modulesPath, logger) {
+    construct: function () {
         this.log.debug(this.toString(), 'modulesPath= '+this.modulesPath);
     },
 
@@ -26,16 +28,17 @@ var NPMResolver = Resolver.extend({
                 name:           deployUnit.name,
                 version:        deployUnit.version,
                 forceInstall:   forceInstall,
-                path:           this.modulesPath    
+                path:           this.modulesPath
             };
-        
+
         var npmiCallback = function (err) {
             if (err) {
                 this.log.error(this.toString(), err.message);
                 return callback(new Error("Bootstrap failure"));
             }
-            // npm install succeed so library should be installed as an npm module: go resolve
-            var KClass = require(pkgPath);
+
+            // resolve deployUnit module (require it) and call callback
+            var KClass = require(deployUnit.name);
             var jsonModel = require(path.resolve(pkgPath, 'kevlib.json'));
             try {
                 var model = loader.loadModelFromString(JSON.stringify(jsonModel)).get(0);
@@ -66,13 +69,13 @@ var NPMResolver = Resolver.extend({
                 npmi(options, npmiCallback);
             } else {
                 // well unable to find module locally, lets try to resolve it from npm registry
-                npmi(options, npmiCallback)
+                npmi(options, npmiCallback);
             }
         }.bind(this));
     },
 
     uninstall: function (deployUnit, callback) {
-        npm.load({}, function (err) {
+        npm.load({logLevel: 'silent'}, function (err) {
             if (err) {
                 // npm load error
                 return callback(new Error('NPMResolver error: unable to load npm module'));
