@@ -1,13 +1,13 @@
 {
   "name": "kevoree-chan-local",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "main": "./kevoree-chan-local.js",
   "description": "A Kevoree channel that transfers messages between components on the same node using EventEmitter (only)",
   "scripts": {
     "prepublish": "node node_modules/kevoree-gen-model"
   },
   "devDependencies": {
-    "kevoree-gen-model": ">=0.3.0"
+    "kevoree-gen-model": ">=0.4.0"
   },
   "keywords": [
     "kevoree",
@@ -24,8 +24,8 @@
     "url": "https://github.com/kevoree/kevoree-js"
   },
   "dependencies": {
-    "kevoree-entities": ">=0.3.0",
-    "kevoree-commons": ">=0.3.0",
+    "kevoree-entities": ">=0.4.0",
+    "kevoree-commons": ">=0.4.0",
     "pseudoclass": ">= 0.2.6"
   },
   "optionalDependencies": {}

@@ -1,6 +1,6 @@
 {
   "name": "kevoree-node-javascript",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "main": "./kevoree-node-javascript.js",
   "scripts": {
     "prepublish": "node node_modules/kevoree-gen-model -q"
@@ -23,16 +23,16 @@
   },
   "dependencies": {
     "async": "^0.2.10",
-    "kevoree-commons": ">=0.3.0",
-    "kevoree-entities": ">=0.3.0",
-    "kevoree-kotlin": ">=0.3.0",
-    "kevoree-library": ">=0.3.0",
+    "kevoree-commons": ">=0.4.0",
+    "kevoree-entities": ">=0.4.0",
+    "kevoree-kotlin": ">=0.4.0",
+    "kevoree-library": ">=0.4.0",
     "pseudoclass": "0.2.6"
   },
   "devDependencies": {
-    "kevoree-gen-model": ">=0.3.0",
+    "kevoree-gen-model": ">=0.4.0",
     "grunt": "^0.4.2",
-    "grunt-kevoree": ">=0.3.0"
+    "grunt-kevoree": ">=0.4.0"
   },
   "optionalDependencies": {},
   "engines": {
