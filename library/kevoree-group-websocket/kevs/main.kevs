@@ -1,5 +1,5 @@
-include npm:kevoree-node-javascript
-include npm:kevoree-group-websocket
+include npm:kevoree-node-javascript:latest
+include npm:kevoree-group-websocket:latest
 
 add node0 : JavascriptNode
 add sync : WebSocketGroup

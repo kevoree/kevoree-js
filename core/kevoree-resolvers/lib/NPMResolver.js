@@ -38,7 +38,7 @@ var NPMResolver = Resolver.extend({
             }
 
             // resolve deployUnit module (require it) and call callback
-            var KClass = require(deployUnit.name);
+            var KClass = require(pkgPath);
             var jsonModel = require(path.resolve(pkgPath, 'kevlib.json'));
             try {
                 var model = loader.loadModelFromString(JSON.stringify(jsonModel)).get(0);
