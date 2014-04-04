@@ -203,17 +203,6 @@ module.exports = function (grunt) {
                     '.tmp/scripts/templates.js': ['templates/**/*.html']
                 }
             }
-        },
-
-        nodewebkit: {
-            options: {
-                version: '0.9.2', // node-webkit version
-                build_dir: 'builds', // Where the build version of my node-webkit app is saved
-                mac: true,
-                win: false,
-                linux64: false
-            },
-            src: ['dist/**'] // Your node-webkit app
         }
     });
 
