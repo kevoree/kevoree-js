@@ -73,7 +73,7 @@ var KevoreeLogger = Class({
 
     setLevel: function (level) {
         this.level = level;
-        console.log(getTime()+'  '+chalkInfo('ALL ')+'   '+processTag(this.toString())+'  '+chalkInfo('Set logLevel= '+this.level));
+        console.log(getTime()+'  '+chalkInfo('ALL ')+'   '+processTag(this.toString())+'  '+chalkInfo('Set logLevel= '+LEVELS[this.level]));
     },
 
     setFilter: function (filter) {
