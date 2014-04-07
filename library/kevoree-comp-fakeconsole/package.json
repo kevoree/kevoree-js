@@ -1,9 +1,9 @@
 {
   "name": "kevoree-comp-fakeconsole",
-  "version": "0.4.0",
+  "version": "0.4.4",
   "main": "./kevoree-comp-fakeconsole.js",
   "scripts": {
-    "prepublish": "node node_modules/kevoree-gen-model -q"
+    "prepublish": "node node_modules/kevoree-gen-model -q && grunt jade"
   },
   "dependencies": {
     "kevoree-entities": ">=0.4.0",
