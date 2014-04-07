@@ -13,7 +13,6 @@ var Dictionary = Class({
         this.entity = entity;
         this.emitter = new EventEmitter();
         this.map = {};
-        this.length = 0;
     },
 
     /**
@@ -25,18 +24,6 @@ var Dictionary = Class({
      */
     on: function (attrName, callback) {
         this.emitter.addListener(attrName, callback.bind(this.entity));
-    },
-
-    /**
-     * Adds a listener on the dictionary attribute given that is triggered when added
-     * to the dictionary instance.
-     * @param attrName attribute to listen to
-     * @param callback function (value)
-     */
-    onAdd: function (attrName, callback) {
-        this.emitter.addListener(ADD_EVENT, function (name, value) {
-            if (value == attrName) callback(value);
-        });
     },
 
     off: function (event, callback) {
@@ -61,26 +48,19 @@ var Dictionary = Class({
     },
 
     setEntry: function (name, value) {
-        if (this.map[name] != undefined) {
-            // an entry with the same name already exists in the dictionary
-            var oldValue = this.map[name];
-            this.map[name] = value;
-            // emit update event with the name, oldValue and newValue
-            this.emitter.emit(name, value, oldValue);
-            this.entity['dic_'+name].update(oldValue).bind(this.entity);
-
-        } else {
-            // no entry with that name exists in the dictionary : add it
-            this.map[name] = value;
-            this.length++;
-            // emit an add event with the entry
-            this.emitter.emit(ADD_EVENT, name, value);
+        var oldValue = this.map[name];
+        this.map[name] = value;
+        // emit update event with the name, oldValue and newValue
+        this.entity['dic_'+name].value = value;
+        if (this.entity['dic_'+name].update && (typeof this.entity['dic_'+name].update === 'function')) {
+            this.entity['dic_'+name].update.bind(this.entity)(oldValue);
         }
+        this.emitter.emit(name, value, oldValue);
     },
 
     setMap: function (map) {
         var name;
-        if (this.length > 0) {
+        if (Object.keys(this.map).length > 0) {
             // current map is not empty
             for (var newName in map) {
                 var alreadyAdded = false;
@@ -101,23 +81,12 @@ var Dictionary = Class({
                 if (!alreadyAdded) {
                     // newMap has a new attribute to add to currentMap : ADD event
                     this.map[newName] = map[newName];
-                    this.emitter.emit(ADD_EVENT, newName, this.map[newName]);
                 }
             }
 
         } else {
             // dictionary was empty : set it from scratch
             this.map = map;
-
-            // compute map length
-            for (name in this.map) {
-                this.length++;
-            }
-
-            // emit add event for each value added in the dictionary
-            for (name in this.map) {
-                this.emitter.emit(ADD_EVENT, name, this.map[name]);
-            }
         }
     },
 
@@ -138,5 +107,4 @@ var Dictionary = Class({
     }
 });
 
-Dictionary.ADD_EVENT = ADD_EVENT;
 module.exports = Dictionary;
