@@ -23,9 +23,6 @@ module.exports = AdaptationPrimitive.extend({
             if (Kotlin.isType(kDictionary, kevoree.impl.FragmentDictionaryImpl)) {
                 if (kDictionary.name == this.node.getName()) {
                     dictionary.setEntry(this.modelElement.name, this.modelElement.value);
-                    if (instance['dic_'+this.modelElement.name]) {
-                        instance['dic_'+this.modelElement.name].value = this.modelElement.value;
-                    }
                 }
             } else {
                 dictionary.setEntry(this.modelElement.name, this.modelElement.value);

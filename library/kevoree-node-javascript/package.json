@@ -1,6 +1,6 @@
 {
   "name": "kevoree-node-javascript",
-  "version": "0.4.10",
+  "version": "0.4.11",
   "main": "./kevoree-node-javascript.js",
   "scripts": {
     "prepublish": "node node_modules/kevoree-gen-model -q"

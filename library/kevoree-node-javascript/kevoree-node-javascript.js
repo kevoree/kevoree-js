@@ -1,4 +1,5 @@
 var AbstractNode        = require('kevoree-entities').AbstractNode,
+    KevoreeLogger       = require('kevoree-commons').KevoreeLogger,
     AdaptationEngine    = require('./lib/AdaptationEngine'),
     kevoree             = require('kevoree-library').org.kevoree,
     async               = require('async');
@@ -8,7 +9,36 @@ var JavascriptNode = AbstractNode.extend({
 
     dic_logLevel: {
         defaultValue: 'INFO',
-        optional: false
+        optional: false,
+        update: function () {
+            var level = this.dic_logLevel.value.toLowerCase().trim();
+            switch (level) {
+                default:
+                case 'info':
+                    this.log.setLevel(KevoreeLogger.INFO);
+                    break;
+
+                case 'debug':
+                    this.log.setLevel(KevoreeLogger.DEBUG);
+                    break;
+
+                case 'error':
+                    this.log.setLevel(KevoreeLogger.ERROR);
+                    break;
+
+                case 'warn':
+                    this.log.setLevel(KevoreeLogger.WARN);
+                    break;
+            }
+        }
+    },
+
+    dic_logFilter: {
+        defaultValue: '',
+        optional: true,
+        update: function () {
+            this.log.setFilter(this.dic_logFilter.value);
+        }
     },
 
     construct: function () {
