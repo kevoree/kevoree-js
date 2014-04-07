@@ -154,7 +154,7 @@ var processFile = function (file, deployUnit, model) {
     if (e.code == 'PARSE_FAIL') throw e;
     if (!quiet) console.log("\nIgnored:\n\tFile: '%s'\n\tReason: Unable to create a new object\n\tError: %s", file, e.message);
   }
-}
+};
 
 function getExtension(filename) {
   var i = filename.lastIndexOf('.');

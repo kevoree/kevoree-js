@@ -3,8 +3,7 @@
   "version": "0.4.10",
   "main": "./kevoree-chan-websocket.js",
   "scripts": {
-    "prepublish": "node node_modules/kevoree-gen-model",
-    "kevoree": "node node_modules/kevoree-nodejs-runtime/cli.js -n node1 -g sync -k kevs/main.kevs"
+    "prepublish": "node node_modules/kevoree-gen-model"
   },
   "dependencies": {
     "kevoree-entities": ">=0.4.10",
