@@ -58,11 +58,11 @@ var WebSocketGroup = AbstractGroup.extend({
     stop: function (_super) {
         _super.call(this);
 
-        if (this.server) {
+        if (this.server && this.server.readyState === 1) {
             this.server.close();
         }
 
-        if (this.client) {
+        if (this.client && this.client.readyState === 1) {
             // close client connection
             this.client.close();
             // remove reconnection task because we closed on purpose
