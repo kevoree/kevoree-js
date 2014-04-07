@@ -1,61 +1,84 @@
 var Class  = require('pseudoclass'),
     chalk  = require('chalk');
 
-var chalkInfo  = chalk.grey,
-    chalkWarn  = chalk.grey.bgYellow,
-    chalkError = chalk.white.bgRed,
-    chalkDebug = chalk.cyan;
+var LEVELS = ['all', 'info', 'debug', 'warn', 'error', 'quiet'];
+
+var chalkInfo       = chalk.grey,
+    chalkWarn       = chalk.grey.bgYellow,
+    chalkWarnMsg    = chalk.yellow,
+    chalkError      = chalk.white.bgRed,
+    chalkErrorMsg   = chalk.red,
+    chalkDebug      = chalk.cyan;
 
 var KevoreeLogger = Class({
     toString: 'KevoreeLogger',
 
     construct: function (tag) {
         this.tag = tag;
-        this.level = 0; // all
+        this.level = 0;
+        this.filter = '';
     },
 
     info: function (tag, msg) {
-        if (this.level <= LEVEL_INFO) {
+        if (this.level <= LEVELS.indexOf('info')) {
             if (typeof(msg) === 'undefined') {
                 msg = tag;
                 tag = this.tag;
             }
-            console.log(getTime()+'  '+chalkInfo('INFO')+'   '+processTag(tag)+'  '+chalk.grey(msg));
-        }
-    },
 
-    warn: function (tag, msg) {
-        if (this.level <= LEVEL_WARN) {
-            if (typeof(msg) === 'undefined') {
-                msg = tag;
-                tag = this.tag;
+            if (this.filter.length === 0 || (this.filter.length > 0 && tag === this.filter)) {
+                console.log(getTime()+'  '+chalkInfo('INFO')+'   '+processTag(tag)+'  '+chalkInfo(msg));
             }
-            console.warn(getTime()+'  '+chalkWarn('WARN')+'   '+processTag(tag)+'  '+chalk.yellow(msg));
-        }
-    },
-
-    error: function (tag, msg) {
-        if (this.level <= LEVEL_ERROR) {
-            if (typeof(msg) === 'undefined') {
-                msg = tag;
-                tag = this.tag;
-            }
-            console.error(getTime() + '  ' + chalkError('ERROR') + '  ' + processTag(tag) + '  ' + chalk.red(msg));
         }
     },
 
     debug: function (tag, msg) {
-        if (this.level <= LEVEL_DEBUG) {
+        if (this.level <= LEVELS.indexOf('debug')) {
             if (typeof(msg) === 'undefined') {
                 msg = tag;
                 tag = this.tag;
             }
-            console.log(getTime()+'  '+chalkDebug('DEBUG ')+' '+processTag(tag)+'  '+chalk.cyan(msg));
+
+            if (this.filter.length === 0 || (this.filter.length > 0 && tag === this.filter)) {
+                console.log(getTime()+'  '+chalkDebug('DEBUG ')+' '+processTag(tag)+'  '+chalkDebug(msg));
+            }
+        }
+    },
+
+    warn: function (tag, msg) {
+        if (this.level <= LEVELS.indexOf('warn')) {
+            if (typeof(msg) === 'undefined') {
+                msg = tag;
+                tag = this.tag;
+            }
+
+            if (this.filter.length === 0 || (this.filter.length > 0 && tag === this.filter)) {
+                console.warn(getTime()+'  '+chalkWarn('WARN')+'   '+processTag(tag)+'  '+chalkWarnMsg(msg));
+            }
+        }
+    },
+
+    error: function (tag, msg) {
+        if (this.level <= LEVELS.indexOf('error')) {
+            if (typeof(msg) === 'undefined') {
+                msg = tag;
+                tag = this.tag;
+            }
+
+            if (this.filter.length === 0 || (this.filter.length > 0 && tag === this.filter)) {
+                console.error(getTime() + '  ' + chalkError('ERROR') + '  ' + processTag(tag) + '  ' + chalkErrorMsg(msg));
+            }
         }
     },
 
     setLevel: function (level) {
         this.level = level;
+        console.log(getTime()+'  '+chalkInfo('ALL ')+'   '+processTag(this.toString())+'  '+chalkInfo('Set logLevel= '+this.level));
+    },
+
+    setFilter: function (filter) {
+        this.filter = filter;
+        console.log(getTime()+'  '+chalkInfo('ALL ')+'   '+processTag(this.toString())+'  '+chalkInfo('Set logFilter= "'+this.filter+'"'));
     }
 });
 
@@ -79,11 +102,12 @@ var getTime = function getTime() {
     return chalk.grey(hours+':'+mins+':'+secs);
 };
 
-var LEVEL_ALL   = KevoreeLogger.ALL     = 0,
-    LEVEL_INFO  = KevoreeLogger.INFO    = 1,
-    LEVEL_DEBUG = KevoreeLogger.DEBUG   = 2,
-    LEVEL_WARN  = KevoreeLogger.WARN    = 3,
-    LEVEL_ERROR = KevoreeLogger.ERROR   = 4,
-    LEVEL_QUIET = KevoreeLogger.QUIET   = 5;
+
+KevoreeLogger.ALL   = LEVELS.indexOf('all');
+KevoreeLogger.INFO  = LEVELS.indexOf('info');
+KevoreeLogger.DEBUG = LEVELS.indexOf('debug');
+KevoreeLogger.WARN  = LEVELS.indexOf('warn');
+KevoreeLogger.ERROR = LEVELS.indexOf('error');
+KevoreeLogger.QUIET = LEVELS.indexOf('quiet');
 
 module.exports = KevoreeLogger;
