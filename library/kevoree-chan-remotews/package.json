@@ -1,15 +1,15 @@
 {
   "name": "kevoree-chan-remotews",
-  "version": "0.4.0",
+  "version": "0.4.10",
   "main": "./kevoree-chan-remotews.js",
   "scripts": {
     "prepublish": "node node_modules/kevoree-gen-model"
   },
   "dependencies": {
-    "kevoree-entities": ">=0.4.0",
+    "kevoree-entities": ">=0.4.10",
     "ws": "~0.4.31"
   },
   "devDependencies": {
-    "kevoree-gen-model": ">=0.4.0"
+    "kevoree-gen-model": ">=0.4.10"
   }
 }
