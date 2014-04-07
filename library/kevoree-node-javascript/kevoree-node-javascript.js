@@ -8,10 +8,7 @@ var JavascriptNode = AbstractNode.extend({
 
     dic_logLevel: {
         defaultValue: 'INFO',
-        optional: false,
-        update: function (oldValue) {
-            console.log('logLevel updated to', this.dic_logLevel.value, oldValue);
-        }
+        optional: false
     },
 
     construct: function () {
@@ -52,10 +49,7 @@ var JavascriptNode = AbstractNode.extend({
                 if (err) {
                     // something went wrong while stopping node
                     this.log.error(this.toString(), 'Something went wrong while stopping '+this.getName());
-                    return;
                 }
-
-                // all good
             }.bind(this));
         }
     },

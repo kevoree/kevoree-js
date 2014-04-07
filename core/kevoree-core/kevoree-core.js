@@ -233,17 +233,6 @@ module.exports = Class({
                 this.nodeInstance.setName(this.nodeName);
                 this.nodeInstance.setPath(nodePath);
 
-                // inflate dictionary with defaultValues
-//        var kDictionary = model.findTypeDefinitionsByID(this.nodeInstance.toString()+'/'+this.nodeInstance.getVersion()).dictionaryType;
-//
-//        var defaultValues = kDictionary.defaultValues.iterator();
-//        var dictionary = this.nodeInstance.getDictionary();
-//
-//        while (defaultValues.hasNext()) {
-//          var defaultVal = defaultValues.next();
-//          dictionary.setEntry(defaultVal.attribute.name, defaultVal.value);
-//        }
-
                 this.nodeInstance.start();
 
                 this.log.info(this.toString(), "'"+this.nodeName+"' instance started successfully");
@@ -306,6 +295,10 @@ module.exports = Class({
 
     on: function (event, callback) {
         this.emitter.addListener(event, callback);
+    },
+
+    off: function (event, callback) {
+        this.emitter.removeListener(callback);
     }
 });
 

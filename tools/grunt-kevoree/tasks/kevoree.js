@@ -48,8 +48,9 @@ module.exports = function(grunt) {
             });
         }.bind(this));
 
-        runtime.on('deployed', function (model) {
+        runtime.on('deployed', function deployedListener(model) {
             grunt.log.ok('grunt-kevoree: model from '+this.data.kevscript+' deployed successfully :)');
+            runtime.off('deployed', deployedListener);
         }.bind(this));
 
         runtime.start(options.node, options.group);

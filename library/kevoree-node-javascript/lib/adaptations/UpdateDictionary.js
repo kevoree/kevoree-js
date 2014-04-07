@@ -16,7 +16,7 @@ module.exports = AdaptationPrimitive.extend({
         var instance = this.findEntityInstance();
         var kDictionary = this.modelElement.eContainer();
 
-        if (instance != null) {
+        var updateDictionary = function (instance) {
             var dictionary = instance.getDictionary();
             this.oldDictionaryMap = dictionary.cloneMap();
             this.instance = instance;
@@ -31,30 +31,18 @@ module.exports = AdaptationPrimitive.extend({
                 dictionary.setEntry(this.modelElement.name, this.modelElement.value);
             }
 
-            this.log.debug(this.toString(), 'job done for attribute '+this.modelElement.name+'@'+this.node.getName());
+            this.log.debug(this.toString(), 'job done for attribute '+kDictionary.eContainer().name+'.'+this.modelElement.name+'@'+this.node.getName()+' = '+this.modelElement.value);
             return callback();
+        }.bind(this);
+
+        if (instance != null) {
+            return updateDictionary(instance);
 
         } else {
-            // TODO handle node's platform attributes
-            // TODO(instance == null ==> maybe this attribute is related to the node and not one of its contained object)
-//      if (Kotlin.isType(kDictionary, kevoree.impl.FragmentDictionaryImpl)) {
-//        if (kDictionary.name == this.node.getName()) {
-//          var dictionary = this.node.getDictionary();
-//          this.oldDictionaryMap = dictionary.cloneMap();
-//          this.instance = this.node;
-//          dictionary.setEntry(dicValue.name, dicValue.value);
-//        }
-//      } else {
-//        dictionary.setEntry(dicValue.name, dicValue.value);
-//      }
-//      // check if this attribute is related to the running platform node type
-//      if (dicValue.eContainer().eContainer().name == this.node.toString()
-//        || dicValue.eContainer().eContainer().name == this.node.getName()) {
-//        var dictionary = this.node.getDictionary();
-//        this.oldDictionary = dictionary.clone();
-//        this.instance = this.node;
-//        dictionary.setEntry(dicValue.attribute.name, dicValue.value);
-//      }
+            if (kDictionary.eContainer().name === this.node.getName()) {
+                // this dictionary is for this platform node
+                return updateDictionary(this.node);
+            }
         }
 
         return callback();

@@ -97,6 +97,8 @@ var AdaptationEngine = Class({
      * @param cmdList
      */
     processTrace: function (trace, model, cmdList) {
+        var cmd;
+
         var addProcessedTrace = function (path, cmd) {
             this.alreadyProcessedTraces[path] = this.alreadyProcessedTraces[path] || {};
             this.alreadyProcessedTraces[path][cmd.toString()] = true;
@@ -110,13 +112,15 @@ var AdaptationEngine = Class({
         if (Kotlin.isType(trace, ModelAddTrace)) {
             if (INSTANCE_TRACE.indexOf(trace.refName) != -1) {
                 // Add instance
-                var cmd = new AddInstance(this.node, this.modelObjMapper, model, model.findByPath(trace.previousPath));
-                cmdList.push(cmd);
-                addProcessedTrace(trace.previousPath, cmd);
+                if (!traceAlreadyProcessed(trace.previousPath, AddInstance.prototype.toString())) {
+                    cmd = new AddInstance(this.node, this.modelObjMapper, model, model.findByPath(trace.previousPath));
+                    cmdList.push(cmd);
+                    addProcessedTrace(trace.previousPath, cmd);
+                }
 
             } else if (trace.refName === 'deployUnits') {
                 // Add deploy unit
-                var cmd = new AddDeployUnit(this.node, this.modelObjMapper, model, model.findByPath(trace.previousPath));
+                cmd = new AddDeployUnit(this.node, this.modelObjMapper, model, model.findByPath(trace.previousPath));
                 cmdList.push(cmd);
                 addProcessedTrace(trace.previousPath, cmd);
 
@@ -127,19 +131,19 @@ var AdaptationEngine = Class({
                     var hub = model.findByPath(binding.hub.path());
                     // this binding relies on a hub that hasn't been instantiated yet
                     if (!traceAlreadyProcessed(hub.path(), AddInstance.prototype.toString())) {
-                        var cmd = new AddInstance(this.node, this.modelObjMapper, model, hub);
+                        cmd = new AddInstance(this.node, this.modelObjMapper, model, hub);
                         cmdList.push(cmd);
                         addProcessedTrace(hub.path(), cmd);
                     }
 
                     // also check if the instance has been started or not
                     if (!traceAlreadyProcessed(hub.path(), StartInstance.prototype.toString())) {
-                        var cmd = new StartInstance(this.node, this.modelObjMapper, model, hub);
+                        cmd = new StartInstance(this.node, this.modelObjMapper, model, hub);
                         cmdList.push(cmd);
                         addProcessedTrace(hub.path(), cmd);
                     }
                 }
-                var cmd = new AddBinding(this.node, this.modelObjMapper, model, binding);
+                cmd = new AddBinding(this.node, this.modelObjMapper, model, binding);
                 cmdList.push(cmd);
                 addProcessedTrace(binding.path(), cmd);
 
@@ -152,13 +156,13 @@ var AdaptationEngine = Class({
                         // there is no group instance created on this platform yet
                         // lets check if there is already a primitive added for that or not
                         if (!traceAlreadyProcessed(group.path(), AddInstance.prototype.toString())) {
-                            var cmd = new AddInstance(this.node, this.modelObjMapper, model, group);
+                            cmd = new AddInstance(this.node, this.modelObjMapper, model, group);
                             cmdList.push(cmd);
                             addProcessedTrace(group.path(), cmd);
                         }
                         // also check if the instance has been started or not
                         if (!traceAlreadyProcessed(group.path(), StartInstance.prototype.toString())) {
-                            var cmd = new StartInstance(this.node, this.modelObjMapper, model, group);
+                            cmd = new StartInstance(this.node, this.modelObjMapper, model, group);
                             cmdList.push(cmd);
                             addProcessedTrace(group.path(), cmd);
                         }
@@ -170,14 +174,19 @@ var AdaptationEngine = Class({
         } else if (Kotlin.isType(trace, ModelSetTrace)) {
             if (trace.refName && trace.refName === "started") {
                 var AdaptationPrimitive = (trace.content === 'true') ? StartInstance : StopInstance;
-                var cmd = new AdaptationPrimitive(this.node, this.modelObjMapper, model, model.findByPath(trace.srcPath));
+                cmd = new AdaptationPrimitive(this.node, this.modelObjMapper, model, model.findByPath(trace.srcPath));
                 cmdList.push(cmd);
                 addProcessedTrace(trace.srcPath, cmd);
 
             } else if (trace.refName && trace.refName === 'value') {
-                var cmd = new UpdateDictionary(this.node, this.modelObjMapper, model, model.findByPath(trace.srcPath));
-                cmdList.push(cmd);
-                addProcessedTrace(trace.srcPath, cmd);
+                var modelElement = model.findByPath(trace.srcPath);
+                if (Kotlin.isType(modelElement, kevoree.impl.DictionaryValueImpl)) {
+                    if (!traceAlreadyProcessed(trace.srcPath, UpdateDictionary.prototype.toString())) {
+                        cmd = new UpdateDictionary(this.node, this.modelObjMapper, model, modelElement);
+                        cmdList.push(cmd);
+                        addProcessedTrace(trace.srcPath, cmd);
+                    }
+                }
             }
 
             // REMOVE - TRACES HANDLING
@@ -198,19 +207,19 @@ var AdaptationEngine = Class({
                     }
                 }
                 // add RemoveInstance primitive
-                var cmd = new RemoveInstance(this.node, this.modelObjMapper, model, elem);
+                cmd = new RemoveInstance(this.node, this.modelObjMapper, model, elem);
                 cmdList.push(cmd);
                 addProcessedTrace(tracePath, cmd);
 
             } else if (DEPLOY_UNIT.indexOf(trace.typeName) != -1) {
                 // Remove deploy unit
-                var cmd = new RemoveDeployUnit(this.node, this.modelObjMapper, model, elem);
+                cmd = new RemoveDeployUnit(this.node, this.modelObjMapper, model, elem);
                 cmdList.push(cmd);
                 addProcessedTrace(tracePath, cmd);
 
             } else if (trace.refName === 'mBindings') {
                 // Remove binding
-                var cmd = new RemoveBinding(this.node, this.modelObjMapper, model, elem);
+                cmd = new RemoveBinding(this.node, this.modelObjMapper, model, elem);
                 cmdList.push(cmd);
                 addProcessedTrace(tracePath, cmd);
             }
