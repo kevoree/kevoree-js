@@ -1,4 +1,11 @@
 #! /bin/sh
+if [ "$1" = "-h" ]; then
+    echo "Usage: $0 [-h|-z]"
+    echo "\t-h\tManpage"
+    echo "\t-z\tZip built runtime directories"
+    exit 0
+fi
+
 
 buildLinux() {
     cd dist
@@ -11,7 +18,9 @@ buildLinux() {
 	rm kevoree-browser-runtime.nw nw
 	cd ..
 	mv $1 kevoree-browser-runtime.$1
-	zip -r kevoree-browser-runtime.$1.zip kevoree-browser-runtime.$1
+	if [ "$2" = true ]; then
+	    zip -r kevoree-browser-runtime.$1.zip kevoree-browser-runtime.$1
+	fi
 	cd ..
 	echo "Linux ($1) standalone built successfully"
 }
@@ -33,7 +42,9 @@ buildWin() {
 	rm kevoree-browser-runtime.nw nw.exe
 	cd ..
 	mv win kevoree-browser-runtime.win
-	zip -r kevoree-browser-runtime.win.zip kevoree-browser-runtime.win
+    if [ "$1" = true ]; then
+	    zip -r kevoree-browser-runtime.win.zip kevoree-browser-runtime.win
+	fi
 	cd ..
 	echo "Windows standalone built successfully"
 }
@@ -44,7 +55,9 @@ buildMac() {
     cp -r dist builds/mac/kevoree-browser-runtime.app/Contents/Resources
     mv builds/mac/kevoree-browser-runtime.app/Contents/Resources/dist builds/mac/kevoree-browser-runtime.app/Contents/Resources/app.nw
     cd builds/mac
-    zip -qr ../kevoree-browser-runtime.mac.zip kevoree-browser-runtime.app
+    if [ "$1" = true ]; then
+	    zip -qr ../kevoree-browser-runtime.mac.zip kevoree-browser-runtime.app
+	fi
     cd ../..
     echo "Mac standalone built successfully"
 }
@@ -58,11 +71,16 @@ rm -rf builds \
 cd ..
 echo ok
 
-buildLinux linux32
-buildLinux linux32-libudev0
-buildLinux linux64
-buildLinux linux64-libudev0
-buildWin
-buildMac
+doZip=false
+if [ "$1" = "-z" ]; then
+    doZip=true
+fi
+
+buildLinux linux32 $doZip
+buildLinux linux32-libudev0 $doZip
+buildLinux linux64 $doZip
+buildLinux linux64-libudev0 $doZip
+buildWin $doZip
+buildMac $doZip
 
 exit 0

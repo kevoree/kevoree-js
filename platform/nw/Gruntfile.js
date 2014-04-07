@@ -37,7 +37,9 @@ module.exports = function (grunt) {
                     src: [
                         '.tmp',
                         '<%= config.dist %>/*',
-                        '!<%= config.dist %>/.git*'
+                        '!<%= config.dist %>/.git*',
+                        'builds',
+                        'node-webkit'
                     ]
                 }]
             },
@@ -206,20 +208,6 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('build', [
-        'clean:dist',
-        'useminPrepare',
-        'concurrent:dist',
-        'autoprefixer',
-        'concat',
-        'cssmin',
-        'uglify',
-        'copy:dist',
-        'copy:bootstrap',
-        'usemin',
-        'htmlmin'
-    ]);
-
     grunt.registerTask('checkKevoreeLibrary', 'Check if app/node_modules is valid (only one kevoree-library module)', function () {
         var done = this.async();
         var findPath = 'app/node_modules';
@@ -240,7 +228,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('dlNodeWebkit', 'Download node-webkit from official website', function () {
         var done = this.async();
-        var childprocess = exec('sh dl-node-webkit.sh', function (err, stdout) {
+        var childprocess = exec('sh dl-node-webkit.sh', function (err) {
             if (err) {
                 grunt.fail.warn(err);
                 return done();
@@ -253,9 +241,13 @@ module.exports = function (grunt) {
         });
     });
 
-    grunt.registerTask('buildRuntimes', 'Build Kevoree Browser Runtime for Linux (32, 64), Windows & Mac', function () {
+    grunt.registerTask('buildRuntimes', 'Build Kevoree Browser Runtime for Linux (32, 64), Windows & Mac', function (zip) {
+        var doZip = '';
+        if (zip === 'zip') {
+            doZip = ' -z';
+        }
         var done = this.async();
-        var childprocess = exec('sh build-runtimes.sh', function (err, stdout) {
+        var childprocess = exec('sh build-runtimes.sh'+doZip, function (err) {
             if (err) {
                 grunt.fail.warn(err);
                 return done();
@@ -270,8 +262,40 @@ module.exports = function (grunt) {
 
     grunt.registerTask('default', [
         'checkKevoreeLibrary',
-        'build',
+        'clean:dist',
+        'useminPrepare',
+        'concurrent:dist',
+        'autoprefixer',
+        'concat',
+        'cssmin',
+        'uglify',
+        'copy:dist',
+        'copy:bootstrap',
+        'usemin',
+        'htmlmin',
         'dlNodeWebkit',
+        'buildRuntimes:zip'
+    ]);
+
+    grunt.registerTask('nozip', [
+        'checkKevoreeLibrary',
+        'clean:dist',
+        'useminPrepare',
+        'concurrent:dist',
+        'autoprefixer',
+        'concat',
+        'cssmin',
+        'uglify',
+        'copy:dist',
+        'copy:bootstrap',
+        'usemin',
+        'htmlmin',
+        'dlNodeWebkit',
+        'buildRuntimes'
+    ]);
+
+    // just build runtimes
+    grunt.registerTask('nodewebkit', [
         'buildRuntimes'
     ]);
 };
