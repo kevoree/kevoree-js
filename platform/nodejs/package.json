@@ -1,6 +1,6 @@
 {
   "name": "kevoree-nodejs-runtime",
-  "version": "0.4.11",
+  "version": "0.4.12",
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "main": "kevoree-nodejs-runtime.js",
   "scripts": {

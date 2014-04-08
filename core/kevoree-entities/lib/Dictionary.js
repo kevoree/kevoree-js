@@ -52,10 +52,12 @@ var Dictionary = Class({
         this.map[name] = value;
         // emit update event with the name, oldValue and newValue
         this.entity['dic_'+name].value = value;
-        if (this.entity['dic_'+name].update && (typeof this.entity['dic_'+name].update === 'function')) {
-            this.entity['dic_'+name].update.bind(this.entity)(oldValue);
+        if (this.entity.isStarted()) {
+            if (this.entity['dic_'+name].update && (typeof this.entity['dic_'+name].update === 'function')) {
+                this.entity['dic_'+name].update.bind(this.entity)(oldValue);
+            }
+            this.emitter.emit(name, value, oldValue);
         }
-        this.emitter.emit(name, value, oldValue);
     },
 
     setMap: function (map) {

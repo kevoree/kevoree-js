@@ -37,8 +37,22 @@ var NodeJSRuntime = Class({
         // kevoree core error event listener
         this.kCore.on('error', function (err) {
             self.log.error(err.stack);
-            self.kCore.stop();
             self.emitter.emit('error', err);
+        });
+
+        this.kCore.on('rollbackError', function (err) {
+            self.log.error(err.stack);
+            self.emitter.emit('rollbackError', err);
+        });
+
+        this.kCore.on('rollbackSucceed', function () {
+            self.log.info(self.toString(), 'Rollback succeed');
+            self.emitter.emit('rollbackSucceed');
+        });
+
+        this.kCore.on('adaptationError', function (err) {
+            self.log.error(err.stack);
+            self.emitter.emit('adaptationError', err);
         });
     },
 

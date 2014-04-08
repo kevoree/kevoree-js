@@ -27,9 +27,11 @@ var WebSocketChannel = AbstractChannel.extend({
 
         this.checkNoMultipleMasterServer();
 
-        var port = this.dictionary.getValue('port');
-        if (typeof(port) == 'undefined' || port.length == 0) this.startWSClient();
-        else this.startWSServer(port);
+        if (this.dic_port.value && this.dic_port.value.length > 0) {
+            this.startWSClient();
+        } else {
+            this.startWSServer(this.dic_port.value);
+        }
     },
 
     /**
@@ -219,7 +221,10 @@ var WebSocketChannel = AbstractChannel.extend({
 
     dic_port: {
         fragmentDependant: true,
-        optional: true
+        optional: true,
+        update: function (oldValue) {
+            this.log.warn(this.toString(), 'Update '+this.getName()+'.port/'+this.getNodeName()+' attribute: not implemented yet');
+        }
     }
 });
 

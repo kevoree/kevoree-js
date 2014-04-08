@@ -92,7 +92,18 @@ var BrowserRuntime = Class({
 
         this.core.on('error', function (err) {
             this.logger.error(err.message);
-            this.ui.stopped();
+        }.bind(this));
+
+        this.core.on('rollbackError', function (err) {
+            this.logger.error(err.message);
+        }.bind(this));
+
+        this.core.on('rollbackSucceed', function () {
+            this.logger.info(this.toString(), 'Rollback succeed');
+        }.bind(this));
+
+        this.core.on('adaptationError', function (err) {
+            this.logger.error(err.message);
         }.bind(this));
     },
 

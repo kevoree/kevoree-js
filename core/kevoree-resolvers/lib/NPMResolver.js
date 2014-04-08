@@ -75,19 +75,18 @@ var NPMResolver = Resolver.extend({
     },
 
     uninstall: function (deployUnit, callback) {
-        npm.load({logLevel: 'silent'}, function (err) {
+        npm.load({loglevel: 'silent', prefix: this.modulesPath}, function (err) {
             if (err) {
                 // npm load error
                 return callback(new Error('NPMResolver error: unable to load npm module'));
             }
 
-            var module = deployUnit.name + ((deployUnit.version.length > 0) ? '@'+deployUnit.version: '');
-
             // load success
-            npm.commands.uninstall(this.modulesPath, [module], function (er) {
+            npm.commands.uninstall([deployUnit.name], function (er) {
                 if (er) {
                     // failed to load package:version
-                    return callback(new Error('NPMResolver failed to uninstall '+module));
+                    callback(new Error('NPMResolver failed to uninstall '+module));
+                    return;
                 }
 
                 callback();

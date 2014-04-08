@@ -111,7 +111,6 @@ module.exports = Class({
     deploy: function (model) {
         if (model && !model.findNodesByID(this.nodeName)) {
             this.emitter.emit('error', new Error('Deploy model failure: unable to find '+this.nodeName+' in given model'));
-            return;
 
         } else {
             this.log.info(this.toString(), 'Deploy process started...');
@@ -137,7 +136,7 @@ module.exports = Class({
                             var cmdStack = [];
 
                             // executeCommand: function that save cmd to stack and executes it
-                            var executeCommand = function executeCommand(cmd, iteratorCallback) {
+                            function executeCommand(cmd, iteratorCallback) {
                                 // save the cmd to be processed in a stack using unshift
                                 // in order to add the last processed cmd at the beginning of the array
                                 // => cmdStack[0] = more recently executed cmd
@@ -153,35 +152,33 @@ module.exports = Class({
                                     // adaptation succeed
                                     iteratorCallback();
                                 });
-                            };
+                            }
 
                             // rollbackCommand: function that calls undo() on cmds in the stack
-                            var rollbackCommand = function rollbackCommand(cmd, iteratorCallback) {
+                            function rollbackCommand(cmd, iteratorCallback) {
                                 cmd.undo(function (err) {
                                     if (err) return iteratorCallback(err);
 
                                     // undo succeed
                                     iteratorCallback();
                                 });
-                            };
+                            }
 
                             // execute each command synchronously
                             async.eachSeries(adaptations, executeCommand, function (err) {
                                 if (err) {
+                                    err.message = "Something went wrong while processing adaptations.\n"+err.message+'\nRollbacking...';
+                                    core.emitter.emit('adaptationError', err);
+
                                     // rollback process
                                     return async.eachSeries(cmdStack, rollbackCommand, function (er) {
                                         if (er) {
                                             // something went wrong while rollbacking
-                                            er.message = "Something went wrong while rollbacking...\n"+er.message;
-                                            return core.emitter.emit('error', er);
+                                            return core.emitter.emit('rollbackError', er);
                                         }
 
-                                        // something went wrong while processing adaptations
-                                        // using Javascript magic to just change error message and keep stack
-                                        err.message = "Something went wrong while processing adaptations.\n"+err.message+'\nRollbacking...';
-                                        core.emitter.emit('error', err); // TODO create another error type (like adaptationError, in order to process rollback in runtimes instead of just shutting down kevoree core)
                                         // rollback succeed
-                                        return core.emitter.emit('rollback');
+                                        core.emitter.emit('rollbackSucceed');
                                     });
                                 }
 
@@ -195,22 +192,18 @@ module.exports = Class({
                                 core.deployModel = null;
                                 // all good :)
                                 core.emitter.emit('deployed', core.currentModel);
-                                return;
                             });
                         } catch (err) {
                             err.message = 'Something went wrong while deploying model.\n'+err.message;
                             core.emitter.emit('error', err);
-                            return;
                         }
 
                     } else {
                         core.emitter.emit('error', new Error("There is no instance to bootstrap on"));
-                        return;
                     }
                 });
             } else {
                 this.emitter.emit('error', new Error("Model is not defined or null. Deploy aborted."));
-                return;
             }
         }
     },

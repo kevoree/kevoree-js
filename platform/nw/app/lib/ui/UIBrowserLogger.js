@@ -21,10 +21,9 @@ var UILogger = Class({
             // retrieve state from DOM
             var checkbox = $(e.currentTarget);
             var level = checkbox.val();
-            var checked = checkbox.prop('checked');
 
             // update model
-            this.logLevels[level] = checked;
+            this.logLevels[level] = checkbox.prop('checked');
 
             // update UI
             this.updateLogs();
@@ -35,7 +34,7 @@ var UILogger = Class({
         $('.log-line').removeAttr('id');
         this.domLogger.append(RuntimeTemplates['log-line'].render({
             tag: tag,
-            message: message,
+            message: message.replace(/\n/g, '<br/>'),
             type: 'log-info'
         }));
         document.getElementById('last-log-line').scrollIntoView();
@@ -47,7 +46,7 @@ var UILogger = Class({
         $('.log-line').removeAttr('id');
         this.domLogger.append(RuntimeTemplates['log-line'].render({
             tag: tag,
-            message: message,
+            message: message.replace(/\n/g, '<br/>'),
             type: 'log-debug'
         }));
         document.getElementById('last-log-line').scrollIntoView();
@@ -59,7 +58,7 @@ var UILogger = Class({
         $('.log-line').removeAttr('id');
         this.domLogger.append(RuntimeTemplates['log-line'].render({
             tag: tag,
-            message: message,
+            message: message.replace(/\n/g, '<br/>'),
             type: 'log-warn'
         }));
         document.getElementById('last-log-line').scrollIntoView();
@@ -71,7 +70,7 @@ var UILogger = Class({
         $('.log-line').removeAttr('id');
         this.domLogger.append(RuntimeTemplates['log-line'].render({
             tag: tag,
-            message: message,
+            message: message.replace(/\n/g, '<br/>'),
             type: 'log-error'
         }));
         document.getElementById('last-log-line').scrollIntoView();
@@ -92,10 +91,12 @@ var UILogger = Class({
         };
 
         for (var level in lines) {
-            if (this.logLevels[level]) {
-                lines[level].show();
-            } else {
-                lines[level].hide();
+            if (lines.hasOwnProperty(level)) {
+                if (this.logLevels[level]) {
+                    lines[level].show();
+                } else {
+                    lines[level].hide();
+                }
             }
         }
     }

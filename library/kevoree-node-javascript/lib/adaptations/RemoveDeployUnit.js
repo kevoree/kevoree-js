@@ -1,5 +1,5 @@
 var AdaptationPrimitive = require('./AdaptationPrimitive'),
-  AddDeployUnit       = require('./AddDeployUnit');
+    AddDeployUnit       = require('./AddDeployUnit');
 
 /**
  * RemoveDeployUnit Adaptation
@@ -7,31 +7,31 @@ var AdaptationPrimitive = require('./AdaptationPrimitive'),
  * @type {RemoveDeployUnit} extend AdaptationPrimitive
  */
 module.exports = AdaptationPrimitive.extend({
-  toString: 'RemoveDeployUnit',
+    toString: 'RemoveDeployUnit',
 
-  execute: function (_super, callback) {
-    _super.call(this, callback);
+    execute: function (_super, callback) {
+        _super.call(this, callback);
 
-    if (this.modelElement) {
-      var bootstrapper = this.node.getKevoreeCore().getBootstrapper();
-      bootstrapper.uninstall(this.modelElement, function (err) {
-        if (err) return callback(err);
+        if (this.modelElement) {
+            var bootstrapper = this.node.getKevoreeCore().getBootstrapper();
+            return bootstrapper.uninstall(this.modelElement, function (err) {
+                if (err) {
+                    return callback(err);
+                }
 
-        this.mapper.removeEntry(this.modelElement.path());
-        this.log.debug(this.toString(), 'job done on '+this.modelElement.name+'@'+this.node.getName());
+                this.mapper.removeEntry(this.modelElement.path());
+                this.log.debug(this.toString(), 'job done on '+this.modelElement.name+'@'+this.node.getName());
+                callback();
+            }.bind(this));
+        }
+
         return callback();
-      }.bind(this));
+    },
+
+    undo: function (_super, callback) {
+        _super.call(this, callback);
+
+        var cmd = new AddDeployUnit(this.node, this.mapper, this.adaptModel, this.modelElement);
+        cmd.execute(callback);
     }
-
-    return callback();
-  },
-
-  undo: function (_super, callback) {
-    _super.call(this, callback);
-
-    var cmd = new AddDeployUnit(this.node, this.mapper, this.adaptModel, this.modelElement);
-    cmd.execute(callback);
-
-    return;
-  }
 });

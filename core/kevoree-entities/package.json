@@ -1,6 +1,6 @@
 {
   "name": "kevoree-entities",
-  "version": "0.4.13",
+  "version": "0.4.14",
   "description": "Kevoree Entities - Set of abstract Kevoree entities (group, node, channel, component)",
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "main": "./kevoree-entities.js",

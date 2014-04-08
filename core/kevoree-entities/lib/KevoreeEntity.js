@@ -40,13 +40,17 @@ var KevoreeEntity = Class({
         this.name = null;
         this.path = null;
         this.nodeName = null;
+        this.started = false;
     },
 
     start: function () {
         this.log = this.kCore.getLogger();
+        this.started = true;
     },
 
-    stop: function () {},
+    stop: function () {
+        this.started = false;
+    },
 
     setKevoreeCore: function (kCore) {
         this.kCore = kCore;
@@ -90,9 +94,15 @@ var KevoreeEntity = Class({
 
     getNetworkInfos: function (nodeName) {
         var model = this.kCore.getDeployModel();
-        if (!model) this.kCore.getCurrentModel();
+        if (!model) {
+            this.kCore.getCurrentModel();
+        }
         var node = model.findNodesByID(nodeName);
         return node.networkInformation.iterator();
+    },
+
+    isStarted: function () {
+        return this.started;
     }
 });
 

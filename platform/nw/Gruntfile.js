@@ -37,7 +37,13 @@ module.exports = function (grunt) {
                     src: [
                         '.tmp',
                         '<%= config.dist %>/*',
-                        '!<%= config.dist %>/.git*',
+                        '!<%= config.dist %>/.git*'
+                    ]
+                }]
+            },
+            'node-webkit': {
+                files: [{
+                    src: [
                         'builds',
                         'node-webkit'
                     ]
@@ -262,7 +268,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('default', [
         'checkKevoreeLibrary',
-        'clean:dist',
+        'clean',
         'useminPrepare',
         'concurrent:dist',
         'autoprefixer',
@@ -277,7 +283,7 @@ module.exports = function (grunt) {
         'buildRuntimes:zip'
     ]);
 
-    grunt.registerTask('nozip', [
+    grunt.registerTask('nodl-nozip', [
         'checkKevoreeLibrary',
         'clean:dist',
         'useminPrepare',
@@ -290,7 +296,6 @@ module.exports = function (grunt) {
         'copy:bootstrap',
         'usemin',
         'htmlmin',
-        'dlNodeWebkit',
         'buildRuntimes'
     ]);
 
