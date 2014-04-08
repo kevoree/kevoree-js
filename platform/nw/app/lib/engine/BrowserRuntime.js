@@ -23,35 +23,6 @@ var BrowserRuntime = Class({
         this.groupName = null;
         this.groupPort = null;
 
-        this.core.setUICommand(function (ui, callback) {
-            try {
-                var data = {
-                    headerID:   'header'+parseInt(Math.random()*1000),
-                    contentID:  'content'+parseInt(Math.random()*1000),
-                    name:       ui.getName()
-                };
-                $('#tabs-host').append(RuntimeTemplates['tab-header'].render(data));
-                $('#tabs-content-host').append(RuntimeTemplates['tab-content'].render(data));
-
-                var rootDiv = document.querySelector('#'+data.contentID);
-                rootDiv.createShadowRoot = rootDiv.createShadowRoot || rootDiv.webkitCreateShadowRoot;
-                ui.on('nameChanged', function (name) {
-                    $('#'+data.headerID+' a').html(name);
-                });
-                ui.setRoot(rootDiv.createShadowRoot());
-                ui.setDestroyCmd(function () {
-                    var tabLi = document.querySelector('#'+data.headerID);
-                    tabLi.parentNode.removeChild(tabLi);
-                    rootDiv.parentNode.removeChild(rootDiv);
-                });
-                return callback();
-
-            } catch (err) {
-                console.error(err);
-                return callback(err);
-            }
-        });
-
         var bootstrapper = new BrowserBootstrapper(this.logger, this.resolver);
         var bootstrapCmd = new Bootstrap(this, this.resolver);
 
@@ -127,6 +98,10 @@ var BrowserRuntime = Class({
 
     clearLogs: function () {
         this.logger.clear();
+    },
+
+    setUICommand: function (cmd) {
+        this.core.setUICommand(cmd);
     }
 });
 

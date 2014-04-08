@@ -37,6 +37,34 @@ var UIBrowserRuntime = Class({
     construct: function (runtime) {
         this.runtime = runtime;
 
+        this.runtime.setUICommand(function (ui, callback) {
+            try {
+                var data = {
+                    headerID:   'header'+parseInt(Math.random()*1000),
+                    contentID:  'content'+parseInt(Math.random()*1000),
+                    name:       ui.getName()
+                };
+                $('#tabs-host').append(RuntimeTemplates['tab-header'].render(data));
+                $('#tabs-content-host').append(RuntimeTemplates['tab-content'].render(data));
+
+                var rootDiv = document.querySelector('#'+data.contentID);
+                rootDiv.createShadowRoot = rootDiv.createShadowRoot || rootDiv.webkitCreateShadowRoot;
+                ui.on('nameChanged', function (name) {
+                    $('#'+data.headerID+' a').html(name);
+                });
+                ui.setRoot(rootDiv.createShadowRoot());
+                ui.setDestroyCmd(function () {
+                    var tabLi = document.querySelector('#'+data.headerID);
+                    tabLi.parentNode.removeChild(tabLi);
+                    rootDiv.parentNode.removeChild(rootDiv);
+                });
+                return callback();
+
+            } catch (err) {
+                return callback(err);
+            }
+        });
+
         $('#platform-node-name').val('node'+parseInt(Math.random()*1000));
 
         $('#clear-logs').on('click', function () {
