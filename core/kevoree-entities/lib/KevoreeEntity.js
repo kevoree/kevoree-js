@@ -17,17 +17,19 @@ var Class       = require('pseudoclass'),
  *   optional: true,
  *   defaultValue: 'foo',
  *   fragmentDependant: false,
- *   datatype: ['foo', 'bar', baz']
+ *   update: function (oldValue) {
+ *     // do something when attribute is updated
+ *   }
  * }
  * KevoreeDictionary API follows those guidelines:
  * <ul>
  *   <li>"optional" attribute is <b>optional</b>, <b>boolean</b> (default: true)</li>
  *   <li>"defaultValue" attribute is <b>optional</b>, <b>string|boolean</b></li>
  *   <li>"fragmentDependant" attribute is <b>optional</b>, <b>boolean</b> (default: false)</li>
- *   <li>"datatype" attribute is <b>optional</b>, <b>array</b></li>
+ *   <li>"update" attribute is <b>optional</b>, <b>function</b>(oldAttributeValue)</li>
  * </ul>
  *
- * If you specify a "defaultValue" AND a "datatype", be sure that "datatype" array contains "defaultValue" string.
+ * Once your entity is started, you will be able to retrieve your attribute value by calling dic_myAttr.value
  *
  * @type {KevoreeEntity}
  */
