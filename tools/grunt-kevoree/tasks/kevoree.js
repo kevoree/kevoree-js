@@ -26,17 +26,17 @@ module.exports = function(grunt) {
             node: 'node0',
             group: 'sync',
             modulesPath: path.resolve('node_modules/grunt-kevoree'),
-            gui: false
+            gui: false // TODO not implemented yet
         });
         if (nodeName) {
             // if an argument is given to the task, then consider it is the node name to start the platform on (override)
             options.node = nodeName;
         }
 
-        if (options.gui) {
-
-
-        } else {
+//        if (options.gui) {
+//
+//
+//        } else {
             var runtime     = new Kevoree(options.modulesPath),
                 npmResolver = new NPMResolver(options.modulesPath, logger),
                 kevsEngine  = new KevScript({ resolvers: { npm: npmResolver } });
@@ -61,7 +61,7 @@ module.exports = function(grunt) {
             runtime.on('deployed', deployedListener);
 
             runtime.start(options.node, options.group);
-        }
+//        }
     });
 
 };
