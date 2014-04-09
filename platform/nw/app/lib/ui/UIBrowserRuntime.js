@@ -70,11 +70,9 @@ var UIBrowserRuntime = Class({
         $('#clear-logs').on('click', function () {
             runtime.clearLogs();
         });
-
-        this.configUI();
     },
 
-    configUI: function () {
+    showBootstrapModal: function () {
         var runtime = this.runtime;
         var resolver = this.runtime.getResolver();
 

@@ -1,6 +1,2 @@
-exports.index = function(req, res) {
-    res.render('editor.html');
-};
-
-exports.load    = require('./load');
-exports.merge   = require('./merge');
+module.exports.load     = require('./load');
+module.exports.merge    = require('./merge');

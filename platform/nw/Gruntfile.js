@@ -283,7 +283,7 @@ module.exports = function (grunt) {
         'buildRuntimes:zip'
     ]);
 
-    grunt.registerTask('nodl-nozip', [
+    grunt.registerTask('build-dev', [
         'checkKevoreeLibrary',
         'clean:dist',
         'useminPrepare',

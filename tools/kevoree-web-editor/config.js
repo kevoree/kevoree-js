@@ -1,7 +1,5 @@
 var path = require('path');
 
-// path to public files (default uses kevoree-web-editor-client built dist directory)
-exports.CLIENT_PATH  = path.join('node_modules', 'kevoree-web-editor-client', 'dist');
 // all routes will be prefixed by this (/load => /foo/load, if you change the value to '/foo')
 exports.ROUTE_PREFIX = '/';
 // path to Kevoree's Java dependencies

@@ -4,7 +4,11 @@ var Class               = require('pseudoclass'),
     BrowserBootstrapper = require('./BrowserBootstrapper'),
     UIBrowserRuntime    = require('../ui/UIBrowserRuntime'),
     NPMResolver         = require('kevoree-resolvers').NPMResolver,
-    Bootstrap           = require('../command/Bootstrap');
+    optimist            = require('optimist'),
+    kevoree             = require('kevoree-library').org.kevoree,
+    Kevscript           = require('kevoree-kevscript'),
+    fs                  = require('fs'),
+    path                = require('path');
 
 /**
  * Created by leiko on 12/03/14.
@@ -12,7 +16,21 @@ var Class               = require('pseudoclass'),
 var BrowserRuntime = Class({
     toString: 'BrowserRuntime',
 
-    construct: function () {
+    construct: function (gui) {
+        var argv = optimist(gui.App.argv)
+            .alias('n', 'nodeName')
+            .alias('g', 'groupName')
+            .alias('p', 'groupPort')
+            .alias('m', 'model')
+            .alias('k', 'kevscript').argv;
+
+        var win = gui.Window.get();
+        processArgv(this, argv, function () {
+            // if we succeed in processing command-line arguments (whether there are some or not)
+            // we can display the frame (otherwise it is meaningless, because program already exit)
+            win.show();
+        });
+
         var modulesPath = process.cwd();
 
         this.logger = new BrowserLogger(this.toString());
@@ -24,10 +42,12 @@ var BrowserRuntime = Class({
         this.groupPort = null;
 
         var bootstrapper = new BrowserBootstrapper(this.logger, this.resolver);
-        var bootstrapCmd = new Bootstrap(this, this.resolver);
-
+        this.kevscript = new Kevscript({
+            resolvers: {
+                npm: this.resolver
+            }
+        });
         this.core.setBootstrapper(bootstrapper);
-        this.ui = new UIBrowserRuntime(this);
 
         this.core.on('started', function () {
             this.ui.started();
@@ -36,12 +56,20 @@ var BrowserRuntime = Class({
             if (this.bootstrapModel) {
                 this.core.deploy(this.bootstrapModel);
             } else {
-                var options = {
-                    nodeName: this.core.getNodeName(),
-                    groupName: this.groupName,
-                    groupPort: this.groupPort
-                };
-                bootstrapCmd.execute(options, function (err, model) {
+                var nodeName = this.core.getNodeName()  || 'node0',
+                    grpName  = this.groupName || 'sync',
+                    port     = this.groupPort || 9000;
+
+                var kevsModel = '' +
+                    'include npm:kevoree-node-javascript:latest' + '\n' +
+                    'include npm:kevoree-group-websocket:latest' + '\n' +
+                    'add '+nodeName+' : JavascriptNode' + '\n' +
+                    'add '+grpName+' : WebSocketGroup' + '\n' +
+                    'attach '+nodeName+' '+grpName + '\n' +
+                    'set '+grpName+'.port/'+nodeName+' = "'+port+'"' + '\n' +
+                    'network '+nodeName+'.lan.ip 127.0.0.1';
+
+                this.kevscript.parse(kevsModel, function (err, model) {
                     if (err) {
                         this.logger.error(this.toString(), err.message);
                         this.core.stop();
@@ -76,6 +104,14 @@ var BrowserRuntime = Class({
         this.core.on('adaptationError', function (err) {
             this.logger.error(err.message);
         }.bind(this));
+
+        this.ui = new UIBrowserRuntime(this);
+        if (argv) {
+            console.log('Bootstrapping using command-line parameters: -n '+argv.n+' -g '+argv.g+' -p '+argv.p);
+            this.start(argv.n, argv.g, argv.p);
+        } else {
+            this.ui.showBootstrapModal();
+        }
     },
 
     start: function (nodeName, groupName, groupPort) {
@@ -104,5 +140,59 @@ var BrowserRuntime = Class({
         this.core.setUICommand(cmd);
     }
 });
+
+function processArgv(runtime, argv, done) {
+    if ((typeof argv.m === 'string') && (typeof argv.k === 'undefined')) {
+        // a path to a Kevoree json model has been specified
+        fs.readFile(path.resolve(argv.m), {encoding: 'utf8'}, function (err, rawModel) {
+            if (err) {
+                console.error('Bootstrap error: Unable to read JSON file '+argv.m);
+                process.exit(2);
+            }
+            try {
+                var model = loader.loadModelFromString(rawModel).get(0);
+                this.setBootstrapModel(model);
+                done();
+            } catch (err) {
+                console.error('Bootstrap error: Unable to load model from given file '+argv.m+' (is it a valid Kevoree JSON model?)');
+                process.exit(2);
+            }
+        });
+
+    } else if ((typeof argv.k === 'string') && (typeof argv.m === 'undefined')) {
+        // a path to a Kevoree KevScript file has been specified
+        fs.readFile(path.resolve(argv.k), {encoding: 'utf8'}, function (err, rawKevscript) {
+            if (err) {
+                console.error('Bootstrap error: Unable to read Kevscript file '+argv.k);
+                process.exit(2);
+            }
+
+            runtime.kevscript.parse(rawKevscript, function (err, model) {
+                if (err) {
+                    console.error('Bootstrap error: Unable to interpret Kevscript file ('+argv.k+')\n'+err.message);
+                    process.exit(2);
+                    return;
+                }
+
+                this.setBootstrapModel(model);
+                done();
+            });
+        });
+
+    } else if ((typeof argv.m !== 'undefined') && (typeof argv.k !== 'undefined')) {
+        // both json and kevs are specified => error
+        console.error("ERROR: You cannot specify both -m & -k parameters (must be one of them, or none)");
+        process.exit(2);
+
+    } else if ((typeof argv.m === 'undefined') && (typeof argv.k === 'undefined')) {
+        if ((typeof argv.n === 'undefined') && (typeof argv.g === 'undefined') && (typeof argv.p === 'undefined')) {
+            argv = null;
+        }
+        done();
+    } else {
+        done();
+    }
+
+}
 
 module.exports = BrowserRuntime;

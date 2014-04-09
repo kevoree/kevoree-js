@@ -11,11 +11,7 @@ app.use(express.bodyParser()); // NB: it is IMPORTANT to call that before the re
 app.set('port', config.PORT);
 app.set('jsonp callback', true);
 app.use(config.ROUTE_PREFIX, app.router);
-app.use(config.ROUTE_PREFIX, express.static(path.join(__dirname, config.CLIENT_PATH)));
-app.set('views', path.join(__dirname, config.CLIENT_PATH));
-app.engine('html', require('ejs').renderFile);
 
-app.get('/', routes.index);
 app.get('/load', routes.load);
 app.post('/merge', routes.merge);
 app.get('/merge', routes.merge);

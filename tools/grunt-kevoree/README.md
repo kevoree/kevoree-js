@@ -45,11 +45,23 @@ Default value: `'node0'`
 
 A string value that is used to determine the node name of the launched Kevoree runtime platform
 
-#### options.punctuation
+#### options.group
 Type: `String`
 Default value: `'sync'`
 
 A string value that is used to determine the name of the group that will be attached to the node
+
+#### options.modulesPath
+Type: `String`
+Default value: `'/path/to/grunt-kevoree'`
+
+A string value that is used to determine the modulesPath variable for Kevoree resolver (where downloaded modules are going to be installed)
+
+#### options.gui
+Type: `Boolean`
+Default value: `false`
+
+A boolean that indicates whether or not you want to use Kevoree GUI Runtime (default is false which means it uses the command-line kevoree-nodejs-runtime)
 
 ### Kevscript
 

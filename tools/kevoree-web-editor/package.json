@@ -6,27 +6,18 @@
   "scripts": {
     "preinstall": "if [ -z \"$JAVA_HOME\" ]; then echo \"You should export JAVA_HOME before installing kevoree-web-editor\" && exit 1; fi",
     "postinstall": "mvn install",
-    "buildclient": "cd node_modules/kevoree-web-editor-client && npm install && grunt",
     "start": "node app.js"
   },
   "dependencies": {
     "async": "~0.2.9",
-    "ejs": "~0.8.5",
     "express": "3.1.1",
-    "jade": "~1.1.0",
     "java": "0.2.3",
     "kevoree-library": ">=0.4.10",
     "kevoree-model-sync": ">=0.4.10",
-    "kevoree-web-editor-client": "*",
-    "mocha": "1.12.0",
-    "npm": "1.3.18",
-    "requirejs": "2.1.8",
+    "npm": "^1.4.3",
     "rimraf": "~2.2.5",
     "semver": "~2.2.1",
     "xml2js": "^0.2.8"
-  },
-  "devDependencies": {
-    "jade-amd": "~0.2.1"
   },
   "repository": {
     "type": "git",

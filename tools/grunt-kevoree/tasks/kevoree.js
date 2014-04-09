@@ -25,37 +25,43 @@ module.exports = function(grunt) {
         var options = this.options({
             node: 'node0',
             group: 'sync',
-            modulesPath: path.resolve('node_modules/grunt-kevoree')
+            modulesPath: path.resolve('node_modules/grunt-kevoree'),
+            gui: false
         });
         if (nodeName) {
             // if an argument is given to the task, then consider it is the node name to start the platform on (override)
             options.node = nodeName;
         }
 
-        var runtime     = new Kevoree(options.modulesPath),
-            npmResolver = new NPMResolver(options.modulesPath, logger),
-            kevsEngine  = new KevScript({ resolvers: { npm: npmResolver } });
+        if (options.gui) {
 
-        runtime.on('started', function () {
-            var kevs = grunt.file.read(this.data.kevscript);
-            kevsEngine.parse(kevs, function (err, model) {
-                if (err) {
-                    grunt.fail.fatal(err.message);
-                    done();
-                }
 
-                runtime.deploy(model);
-            });
-        }.bind(this));
+        } else {
+            var runtime     = new Kevoree(options.modulesPath),
+                npmResolver = new NPMResolver(options.modulesPath, logger),
+                kevsEngine  = new KevScript({ resolvers: { npm: npmResolver } });
 
-        var deployedListener = function () {
-            grunt.log.ok('grunt-kevoree: model from '+this.data.kevscript+' deployed successfully :)');
-            runtime.off('deployed', deployedListener);
-        }.bind(this);
+            runtime.on('started', function () {
+                var kevs = grunt.file.read(this.data.kevscript);
+                kevsEngine.parse(kevs, function (err, model) {
+                    if (err) {
+                        grunt.fail.fatal(err.message);
+                        done();
+                    }
 
-        runtime.on('deployed', deployedListener);
+                    runtime.deploy(model);
+                });
+            }.bind(this));
 
-        runtime.start(options.node, options.group);
+            var deployedListener = function () {
+                grunt.log.ok('grunt-kevoree: model from '+this.data.kevscript+' deployed successfully :)');
+                runtime.off('deployed', deployedListener);
+            }.bind(this);
+
+            runtime.on('deployed', deployedListener);
+
+            runtime.start(options.node, options.group);
+        }
     });
 
 };
