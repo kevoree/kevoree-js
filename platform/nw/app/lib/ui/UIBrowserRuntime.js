@@ -20,7 +20,7 @@ function readFile(callback) {
         // show loading bar
         $('#model-loading').removeClass('hide');
 
-        var fReader = new FileReader();
+        var fReader = new window.FileReader();
         fReader.onload = function (event) {
             callback(event.target.result);
         };

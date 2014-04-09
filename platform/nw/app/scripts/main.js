@@ -2,7 +2,6 @@ global.$ = $;
 global.document = document;
 global.window = window;
 global.RuntimeTemplates = RuntimeTemplates;
-global.FileReader = FileReader;
 
 var BrowserRuntime = require('./lib/engine/BrowserRuntime');
 var gui  = require('nw.gui');

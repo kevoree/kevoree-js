@@ -214,22 +214,27 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('checkKevoreeLibrary', 'Check if app/node_modules is valid (only one kevoree-library module)', function () {
-        var done = this.async();
-        var findPath = 'app/node_modules';
-        exec('find '+findPath+' -name kevoree-library|wc -l', function (err, stdout) {
-            if (err) {
-                grunt.fail.warn(err);
-                return done();
-            }
+    grunt.registerTask('build', function (target) {
+        var tasks = [
+            'useminPrepare',
+            'concurrent:dist',
+            'autoprefixer',
+            'concat',
+            'cssmin',
+            'uglify',
+            'copy:dist',
+            'copy:bootstrap',
+            'usemin',
+            'htmlmin'
+        ];
 
-            if (parseInt(stdout) !== 1) {
-                grunt.fail.fatal('There is more than one kevoree-library module in '+findPath);
-            } else {
-                grunt.log.writeln(findPath+' contains only 1 kevoree-library module');
-            }
-            done();
-        });
+        if (target === 'dist') {
+            tasks.unshift('clean:dist');
+        } else {
+            tasks.unshift('clean');
+        }
+
+        grunt.task.run(tasks);
     });
 
     grunt.registerTask('dlNodeWebkit', 'Download node-webkit from official website', function () {
@@ -267,36 +272,9 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('default', [
-        'checkKevoreeLibrary',
-        'clean',
-        'useminPrepare',
-        'concurrent:dist',
-        'autoprefixer',
-        'concat',
-        'cssmin',
-        'uglify',
-        'copy:dist',
-        'copy:bootstrap',
-        'usemin',
-        'htmlmin',
+        'build',
         'dlNodeWebkit',
         'buildRuntimes:zip'
-    ]);
-
-    grunt.registerTask('build-dev', [
-        'checkKevoreeLibrary',
-        'clean:dist',
-        'useminPrepare',
-        'concurrent:dist',
-        'autoprefixer',
-        'concat',
-        'cssmin',
-        'uglify',
-        'copy:dist',
-        'copy:bootstrap',
-        'usemin',
-        'htmlmin',
-        'buildRuntimes'
     ]);
 
     // just build runtimes
