@@ -4,14 +4,8 @@
     <groupId>org.kevoree.js</groupId>
     <artifactId>tools.editor.server</artifactId>
     <packaging>jar</packaging>
-    <name>Kevoree Web Editor :: Server</name>
+    <name>Kevoree Web Editor :: Server Web Services</name>
     <version>0.0.1</version>
-
-    <properties>
-        <metamodel.ecore>${basedir}/target/metamodel/kevoree.ecore</metamodel.ecore>
-        <kotlin.version>0.7.271</kotlin.version>
-        <kevoree.version>3.5.4</kevoree.version>
-    </properties>
 
     <dependencies>
         <dependency>
