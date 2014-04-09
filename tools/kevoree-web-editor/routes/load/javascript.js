@@ -10,91 +10,94 @@ var clearId = null;
 
 // clear libraries cache function loop
 setInterval(function clearCache() {
-  if (libraries.length > 0) {
-    if (canClear) {
-      // we can clear cache now
-      clearTimeout(clearId);
-      // rm library module directory if any
-      for (var i in libraries) {
-        var modulePath = path.resolve('node_modules', libraries[i].artifactID);
-        (function (modulePath) {
-          rimraf(modulePath, function (err) {
-            if (err) {
-              console.log('Unable to rimraf "'+modulePath+'".\nError: '+err.message);
+    if (libraries.length > 0) {
+        if (canClear) {
+            // we can clear cache now
+            clearTimeout(clearId);
+            // rm library module directory if any
+            for (var i in libraries) {
+                var modulePath = path.resolve('node_modules', libraries[i].artifactID);
+                (function (modulePath) {
+                    rimraf(modulePath, function (err) {
+                        if (err) {
+                            console.log('Unable to rimraf "'+modulePath+'".\nError: '+err.message);
+                        }
+                    });
+                })(modulePath);
             }
-          });
-        })(modulePath);
-      }
 
-      var currentdate = new Date();
-      console.log("Javascript core libraries cache cleared (" + currentdate.getDate() + "/"
-        + (currentdate.getMonth()+1)  + "/"
-        + currentdate.getFullYear() + " @ "
-        + currentdate.getHours() + ":"
-        + currentdate.getMinutes() + ":"
-        + currentdate.getSeconds() + ')');
-      libraries.length = 0;
-      
-    } else {
-      // clear old task if any
-      clearTimeout(clearId);
-      // restart a task in 2000ms
-      clearId = setTimeout(clearCache, 2000);
+            var currentdate = new Date();
+            console.log("Javascript core libraries cache cleared (" + currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/"
+                + currentdate.getFullYear() + " @ "
+                + currentdate.getHours() + ":"
+                + currentdate.getMinutes() + ":"
+                + currentdate.getSeconds() + ')');
+            libraries.length = 0;
+
+        } else {
+            // clear old task if any
+            clearTimeout(clearId);
+            // restart a task in 2000ms
+            clearId = setTimeout(clearCache, 2000);
+        }
     }
-  }
 }, config.CLEAR_LIBS); // do this every CLEAR_LIBS ms
 
 module.exports = function (callback) {
-  if (libraries.length > 0) {
-    console.log('Javascript core libraries loaded from cache');
-    return callback(null, libraries);
-    
-  } else {
-    // load javascript libraries from NPM registry
-    console.log('Loading javascript core libraries from npm registry...');
-    npm.load({}, function (err) {
-      if (err) return callback(new Error('Unable to load npm server-side.'));
+    if (libraries.length > 0) {
+        console.log('Javascript core libraries loaded from cache');
+        return callback(null, libraries);
 
-      // search for kevoree libraries using npm
-      npm.commands.search('/kevoree-comp-|kevoree-chan-|kevoree-group-|kevoree-node-/', true, function (err, modules) {
-        if (err) return callback(new Error('Something went wrong while using npm.search()'));
+    } else {
+        // load javascript libraries from NPM registry
+        console.log('Loading javascript core libraries from npm registry...');
+        npm.load({}, function (err) {
+            if (err) return callback(new Error('Unable to load npm server-side.'));
 
-        // npm search command succeed
-        libraries.length = 0; // resetting libraries array (clear cache)
-        canClear = false;
-        var asyncTasks = [];
-        for (var moduleName in modules) {
-          (function (packageName, latest) {
-            asyncTasks.push(function (iteratorCb) {
-              npm.commands.view([packageName], true, function (err, view) {
-                if (err) return iteratorCb(new Error('Something went wrong while using npm.view('+packageName+')'));
+            // search for kevoree libraries using npm
+            npm.commands.search('/kevoree-comp-|kevoree-chan-|kevoree-group-|kevoree-node-/', true, function (err, modules) {
+                if (err) return callback(new Error('Something went wrong while using npm.search()'));
 
-                var splittedName = view[latest].name.split('-');
-                libraries.push({
-                  groupID:    '',
-                  artifactID: packageName,
-                  type:       splittedName[1],
-                  simpleName: splittedName[2],
-                  latest:     latest,
-                  versions:   view[latest].versions
+                // npm search command succeed
+                libraries.length = 0; // resetting libraries array (clear cache)
+                canClear = false;
+                var asyncTasks = [];
+                for (var moduleName in modules) {
+                    (function (packageName, latest) {
+                        if (latest.length !== 0) { // workaround https://github.com/npm/npm/issues/5033
+                            asyncTasks.push(function (iteratorCb) {
+                                npm.commands.view([packageName], true, function (err, view) {
+                                    if (err) return iteratorCb(new Error('Something went wrong while using npm.view('+packageName+')'));
+
+                                    var splittedName = view[latest].name.split('-');
+                                    libraries.push({
+                                        groupID:    '',
+                                        artifactID: packageName,
+                                        type:       splittedName[1],
+                                        simpleName: splittedName[2],
+                                        latest:     latest,
+                                        versions:   view[latest].versions
+                                    });
+                                    iteratorCb();
+                                });
+                            });
+                        }
+
+                    })(moduleName, modules[moduleName].version);
+                }
+
+                async.parallel(asyncTasks, function (err) {
+                    if (err) {
+                        callback(err);
+                        canClear = true;
+                        return;
+                    }
+
+                    callback(null, libraries);
+                    canClear = true;
                 });
-                iteratorCb();
-              });
             });
-          })(moduleName, modules[moduleName].version);
-        }
-
-        async.parallel(asyncTasks, function (err) {
-          if (err) {
-            callback(err);
-            canClear = true;
-            return;
-          }
-
-          callback(null, libraries);
-          canClear = true;
         });
-      });
-    });
-  }
+    }
 }
