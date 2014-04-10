@@ -43,6 +43,7 @@ module.exports = function (model) {
     }
 
     function processHostedNodesAndComps(elems) {
+        var compsMap = {};
         while (elems.hasNext()) {
             var elem = elems.next();
 
@@ -54,13 +55,19 @@ module.exports = function (model) {
             } else {
                 var comps = elem.components.iterator();
                 while (comps.hasNext()) {
-                    if (str.length !== 0) {
-                        str += '\n';
-                    }
                     var comp = comps.next();
-                    str += 'add '+elem.name+'.'+comp.name+' : '+comp.typeDefinition.name;
+                    var list = compsMap[comp.typeDefinition.name] || [];
+                    list.push(elem.name+'.'+comp.name);
+                    compsMap[comp.typeDefinition.name] = list;
                 }
             }
+        }
+
+        for (var tdef in compsMap) {
+            if (str.length !== 0) {
+                str += '\n';
+            }
+            str += 'add '+compsMap[tdef].join(', ')+' : '+tdef;
         }
     }
 

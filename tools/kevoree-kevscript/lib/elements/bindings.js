@@ -17,5 +17,6 @@ module.exports = function (model) {
             binding.port.name + ' ' +
             binding.hub.name;
     }
+
     return str;
 };

@@ -10,21 +10,24 @@ var repos       = require('./elements/repositories'),
  * Created by leiko on 10/04/14.
  */
 module.exports = function (model) {
-    var kevscript = '';
+    var blocks = [
+        // order matters !
+        repos(model),
+        includes(model),
+        instances(model),
+        attaches(model),
+        bindings(model),
+        sets(model),
+        networks(model)
+    ];
 
-    kevscript += repos(model);
-    kevscript += '\n';
-    kevscript += includes(model);
-    kevscript += '\n';
-    kevscript += instances(model);
-    kevscript += '\n';
-    kevscript += attaches(model);
-    kevscript += '\n';
-    kevscript += bindings(model);
-    kevscript += '\n';
-    kevscript += sets(model);
-    kevscript += '\n';
-    kevscript += networks(model);
+    var kevscript = '';
+    for (var i in blocks) {
+        kevscript += blocks[i];
+        if (blocks[i].length > 0) {
+            kevscript += '\n\n';
+        }
+    }
 
     return kevscript.replace(/^([\n\t\r])+/, '').replace(/([\n\t\r])+$/, '');
 };

@@ -25,5 +25,6 @@ module.exports = function (model) {
             str += 'include '+type+':'+def;
         }
     }
+
     return str;
 };

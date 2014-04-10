@@ -1,5 +1,7 @@
 /**
  * Created by leiko on 10/04/14.
+ * @param model
+ * @returns {string}
  */
 module.exports = function (model) {
     var str = '';
