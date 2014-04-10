@@ -6,9 +6,6 @@ module.exports = function (model) {
     var str = '';
     while (tdefs.hasNext()) {
         var du = tdefs.next().deployUnit;
-        if (str.length !== 0) {
-            str += '\n';
-        }
         var type = 'mvn';
         if (du.type === 'npm') {
             type = 'npm';
@@ -22,6 +19,9 @@ module.exports = function (model) {
         def += du.version;
 
         if (str.indexOf(def) === -1) {
+            if (str.length !== 0) {
+                str += '\n';
+            }
             str += 'include '+type+':'+def;
         }
     }
