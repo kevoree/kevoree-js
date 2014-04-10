@@ -35,10 +35,12 @@ module.exports = function (model) {
         }
 
         for (var tdef in map) {
-            if (str.length !== 0) {
-                str += '\n';
+            if (map[tdef].length > 0) {
+                if (str.length !== 0) {
+                    str += '\n';
+                }
+                str += 'add '+map[tdef].join(', ')+' : '+tdef;
             }
-            str += 'add '+map[tdef].join(', ')+' : '+tdef;
         }
     }
 
@@ -64,10 +66,12 @@ module.exports = function (model) {
         }
 
         for (var tdef in compsMap) {
-            if (str.length !== 0) {
-                str += '\n';
+            if (compsMap[tdef].length > 0) {
+                if (str.length !== 0) {
+                    str += '\n';
+                }
+                str += 'add '+compsMap[tdef].join(', ')+' : '+tdef;
             }
-            str += 'add '+compsMap[tdef].join(', ')+' : '+tdef;
         }
     }
 
