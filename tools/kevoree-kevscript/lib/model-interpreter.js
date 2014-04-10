@@ -1,5 +1,5 @@
 var repos       = require('./elements/repositories'),
-    deployUnits = require('./elements/deployUnits'),
+    includes    = require('./elements/includes'),
     instances   = require('./elements/instances'),
     attaches    = require('./elements/attaches'),
     bindings    = require('./elements/bindings'),
@@ -14,7 +14,7 @@ module.exports = function (model) {
 
     kevscript += repos(model);
     kevscript += '\n';
-    kevscript += deployUnits(model);
+    kevscript += includes(model);
     kevscript += '\n';
     kevscript += instances(model);
     kevscript += '\n';

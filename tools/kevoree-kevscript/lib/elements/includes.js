@@ -21,7 +21,9 @@ module.exports = function (model) {
         def += du.name+':';
         def += du.version;
 
-        str += 'include '+type+':'+def;
+        if (str.indexOf(def) === -1) {
+            str += 'include '+type+':'+def;
+        }
     }
     return str;
 };
