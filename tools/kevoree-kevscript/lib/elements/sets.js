@@ -11,10 +11,17 @@ module.exports = function (model) {
                 str += '\n';
             }
 
+            var value = '';
+            if (val.value.indexOf('"') === 0) {
+                value = '"'+val.value+'"';
+            } else if (val.value.indexOf('\'') === 0) {
+                value = '\''+val.value+'\'';
+            }
+
             if (fragName) {
-                str += 'set '+instanceName+'.'+val.name+'/'+fragName+' = "'+val.value+'"';
+                str += 'set '+instanceName+'.'+val.name+'/'+fragName+' = '+value;
             } else {
-                str += 'set '+instanceName+'.'+val.name+' = "'+val.value+'"';
+                str += 'set '+instanceName+'.'+val.name+' = '+value;
             }
         }
     }
