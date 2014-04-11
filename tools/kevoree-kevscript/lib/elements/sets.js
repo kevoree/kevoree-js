@@ -39,16 +39,18 @@ module.exports = function (model) {
         }
     }
 
-    function processInstance(instance) {
+    function processInstance(instance, host) {
+        var instanceName = (host) ? (host+'.'+instance.name) : (instance.name);
+
         if (instance.dictionary) {
-            processDictionary(instance.name, instance.dictionary.values.iterator());
+            processDictionary(instanceName, instance.dictionary.values.iterator());
         }
 
         var fDics = instance.fragmentDictionary.iterator();
         while (fDics.hasNext()) {
             var dic = fDics.next();
             if (dic) {
-                processDictionary(instance.name, dic.values.iterator(), dic.name);
+                processDictionary(instanceName, dic.values.iterator(), dic.name);
             }
         }
     }
@@ -60,12 +62,12 @@ module.exports = function (model) {
 
         var subNodes = node.hosts.iterator();
         while (subNodes.hasNext()) {
-            processInstance(subNodes.next());
+            processInstance(subNodes.next(), node.name);
         }
 
         var comps = node.components.iterator();
         while (comps.hasNext()) {
-            processInstance(comps.next());
+            processInstance(comps.next(), node.name);
         }
     }
 
