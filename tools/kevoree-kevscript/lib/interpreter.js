@@ -30,7 +30,10 @@ var statements = {
     anything:               require('./statements/anything'),
     realString:             require('./statements/realString'),
     realStringNoNewLine:    require('./statements/realStringNoNewLine'),
-    newLine:                require('./statements/newLine')
+    newLine:                require('./statements/newLine'),
+    singleQuoteLine:        require('./statements/singleQuoteLine'),
+    doubleQuoteLine:        require('./statements/doubleQuoteLine'),
+    escaped:                require('./statements/escaped')
 };
 
 /**
