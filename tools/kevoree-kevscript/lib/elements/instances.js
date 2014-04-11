@@ -46,31 +46,42 @@ module.exports = function (model) {
 
     function processHostedNodesAndComps(elems) {
         var compsMap = {};
+        var subnodesMap = {};
+        var list;
         while (elems.hasNext()) {
             var elem = elems.next();
 
             if (elem.host) {
-                if (str.length !== 0) {
-                    str += '\n';
-                }
-                str += 'add '+elem.host.name+'.'+elem.name+' : '+elem.typeDefinition.name;
+                list = subnodesMap[elem.typeDefinition.name] || [];
+                list.push(elem.host.name+'.'+elem.name);
+                subnodesMap[elem.typeDefinition.name] = list;
             } else {
                 var comps = elem.components.iterator();
                 while (comps.hasNext()) {
                     var comp = comps.next();
-                    var list = compsMap[comp.typeDefinition.name] || [];
+                    list = compsMap[comp.typeDefinition.name] || [];
                     list.push(elem.name+'.'+comp.name);
                     compsMap[comp.typeDefinition.name] = list;
                 }
             }
         }
 
-        for (var tdef in compsMap) {
+        var tdef;
+        for (tdef in compsMap) {
             if (compsMap[tdef].length > 0) {
                 if (str.length !== 0) {
                     str += '\n';
                 }
                 str += 'add '+compsMap[tdef].join(', ')+' : '+tdef;
+            }
+        }
+
+        for (tdef in subnodesMap) {
+            if (subnodesMap[tdef].length > 0) {
+                if (str.length !== 0) {
+                    str += '\n';
+                }
+                str += 'add '+subnodesMap[tdef].join(', ')+' : '+tdef;
             }
         }
     }

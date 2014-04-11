@@ -1,6 +1,26 @@
 /**
  * Created by leiko on 10/04/14.
  */
+function lexValue(value) {
+    if (value) {
+        var escaped = false;
+        for (var i=0; i < value.length; i++) {
+            if (value[i] === '"' && !escaped) {
+                return '\''+value+'\'';
+            }
+
+            if (value[i] === '\'' && !escaped) {
+                return '"'+value+'"';
+            }
+
+            escaped = (value[i] === '\\');
+        }
+        return '\''+value+'\'';
+    } else {
+        return '\'\'';
+    }
+}
+
 module.exports = function (model) {
     var str = '';
 
@@ -12,9 +32,9 @@ module.exports = function (model) {
             }
 
             if (fragName) {
-                str += 'set '+instanceName+'.'+val.name+'/'+fragName+' = "'+val.value+'"';
+                str += 'set '+instanceName+'.'+val.name+'/'+fragName+' = '+lexValue(val.value);
             } else {
-                str += 'set '+instanceName+'.'+val.name+' = "'+val.value+'"';
+                str += 'set '+instanceName+'.'+val.name+' = '+lexValue(val.value);
             }
         }
     }
