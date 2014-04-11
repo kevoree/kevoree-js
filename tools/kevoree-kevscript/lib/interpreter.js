@@ -29,12 +29,7 @@ var statements = {
     version:        require('./statements/version'),
     anything:       require('./statements/anything'),
     realString:     require('./statements/realString'),
-    escaped:        require('./statements/escaped'),
-    escaped1:       require('./statements/escaped1'),
-    escaped2:       require('./statements/escaped2'),
-    notEscaped1Line:require('./statements/notEscaped1Line'),
-    notEscaped2Line:require('./statements/notEscaped2Line'),
-    eolKept:        require('./statements/eolKept')
+    newLine:        require('./statements/newLine')
 };
 
 /**

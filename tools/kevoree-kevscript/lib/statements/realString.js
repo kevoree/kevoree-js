@@ -8,4 +8,4 @@ module.exports = function (model, statements, stmt, opts) {
         }
     }
     return str;
-}
+};
