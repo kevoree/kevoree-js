@@ -56,7 +56,7 @@ module.exports = function (callback) {
             if (err) return callback(new Error('Unable to load npm server-side.'));
 
             // search for kevoree libraries using npm
-            npm.commands.search('/kevoree-comp-|kevoree-chan-|kevoree-group-|kevoree-node-/', true, function (err, modules) {
+            npm.commands.search('/^(kevoree-comp-|kevoree-chan-|kevoree-group-|kevoree-node-)[\\w-]+/', true, function (err, modules) {
                 if (err) return callback(new Error('Something went wrong while using npm.search()'));
 
                 // npm search command succeed
