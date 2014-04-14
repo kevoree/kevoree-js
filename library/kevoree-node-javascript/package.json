@@ -1,12 +1,13 @@
 {
   "name": "kevoree-node-javascript",
-  "version": "0.4.12",
+  "version": "0.4.13",
   "main": "./kevoree-node-javascript.js",
   "scripts": {
     "prepublish": "node node_modules/kevoree-gen-model -q"
   },
   "description": "A Kevoree platform to run Javascript code",
   "keywords": [
+    "kevoree-std-lib",
     "kevoree",
     "platform",
     "node"

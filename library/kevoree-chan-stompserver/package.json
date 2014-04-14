@@ -1,10 +1,15 @@
 {
   "name": "kevoree-chan-stompserver",
-  "version": "0.4.10",
+  "version": "0.4.11",
   "main": "./kevoree-chan-stompserver.js",
   "scripts": {
     "prepublish": "node node_modules/kevoree-gen-model"
   },
+  "keywords": [
+    "kevoree-std-lib",
+    "kevoree",
+    "channel"
+  ],
   "dependencies": {
     "kevoree-entities": ">=0.4.10",
     "ws": "~0.4.31"

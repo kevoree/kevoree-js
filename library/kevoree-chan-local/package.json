@@ -1,6 +1,6 @@
 {
   "name": "kevoree-chan-local",
-  "version": "0.4.10",
+  "version": "0.4.11",
   "main": "./kevoree-chan-local.js",
   "description": "A Kevoree channel that transfers messages between components on the same node using EventEmitter (only)",
   "scripts": {
@@ -10,6 +10,7 @@
     "kevoree-gen-model": ">=0.4.10"
   },
   "keywords": [
+    "kevoree-std-lib",
     "kevoree",
     "channel"
   ],

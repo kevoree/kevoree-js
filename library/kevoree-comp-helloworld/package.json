@@ -1,6 +1,6 @@
 {
   "name": "kevoree-comp-helloworld",
-  "version": "0.4.10",
+  "version": "0.4.11",
   "main": "./kevoree-comp-helloworld.js",
   "description": "A Kevoree component that displays an hello world",
   "scripts": {
@@ -8,6 +8,7 @@
     "kevoree": "node node_modules/kevoree-nodejs-runtime/cli.js -n node0 -g sync -k kevs/main.kevs"
   },
   "keywords": [
+    "kevoree-std-lib",
     "kevoree",
     "component"
   ],
