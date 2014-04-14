@@ -63,28 +63,28 @@ module.exports = function (callback) {
                 libraries.length = 0; // resetting libraries array (clear cache)
                 canClear = false;
                 var asyncTasks = [];
-                for (var moduleName in modules) {
-                    (function (packageName, latest) {
-                        if (latest.length !== 0) { // workaround https://github.com/npm/npm/issues/5033
+                for (var name in modules) {
+                    (function (module) {
+                        if (module.version.length !== 0 && (module.keywords.indexOf('kevoree-std-lib') !== -1)) { // workaround https://github.com/npm/npm/issues/5033
                             asyncTasks.push(function (iteratorCb) {
-                                npm.commands.view([packageName], true, function (err, view) {
-                                    if (err) return iteratorCb(new Error('Something went wrong while using npm.view('+packageName+')'));
+                                npm.commands.view([module.name], true, function (err, view) {
+                                    if (err) return iteratorCb(new Error('Something went wrong while using npm.view('+module.name+')'));
 
-                                    var splittedName = view[latest].name.split('-');
+                                    var splittedName = view[module.version].name.split('-');
                                     libraries.push({
                                         groupID:    '',
-                                        artifactID: packageName,
+                                        artifactID: module.name,
                                         type:       splittedName[1],
                                         simpleName: splittedName[2],
-                                        latest:     latest,
-                                        versions:   view[latest].versions
+                                        latest:     module.version,
+                                        versions:   view[module.version].versions
                                     });
                                     iteratorCb();
                                 });
                             });
                         }
 
-                    })(moduleName, modules[moduleName].version);
+                    })(modules[name]);
                 }
 
                 async.parallel(asyncTasks, function (err) {
