@@ -1,4 +1,5 @@
-var config      = require('./config.json'),
+#!/usr/bin/env node
+var config        = require('./config.json'),
     NodeJSRuntime = require('./lib/NodeJSRuntime'),
     KevoreeLogger = require('kevoree-commons').KevoreeLogger,
     path          = require('path'),
