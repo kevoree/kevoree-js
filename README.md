@@ -42,8 +42,8 @@ npm install -g generator-kevoree
 
  * nodes: `kevoree-node-yournodename`
  * groups: `kevoree-group-yourgroupname`
- * channels: `kevoree-chan-yourgroupname`
- * components: `kevoree-comp-yourgroupname`
+ * channels: `kevoree-chan-yourchannelname`
+ * components: `kevoree-comp-yourcomponentname`
  
 Because we are going through a **component** creation, let's create a `kevoree-comp-helloworld` directory
 ```sh
