@@ -1,7 +1,7 @@
 {
     "name": "kevoree-<%= rawEntityType %>-<%= _.slugify(entityName) %>",
     "version": "0.0.1",
-    "main": "./kevoree-<%= rawEntityType %>-<%= _.slugify(entityName) %>.js",
+    "main": "./lib/<%= entityName %>.js",
     "scripts": {
         "prepublish": "node node_modules/kevoree-gen-model -q && grunt jade"
     },

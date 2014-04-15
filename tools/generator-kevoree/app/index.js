@@ -64,7 +64,6 @@ KevoreeGenerator.prototype.app = function app() {
     this.mkdir('lib');
     this.template('entities/_'+this.entityType+'.js', 'lib/'+this.entityName+'.js');
     this.template('_README.md', 'README.md');
-    this.template('_kevoree-letype-lename.js', 'kevoree-'+this.rawEntityType+'-'+ _.slugify(this.entityName)+'.js');
     this.mkdir('kevs');
 
     // type dependant config

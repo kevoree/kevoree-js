@@ -9,50 +9,50 @@ var AbstractGroup = require('kevoree-entities').AbstractGroup;
  * @type {<%= entityName %>}
  */
 var <%= entityName %> = <%= entityType %>.extend({
-  toString: '<%= entityName %>',
+    toString: '<%= entityName %>',
 
-  /* This is an example of dictionary attribute that you can set for your entity */
-//dic_yourAttrName: {
-//  optional: true,
-//  defaultValue: false
-//},
+    /* This is an example of dictionary attribute that you can set for your entity */
+    //dic_yourAttrName: {
+    //  optional: true,
+    //  defaultValue: false
+    //},
 
-  /**
-   * this method will be called by the Kevoree platform when your group has to start
-   */
-  start: function (_super) {
-    _super.call(this);
-    // TODO
-    this.log.debug(this.toString(), 'START');
-  },
+    /**
+    * this method will be called by the Kevoree platform when your group has to start
+    */
+    start: function (_super) {
+        _super.call(this);
+        // TODO
+        this.log.debug(this.toString(), 'START');
+    },
 
-  /**
-   * this method will be called by the Kevoree platform when your group has to stop
-   */
-  stop: function () {
-    // TODO
-    this.log.debug(this.toString(), 'STOP');
-  },
+    /**
+    * this method will be called by the Kevoree platform when your group has to stop
+    */
+    stop: function () {
+        // TODO
+        this.log.debug(this.toString(), 'STOP');
+    },
 
-  /**
-   * Should define a way to 'contact' targetNodeName and give the given model to it
-   * @param model
-   * @param targetNodeName
-   */
-  push: function (model, targetNodeName) {
-    // TODO
-    this.log.debug(this.toString(), 'TODO change current model with pushed one');
-  },
+    /**
+    * Should define a way to 'contact' targetNodeName and give the given model to it
+    * @param model
+    * @param targetNodeName
+    */
+    push: function (model, targetNodeName) {
+        // TODO
+        this.log.debug(this.toString(), 'TODO change current model with pushed one');
+    },
 
-  /**
-   * Should define a way to 'contact' targetNodeName and retrieve its current model
-   * @param targetNodeName
-   * @param callback function(err, model)
-   */
-  pull: function (targetNodeName, callback) {
-    // TODO
-    this.log.debug(this.toString(), 'TODO send current model back to targetNodeName');
-  }
+    /**
+    * Should define a way to 'contact' targetNodeName and retrieve its current model
+    * @param targetNodeName
+    * @param callback function(err, model)
+    */
+    pull: function (targetNodeName, callback) {
+        // TODO
+        this.log.debug(this.toString(), 'TODO send current model back to targetNodeName');
+    }
 
 });
 
