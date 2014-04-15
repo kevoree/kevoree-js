@@ -13,13 +13,14 @@
     "height": 800
   },
   "dependencies": {
-    "pseudoclass": "^1.0.0",
-    "kevoree-library": ">=0.4.10",
-    "kevoree-core": ">=0.4.10",
-    "kevoree-commons": ">=0.4.10",
     "async": "^0.2.10",
+    "kevoree-commons": ">=0.4.10",
+    "kevoree-core": ">=0.4.10",
     "kevoree-kevscript": ">=0.4.10",
+    "kevoree-library": ">=0.4.10",
     "kevoree-resolvers": ">=0.4.10",
-    "npmi": "0.0.5"
+    "npmi": "^0.0.7",
+    "optimist": "^0.6.1",
+    "pseudoclass": "^1.0.0"
   }
 }
