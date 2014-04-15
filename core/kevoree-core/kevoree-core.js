@@ -1,4 +1,4 @@
-var Class       = require('pseudoclass'),
+var Class         = require('pseudoclass'),
     kLib          = require('kevoree-library'),
     KevoreeLogger = require('kevoree-commons').KevoreeLogger,
     async         = require('async'),
@@ -40,7 +40,10 @@ module.exports = Class({
      * Destruct core instance
      */
     destruct: function() {
-        this.log.debug('Destructing...');
+        this.log.debug(this.toString(), 'Destroying Kevoree platform "'+this.nodeInstance.getName()+'"...');
+        if (this.nodeInstance !== null) {
+            this.nodeInstance.destroy();
+        }
     },
 
     /**
@@ -100,6 +103,7 @@ module.exports = Class({
      */
     saveModel: function () {
         // TODO
+        this.log.warn(this.toString(), 'saveModel(): not implemented yet');
     },
 
     /**
@@ -167,8 +171,9 @@ module.exports = Class({
                             // execute each command synchronously
                             async.eachSeries(adaptations, executeCommand, function (err) {
                                 if (err) {
-                                    err.message = "Something went wrong while processing adaptations.\n"+err.message+'\nRollbacking...';
+                                    err.message = "Something went wrong while processing adaptations.\n"+err.message;
                                     core.emitter.emit('adaptationError', err);
+                                    core.log.info(core.toString(), 'Rollbacking to previous model...');
 
                                     // rollback process
                                     return async.eachSeries(cmdStack, rollbackCommand, function (er) {
@@ -243,6 +248,7 @@ module.exports = Class({
      */
     lock: function() {
         // TODO
+        this.log.warn(this.toString(), 'lock(): not implemented yet');
     },
 
     /**
@@ -250,6 +256,7 @@ module.exports = Class({
      */
     unlock: function() {
         // TODO
+        this.log.warn(this.toString(), 'unlock(): not implemented yet');
     },
 
     getCurrentModel: function () {
@@ -295,13 +302,10 @@ module.exports = Class({
     }
 });
 
-// utility function to ensure cached model list won't go over 10 items
+// utility function to ensure cached model list won't go over 10 models
 var pushInArray = function pushInArray(array, model) {
-    if (array.length == 10) array.shift();
+    if (array.length === 10) {
+        array.shift();
+    }
     array.push(model);
-}
-
-// utility function to know if a model is currently already in the array
-var containsModel = function containsModel(array, model) {
-    return (array.indexOf(model) > -1);
-}
+};

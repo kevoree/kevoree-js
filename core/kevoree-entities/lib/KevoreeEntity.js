@@ -90,8 +90,18 @@ var KevoreeEntity = Class({
         this.nodeName = name;
     },
 
+    /**
+     * Tries to retrieve this Kevoree entity from deployModel first.
+     * If deployModel is null (meaning that we are in a deployed-state and not in a deploying-state)
+     * it tries to retrieve this Kevoree entity from currentModel.
+     * @returns {*}
+     */
     getModelEntity: function () {
-        return this.kCore.getDeployModel().findByPath(this.path);
+        var model = this.kCore.getDeployModel();
+        if (!model) {
+            model = this.kCore.getCurrentModel();
+        }
+        return model.findByPath(this.path);
     },
 
     getNetworkInfos: function (nodeName) {

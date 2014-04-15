@@ -77,13 +77,13 @@ KevoreeGenerator.prototype.app = function app() {
 
         case 'chan':
             this.template('_defaultGruntfile.js', 'Gruntfile.js');
-            this.template('_defaultPackage.json', 'package.json');;
+            this.template('_defaultPackage.json', 'package.json');
             this.template('_chanMain.kevs', 'kevs/main.kevs');
             break;
 
         case 'group':
             this.template('_defaultGruntfile.js', 'Gruntfile.js');
-            this.template('_defaultPackage.json', 'package.json');;
+            this.template('_defaultPackage.json', 'package.json');
             this.template('_groupMain.kevs', 'kevs/main.kevs');
             break;
     }

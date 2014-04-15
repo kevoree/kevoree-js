@@ -2,17 +2,19 @@ include npm:kevoree-node-javascript
 include npm:kevoree-group-websocket
 include npm:kevoree-chan-websocket
 include npm:kevoree-comp-helloworld
+include npm:kevoree-comp-fakeconsole
 
 add node0, node1 : JavascriptNode
 add sync : WebSocketGroup
 add chan : WebSocketChannel
-add node0.comp0, node1.comp1 : HelloWorldComponent
+add node0.helloWorld : HelloWorldComponent
+add node1.console : FakeConsole
 
 attach node0, node1 sync
 set sync.port/node0 = '9000'
 
-bind node0.comp0.sendText chan
-bind node1.comp1.fake chan
+bind node0.helloWorld.sendText chan
+bind node1.console.inMsg chan
 
 set chan.port/node0 = '9001'
 

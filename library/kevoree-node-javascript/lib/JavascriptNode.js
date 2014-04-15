@@ -1,6 +1,6 @@
 var AbstractNode        = require('kevoree-entities').AbstractNode,
     KevoreeLogger       = require('kevoree-commons').KevoreeLogger,
-    AdaptationEngine    = require('./lib/AdaptationEngine'),
+    AdaptationEngine    = require('./AdaptationEngine'),
     kevoree             = require('kevoree-library').org.kevoree,
     async               = require('async');
 

@@ -16,11 +16,14 @@ module.exports = KevoreeEntity.extend({
         var paths = [];
         for (var inputPath in this.inputs) {
             // do not send message to stopped component
-            var port = this.getKevoreeCore().getCurrentModel().findByPath(inputPath);
-            if (port) {
-                var comp = port.eContainer();
-                if (comp && comp.started) {
-                    paths.push(inputPath);
+            var model = this.getKevoreeCore().getCurrentModel();
+            if (model) {
+                var port = model.findByPath(inputPath);
+                if (port) {
+                    var comp = port.eContainer();
+                    if (comp && comp.started) {
+                        paths.push(inputPath);
+                    }
                 }
             }
         }
