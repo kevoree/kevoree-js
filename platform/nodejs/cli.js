@@ -66,7 +66,7 @@ var loadModelFromCmdLineArg = function loadModelFromCmdLineArg() {
             log.warn('Unable to load model from \''+ argv.model+'\'');
         }
     }
-}
+};
 
 
 kRuntime.start(argv.nodeName || config.nodeName, argv.groupName || config.groupName);
