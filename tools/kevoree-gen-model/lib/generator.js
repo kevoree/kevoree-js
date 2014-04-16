@@ -1,25 +1,26 @@
-var fs         = require('fs'),
-    path         = require('path'),
-    npm          = require('npm'),
-    genComponent = require('./genComponent'),
-    genChannel   = require('./genChannel'),
-    genGroup     = require('./genGroup'),
-    genNode      = require('./genNode'),
-    kevoree      = require('kevoree-library').org.kevoree;
+var fs               = require('fs'),
+    path             = require('path'),
+    npm              = require('npm'),
+    chalk            = require('chalk'),
+    genComponent     = require('./genComponent'),
+    genChannel       = require('./genChannel'),
+    genGroup         = require('./genGroup'),
+    genNode          = require('./genNode'),
+    kevoree          = require('kevoree-library').org.kevoree;
 
 // init Kevoree entities types
 var KevoreeEntity, AbstractComponent, AbstractGroup, AbstractChannel, AbstractNode;
-// init quiet mode to false
-var quiet = false;
 // init Kevoree factory
 var factory = new kevoree.impl.DefaultKevoreeFactory();
 
 /**
  *
- * @param dirPath
- * @param callback
+ * @param dirPath {string}
+ * @param verbose {boolean}
+ * @param callback {function}
+ * @returns {*}
  */
-var generator = function generator(dirPath, quiet_, callback) {
+var generator = function generator(dirPath, verbose, callback) {
     if (dirPath == undefined) throw new Error("dirPath undefined");
 
     // retrieve kevoree-entities types from the project path
@@ -30,8 +31,41 @@ var generator = function generator(dirPath, quiet_, callback) {
     AbstractChannel   = require(kePath).AbstractChannel;
     AbstractNode      = require(kePath).AbstractNode;
 
-    // set quiet mode
-    quiet = quiet_;
+    function processFile(file, deployUnit, model) {
+        try {
+            var Class = require(file);
+
+            if (typeof Class == 'function') {
+                var obj = new Class();
+                if (obj instanceof KevoreeEntity) {
+                    // this Class is a KevoreeEntity
+                    if (obj instanceof AbstractComponent) {
+                        if (verbose) console.log("Processing component:\n\tFile: '%s'", file);
+                        return genComponent(deployUnit, obj, model);
+
+                    } else if (obj instanceof AbstractChannel) {
+                        if (verbose) console.log("Processing channel:\n\tFile: '%s'", file);
+                        return genChannel(deployUnit, obj, model);
+
+                    } else if (obj instanceof AbstractGroup) {
+                        if (verbose) console.log("Processing group:\n\tFile: '%s'", file);
+                        return genGroup(deployUnit, obj, model);
+
+                    } else if (obj instanceof AbstractNode) {
+                        if (verbose) console.log("Processing node:\n\tFile: '%s'", file);
+                        return genNode(deployUnit, obj, model);
+                    }
+
+                } else {
+                    // this is not the Class you are looking for
+                    if (verbose) console.log(chalk.yellow('Ignored:')+"\n\tFile: '%s'\n\tReason: Not a KevoreeEntity", file);
+                }
+            }
+        } catch (e) {
+            if (e.code == 'PARSE_FAIL') throw e;
+            if (verbose) console.log(chalk.yellow('Ignored:')+"\n\tFile: '%s'\n\tReason: Unable to create a new object\n\tError: %s", file, e.message);
+        }
+    }
 
     try {
         // get module package.json
@@ -64,42 +98,6 @@ var generator = function generator(dirPath, quiet_, callback) {
 
     } catch (err) {
         return callback(err);
-    }
-};
-
-var processFile = function (file, deployUnit, model) {
-    try {
-        var Class = require(file);
-
-        if (typeof Class == 'function') {
-            var obj = new Class();
-            if (obj instanceof KevoreeEntity) {
-                // this Class is a KevoreeEntity
-                if (obj instanceof AbstractComponent) {
-                    console.log("\nProcessing component:\n\tFile: '%s'", file);
-                    return genComponent(deployUnit, obj, model);
-
-                } else if (obj instanceof AbstractChannel) {
-                    console.log("\nProcessing channel:\n\tFile: '%s'", file);
-                    return genChannel(deployUnit, obj, model);
-
-                } else if (obj instanceof AbstractGroup) {
-                    console.log("\nProcessing group:\n\tFile: '%s'", file);
-                    return genGroup(deployUnit, obj, model);
-
-                } else if (obj instanceof AbstractNode) {
-                    console.log("\nProcessing node:\n\tFile: '%s'", file);
-                    return genNode(deployUnit, obj, model);
-                }
-
-            } else {
-                // this is not the Class you are looking for
-                if (!quiet) console.log("\nIgnored:\n\tFile: '%s'\n\tReason: Not a KevoreeEntity", file);
-            }
-        }
-    } catch (e) {
-        if (e.code == 'PARSE_FAIL') throw e;
-        if (!quiet) console.log("\nIgnored:\n\tFile: '%s'\n\tReason: Unable to create a new object\n\tError: %s", file, e.message);
     }
 };
 

@@ -1,4 +1,3 @@
-var AbstractChannel = require('kevoree-entities').AbstractChannel;
 var kevoree = require('kevoree-library').org.kevoree;
 var genDictionary = require('./genDictionary');
 

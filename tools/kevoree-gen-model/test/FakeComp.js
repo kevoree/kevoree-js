@@ -21,15 +21,21 @@ var FakeComp = AbstractComponent.extend({
 
     },
 
-    dic_attr0: {
-        fragmentDependant: true,
-        defaultValue: "foo"
+    dic_fooAttr: {
+        fragmentDependant: false,
+        defaultValue: 'foo'
     },
 
-    dic_attr1: null,
+    dic_emptyAttr: {},
 
-    dic_attr2: {
-        optional: true
+    dic_port: {
+        defaultValue: 9000,
+        fragmentDependant: true
+    },
+
+    dic_boolAttr: {
+        optional: false,
+        defaultValue: true
     }
 });
 

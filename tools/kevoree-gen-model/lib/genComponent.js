@@ -25,13 +25,11 @@ module.exports = function (deployUnit, obj, model) {
     compType.deployUnit = deployUnit;
 
     for (var prop in obj) {
-        if (obj.hasOwnProperty(prop)) {
-            if (prop.startsWith(AbstractComponent.IN_PORT)) {
-                addInputPort(prop.replace(AbstractComponent.IN_PORT,  ''), factory, compType);
+        if (prop.startsWith(AbstractComponent.IN_PORT)) {
+            addInputPort(prop.replace(AbstractComponent.IN_PORT,  ''), factory, compType);
 
-            } else if (prop.startsWith(AbstractComponent.OUT_PORT)) {
-                addOutputPort(prop.replace(AbstractComponent.OUT_PORT,  ''), factory, compType);
-            }
+        } else if (prop.startsWith(AbstractComponent.OUT_PORT)) {
+            addOutputPort(prop.replace(AbstractComponent.OUT_PORT,  ''), factory, compType);
         }
     }
 
@@ -50,7 +48,6 @@ var addInputPort = function addInputPort(name, factory, compType) {
     portRef.noDependency = true; // TODO wrong you should specify this somewhere
     portRef.name = name;
     compType.addProvided(portRef);
-    console.log("\tNew input port '%s' added to component", name);
 };
 
 var addOutputPort = function addOutputPort(name, factory, compType) {
@@ -59,5 +56,4 @@ var addOutputPort = function addOutputPort(name, factory, compType) {
     portRef.noDependency = true; // TODO wrong you should specify this somewhere
     portRef.name = name;
     compType.addRequired(portRef);
-    console.log("\tNew output port '%s' added to component", name);
 };

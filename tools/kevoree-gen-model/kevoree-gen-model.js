@@ -1,61 +1,112 @@
-var path = require('path'),
-    fs   = require('fs'),
-    gen  = require('./lib/generator'),
-    argv = require('optimist')
-      .usage('Usage: $0 -p path/to/your/project [-q]')
-      .demand(['p'])
-      .default('p', '.')
-      .default('q', false)
-      .argv,
+var path    = require('path'),
+    fs      = require('fs'),
+    chalk   = require('chalk'),
+    gen     = require('./lib/generator'),
     kevoree = require('kevoree-library').org.kevoree;
 
-var dirPath = path.resolve(argv.p);
+module.exports = function (dirPath, logLevel, callback) {
+    var quiet    = logLevel.quiet    || false,
+        verbose  = logLevel.verbose  || false,
+        callback = callback || function () {};
 
-stats = fs.lstat(dirPath, function (err, stats) {
-  if (err) {
-    console.log("'"+dirPath+"' does not exist. Aborting process.");
-    process.exit(1);
-  }
-
-  if (stats.isFile()) {
-    // it is a file
-    dirPath = path.resolve(dirPath, '..'); // use this file's folder as root folder
-    gen(dirPath, argv.q, genCallback);
-
-  } else if (stats.isDirectory()) {
-    gen(dirPath, argv.q, genCallback);
-
-  } else {
-    console.log("You should give the path to a folder in argument.");
-    process.exit(1);
-  }
-});
-
-var genCallback = function genCallback(err, model) {
-  if (err) {
-    console.error('\nModel generation failed!\n\tError: '+err.message);
-    process.exit(1);
-  }
-
-  console.log("\nModel generation done!");
-  if (!argv.q) {
-    console.log("TypeDefinitions:");
-    for (var i=0; i<model.typeDefinitions.size(); i++) {
-      console.log('\t'+model.typeDefinitions.get(i).name);
+    if (quiet) {
+        var noop = function () {};
+        for (var method in console) {
+            console[method] = noop;
+        }
     }
-  }
 
-  var jsonSerializer = new kevoree.serializer.JSONModelSerializer(),
-    filepath = path.resolve(dirPath, 'kevlib.json'),
-  // hack to indent output string properly
-    beautifulModel = JSON.stringify(JSON.parse(jsonSerializer.serialize(model)), null, 4);
+    function genCallback(err, model) {
+        if (err) {
+            console.error(chalk.red('Model generation failed!')+'\nError: '+err.message);
+            return process.nextTick(function () {
+                callback(err);
+            });
+        }
 
-  fs.writeFile(filepath, beautifulModel, function(err) {
-    if(err) {
-      console.log(err);
-      process.exit(1);
-    } else {
-      console.log("\nModel 'kevlib.json' saved at %s", filepath);
+        if (model.typeDefinitions.size() > 0) {
+            if (verbose) {
+                var tdef = model.typeDefinitions.get(0);
+                console.log('\nTypeDefinition: %s', tdef.name);
+                console.log('Version: \t%s', tdef.version);
+                console.log('DeployUnit: \t%s:%s', tdef.deployUnit.type, tdef.deployUnit.name);
+                if (tdef.dictionaryType) {
+                    // dictionary logging
+                    var dic = [];
+                    var attrs = tdef.dictionaryType.attributes.iterator();
+                    while (attrs.hasNext()) {
+                        var attr = attrs.next();
+                        var value = attr.name + ':' + attr.datatype;
+                        if (typeof (attr.defaultValue) === 'string' && attr.defaultValue.length > 0) {
+                            value += ' ("'+attr.defaultValue+'")';
+                        } else {
+                            value += ' ('+attr.defaultValue+')';
+                        }
+                        if (!attr.optional) {
+                            value = chalk.underline(value);
+                        }
+                        if (attr.fragmentDependant) {
+                            value = chalk.inverse(value);
+                        }
+                        dic.push(value);
+                    }
+                    if (dic.length > 0) {
+                        console.log('Dictionary: \t[ %s ]', dic.join(', '));
+                    }
+
+                }
+                // ports logging
+                var provided = [], required = [];
+                var providedIt = tdef.provided.iterator();
+                while (providedIt.hasNext()) {
+                    provided.push(providedIt.next().name);
+                }
+                var requiredIt = tdef.required.iterator();
+                while (requiredIt.hasNext()) {
+                    required.push(requiredIt.next().name);
+                }
+                if (provided.length > 0) {
+                    console.log('Input port(s): \t[ %s ]', provided.join(', '));
+                }
+                if (required.length > 0) {
+                    console.log('Output port(s): [ %s ]', required.join(', '));
+                }
+            }
+            console.log((verbose ? '\n' : '')+chalk.green('Model generation done'));
+        } else {
+            return genCallback(new Error('No TypeDefinition found in project'));
+        }
+
+        var jsonSerializer = new kevoree.serializer.JSONModelSerializer(),
+            filepath = path.resolve(dirPath, 'kevlib.json'),
+            // hack to indent output string properly
+            beautifulModel = JSON.stringify(JSON.parse(jsonSerializer.serialize(model)), null, 4);
+
+        fs.writeFile(filepath, beautifulModel, function(err) {
+            if(err) {
+                return genCallback(err);
+            } else {
+                console.log("\nModel 'kevlib.json' saved at %s", path.relative(process.cwd(), filepath));
+                return process.nextTick(callback);
+            }
+        });
     }
-  });
-}
+
+    fs.lstat(dirPath, function (err, stats) {
+        if (err) {
+            return genCallback(err);
+        }
+
+        if (stats.isFile()) {
+            // it is a file
+            dirPath = path.resolve(dirPath, '..'); // use this file's folder as root folder
+            gen(dirPath, verbose, genCallback);
+
+        } else if (stats.isDirectory()) {
+            gen(dirPath, verbose, genCallback);
+
+        } else {
+            return genCallback(new Error("You should give the path to a folder in argument."));
+        }
+    });
+};

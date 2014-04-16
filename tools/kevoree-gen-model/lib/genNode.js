@@ -1,4 +1,3 @@
-var AbstractNode = require('kevoree-entities').AbstractNode;
 var kevoree = require('kevoree-library').org.kevoree;
 var genDictionary = require('./genDictionary');
 
