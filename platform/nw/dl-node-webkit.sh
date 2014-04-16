@@ -26,21 +26,23 @@ libudev0Hack() {
     cd ..
 }
 
-# (re-)create download folder
-echo Preparing ./node-webkit folder...
-rm -rf node-webkit \
-	&& mkdir node-webkit \
-	&& cd node-webkit \
-	&& mkdir linux32-tmp linux32 linux64-tmp linux64 mac win
+if [ ! -d "node-webkit" ]; then
+  # Control will enter here if node-webkit doesn't exist.
+  # create download folder
+    echo Preparing ./node-webkit folder...
+    mkdir node-webkit \
+        && cd node-webkit \
+        && mkdir linux32-tmp linux32 linux64-tmp linux64 mac win
 
-# download & extract for all platforms
-downloadAndExtract http://dl.node-webkit.org/v0.9.2/node-webkit-v0.9.2-linux-ia32.tar.gz linux32
-downloadAndExtract http://dl.node-webkit.org/v0.9.2/node-webkit-v0.9.2-linux-x64.tar.gz linux64
-downloadAndUnzip http://dl.node-webkit.org/v0.9.2/node-webkit-v0.9.2-win-ia32.zip win
-downloadAndUnzip http://dl.node-webkit.org/v0.9.2/node-webkit-v0.9.2-osx-ia32.zip mac
+    # download & extract for all platforms
+    downloadAndExtract http://dl.node-webkit.org/v0.9.2/node-webkit-v0.9.2-linux-ia32.tar.gz linux32
+    downloadAndExtract http://dl.node-webkit.org/v0.9.2/node-webkit-v0.9.2-linux-x64.tar.gz linux64
+    downloadAndUnzip http://dl.node-webkit.org/v0.9.2/node-webkit-v0.9.2-win-ia32.zip win
+    downloadAndUnzip http://dl.node-webkit.org/v0.9.2/node-webkit-v0.9.2-osx-ia32.zip mac
 
-# create libudev0 hacked versions
-libudev0Hack linux32
-libudev0Hack linux64
+    # create libudev0 hacked versions
+    libudev0Hack linux32
+    libudev0Hack linux64
+fi
 
 exit 0

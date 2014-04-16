@@ -26,7 +26,10 @@ module.exports = function (grunt) {
         config: {
             // Configurable paths
             app: 'app',
-            dist: 'dist'
+            dist: 'dist',
+            builds: 'builds',
+            // runtime name
+            runtime: 'kevoree-browser-runtime'
         },
 
         // Empties folders to start fresh
@@ -41,10 +44,11 @@ module.exports = function (grunt) {
                     ]
                 }]
             },
+            distZip: '<%= config.runtime %>.zip',
             'node-webkit': {
                 files: [{
                     src: [
-                        'builds',
+                        '<%= config.builds %>',
                         'node-webkit'
                     ]
                 }]
@@ -184,6 +188,76 @@ module.exports = function (grunt) {
                 cwd: '<%= config.app %>/styles',
                 dest: '.tmp/styles/',
                 src: '{,*/}*.css'
+            },
+            linux32: {
+                expand: true,
+                flatten: true,
+                src: [
+                    '<%= config.runtime %>.zip',
+                    'node-webkit/linux32/libffmpegsumo.so',
+                    'node-webkit/linux32/nw',
+                    'node-webkit/linux32/nw.pak'
+                ],
+                dest: '<%= config.builds %>/<%= config.runtime %>.linux32/'
+            },
+            "linux32-libudev0": {
+                expand: true,
+                flatten: true,
+                src: [
+                    '<%= config.runtime %>.zip',
+                    'node-webkit/linux32-libudev0/libffmpegsumo.so',
+                    'node-webkit/linux32-libudev0/nw',
+                    'node-webkit/linux32-libudev0/nw.pak'
+                ],
+                dest: '<%= config.builds %>/<%= config.runtime %>.linux32-libudev0/'
+            },
+            linux64: {
+                expand: true,
+                flatten: true,
+                src: [
+                    '<%= config.runtime %>.zip',
+                    'node-webkit/linux64/libffmpegsumo.so',
+                    'node-webkit/linux64/nw',
+                    'node-webkit/linux64/nw.pak'
+                ],
+                dest: '<%= config.builds %>/<%= config.runtime %>.linux64/'
+            },
+            "linux64-libudev0": {
+                expand: true,
+                flatten: true,
+                src: [
+                    '<%= config.runtime %>.zip',
+                    'node-webkit/linux64-libudev0/libffmpegsumo.so',
+                    'node-webkit/linux64-libudev0/nw',
+                    'node-webkit/linux64-libudev0/nw.pak'
+                ],
+                dest: '<%= config.builds %>/<%= config.runtime %>.linux64-libudev0/'
+            },
+            win: {
+                expand: true,
+                flatten: true,
+                src: [
+                    '<%= config.runtime %>.zip',
+                    'node-webkit/win/ffmpegsumo.dll',
+                    'node-webkit/win/icudt.dll',
+                    'node-webkit/win/libEGL.dll',
+                    'node-webkit/win/libGLESv2.dll',
+                    'node-webkit/win/nw.exe',
+                    'node-webkit/win/nw.pak'
+                ],
+                dest: '<%= config.builds %>/<%= config.runtime %>.win/'
+            },
+            mac: {
+                expand: true,
+                cwd: 'node-webkit/mac/node-webkit.app',
+                src: 'Contents/**',
+                dest: '<%= config.builds %>/<%= config.runtime %>.mac/<%= config.runtime %>.app'
+            },
+            macDist: {
+                expand: true,
+                cwd: '<%= config.dist %>/',
+                src: '**',
+                dest: '<%= config.builds %>/<%= config.runtime %>.mac/<%= config.runtime %>.app/Contents/Resources/app.nw'
             }
         },
 
@@ -211,11 +285,114 @@ module.exports = function (grunt) {
                     '.tmp/scripts/templates.js': ['templates/**/*.html']
                 }
             }
+        },
+
+        // Zip dist/ folder into <%= config.runtime %>.zip
+        compress: {
+            dist: {
+                options: {
+                    mode: 'zip',
+                    archive: '<%= config.runtime %>.zip',
+                    pretty: true
+                },
+                files: [
+                    {
+                        cwd: 'dist/',
+                        expand: true,
+                        src: ['**']
+                    }
+                ]
+            },
+            linux32: {
+                options: {
+                    mode: 'zip',
+                    archive: '<%= config.builds %>/<%= config.runtime %>.linux32.zip',
+                    pretty: true
+                },
+                files: [
+                    {
+                        cwd: 'builds/',
+                        expand: true,
+                        src: ['<%= config.runtime %>.linux32/**']
+                    }
+                ]
+            },
+            "linux32-libudev0": {
+                options: {
+                    mode: 'zip',
+                    archive: '<%= config.builds %>/<%= config.runtime %>.linux32-libudev0.zip',
+                    pretty: true
+                },
+                files: [
+                    {
+                        cwd: 'builds/',
+                        expand: true,
+                        src: ['<%= config.runtime %>.linux32-libudev0/**']
+                    }
+                ]
+            },
+            linux64: {
+                options: {
+                    mode: 'zip',
+                    archive: '<%= config.builds %>/<%= config.runtime %>.linux64.zip',
+                    pretty: true
+                },
+                files: [
+                    {
+                        cwd: 'builds/',
+                        expand: true,
+                        src: ['<%= config.runtime %>.linux64/**']
+                    }
+                ]
+            },
+            "linux64-libudev0": {
+                options: {
+                    mode: 'zip',
+                    archive: '<%= config.builds %>/<%= config.runtime %>.linux64-libudev0.zip',
+                    pretty: true
+                },
+                files: [
+                    {
+                        cwd: 'builds/',
+                        expand: true,
+                        src: ['<%= config.runtime %>.linux64-libudev0/**']
+                    }
+                ]
+            },
+            win: {
+                options: {
+                    mode: 'zip',
+                    archive: '<%= config.builds %>/<%= config.runtime %>.win.zip',
+                    pretty: true
+                },
+                files: [
+                    {
+                        cwd: 'builds/',
+                        expand: true,
+                        src: ['<%= config.runtime %>.win/**']
+                    }
+                ]
+            },
+            mac: {
+                options: {
+                    mode: 'zip',
+                    archive: '<%= config.builds %>/<%= config.runtime %>.mac.zip',
+                    pretty: true
+                },
+                files: [
+                    {
+                        cwd: 'builds/',
+                        expand: true,
+                        src: ['<%= config.runtime %>.mac/**']
+                    }
+                ]
+            }
         }
     });
 
-    grunt.registerTask('build', function (target) {
+    grunt.registerTask('build', 'Creates dist/ folder', function (target) {
         var tasks = [
+            'clean:dist',
             'useminPrepare',
             'concurrent:dist',
             'autoprefixer',
@@ -228,16 +405,10 @@ module.exports = function (grunt) {
             'htmlmin'
         ];
 
-        if (target === 'dist') {
-            tasks.unshift('clean:dist');
-        } else {
-            tasks.unshift('clean');
-        }
-
         grunt.task.run(tasks);
     });
 
-    grunt.registerTask('dlNodeWebkit', 'Download node-webkit from official website', function () {
+    grunt.registerTask('dlNodeWebkit', 'Download node-webkit binaries into node-webkit/', function () {
         var done = this.async();
         var childprocess = exec('sh dl-node-webkit.sh', function (err) {
             if (err) {
@@ -252,15 +423,26 @@ module.exports = function (grunt) {
         });
     });
 
-    grunt.registerTask('buildRuntimes', 'Build Kevoree Browser Runtime for Linux (32, 64), Windows & Mac', function (zip) {
-        var doZip = '';
-        if (zip === 'zip') {
-            doZip = ' -z';
-        }
+    grunt.registerTask('prepareRuntimes', 'Prepare runtime directories for Linux (32, 64), Windows & Mac', function () {
+        var tasks = [
+            'compress:dist',
+            'copy:linux32',
+            'copy:linux32-libudev0',
+            'copy:linux64',
+            'copy:linux64-libudev0',
+            'copy:win',
+            'copy:mac',
+            'copy:macDist'
+        ];
+
+        grunt.task.run(tasks);
+    });
+
+    grunt.registerTask('buildRuntimes', 'Build runtimes for Linux & Windows (Mac platform does not need this part)', function () {
         var done = this.async();
-        var childprocess = exec('sh build-runtimes.sh'+doZip, function (err) {
+        var childprocess = exec('sh build-runtimes.sh', function (err) {
             if (err) {
-                grunt.fail.warn(err);
+                grunt.fail.fatal(err);
                 return done();
             }
             done();
@@ -272,9 +454,18 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('default', [
+        'clean',
         'build',
         'dlNodeWebkit',
-        'buildRuntimes:zip'
+        'prepareRuntimes',
+        'clean:distZip',
+        'buildRuntimes',
+        'compress:linux32',
+        'compress:linux32-libudev0',
+        'compress:linux32',
+        'compress:linux64-libudev0',
+        'compress:win',
+        'compress:mac'
     ]);
 
     // just build runtimes
