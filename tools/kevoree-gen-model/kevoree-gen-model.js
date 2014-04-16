@@ -55,21 +55,27 @@ module.exports = function (dirPath, logLevel, callback) {
                     }
 
                 }
-                // ports logging
-                var provided = [], required = [];
-                var providedIt = tdef.provided.iterator();
-                while (providedIt.hasNext()) {
-                    provided.push(providedIt.next().name);
+                if (tdef.provided) {
+                    // provided port logging
+                    var provided = [];
+                    var providedIt = tdef.provided.iterator();
+                    while (providedIt.hasNext()) {
+                        provided.push(providedIt.next().name);
+                    }
+                    if (provided.length > 0) {
+                        console.log('Input port(s): \t[ %s ]', provided.join(', '));
+                    }
                 }
-                var requiredIt = tdef.required.iterator();
-                while (requiredIt.hasNext()) {
-                    required.push(requiredIt.next().name);
-                }
-                if (provided.length > 0) {
-                    console.log('Input port(s): \t[ %s ]', provided.join(', '));
-                }
-                if (required.length > 0) {
-                    console.log('Output port(s): [ %s ]', required.join(', '));
+                if (tdef.required) {
+                    // required port logging
+                    var required = []
+                    var requiredIt = tdef.required.iterator();
+                    while (requiredIt.hasNext()) {
+                        required.push(requiredIt.next().name);
+                    }
+                    if (required.length > 0) {
+                        console.log('Output port(s): [ %s ]', required.join(', '));
+                    }
                 }
             }
             console.log((verbose ? '\n' : '')+chalk.green('Model generation done'));

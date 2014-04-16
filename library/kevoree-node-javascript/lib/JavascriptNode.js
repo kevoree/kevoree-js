@@ -34,7 +34,6 @@ var JavascriptNode = AbstractNode.extend({
     },
 
     dic_logFilter: {
-        defaultValue: '',
         optional: true,
         update: function () {
             this.log.setFilter(this.dic_logFilter.value);

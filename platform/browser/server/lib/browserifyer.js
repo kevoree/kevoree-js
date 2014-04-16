@@ -34,14 +34,14 @@ module.exports = function (name, options, callback) {
 
         b.require(path.resolve(options.npmInstallDir, name), { expose: name });
 
-        b.bundle({detectGlobals: false}, function (err) {
+        b.bundle({detectGlobals: true}, function (err) {
             if (err) {
                 return callback(err);
             }
         }).pipe(bundleFile).on('finish', function () {
             // zip browser-bundled folder
             var zip = new AdmZip();
-            zip.addLocalFolder(bundleFolder);
+            zip.addLocalFile("/home/me/some_picture.png");
             zip.writeZip(bundleFolder+'.zip');
             zip.location = bundlePath;
 

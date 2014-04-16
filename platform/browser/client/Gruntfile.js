@@ -332,7 +332,10 @@ module.exports = function (grunt) {
                 src: 'app/scripts/main.js',
                 dest: '.tmp/scripts/main.js',
                 options: {
-                    alias: ['kevoree-library:kevoree-library']
+                    alias: [
+                        'kevoree-library:kevoree-library',
+                        'kevoree-kotlin:kevoree-kotlin'
+                    ]
                 }
             }
         },

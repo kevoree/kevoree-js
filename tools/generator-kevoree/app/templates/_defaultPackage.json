@@ -1,15 +1,17 @@
 {
     "name": "kevoree-<%= rawEntityType %>-<%= _.slugify(entityName) %>",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "main": "./lib/<%= entityName %>.js",
     "scripts": {
-        "prepublish": "node node_modules/kevoree-gen-model -q"
+        "prepublish": "grunt"
     },
     "dependencies": {
-        "kevoree-entities": "*"
+        "kevoree-entities": "^0.4.15"
     },
     "devDependencies": {
-        "kevoree-gen-model": "*",
-        "grunt-kevoree": "*"
+        "grunt": "^0.4.1",
+        "grunt-kevoree": "^0.4.11",
+        "grunt-browserify": "^2.0.7",
+        "grunt-kevoree-genmodel" : "^0.1.1"
     }
 }

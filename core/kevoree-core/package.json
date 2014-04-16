@@ -1,6 +1,6 @@
 {
   "name": "kevoree-core",
-  "version": "0.4.12",
+  "version": "0.5.0",
   "description": "Kevoree Core",
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "main": "./kevoree-core.js",
@@ -20,8 +20,8 @@
   "devDependencies": {},
   "optionalDependencies": {},
   "dependencies": {
-    "kevoree-library": ">=0.4.10",
-    "kevoree-commons": ">=0.4.10",
+    "kevoree-library": ">=0.5.0",
+    "kevoree-commons": ">=0.5.0",
     "async": "0.2.9",
     "pseudoclass": "0.2.6"
   },

@@ -23,7 +23,7 @@ module.exports = function(req, res) {
 
     if (req.body.type == 'npm') {
         var installDir        = path.resolve(__dirname, '..', '..', 'client', 'dist', 'libraries'),
-            npmInstallDir     = path.resolve(__dirname,  '..', 'node_modules'),
+            npmInstallDir     = path.resolve(__dirname, '..', 'node_modules'),
             modulePath        = path.resolve(npmInstallDir, req.body.name),
             browserModulePath = path.resolve(installDir, req.body.name),
             downloadLink      = '/libraries/'+req.body.name+'.zip';
@@ -35,53 +35,41 @@ module.exports = function(req, res) {
                 version: req.body.version
             };
 
+            var message = '';
             npmi(options, function (err) {
                 if (err) {
-                    console.error('Unable to install '+req.body.name);
-                    return res.send(500, 'Unable to install '+req.body.name);
+                    message = 'Unable to install '+req.body.name;
+                    console.error(message);
+                    return res.send(500, message);
                 }
 
-                setTimeout(function () {
-                    // installation succeeded
-                    mkdirp(browserModulePath, function () {
-                        // browserify module
-                        var options = {
-                            installDir: installDir,
-                            npmInstallDir: npmInstallDir,
-                            external: {
-                                'kevoree-library': path.resolve(npmInstallDir, 'kevoree-library')
-                            }
-                        };
-                        browserifyer(req.body.name, options, function (err) {
-                            if (err) {
-                                console.error('Unable to browserify '+req.body.name);
-                                return res.send(500, 'Unable to browserify '+req.body.name);
-                            }
+                var moduleZip = path.resolve(installDir, req.body.name+'.zip');
 
-                            // send response
-                            return res.jsonp({
-                                zipPath: downloadLink,
-                                zipName: req.body.name+'@'+req.body.version,
-                                requireName: modulePath
-                            });
-                        });
-                    });
-                }, 2500); // TODO find out why we need to let server breathe after install in order to browserify bundles
-                          // because if we don't do that, it will fail to bundle the modules
+                // module installed successfully: zip browserified bundle
+                var zip = new AdmZip();
+                zip.addLocalFile(path.resolve(modulePath, 'browser', req.body.name+'.js'));
+                zip.writeZip(moduleZip);
+                zip.location = moduleZip;
+
+                // send response
+                return res.jsonp({
+                    zipPath: downloadLink,
+                    zipName: req.body.name+'@'+req.body.version,
+                    requireName: modulePath
+                });
             });
 
 
         } else {
             // send response
-            res.jsonp({
+            return res.jsonp({
                 zipPath: downloadLink,
                 zipName: req.body.name+'@'+req.body.version,
                 requireName: modulePath
             });
-            return;
         }
 
     } else {
         return res.jsonp(JSON.parse(new Error('Sorry, for now Kevoree Browser Runtime server is only able to resolve "npm" packages.')));
     }
-}
+};
