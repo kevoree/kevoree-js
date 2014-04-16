@@ -462,7 +462,7 @@ module.exports = function (grunt) {
         'buildRuntimes',
         'compress:linux32',
         'compress:linux32-libudev0',
-        'compress:linux32',
+        'compress:linux64',
         'compress:linux64-libudev0',
         'compress:win',
         'compress:mac'
