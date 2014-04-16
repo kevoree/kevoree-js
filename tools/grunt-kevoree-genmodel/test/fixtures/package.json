@@ -1,0 +1,6 @@
+{
+    "name": "da-module-name",
+    "version": "0.0.42",
+    "main": "./FakeComp.js",
+    "private": "true"
+}

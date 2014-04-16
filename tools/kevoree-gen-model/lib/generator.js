@@ -23,14 +23,6 @@ var factory = new kevoree.impl.DefaultKevoreeFactory();
 var generator = function generator(dirPath, verbose, callback) {
     if (dirPath == undefined) throw new Error("dirPath undefined");
 
-    // retrieve kevoree-entities types from the project path
-    var kePath = path.resolve(dirPath, 'node_modules', 'kevoree-entities'); // TODO add this path in command-line argument ?
-    KevoreeEntity     = require(kePath).KevoreeEntity;
-    AbstractComponent = require(kePath).AbstractComponent;
-    AbstractGroup     = require(kePath).AbstractGroup;
-    AbstractChannel   = require(kePath).AbstractChannel;
-    AbstractNode      = require(kePath).AbstractNode;
-
     function processFile(file, deployUnit, model) {
         try {
             var Class = require(file);
@@ -68,6 +60,14 @@ var generator = function generator(dirPath, verbose, callback) {
     }
 
     try {
+        // retrieve kevoree-entities types from the project path
+        var kePath = path.resolve(dirPath, 'node_modules', 'kevoree-entities'); // TODO add this path in command-line argument ?
+        KevoreeEntity     = require(kePath).KevoreeEntity;
+        AbstractComponent = require(kePath).AbstractComponent;
+        AbstractGroup     = require(kePath).AbstractGroup;
+        AbstractChannel   = require(kePath).AbstractChannel;
+        AbstractNode      = require(kePath).AbstractNode;
+
         // get module package.json
         var modulePkg = require(path.resolve(dirPath, 'package.json'));
 
