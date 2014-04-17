@@ -70,27 +70,26 @@ KevoreeGenerator.prototype.app = function app() {
     switch (this.rawEntityType) {
         case 'comp':
             this.mkdir('ui');
-            this.template('_compGruntfile.js', 'Gruntfile.js');
+            this.copy('compGruntfile.js', 'Gruntfile.js');
             this.template('_compPackage.json', 'package.json');
             this.template('_compMain.kevs', 'kevs/main.kevs');
             break;
 
         case 'chan':
-            this.template('_defaultGruntfile.js', 'Gruntfile.js');
+            this.copy('defaultGruntfile.js', 'Gruntfile.js');
             this.template('_defaultPackage.json', 'package.json');
             this.template('_chanMain.kevs', 'kevs/main.kevs');
             break;
 
         case 'group':
-            this.template('_defaultGruntfile.js', 'Gruntfile.js');
+            this.copy('defaultGruntfile.js', 'Gruntfile.js');
             this.template('_defaultPackage.json', 'package.json');
             this.template('_groupMain.kevs', 'kevs/main.kevs');
             break;
     }
 };
 
-var matcher = function matcher(input, pattern) {
+function matcher(input, pattern) {
     var match = input.match(pattern);
-    if (match && match.length && match.length == 1 && match[0] == input) return true;
-    return false;
+    return (match && match.length && match.length == 1 && match[0] == input);
 }
