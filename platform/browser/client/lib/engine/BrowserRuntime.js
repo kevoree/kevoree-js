@@ -3,7 +3,8 @@ var Class               = require('pseudoclass'),
     BrowserLogger       = require('./BrowserLogger'),
     BrowserBootstrapper = require('./BrowserBootstrapper'),
     UIBrowserRuntime    = require('../ui/UIBrowserRuntime'),
-    Bootstrap           = require('../command/network/Bootstrap');
+    Bootstrap           = require('../command/network/Bootstrap'),
+    uuid                = require('node-uuid');
 
 /**
  * Created by leiko on 12/03/14.
@@ -12,6 +13,7 @@ var BrowserRuntime = Class({
     toString: 'BrowserRuntime',
 
     construct: function () {
+        this.uuid = uuid.v1();
         this.logger = new BrowserLogger(this.toString());
         this.core = new KevoreeCore(__dirname, this.logger);
 
@@ -44,7 +46,7 @@ var BrowserRuntime = Class({
             }
         });
 
-        var bootstrapper = new BrowserBootstrapper(__dirname, this.logger);
+        var bootstrapper = new BrowserBootstrapper(__dirname, this.logger, this);
         this.core.setBootstrapper(bootstrapper);
         this.ui = new UIBrowserRuntime(this);
 
@@ -88,6 +90,10 @@ var BrowserRuntime = Class({
 
     clearLogs: function () {
         this.logger.clear();
+    },
+
+    getUUID: function () {
+        return this.uuid;
     }
 });
 

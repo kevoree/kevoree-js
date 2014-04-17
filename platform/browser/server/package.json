@@ -24,18 +24,13 @@
   },
   "homepage": "https://github.com/kevoree/kevoree-js",
   "dependencies": {
-    "kevoree-nodejs-runtime": ">=0.5.0",
+    "adm-zip": "^0.4.4",
+    "ejs": "^0.8.5",
     "express": "^3.4.8",
     "kevoree-library": ">=0.5.0",
     "kevoree-model-sync": ">=0.5.0",
-    "tar": "^0.1.19",
-    "npmi": "0.0.5",
-    "rimraf": "^2.2.6",
-    "adm-zip": "^0.4.4",
-    "npm": "^1.4.4",
-    "browserify": "^3.32.1",
-    "ejs": "^0.8.5",
-    "brfs": "^1.0.0",
-    "mkdirp": "^0.3.5"
+    "kevoree-nodejs-runtime": ">=0.5.0",
+    "ncp": "^0.5.0",
+    "npmi": "0.0.5"
   }
 }

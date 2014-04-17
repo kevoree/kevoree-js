@@ -14,7 +14,6 @@ var firstDeploy = false;
 var app = express();
 
 app.use(express.bodyParser());
-app.set('jsonp callback', true);
 app.set('views', path.join(__dirname, '..', 'client', 'dist'));
 app.set('port', 9040);
 
@@ -22,7 +21,7 @@ app.set('port', 9040);
 app.engine('html', require('ejs').renderFile);
 
 // start a kevoree nodejs platform server-side
-var knjs = new KevNodeJSRuntime(path.resolve(__dirname));
+var knjs = new KevNodeJSRuntime(path.resolve(__dirname, 'server-node'));
 
 knjs.on('started', function () {
     knjs.deploy();
@@ -44,16 +43,8 @@ knjs.on('error', function (err) {
 
 knjs.start(config.nodeJSPlatform.nodeName, config.nodeJSPlatform.groupName);
 
-// server routes
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    next();
-});
-
 app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
 
 app.get('/', routes.main);
 app.post('/bootstrap', routes.bootstrap(model));
-app.get('/bootstrap', routes.bootstrap(model));
 app.post('/resolve', routes.resolve);
-app.get('/resolve', routes.resolve);

@@ -22,11 +22,11 @@ var getBrowserFileSystem = function getBrowserFileSystem(fsapi, size, callback) 
             window.requestFileSystem(window.PERSISTENT, grantedSize, function (fs) {
                 callback.call(fsapi, null, fs);
             });
-        }
+        };
 
         var errorHandler = function errorHandler(e) {
             callback.call(fsapi, null);
-        }
+        };
 
         navigator.persistentStorage.requestQuota(size, successHandler, errorHandler);
     }

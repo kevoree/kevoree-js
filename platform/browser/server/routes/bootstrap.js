@@ -11,8 +11,6 @@ var factory    = new kevoree.impl.DefaultKevoreeFactory();
 
 module.exports = function (model) {
     return function (req, res) {
-        req.body.nodename = req.body.nodename || req.query.nodename; // handle POST & GET
-
         var serverNode = model.findNodesByID(config.nodeJSPlatform.nodeName);
         if (serverNode) {
             // let's be really cautious about given name

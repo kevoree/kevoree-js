@@ -8,10 +8,10 @@ var Bootstrapper    = require('kevoree-commons').Bootstrapper,
 var BrowserBootstrapper = Bootstrapper.extend({
     toString: 'BrowserBootstrapper',
 
-    construct: function (modulesPath, logger) {
+    construct: function (modulesPath, logger, runtime) {
         this.modulesPath = modulesPath;
         this.log = logger;
-        this.resolver = new NPMResolver(modulesPath, this.log);
+        this.resolver = new NPMResolver(modulesPath, this.log, runtime);
     },
 
     /**

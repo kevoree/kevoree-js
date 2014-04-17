@@ -10,11 +10,12 @@ var Bootstrap = AbstractCommand.extend({
     execute: function (nodeName, callback) {
         $.ajax({
             type: 'POST',
-            url: 'http://127.0.0.1:9040/bootstrap',
-            crossDomain: true,
+            url: 'bootstrap',
             timeout: 1500,
-            data: { nodename: nodeName },
-            dataType: 'jsonp',
+            data: {
+                uuid: this.runtime.getUUID(),
+                nodename: nodeName
+            },
             success: function (res) {
                 var loader = new kevoree.loader.JSONModelLoader();
                 var model = loader.loadModelFromString(res.model).get(0);
@@ -22,7 +23,7 @@ var Bootstrap = AbstractCommand.extend({
             },
             error: function (err) {
                 if (err.statusText === 'timeout') {
-                    callback(new Error('Unable to reach http://127.0.0.1:9040/bootstrap (connection timeout)'));
+                    callback(new Error('Unable to reach '+window.location.href+'/bootstrap (connection timeout)'));
                 } else {
                     callback(new Error(err.responseText + ' ('+err.status+' '+err.statusText+')'));
                 }

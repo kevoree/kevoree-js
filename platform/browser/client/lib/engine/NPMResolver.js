@@ -13,10 +13,10 @@ var Resolver        = require('kevoree-commons').Resolver,
 var NPMResolver = Resolver.extend({
     toString: 'NPMResolver',
 
-    construct: function (modulesPath, logger) {
+    construct: function (modulesPath, logger, runtime) {
         this.modulesPath = modulesPath;
         this.log = logger;
-        this.resolveCmd = new Resolve();
+        this.resolveCmd = new Resolve(runtime);
     },
 
     resolve: function (deployUnit, forceInstall, callback) {
@@ -33,49 +33,41 @@ var NPMResolver = Resolver.extend({
             return callback(null, ModuleEntry);
         }
 
-        $.ajax({
-            type: 'GET',
-            url: 'filesystem:'+window.location.origin+'/persistent/kev_libraries/'+deployUnit.name+'@'+deployUnit.version+'/'+deployUnit.name+'-bundle.js',
-            success: loadSuccess,
-            error: function (e) {
-                self.log.debug(self.toString(), "Unable to find '"+deployUnit.name+"@"+deployUnit.version+"' zip locally. Remote resolve in progress...");
-                // forward resolving request to server
-                this.resolveCmd.execute(deployUnit, forceInstall, function (err, resp) {
-                    if (err) {
-                        if (err.responseText.length === 0) {
-                            err.responseText = "Kevoree Runtime server was not able to process '/resolve' request ("+deployUnit.name+":"+deployUnit.version+")";
-                        }
-                        return callback(new Error(err.responseText));
+        // forward resolving request to server
+        this.resolveCmd.execute(deployUnit, forceInstall, function (err, resp) {
+            if (err) {
+                if (err.responseText.length === 0) {
+                    err.responseText = "Kevoree Runtime server was not able to process '/resolve' request ("+deployUnit.name+":"+deployUnit.version+")";
+                }
+                return callback(new Error(err.responseText));
+            }
+
+            // server response contains a zipPath & name of the requested module package
+            // (retrieved server-side from npm registry)
+            installZip(resp.zipPath, resp.zipName, function (err) {
+                if (err) {
+                    errorHandler(err);
+                    callback(err);
+                    return;
+                }
+
+                // zip installed successfully
+                $.ajax({
+                    type: 'GET',
+                    url: 'filesystem:'+window.location.origin+'/persistent/kev_libraries/'+deployUnit.name+'@'+deployUnit.version+'/'+deployUnit.name+'.js',
+                    success: loadSuccess,
+                    error: function (e) {
+                        console.log('Unable to find filesystem:'+window.location.origin+'/persistent/kev_libraries/'+deployUnit.name+'@'+deployUnit.version+'/'+deployUnit.name+'.js');
+                        return callback(new Error('Unable to load \''+deployUnit.name+'@'+deployUnit.version+'\' locally :/'));
                     }
-
-                    // server response contains a zipPath & name of the requested module package
-                    // (retrieved server-side from npm registry)
-                    installZip(resp.zipPath, resp.zipName, function (err) {
-                        if (err) {
-                            errorHandler(err);
-                            callback(err);
-                            return;
-                        }
-
-                        // zip installed successfully
-                        $.ajax({
-                            type: 'GET',
-                            url: 'filesystem:'+window.location.origin+'/persistent/kev_libraries/'+deployUnit.name+'@'+deployUnit.version+'/'+deployUnit.name+'-bundle.js',
-                            success: loadSuccess,
-                            error: function (e) {
-                                console.log('Unable to find filesystem:'+window.location.origin+'/persistent/kev_libraries/'+deployUnit.name+'@'+deployUnit.version+'/'+deployUnit.name+'-bundle.js');
-                                return callback(new Error('Unable to load \''+deployUnit.name+'@'+deployUnit.version+'\' locally :/'));
-                            }
-                        });
-                    });
                 });
-            }.bind(this)
+            });
         });
     },
 
     uninstall: function (deployUnit, callback) {
         console.warn(this.toString(), "NPMResolver.uninstall(...): Not implemented yet (I did NOT uninstall the module, but I told the bootstrapper that I did)");
-        // TODO
+        // TODO remove module from Browser FileSystem
         callback();
     }
 });
@@ -110,7 +102,7 @@ var installZip = function installZip(zipPath, zipName, callback) {
                     rootDir.getDirectory(zipName, { create: true, exclusive: false }, function (zipDir) {
                         // read zip content
                         var xhr = new XMLHttpRequest();
-                        xhr.open('GET', 'http://127.0.0.1:9040'+zipPath, true);
+                        xhr.open('GET', zipPath, true);
                         xhr.responseType = 'blob';
 
                         xhr.onreadystatechange = function(e) {
@@ -118,7 +110,7 @@ var installZip = function installZip(zipPath, zipName, callback) {
                                 var reader = new FileReader();
                                 reader.onload = function (e) {
                                     var zip = new JSZip(e.target.result);
-                                    var entries = zip.file(/.+-bundle\.js/);
+                                    var entries = zip.file(/.+\.js/);
                                     for (var i in entries) {
                                         processFileEntry(entries[i], zipDir, callback);
                                     }
