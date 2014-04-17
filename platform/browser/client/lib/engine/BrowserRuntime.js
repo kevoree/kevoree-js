@@ -4,7 +4,8 @@ var Class               = require('pseudoclass'),
     BrowserBootstrapper = require('./BrowserBootstrapper'),
     UIBrowserRuntime    = require('../ui/UIBrowserRuntime'),
     Bootstrap           = require('../command/network/Bootstrap'),
-    uuid                = require('node-uuid');
+    uuid                = require('node-uuid'),
+    WebSocket           = require('ws');
 
 /**
  * Created by leiko on 12/03/14.
@@ -45,6 +46,12 @@ var BrowserRuntime = Class({
                 return callback(err);
             }
         });
+
+        // connect to WebSocket server and register
+        var ws = new WebSocket('ws://'+window.location.hostname+':9041');
+        ws.onopen = function () {
+            ws.send('register'+this.uuid);
+        }.bind(this);
 
         var bootstrapper = new BrowserBootstrapper(__dirname, this.logger, this);
         this.core.setBootstrapper(bootstrapper);

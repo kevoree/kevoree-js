@@ -5,6 +5,8 @@ var express          = require('express'),
     kevoree          = require('kevoree-library').org.kevoree,
     config           = require('./config');
 
+require('./lib/client-cleaner');
+
 var compare = new kevoree.compare.DefaultModelCompare();
 var factory = new kevoree.impl.DefaultKevoreeFactory();
 var model   = factory.createContainerRoot();
@@ -20,8 +22,10 @@ app.set('port', 9040);
 // rendering engine (basic html renderer)
 app.engine('html', require('ejs').renderFile);
 
+
+
 // start a kevoree nodejs platform server-side
-var knjs = new KevNodeJSRuntime(path.resolve(__dirname, 'server-node'));
+var knjs = new KevNodeJSRuntime(config.paths.serverNodeDir);
 
 knjs.on('started', function () {
     knjs.deploy();

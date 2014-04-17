@@ -10,13 +10,12 @@ var fs      = require('fs'),
 
 module.exports = function(req, res) {
     if (req.body.type == 'npm') {
-        var publicDir         = 'node_modules',
-            installDir        = path.resolve(__dirname, '..', '..', 'client', 'dist', publicDir),
-            npmInstallDir     = path.resolve(__dirname, '..', 'client-nodes', req.body.uuid, 'node_modules'),
-            modulePath        = path.resolve(npmInstallDir, req.body.name),
-            browserModulePath = path.resolve(installDir, req.body.name),
-            moduleZip         = browserModulePath + path.sep + req.body.name + '@' + req.body.version + '.zip',
-            downloadLink      = '/' + publicDir + '/' + req.body.name + '/' + req.body.name + '@' + req.body.version + '.zip'; // url always use '/' don't need to use path.sep even on Windows ;)
+        var publicInstall     = config.paths.publicInstall,
+            npmInstallDir     = config.paths.npmInstallDir(req.body.uuid),
+            modulePath        = config.paths.modulePath(npmInstallDir, req.body.name),
+            browserModulePath = config.paths.browserModulePath(publicInstall, req.body.name),
+            moduleZip         = config.paths.moduleZip(browserModulePath, req.body.name, req.body.version),
+            downloadLink      = config.paths.downloadLink(req.body.name, req.body.version);
 
         // check if bundle as already been downloaded
         if (!fs.existsSync(browserModulePath+'.zip')) {
