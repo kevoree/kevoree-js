@@ -27,9 +27,9 @@
   "dependencies": {},
   "devDependencies": {
     "grunt": "^0.4.2",
+    "grunt-deps-manager": "0.0.2",
     "grunt-publish": "0.0.2",
-    "grunt-version": "^0.3.0",
-    "grunt-deps-manager": "0.0.2"
+    "grunt-version": "^0.3.0"
   },
   "optionalDependencies": {},
   "engines": {
