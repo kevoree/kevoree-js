@@ -283,7 +283,6 @@ var WebSocketGroup = AbstractGroup.extend({
 });
 
 function processPath(path) {
-    console.log('processPath='+path);
     if (path) {
         console.log(typeof path);
         if (path.startsWith('/')) {
