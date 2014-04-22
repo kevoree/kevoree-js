@@ -22,14 +22,6 @@ module.exports = function (model) {
             var nodeInstance = factory.createContainerNode();
             nodeInstance.name = nodename;
             nodeInstance.typeDefinition = serverNode.typeDefinition;
-            // create a default network information
-            var net = factory.createNetworkInfo();
-            net.name = 'lan';
-            var prop = factory.createNetworkProperty();
-            prop.name = 'ip';
-            prop.value = '127.0.0.1';
-            net.addValues(prop);
-            nodeInstance.addNetworkInformation(net);
 
             // add this instance to model
             model.addNodes(nodeInstance);

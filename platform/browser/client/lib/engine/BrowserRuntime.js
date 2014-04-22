@@ -74,7 +74,7 @@ var BrowserRuntime = Class({
 
         this.core.on('deployed', function () {
             // TODO remove that
-            console.log(this.core.nodeInstance);
+//            console.log(this.core.nodeInstance);
         }.bind(this));
 
         this.core.on('stopped', function () {

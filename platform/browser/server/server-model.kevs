@@ -1,0 +1,11 @@
+include npm:kevoree-node-javascript
+include npm:kevoree-group-websocket
+
+add server-node : JavascriptNode
+add sync : WebSocketGroup
+
+attach server-node sync
+
+set sync.port/server-node = '9000'
+
+network server-node.lan.ip kbr.braindead.fr
