@@ -24,14 +24,34 @@ module.exports = function (typeDef, obj) {
 
             attr.optional           = (typeof(objAttr.optional) == 'undefined') ? true : objAttr.optional;
             attr.fragmentDependant  = (typeof(objAttr.fragmentDependant) == 'undefined') ? false : objAttr.fragmentDependant;
-
-            // add a defaultValue to attribute only if defined by user
-            // 'null' is a defaultValue, but "undefined" is not a defaultValue =)
             if (typeof(objAttr.defaultValue) !== 'undefined') {
                 attr.defaultValue = objAttr.defaultValue;
-                attr.datatype     = typeof (objAttr.defaultValue);
+            }
+
+            if (typeof(objAttr.datatype) !== 'undefined') {
+                // datatype is defined
+                if (attr.defaultValue) {
+                    // double-check with type of given defaultValue
+                    if (objAttr.datatype === typeof (attr.defaultValue)) {
+                        attr.datatype = objAttr.datatype;
+                    } else {
+                        // and take defaultValue type if not equal
+                        attr.datatype = typeof (attr.defaultValue);
+                    }
+
+                } else {
+                    attr.datatype = objAttr.datatype;
+                }
+
             } else {
-                attr.datatype = 'string';
+                // datatype is not defined
+                // try to guess with given defaultValue
+                if (attr.defaultValue) {
+                    attr.datatype = typeof (attr.defaultValue);
+                } else {
+                    // if no datatype specified AND no given defaultValue => use string as datatype
+                    attr.datatype = 'string';
+                }
             }
 
             // add attribute to dictionary
