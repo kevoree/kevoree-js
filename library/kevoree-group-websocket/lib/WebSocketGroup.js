@@ -29,6 +29,7 @@ var WebSocketGroup = AbstractGroup.extend({
     dic_port: {
         fragmentDependant: true,
         optional: true,
+        datatype: 'number',
         update: function () {
             this.stop();
             this.start();

@@ -30,6 +30,7 @@ var WebSocketGroup = AbstractGroup.extend({
     dic_port: {
         fragmentDependant: true,
         optional: true,
+        datatype: 'number',
         update: function () {
             this.stop();
             this.start();
@@ -258,7 +259,7 @@ var WebSocketGroup = AbstractGroup.extend({
                 }
             }
         } catch (err) {
-            throw new Error(this.toString() + '('+this.getName()+') error: unable to deserialize pushed Kevoree model ('+err.message+')');
+            throw new Error(this.toString() + ' error: "'+this.getName()+'" unable to deserialize pushed Kevoree model ('+err.message+')');
         }
     },
 
@@ -296,7 +297,7 @@ function processPath(path) {
 }
 
 module.exports = WebSocketGroup;
-},{"async":3,"kevoree-entities":18,"kevoree-library":"xt4+u2","smart-socket":30,"ws":31}],"kevoree-group-websocket":[function(require,module,exports){
+},{"async":3,"kevoree-entities":18,"kevoree-library":"xt4+u2","smart-socket":28,"ws":29}],"kevoree-group-websocket":[function(require,module,exports){
 module.exports=require('Gycq4T');
 },{}],3:[function(require,module,exports){
 (function (process){
@@ -2659,21 +2660,7 @@ module.exports = KevoreeEntity.extend({
    */
   updateModel: function (model) {
     this.kCore.deploy(model);
-  },
-
-  /**
-   * Should define a way to 'contact' targetNodeName and give the given model to it
-   * @param model
-   * @param targetNodeName
-   */
-  push: function (model, targetNodeName) {},
-
-  /**
-   * Should define a way to 'contact' targetNodeName and retrieve its current model
-   * @param targetNodeName
-   * @param callback function(err, model)
-   */
-  pull: function (targetNodeName, callback) {}
+  }
 });
 },{"./KevoreeEntity":24}],22:[function(require,module,exports){
 var KevoreeEntity = require('./KevoreeEntity');
@@ -3051,53 +3038,6 @@ module.exports = Class({
 },{"pseudoclass":27}],27:[function(require,module,exports){
 module.exports=require(17)
 },{}],28:[function(require,module,exports){
-module.exports=require(3)
-},{"/home/leiko/dev/kevoree-js/library/kevoree-group-websocket/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":6}],29:[function(require,module,exports){
-
-/**
- * Module dependencies.
- */
-
-var global = (function() { return this; })();
-
-/**
- * WebSocket constructor.
- */
-
-var WebSocket = global.WebSocket || global.MozWebSocket;
-
-/**
- * Module exports.
- */
-
-module.exports = WebSocket ? ws : null;
-
-/**
- * WebSocket constructor.
- *
- * The third `opts` options object gets ignored in web browsers, since it's
- * non-standard, and throws a TypeError if passed to the constructor.
- * See: https://github.com/einaros/ws/issues/227
- *
- * @param {String} uri
- * @param {Array} protocols (optional)
- * @param {Object) opts (optional)
- * @api public
- */
-
-function ws(uri, protocols, opts) {
-  var instance;
-  if (protocols) {
-    instance = new WebSocket(uri, protocols);
-  } else {
-    instance = new WebSocket(uri);
-  }
-  return instance;
-}
-
-if (WebSocket) ws.prototype = WebSocket.prototype;
-
-},{}],30:[function(require,module,exports){
 var WebSocket   = require('ws'),
     async       = require('async');
 
@@ -3233,6 +3173,49 @@ SmartSocket.prototype.close = function (stop) {
 };
 
 module.exports = SmartSocket;
-},{"async":28,"ws":29}],31:[function(require,module,exports){
-module.exports=require(29)
+},{"async":3,"ws":29}],29:[function(require,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var global = (function() { return this; })();
+
+/**
+ * WebSocket constructor.
+ */
+
+var WebSocket = global.WebSocket || global.MozWebSocket;
+
+/**
+ * Module exports.
+ */
+
+module.exports = WebSocket ? ws : null;
+
+/**
+ * WebSocket constructor.
+ *
+ * The third `opts` options object gets ignored in web browsers, since it's
+ * non-standard, and throws a TypeError if passed to the constructor.
+ * See: https://github.com/einaros/ws/issues/227
+ *
+ * @param {String} uri
+ * @param {Array} protocols (optional)
+ * @param {Object) opts (optional)
+ * @api public
+ */
+
+function ws(uri, protocols, opts) {
+  var instance;
+  if (protocols) {
+    instance = new WebSocket(uri, protocols);
+  } else {
+    instance = new WebSocket(uri);
+  }
+  return instance;
+}
+
+if (WebSocket) ws.prototype = WebSocket.prototype;
+
 },{}]},{},["Gycq4T"])
