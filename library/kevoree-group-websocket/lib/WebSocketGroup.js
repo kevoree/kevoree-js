@@ -34,9 +34,8 @@ var WebSocketGroup = AbstractGroup.extend({
 
     construct: function () {
         this.server = null;
-        this.client = null;
+        this.smartSocket = null;
         this.connectedNodes = {};
-        this.stopped = false;
     },
 
     start: function (_super) {
@@ -51,7 +50,7 @@ var WebSocketGroup = AbstractGroup.extend({
         if (port && port.length>0) {
             this.server = this.startWSServer(port);
         } else {
-            this.client = this.startWSClient();
+            this.startWSClient();
         }
     },
 
@@ -62,11 +61,9 @@ var WebSocketGroup = AbstractGroup.extend({
             this.server.close();
         }
 
-        if (this.client && this.client.readyState === 1) {
+        if (this.smartSocket) {
             // close client connection
-            this.client.close();
-            // remove reconnection task because we closed on purpose
-            this.stopped = true;
+            this.smartSocket.close(true);
         }
     },
 
@@ -176,11 +173,11 @@ var WebSocketGroup = AbstractGroup.extend({
     startWSClient: function () {
         var addresses = this.getMasterServerAddresses();
         if (addresses.length > 0) {
-            SmartSocket({
+            this.smartSocket = new SmartSocket({
                 addresses: addresses,
                 timeout: 5000,
                 handlers: {
-                    onopen: function (ws, event) {
+                    onopen: function (ws) {
                         ws.send(REGISTER+'/'+this.getNodeName());
                         this.log.info(this.toString(), 'Now connected & registered on master server '+ws.url);
                     }.bind(this),
@@ -194,11 +191,13 @@ var WebSocketGroup = AbstractGroup.extend({
                         this.kCore.deploy(model);
                     }.bind(this),
 
-                    onclose: function (ws, event) {
+                    onclose: function (ws) {
                         this.log.debug(this.toString(), "Connection closed with server "+ws.url+". Retry attempt in 5 seconds");
                     }.bind(this)
                 }
             });
+
+            this.smartSocket.start();
 
         } else {
             throw new Error("No NetworkInformation specified for master server node. Can't connect to it :/");

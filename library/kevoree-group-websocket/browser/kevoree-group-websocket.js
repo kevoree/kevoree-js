@@ -35,9 +35,8 @@ var WebSocketGroup = AbstractGroup.extend({
 
     construct: function () {
         this.server = null;
-        this.client = null;
+        this.smartSocket = null;
         this.connectedNodes = {};
-        this.stopped = false;
     },
 
     start: function (_super) {
@@ -52,7 +51,7 @@ var WebSocketGroup = AbstractGroup.extend({
         if (port && port.length>0) {
             this.server = this.startWSServer(port);
         } else {
-            this.client = this.startWSClient();
+            this.startWSClient();
         }
     },
 
@@ -63,11 +62,9 @@ var WebSocketGroup = AbstractGroup.extend({
             this.server.close();
         }
 
-        if (this.client && this.client.readyState === 1) {
+        if (this.smartSocket) {
             // close client connection
-            this.client.close();
-            // remove reconnection task because we closed on purpose
-            this.stopped = true;
+            this.smartSocket.close(true);
         }
     },
 
@@ -177,7 +174,7 @@ var WebSocketGroup = AbstractGroup.extend({
     startWSClient: function () {
         var addresses = this.getMasterServerAddresses();
         if (addresses.length > 0) {
-            SmartSocket({
+            this.smartSocket = new SmartSocket({
                 addresses: addresses,
                 timeout: 5000,
                 handlers: {
@@ -200,6 +197,8 @@ var WebSocketGroup = AbstractGroup.extend({
                     }.bind(this)
                 }
             });
+
+            this.smartSocket.start();
 
         } else {
             throw new Error("No NetworkInformation specified for master server node. Can't connect to it :/");
@@ -319,7 +318,7 @@ var WebSocketGroup = AbstractGroup.extend({
 });
 
 module.exports = WebSocketGroup;
-},{"async":3,"kevoree-entities":18,"kevoree-library":"xt4+u2","smart-socket":28,"ws":29}],"kevoree-group-websocket":[function(require,module,exports){
+},{"async":3,"kevoree-entities":18,"kevoree-library":"xt4+u2","smart-socket":30,"ws":31}],"kevoree-group-websocket":[function(require,module,exports){
 module.exports=require('Gycq4T');
 },{}],3:[function(require,module,exports){
 (function (process){
@@ -3074,66 +3073,8 @@ module.exports = Class({
 },{"pseudoclass":27}],27:[function(require,module,exports){
 module.exports=require(17)
 },{}],28:[function(require,module,exports){
-var WebSocket   = require('ws'),
-    async       = require('async');
-
-function connectionTask(address, handlers, reconnect, options) {
-    handlers.onopen = handlers.onopen       || function () {};
-    handlers.onclose = handlers.onclose     || function () {};
-    handlers.onerror = handlers.onerror     || function () {};
-    handlers.onmessage = handlers.onmessage || function () {};
-
-    return function (cb) {
-        if (options.debug) console.log('Trying to connect to ws://'+address);
-        var ws = new WebSocket('ws://'+address);
-        this.wasOpen = false;
-
-        ws.onopen = function (arg) {
-            if (options.debug) console.log('Connection to '+address+' established.');
-            this.wasOpen = true;
-            cb(ws);
-            handlers.onopen.apply(ws, [ws, arg]);
-        }.bind(this);
-
-        ws.onerror = function (arg) {
-            if (options.debug) console.log('Error: '+address, arg);
-            cb(null); // try next
-            handlers.onerror.apply(ws, [ws, arg]);
-        }.bind(this);
-
-        ws.onclose = function (arg) {
-            if (options.debug) console.log('Close: '+address, arg);
-            if (this.wasOpen) reconnect(options);
-            handlers.onclose.apply(ws, [ws, arg]);
-        }.bind(this);
-
-        ws.onmessage = function (arg) {
-            if (options.debug) console.log('Message: '+address, arg.data);
-            handlers.onmessage.apply(ws, [ws, arg]);
-        }
-    }
-}
-
-var SmartSocket = function constructor(options) {
-    options.addresses = options.addresses || [];
-    options.timeout   = options.timeout   || 2000;
-    options.debug     = options.debug     || false;
-
-    var tasks = [];
-    for (var i in options.addresses) tasks.push(connectionTask(options.addresses[i], options.handlers, constructor, options));
-    async.series(tasks, function (ws) {
-        if (ws) return ws; // successfully connected
-
-        // unable to connect to any of the given server, retry in options.timeout milliseconds
-        if (options.debug) console.log('Retry in '+options.timeout+'ms');
-        setTimeout(function () {
-            constructor(options);
-        }, options.timeout);
-    });
-}
-
-module.exports = SmartSocket;
-},{"async":3,"ws":29}],29:[function(require,module,exports){
+module.exports=require(3)
+},{"/home/leiko/dev/kevoree-js/library/kevoree-group-websocket/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":6}],29:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -3178,4 +3119,142 @@ function ws(uri, protocols, opts) {
 
 if (WebSocket) ws.prototype = WebSocket.prototype;
 
-},{}]},{},["Gycq4T"]);
+},{}],30:[function(require,module,exports){
+var WebSocket   = require('ws'),
+    async       = require('async');
+
+var noop = function () {};
+
+/**
+ *
+ * @param options {object} Contains {handlers : {}, addresses: [], timeout: number, debug: boolean}
+ * @constructor
+ */
+var SmartSocket = function (options) {
+    this.stopped    = false;
+    this.id         = null;
+    this.wsConn     = null;
+
+    var handlers = options.handlers || {};
+    this.onopen     = handlers.onopen    || noop;
+    this.onclose    = handlers.onclose   || noop;
+    this.onerror    = handlers.onerror   || noop;
+    this.onmessage  = handlers.onmessage || noop;
+
+    this.addresses  = options.addresses || [];
+    this.timeout    = options.timeout   || 2000;
+    this.debug      = options.debug     || false;
+};
+
+/**
+ * Starts the WebSocket connection tasks loop over given addresses
+ */
+SmartSocket.prototype.start = function () {
+    var self = this;
+    var tasks = [];
+    for (var i=0; i < self.addresses.length; i++) {
+        tasks.push((function (address) {
+            return function (cb) {
+                if (self.debug) console.log('Trying to connect to ws://'+address);
+                var ws = new WebSocket('ws://'+address);
+                this.wasOpen = false;
+
+                ws.onopen = function (arg) {
+                    if (self.debug) {
+                        console.log('Connection to '+address+' established.');
+                    }
+                    this.wasOpen = true;
+                    cb(ws);
+                    self.onopen.apply(ws, [ws, arg]);
+                }.bind(this);
+
+                ws.onerror = function (arg) {
+                    if (self.debug) {
+                        console.log('Error: '+address, arg);
+                    }
+                    cb(null); // try next
+                    self.onerror.apply(ws, [ws, arg]);
+                }.bind(this);
+
+                ws.onclose = function (arg) {
+                    if (self.debug) {
+                        console.log('Close: '+address, arg);
+                    }
+                    if (this.wasOpen && !self.stopped) {
+                        connectionTasks();
+                    }
+                    self.onclose.apply(ws, [ws, arg]);
+                }.bind(this);
+
+                ws.onmessage = function (arg) {
+                    if (self.debug) {
+                        console.log('Message: '+address, arg.data);
+                    }
+                    self.onmessage.apply(ws, [ws, arg]);
+                }
+            };
+        })(self.addresses[i]))
+    }
+
+    /**
+     * Tries to initiate a WebSocket connection with one of the given addresses
+     * Once a connection is active, the loop stops (looping is done in series = one at a time)
+     * If it is unable to connect to one of the given addresses, it will idle for this.timeout milliseconds
+     * and then restart the connection loop (forever, unless SmartSocket.stop() is called)
+     * @type {function(this:SmartSocket)}
+     */
+    var connectionTasks = function () {
+        async.series(tasks, function (connectedWs) {
+            if (connectedWs) {
+                // successfully connected (abort connection loop)
+                this.wsConn = connectedWs;
+                return;
+            }
+
+            // unable to connect to any of the given server
+            if (this.stopped) {
+                console.log('SmartSocket is stopped, won\'t retry connection!');
+            } else {
+                // retry connection attempt in options.timeout milliseconds
+                if (this.debug) {
+                    console.log('Retry in '+this.timeout+'ms');
+                }
+                this.id = setTimeout(function () {
+                    connectionTasks();
+                }.bind(this), this.timeout);
+            }
+        }.bind(this));
+    }.bind(this);
+
+    connectionTasks();
+};
+
+/**
+ * Prevents SmartSocket from retrying connection tasks in the future
+ */
+SmartSocket.prototype.stop = function () {
+    this.stopped = true;
+    clearTimeout(this.id);
+    this.id = null;
+};
+
+/**
+ * Immediately close() connected WebSocket (does nothing if none connected)
+ * @param stop {boolean} [optional, default = true] if true, close() will also call this.stop() and prevent SmartSocket from looping through connection tasks
+ */
+SmartSocket.prototype.close = function (stop) {
+    if (typeof (stop) === 'undefined') {
+        stop = true;
+    }
+    if (stop) {
+        this.stop();
+    }
+    if (this.wsConn && this.wsConn.readyState === 1) {
+        this.wsConn.close();
+    }
+};
+
+module.exports = SmartSocket;
+},{"async":28,"ws":29}],31:[function(require,module,exports){
+module.exports=require(29)
+},{}]},{},["Gycq4T"])
