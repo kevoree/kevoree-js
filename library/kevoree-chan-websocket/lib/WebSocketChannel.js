@@ -13,6 +13,25 @@ var REGISTER = 'register',
 var WebSocketChannel = AbstractChannel.extend({
     toString: 'WebSocketChannel',
 
+    dic_port: {
+        fragmentDependant: true,
+        optional: true,
+        datatype: 'number',
+        update: function () {
+            this.stop();
+            this.start();
+        }
+    },
+
+    dic_path: {
+        fragmentDependant: true,
+        optional: true,
+        update: function () {
+            this.stop();
+            this.start();
+        }
+    },
+
     construct: function () {
         this.server = null;
         this.client = null;
@@ -28,18 +47,31 @@ var WebSocketChannel = AbstractChannel.extend({
         this.checkNoMultipleMasterServer();
 
         if (this.dic_port.value && this.dic_port.value.length > 0) {
-            this.startWSClient();
+            if (!isNaN(parseInt(this.dic_port.value))) {
+                this.startWSServer(this.dic_port.value, processPath(this.dic_path.value));
+            } else {
+                throw new Error('WebSocketChannel error: '+this.getName()+'.port/'+this.getNodeName()+' attribute is not a number');
+            }
         } else {
-            this.startWSServer(this.dic_port.value);
+            this.startWSClient();
         }
     },
 
     /**
      * this method will be called by the Kevoree platform when your channel has to stop
      */
-    stop: function () {
-        this.log.warn(this.toString(), 'stop() method not implemented yet.');
-        // TODO
+    stop: function (_super) {
+        _super.call(this);
+
+        if (this.server) {
+            this.server.close();
+            this.connectedClients = {};
+        }
+
+        if (this.smartSocket) {
+            this.smartSocket.close();
+            this.client = null;
+        }
     },
 
     /**
@@ -87,21 +119,25 @@ var WebSocketChannel = AbstractChannel.extend({
         this.localDispatch(msg);
     },
 
-    startWSServer: function (port) {
+    startWSServer: function (port, path) {
         try {
-            this.server = new WebSocketServer({port: port});
-            this.log.debug(this.toString(), 'Master server created at '+this.server.options.host+":"+port);
+            this.server = new WebSocketServer({port: port, path: path});
+            this.log.debug(this.toString(), 'Master server created at '+this.server.options.host+":"+port+path);
 
             this.server.on('connection', function(ws) {
                 ws.onmessage = localDispatchHandler.bind(this)(ws);
                 ws.onerror = function () {
                     for (var nodeName in this.connectedClients) {
-                        if (this.connectedClients[nodeName] === ws) delete this.connectedClients[nodeName];
+                        if (this.connectedClients[nodeName] === ws) {
+                            delete this.connectedClients[nodeName];
+                        }
                     }
                 }.bind(this);
                 ws.onclose = function () {
                     for (var nodeName in this.connectedClients) {
-                        if (this.connectedClients[nodeName] === ws) delete this.connectedClients[nodeName];
+                        if (this.connectedClients[nodeName] === ws) {
+                            delete this.connectedClients[nodeName];
+                        }
                     }
                 }.bind(this);
 
@@ -116,14 +152,14 @@ var WebSocketChannel = AbstractChannel.extend({
     startWSClient: function () {
         var addresses = this.getMasterServerAddresses();
         if (addresses && addresses.length > 0) {
-            SmartSocket({
+            this.smartSocket = new SmartSocket({
                 addresses: addresses,
                 timeout: 5000,
                 handlers: {
                     onopen: function (ws) {
                         // save a ref of connected client
                         this.client = ws;
-                        this.log.info(this.toString(), 'Now connected to master server '+addresses[0]);
+                        this.log.info(this.toString(), 'Now connected to master server '+ws.url);
                         // send registration message
                         this.client.send(JSON.stringify({
                             type: REGISTER,
@@ -135,15 +171,13 @@ var WebSocketChannel = AbstractChannel.extend({
                         localDispatchHandler.bind(this)(ws)(event);
                     }.bind(this),
 
-                    onerror: function () {
-
-                    }.bind(this),
-
-                    onclose: function () {
-                        this.log.info(this.toString(), "Connection closed with server "+addresses[0]+". Retry attempt in 5 seconds");
+                    onclose: function (ws) {
+                        this.log.info(this.toString(), "Connection closed with server "+ws.url+". Retry attempt in 5 seconds");
                     }.bind(this)
                 }
             });
+
+            this.smartSocket.start();
 
         } else {
             throw new Error("No NetworkInformation specified for master server node. Can't connect to it :/");
@@ -217,16 +251,20 @@ var WebSocketChannel = AbstractChannel.extend({
         }
 
         throw new Error(this.toString()+" error: Unable to find chan instance in model (??)");
-    },
-
-    dic_port: {
-        fragmentDependant: true,
-        optional: true,
-        update: function (oldValue) {
-            this.log.warn(this.toString(), 'Update '+this.getName()+'.port/'+this.getNodeName()+' attribute: not implemented yet');
-        }
     }
 });
+
+function processPath(path) {
+    if (path) {
+        console.log(typeof path);
+        if (path.startsWith('/')) {
+            return path;
+        } else {
+            return '/' + path;
+        }
+    }
+    return '';
+}
 
 /**
  * you should call this method with a WebSocketChannel context (because it uses 'this', and expects it

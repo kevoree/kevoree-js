@@ -12,6 +12,9 @@ module.exports = function (grunt) {
         },
         kevoree: {
             run: {
+                options: {
+//                    node: 'node1'
+                },
                 kevscript: 'kevs/main.kevs'
             }
         },

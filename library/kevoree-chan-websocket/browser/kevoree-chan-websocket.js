@@ -14,6 +14,25 @@ var REGISTER = 'register',
 var WebSocketChannel = AbstractChannel.extend({
     toString: 'WebSocketChannel',
 
+    dic_port: {
+        fragmentDependant: true,
+        optional: true,
+        datatype: 'number',
+        update: function () {
+            this.stop();
+            this.start();
+        }
+    },
+
+    dic_path: {
+        fragmentDependant: true,
+        optional: true,
+        update: function () {
+            this.stop();
+            this.start();
+        }
+    },
+
     construct: function () {
         this.server = null;
         this.client = null;
@@ -29,18 +48,31 @@ var WebSocketChannel = AbstractChannel.extend({
         this.checkNoMultipleMasterServer();
 
         if (this.dic_port.value && this.dic_port.value.length > 0) {
-            this.startWSClient();
+            if (!isNaN(parseInt(this.dic_port.value))) {
+                this.startWSServer(this.dic_port.value, processPath(this.dic_path.value));
+            } else {
+                throw new Error('WebSocketChannel error: '+this.getName()+'.port/'+this.getNodeName()+' attribute is not a number');
+            }
         } else {
-            this.startWSServer(this.dic_port.value);
+            this.startWSClient();
         }
     },
 
     /**
      * this method will be called by the Kevoree platform when your channel has to stop
      */
-    stop: function () {
-        this.log.warn(this.toString(), 'stop() method not implemented yet.');
-        // TODO
+    stop: function (_super) {
+        _super.call(this);
+
+        if (this.server) {
+            this.server.close();
+            this.connectedClients = {};
+        }
+
+        if (this.smartSocket) {
+            this.smartSocket.close();
+            this.client = null;
+        }
     },
 
     /**
@@ -88,21 +120,25 @@ var WebSocketChannel = AbstractChannel.extend({
         this.localDispatch(msg);
     },
 
-    startWSServer: function (port) {
+    startWSServer: function (port, path) {
         try {
-            this.server = new WebSocketServer({port: port});
-            this.log.debug(this.toString(), 'Master server created at '+this.server.options.host+":"+port);
+            this.server = new WebSocketServer({port: port, path: path});
+            this.log.debug(this.toString(), 'Master server created at '+this.server.options.host+":"+port+path);
 
             this.server.on('connection', function(ws) {
                 ws.onmessage = localDispatchHandler.bind(this)(ws);
                 ws.onerror = function () {
                     for (var nodeName in this.connectedClients) {
-                        if (this.connectedClients[nodeName] === ws) delete this.connectedClients[nodeName];
+                        if (this.connectedClients[nodeName] === ws) {
+                            delete this.connectedClients[nodeName];
+                        }
                     }
                 }.bind(this);
                 ws.onclose = function () {
                     for (var nodeName in this.connectedClients) {
-                        if (this.connectedClients[nodeName] === ws) delete this.connectedClients[nodeName];
+                        if (this.connectedClients[nodeName] === ws) {
+                            delete this.connectedClients[nodeName];
+                        }
                     }
                 }.bind(this);
 
@@ -117,14 +153,14 @@ var WebSocketChannel = AbstractChannel.extend({
     startWSClient: function () {
         var addresses = this.getMasterServerAddresses();
         if (addresses && addresses.length > 0) {
-            SmartSocket({
+            this.smartSocket = new SmartSocket({
                 addresses: addresses,
                 timeout: 5000,
                 handlers: {
                     onopen: function (ws) {
                         // save a ref of connected client
                         this.client = ws;
-                        this.log.info(this.toString(), 'Now connected to master server '+addresses[0]);
+                        this.log.info(this.toString(), 'Now connected to master server '+ws.url);
                         // send registration message
                         this.client.send(JSON.stringify({
                             type: REGISTER,
@@ -136,15 +172,13 @@ var WebSocketChannel = AbstractChannel.extend({
                         localDispatchHandler.bind(this)(ws)(event);
                     }.bind(this),
 
-                    onerror: function () {
-
-                    }.bind(this),
-
-                    onclose: function () {
-                        this.log.info(this.toString(), "Connection closed with server "+addresses[0]+". Retry attempt in 5 seconds");
+                    onclose: function (ws) {
+                        this.log.info(this.toString(), "Connection closed with server "+ws.url+". Retry attempt in 5 seconds");
                     }.bind(this)
                 }
             });
+
+            this.smartSocket.start();
 
         } else {
             throw new Error("No NetworkInformation specified for master server node. Can't connect to it :/");
@@ -218,16 +252,20 @@ var WebSocketChannel = AbstractChannel.extend({
         }
 
         throw new Error(this.toString()+" error: Unable to find chan instance in model (??)");
-    },
-
-    dic_port: {
-        fragmentDependant: true,
-        optional: true,
-        update: function (oldValue) {
-            this.log.warn(this.toString(), 'Update '+this.getName()+'.port/'+this.getNodeName()+' attribute: not implemented yet');
-        }
     }
 });
+
+function processPath(path) {
+    if (path) {
+        console.log(typeof path);
+        if (path.startsWith('/')) {
+            return path;
+        } else {
+            return '/' + path;
+        }
+    }
+    return '';
+}
 
 /**
  * you should call this method with a WebSocketChannel context (because it uses 'this', and expects it
@@ -1682,21 +1720,7 @@ module.exports = KevoreeEntity.extend({
    */
   updateModel: function (model) {
     this.kCore.deploy(model);
-  },
-
-  /**
-   * Should define a way to 'contact' targetNodeName and give the given model to it
-   * @param model
-   * @param targetNodeName
-   */
-  push: function (model, targetNodeName) {},
-
-  /**
-   * Should define a way to 'contact' targetNodeName and retrieve its current model
-   * @param targetNodeName
-   * @param callback function(err, model)
-   */
-  pull: function (targetNodeName, callback) {}
+  }
 });
 },{"./KevoreeEntity":23}],21:[function(require,module,exports){
 var KevoreeEntity = require('./KevoreeEntity');
@@ -3039,60 +3063,136 @@ module.exports=require(16)
 var WebSocket   = require('ws'),
     async       = require('async');
 
-function connectionTask(address, handlers, reconnect, options) {
-    handlers.onopen = handlers.onopen       || function () {};
-    handlers.onclose = handlers.onclose     || function () {};
-    handlers.onerror = handlers.onerror     || function () {};
-    handlers.onmessage = handlers.onmessage || function () {};
+var noop = function () {};
 
-    return function (cb) {
-        if (options.debug) console.log('Trying to connect to ws://'+address);
-        var ws = new WebSocket('ws://'+address);
-        this.wasOpen = false;
+/**
+ *
+ * @param options {object} Contains {handlers : {}, addresses: [], timeout: number, debug: boolean}
+ * @constructor
+ */
+var SmartSocket = function (options) {
+    this.stopped    = false;
+    this.id         = null;
+    this.wsConn     = null;
 
-        ws.onopen = function (arg) {
-            if (options.debug) console.log('Connection to '+address+' established.');
-            this.wasOpen = true;
-            cb(ws);
-            handlers.onopen.apply(ws, [ws, arg]);
-        }.bind(this);
+    var handlers = options.handlers || {};
+    this.onopen     = handlers.onopen    || noop;
+    this.onclose    = handlers.onclose   || noop;
+    this.onerror    = handlers.onerror   || noop;
+    this.onmessage  = handlers.onmessage || noop;
 
-        ws.onerror = function (arg) {
-            if (options.debug) console.log('Error: '+address, arg);
-            cb(null); // try next
-            handlers.onerror.apply(ws, [ws, arg]);
-        }.bind(this);
+    this.addresses  = options.addresses || [];
+    this.timeout    = options.timeout   || 2000;
+    this.debug      = options.debug     || false;
+};
 
-        ws.onclose = function (arg) {
-            if (options.debug) console.log('Close: '+address, arg);
-            if (this.wasOpen) reconnect(options);
-            handlers.onclose.apply(ws, [ws, arg]);
-        }.bind(this);
-
-        ws.onmessage = function (arg) {
-            if (options.debug) console.log('Message: '+address, arg.data);
-            handlers.onmessage.apply(ws, [ws, arg]);
-        }
-    }
-}
-
-var SmartSocket = function constructor(options) {
-    options.addresses = options.addresses || [];
-    options.timeout   = options.timeout   || 2000;
-    options.debug     = options.debug     || false;
-
+/**
+ * Starts the WebSocket connection tasks loop over given addresses
+ */
+SmartSocket.prototype.start = function () {
+    var self = this;
     var tasks = [];
-    for (var i in options.addresses) tasks.push(connectionTask(options.addresses[i], options.handlers, constructor, options));
-    async.series(tasks, function (ws) {
-        if (ws) return ws; // successfully connected
+    for (var i=0; i < self.addresses.length; i++) {
+        tasks.push((function (address) {
+            return function (cb) {
+                if (self.debug) console.log('Trying to connect to ws://'+address);
+                var ws = new WebSocket('ws://'+address);
+                this.wasOpen = false;
 
-        // unable to connect to any of the given server, retry in options.timeout milliseconds
-        if (options.debug) console.log('Retry in '+options.timeout+'ms');
-        setTimeout(function () {
-            constructor(options);
-        }, options.timeout);
-    });
-}
+                ws.onopen = function (arg) {
+                    if (self.debug) {
+                        console.log('Connection to '+address+' established.');
+                    }
+                    this.wasOpen = true;
+                    cb(ws);
+                    self.onopen.apply(ws, [ws, arg]);
+                }.bind(this);
+
+                ws.onerror = function (arg) {
+                    if (self.debug) {
+                        console.log('Error: '+address, arg);
+                    }
+                    cb(null); // try next
+                    self.onerror.apply(ws, [ws, arg]);
+                }.bind(this);
+
+                ws.onclose = function (arg) {
+                    if (self.debug) {
+                        console.log('Close: '+address, arg);
+                    }
+                    if (this.wasOpen && !self.stopped) {
+                        connectionTasks();
+                    }
+                    self.onclose.apply(ws, [ws, arg]);
+                }.bind(this);
+
+                ws.onmessage = function (arg) {
+                    if (self.debug) {
+                        console.log('Message: '+address, arg.data);
+                    }
+                    self.onmessage.apply(ws, [ws, arg]);
+                }
+            };
+        })(self.addresses[i]))
+    }
+
+    /**
+     * Tries to initiate a WebSocket connection with one of the given addresses
+     * Once a connection is active, the loop stops (looping is done in series = one at a time)
+     * If it is unable to connect to one of the given addresses, it will idle for this.timeout milliseconds
+     * and then restart the connection loop (forever, unless SmartSocket.stop() is called)
+     * @type {function(this:SmartSocket)}
+     */
+    var connectionTasks = function () {
+        async.series(tasks, function (connectedWs) {
+            if (connectedWs) {
+                // successfully connected (abort connection loop)
+                this.wsConn = connectedWs;
+                return;
+            }
+
+            // unable to connect to any of the given server
+            if (this.stopped) {
+                console.log('SmartSocket is stopped, won\'t retry connection!');
+            } else {
+                // retry connection attempt in options.timeout milliseconds
+                if (this.debug) {
+                    console.log('Retry in '+this.timeout+'ms');
+                }
+                this.id = setTimeout(function () {
+                    connectionTasks();
+                }.bind(this), this.timeout);
+            }
+        }.bind(this));
+    }.bind(this);
+
+    connectionTasks();
+};
+
+/**
+ * Prevents SmartSocket from retrying connection tasks in the future
+ */
+SmartSocket.prototype.stop = function () {
+    this.stopped = true;
+    clearTimeout(this.id);
+    this.id = null;
+};
+
+/**
+ * Immediately close() connected WebSocket (does nothing if none connected)
+ * @param stop {boolean} [optional, default = true] if true, close() will also call this.stop() and prevent SmartSocket from looping through connection tasks
+ */
+SmartSocket.prototype.close = function (stop) {
+    if (typeof (stop) === 'undefined') {
+        stop = true;
+    }
+    if (stop) {
+        this.stop();
+    }
+    if (this.wsConn && this.wsConn.readyState === 1) {
+        this.wsConn.close();
+    }
+};
 
 module.exports = SmartSocket;
 },{"async":27,"ws":29}],29:[function(require,module,exports){
@@ -3140,4 +3240,4 @@ function ws(uri, protocols, opts) {
 
 if (WebSocket) ws.prototype = WebSocket.prototype;
 
-},{}]},{},["XCRyCd"]);
+},{}]},{},["XCRyCd"])
