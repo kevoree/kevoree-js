@@ -68,63 +68,6 @@ var WebSocketGroup = AbstractGroup.extend({
         }
     },
 
-    push: function (model, targetNodeName) {
-        if (targetNodeName == this.getMasterServerNode().name) {
-            this.onServerPush(model, this.getMasterServerAddresses());
-        } else {
-            this.onClientPush(model, targetNodeName);
-        }
-    },
-
-    pull: function (targetNodeName, callback) {
-        if (targetNodeName == this.getMasterServerNode().name) {
-            // pull request is for the master server, forward the request to it
-            this.onServerPull(this.getMasterServerAddresses(), callback);
-        } else {
-            // pull request is for a client node, forward the request to it
-            this.onClientPull(targetNodeName, callback);
-        }
-    },
-
-    onServerPush: function (model, addresses) {
-        var ws = new WebSocket('ws://'+addresses[0]); // TODO change that => to try each different addresses not only the first one
-        ws.onopen = function onOpen() {
-            var serializer = new kevoree.serializer.JSONModelSerializer();
-            var modelStr = serializer.serialize(model);
-            ws.send(PUSH+'/'+modelStr);
-            ws.close();
-        };
-    },
-
-    onClientPush: function (model, targetNodeName) {
-        this.onServerPush(model, this.getMasterServerAddresses());
-    },
-
-    onServerPull: function (addresses, callback) {
-        var ws = new WebSocket('ws://'+addresses[0]); // TODO change that => to try each different addresses not only the first one
-
-        ws.onopen = function onOpen() {
-            ws.send(PULL);
-        };
-        ws.onmessage = function onMessage(e) {
-            var data = '';
-            if (typeof(e) === 'string') data = e;
-            else data = e.data;
-
-            // close client
-            ws.close();
-
-            // load model and give it back to the callback
-            var jsonLoader = new kevoree.loader.JSONModelLoader();
-            var model = jsonLoader.loadModelFromString(data).get(0);
-            callback(null, model);
-        };
-    },
-
-    onClientPull: function (targetNodeName, callback) {
-        this.onServerPull(this.getMasterServerAddresses(), callback);
-    },
-
     checkNoMultipleMasterServer: function () {
         var group = this.getModelEntity();
         if (group != null) {
@@ -178,7 +121,7 @@ var WebSocketGroup = AbstractGroup.extend({
                 addresses: addresses,
                 timeout: 5000,
                 handlers: {
-                    onopen: function (ws, event) {
+                    onopen: function (ws) {
                         ws.send(REGISTER+'/'+this.getNodeName());
                         this.log.info(this.toString(), 'Now connected & registered on master server '+ws.url);
                     }.bind(this),
@@ -192,7 +135,7 @@ var WebSocketGroup = AbstractGroup.extend({
                         this.kCore.deploy(model);
                     }.bind(this),
 
-                    onclose: function (ws, event) {
+                    onclose: function (ws) {
                         this.log.debug(this.toString(), "Connection closed with server "+ws.url+". Retry attempt in 5 seconds");
                     }.bind(this)
                 }
