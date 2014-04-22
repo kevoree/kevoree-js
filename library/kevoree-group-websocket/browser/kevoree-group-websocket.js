@@ -29,7 +29,20 @@ var WebSocketGroup = AbstractGroup.extend({
     // START Dictionary attributes =====
     dic_port: {
         fragmentDependant: true,
-        optional: true
+        optional: true,
+        update: function () {
+            this.stop();
+            this.start();
+        }
+    },
+
+    dic_path: {
+        fragmentDependant: true,
+        optional: true,
+        update: function () {
+            this.stop();
+            this.start();
+        }
     },
     // END Dictionary attributes =====
 
@@ -47,9 +60,12 @@ var WebSocketGroup = AbstractGroup.extend({
         // assert('one and only one master server defined between all subnodes')
         this.checkNoMultipleMasterServer();
 
-        var port = this.dictionary.getValue('port');
-        if (port && port.length>0) {
-            this.server = this.startWSServer(port);
+        if (this.dic_port.value && this.dic_port.value.length > 0) {
+            if (!isNaN(parseInt(this.dic_port.value))) {
+                this.server = this.startWSServer(this.dic_port.value, processPath(this.dic_path.value));
+            } else {
+                throw new Error('WebSocketGroup error: '+this.getName()+'.port/'+this.getNodeName()+' attribute is not a number');
+            }
         } else {
             this.startWSClient();
         }
@@ -58,8 +74,9 @@ var WebSocketGroup = AbstractGroup.extend({
     stop: function (_super) {
         _super.call(this);
 
-        if (this.server && this.server.readyState === 1) {
+        if (this.server) {
             this.server.close();
+            this.connectedNodes = {};
         }
 
         if (this.smartSocket) {
@@ -95,11 +112,11 @@ var WebSocketGroup = AbstractGroup.extend({
         throw new Error("WebSocketGroup error: Unable to find group instance in model (??)");
     },
 
-    startWSServer: function (port) {
+    startWSServer: function (port, path) {
         // create a WebSocket server on specified port
         var self = this;
-        var server = new WSServer({port: port});
-        this.log.info(this.toString(), "WebSocket server started: "+ server.options.host+":"+port);
+        var server = new WSServer({port: port, path: path});
+        this.log.info(this.toString(), "WebSocket server started: "+ server.options.host+":"+port+path);
 
         server.on('connection', function(ws) {
             ws.onmessage = function (data) {
@@ -211,7 +228,7 @@ var WebSocketGroup = AbstractGroup.extend({
             this.onMasterServerPush(clientSocket, data.substr(PUSH.length+1));
 
         } else if (data.startsWith(PULL)) {
-            this.onMasterServerPull(clientSocket, data.substr(PULL.length+1));
+            this.onMasterServerPull(clientSocket);
 
         } else if (data.startsWith(DIFF)) {
             this.log.warn(this.toString(), 'Action "'+DIFF+'" is not implemented yet.');
@@ -228,19 +245,24 @@ var WebSocketGroup = AbstractGroup.extend({
         this.log.info(this.toString(), clientSocket._socket.remoteAddress+":"+clientSocket._socket.remotePort+" asked for a PUSH");
 
         var jsonLoader = new kevoree.loader.JSONModelLoader();
-        var model = jsonLoader.loadModelFromString(strData).get(0);
 
-        this.kCore.deploy(model);
+        try {
+            var model = jsonLoader.loadModelFromString(strData).get(0);
 
-        // broadcast model over all connected nodes
-        for (var nodeName in this.connectedNodes) {
-            if (this.connectedNodes[nodeName].readyState === 1) { // send current model to connected peers
-                this.connectedNodes[nodeName].send(strData);
+            this.kCore.deploy(model);
+
+            // broadcast model over all connected nodes
+            for (var nodeName in this.connectedNodes) {
+                if (this.connectedNodes[nodeName].readyState === 1) { // send current model to connected peers
+                    this.connectedNodes[nodeName].send(strData);
+                }
             }
+        } catch (err) {
+            throw new Error(this.toString() + '('+this.getName()+') error: unable to deserialize pushed Kevoree model ('+err.message+')');
         }
     },
 
-    onMasterServerPull: function (clientSocket, strData) {
+    onMasterServerPull: function (clientSocket) {
         this.log.info(this.toString(), clientSocket._socket.remoteAddress+":"+clientSocket._socket.remotePort+" asked for a PULL (json)");
 
         var serializer = new kevoree.serializer.JSONModelSerializer();
@@ -259,6 +281,19 @@ var WebSocketGroup = AbstractGroup.extend({
         }.bind(this));
     }
 });
+
+function processPath(path) {
+    console.log('processPath='+path);
+    if (path) {
+        console.log(typeof path);
+        if (path.startsWith('/')) {
+            return path;
+        } else {
+            return '/' + path;
+        }
+    }
+    return '';
+}
 
 module.exports = WebSocketGroup;
 },{"async":3,"kevoree-entities":18,"kevoree-library":"xt4+u2","smart-socket":30,"ws":31}],"kevoree-group-websocket":[function(require,module,exports){

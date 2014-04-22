@@ -7,6 +7,7 @@ add sync : WebSocketGroup
 attach node0, node1 sync
 
 set sync.port/node0 = '9000'
+//set sync.path/node0 = 'foo'
 
 network node0.lan.ip 127.0.0.1
 network node1.lan.ip 127.0.0.1
