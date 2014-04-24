@@ -3,7 +3,7 @@
  * https://github.com/kevoree/kevoree-js
  *
  * Copyright (c) 2014 Maxime Tricoire
- * Licensed under the MIT license.
+ * Licensed under the LGPL-3.0 license.
  */
 
 'use strict';

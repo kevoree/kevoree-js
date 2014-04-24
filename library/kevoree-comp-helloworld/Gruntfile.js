@@ -46,5 +46,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-browserify');
 
     grunt.registerTask('default', ['kevoree_genmodel', 'jade', 'browserify']);
-    grunt.registerTask('run', ['kevoree']);
+    grunt.registerTask('kev', ['kevoree']);
 }

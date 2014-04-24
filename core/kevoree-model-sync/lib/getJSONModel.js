@@ -32,4 +32,4 @@ module.exports = function (unitName, version, callback) {
             }
         });
     });
-}
+};
