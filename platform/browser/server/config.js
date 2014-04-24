@@ -30,9 +30,5 @@ module.exports = {
         downloadLink: function (name, version) {
             return '/node_modules/' + name + '/' + name + '@' + version + '.zip';
         }
-    },
-
-    clientCleaner: {
-        port: 9041
     }
 };

@@ -15,6 +15,7 @@ var BrowserRuntime = Class({
 
     construct: function () {
         this.uuid = uuid.v1();
+        console.log('UUID:', this.uuid);
         this.logger = new BrowserLogger(this.toString());
         this.core = new KevoreeCore(__dirname, this.logger);
 
@@ -48,10 +49,29 @@ var BrowserRuntime = Class({
         });
 
         // connect to WebSocket server and register
-        var ws = new WebSocket('ws://'+window.location.hostname+':9041');
-        ws.onopen = function () {
-            ws.send('register'+this.uuid);
+        var wsConnect = function () {
+            console.log('Trying to connect to ws://'+window.location.host);
+            this.ws = new WebSocket('ws://'+window.location.host);
+            this.ws.onopen = function () {
+                this.ui.wsConnected();
+                this.ws.send(JSON.stringify({
+                    action: 'register',
+                    uuid: this.uuid
+                }));
+            }.bind(this);
+
+            this.ws.onmessage = function (msg) {
+                console.log(msg);
+            };
+
+            this.ws.onclose = function () {
+                this.ui.wsDisconnected();
+                this.core.stop();
+                window.location.reload();
+                setTimeout(wsConnect, 2000);
+            }.bind(this);
         }.bind(this);
+        wsConnect();
 
         var bootstrapper = new BrowserBootstrapper(__dirname, this.logger, this);
         this.core.setBootstrapper(bootstrapper);
@@ -60,6 +80,11 @@ var BrowserRuntime = Class({
         var bootstrapCmd = new Bootstrap(this);
         this.core.on('started', function () {
             this.ui.started();
+
+            this.ws.send(JSON.stringify({
+                action: 'setname',
+                name: this.core.getNodeName()
+            }));
 
             // platform node started
             bootstrapCmd.execute(this.core.getNodeName(), function (err, model) {

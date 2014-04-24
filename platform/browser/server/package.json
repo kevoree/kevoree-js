@@ -4,9 +4,6 @@
   "private": true,
   "description": "Kevoree Browser Runtime - Web Services",
   "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git://github.com/kevoree/kevoree-js.git"

@@ -40,6 +40,24 @@ var UIBrowserRuntime = Class({
         $('#stop-runtime').prop('disabled', true);
 
         $(window).off('beforeunload');
+    },
+
+    wsConnected: function () {
+        var status = $('#ws-status-text'),
+            icon   = $('#ws-status-icon');
+        status.html('Connected');
+        status.css('color', '#0F0');
+        icon.removeClass('glyphicon-exclamation-sign');
+        icon.addClass('glyphicon-ok-sign');
+    },
+
+    wsDisconnected: function () {
+        var status = $('#ws-status-text'),
+            icon   = $('#ws-status-icon');
+        status.html('Disconnected');
+        status.css('color', '#F00');
+        icon.addClass('glyphicon-exclamation-sign');
+        icon.removeClass('glyphicon-ok-sign');
     }
 });
 

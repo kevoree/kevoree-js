@@ -1,4 +1,5 @@
 var connect          = require('connect'),
+    http             = require('http'),
     express          = require('express'),
     path             = require('path'),
     fs               = require('fs'),
@@ -7,9 +8,8 @@ var connect          = require('connect'),
     kevoree          = require('kevoree-library').org.kevoree,
     Kevscript        = require('kevoree-kevscript'),
     NPMResolver      = require('kevoree-resolvers').NPMResolver,
-    config           = require('./config');
-
-require('./lib/client-cleaner');
+    config           = require('./config'),
+    ClientCleaner    = require('./lib/client-cleaner');
 
 var compare = new kevoree.compare.DefaultModelCompare();
 var factory = new kevoree.impl.DefaultKevoreeFactory();
@@ -56,13 +56,18 @@ knjs.on('started', function () {
     });
 });
 
+var clientCleaner;
 knjs.on('deployed', function (deployedModel) {
     compare.merge(model, deployedModel).applyOn(model);
     if (firstDeploy) {
         firstDeploy = false;
-        app.listen(app.get('port'), function () {
+        var server = http.createServer(app);
+        server.listen(app.get('port'), function () {
             console.log('Kevoree Browser Runtime Server started on port '+app.get('port'));
         });
+        clientCleaner = new ClientCleaner(server, model, knjs);
+    } else {
+        clientCleaner.setModel(model);
     }
 });
 
