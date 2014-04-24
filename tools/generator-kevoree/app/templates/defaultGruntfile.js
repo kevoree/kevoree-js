@@ -66,5 +66,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
 
     grunt.registerTask('default', ['kevoree_genmodel', 'browserify', 'uglify']);
-    grunt.registerTask('run', ['kevoree']);
+    grunt.registerTask('kev', ['kevoree']);
 };

@@ -32,28 +32,7 @@ var <%= entityName %> = <%= entityType %>.extend({
     stop: function () {
         // TODO
         this.log.debug(this.toString(), 'STOP');
-    },
-
-    /**
-    * Should define a way to 'contact' targetNodeName and give the given model to it
-    * @param model
-    * @param targetNodeName
-    */
-    push: function (model, targetNodeName) {
-        // TODO
-        this.log.debug(this.toString(), 'TODO change current model with pushed one');
-    },
-
-    /**
-    * Should define a way to 'contact' targetNodeName and retrieve its current model
-    * @param targetNodeName
-    * @param callback function(err, model)
-    */
-    pull: function (targetNodeName, callback) {
-        // TODO
-        this.log.debug(this.toString(), 'TODO send current model back to targetNodeName');
     }
-
 });
 
 module.exports = <%= entityName %>;
