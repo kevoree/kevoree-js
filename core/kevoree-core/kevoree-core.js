@@ -4,6 +4,8 @@ var Class         = require('pseudoclass'),
     async         = require('async'),
     EventEmitter  = require('events').EventEmitter;
 
+var NAME_PATTERN = /^[\w-]+$/;
+
 /**
  * Kevoree Core
  *
@@ -53,20 +55,24 @@ module.exports = Class({
     start: function (nodeName) {
         if (!nodeName || nodeName.length === 0) nodeName = "node0";
 
-        this.nodeName = nodeName;
-        this.currentModel = this.factory.createContainerRoot();
+        if (nodeName.match(NAME_PATTERN)) {
+            this.nodeName = nodeName;
+            this.currentModel = this.factory.createContainerRoot();
 
-        var node = this.factory.createContainerNode();
-        node.name = this.nodeName;
-        node.started = false;
-        this.currentModel.addNodes(node);
+            var node = this.factory.createContainerNode();
+            node.name = this.nodeName;
+            node.started = false;
+            this.currentModel.addNodes(node);
 
-        // starting loop function
-        this.intervalId = setInterval(function () {}, 1e8);
+            // starting loop function
+            this.intervalId = setInterval(function () {}, 1e8);
 
-        this.log.info(this.toString(), "Platform started: "+nodeName);
+            this.log.info(this.toString(), "Platform started: "+nodeName);
 
-        this.emitter.emit('started');
+            this.emitter.emit('started');
+        } else {
+            this.emitter.emit('error', new Error('Platform node name must match this regex '+NAME_PATTERN.toString()));
+        }
     },
 
     setBootstrapper: function (bootstrapper) {

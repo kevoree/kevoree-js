@@ -17,9 +17,13 @@ var Bootstrap = AbstractCommand.extend({
                 nodename: nodeName
             },
             success: function (res) {
-                var loader = new kevoree.loader.JSONModelLoader();
-                var model = loader.loadModelFromString(res.model).get(0);
-                callback(null, model);
+                if (res.model) {
+                    var loader = new kevoree.loader.JSONModelLoader();
+                    var model = loader.loadModelFromString(res.model).get(0);
+                    callback(null, model);
+                } else {
+                    callback(new Error(res.error));
+                }
             },
             error: function (err) {
                 if (err.statusText === 'timeout') {

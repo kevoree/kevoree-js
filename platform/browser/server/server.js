@@ -9,6 +9,7 @@ var connect          = require('connect'),
     Kevscript        = require('kevoree-kevscript'),
     NPMResolver      = require('kevoree-resolvers').NPMResolver,
     config           = require('./config'),
+    mustache         = require('mustache'),
     ClientCleaner    = require('./lib/client-cleaner');
 
 var compare = new kevoree.compare.DefaultModelCompare();
@@ -44,7 +45,7 @@ knjs.on('started', function () {
             process.exit(1);
         }
 
-        kevs.parse(data, function (err, model) {
+        kevs.parse(mustache.render(data, config.serverPlatform), function (err, model) {
             if (err) {
                 console.error('Unable to parse server-node Kevscript model');
                 console.error(err.stack);
@@ -75,7 +76,7 @@ knjs.on('error', function (err) {
     console.log("Kevoree NodeJS Runtime ERROR:", err.message);
 });
 
-knjs.start(config.nodeJSPlatform.nodeName, config.nodeJSPlatform.groupName);
+knjs.start(config.serverPlatform.nodeName, config.serverPlatform.groupName);
 
 app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
 

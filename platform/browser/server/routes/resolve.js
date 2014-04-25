@@ -42,7 +42,7 @@ module.exports = function(req, res) {
                     if (err) { /* ignore error because some library do not have resources/ folder */ }
 
                     // send response
-                    return res.jsonp({
+                    return res.json({
                         zipPath: downloadLink,
                         zipName: req.body.name+'@'+req.body.version
                     });
@@ -52,13 +52,13 @@ module.exports = function(req, res) {
 
         } else {
             // send response
-            return res.jsonp({
+            return res.json({
                 zipPath: downloadLink,
                 zipName: req.body.name+'@'+req.body.version
             });
         }
 
     } else {
-        return res.jsonp(JSON.parse(new Error('Sorry, for now Kevoree Browser Runtime server is only able to resolve "npm" packages.')));
+        return res.json(JSON.parse(new Error('Sorry, for now Kevoree Browser Runtime server is only able to resolve "npm" packages.')));
     }
 };

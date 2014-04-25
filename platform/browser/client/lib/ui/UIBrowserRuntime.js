@@ -1,4 +1,5 @@
-var Class = require('pseudoclass');
+var Class = require('pseudoclass'),
+    _     = require('underscore.string');
 
 /**
  * Created by leiko on 12/03/14.
@@ -9,16 +10,22 @@ var UIBrowserRuntime = Class({
     construct: function (runtime) {
         this.runtime = runtime;
 
-        $('#platform-node-name').val('node'+parseInt(Math.random()*1000));
+        var uiNodeName = $('#platform-node-name');
+        uiNodeName.val('node'+ _.capitalize(Math.random().toString(36).substr(2, 4)));
 
         $('#clear-logs').on('click', function () {
             runtime.clearLogs();
         });
 
-        $('#start-runtime').on('click', function () {
-            var nodeName = $('#platform-node-name').val();
-            // TODO check "nodeName" validity
-            runtime.start(nodeName);
+        function startListener () {
+            runtime.start(uiNodeName.val());
+        }
+
+        $('#start-runtime').on('click', startListener);
+        uiNodeName.on('keyup', function (e) {
+            if(e.keyCode == 13) {
+                startListener();
+            }
         }.bind(this));
 
         $('#stop-runtime').on('click', function () {
@@ -52,6 +59,7 @@ var UIBrowserRuntime = Class({
     },
 
     wsDisconnected: function () {
+
         var status = $('#ws-status-text'),
             icon   = $('#ws-status-icon');
         status.html('Disconnected');

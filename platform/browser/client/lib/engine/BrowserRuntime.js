@@ -56,18 +56,13 @@ var BrowserRuntime = Class({
                 this.ui.wsConnected();
                 this.ws.send(JSON.stringify({
                     action: 'register',
-                    uuid: this.uuid
+                    uuid: this.uuid,
+                    name: this.core.getNodeName()
                 }));
             }.bind(this);
 
-            this.ws.onmessage = function (msg) {
-                console.log(msg);
-            };
-
             this.ws.onclose = function () {
                 this.ui.wsDisconnected();
-                this.core.stop();
-                window.location.reload();
                 setTimeout(wsConnect, 2000);
             }.bind(this);
         }.bind(this);
@@ -104,6 +99,7 @@ var BrowserRuntime = Class({
 
         this.core.on('stopped', function () {
             this.ui.stopped();
+            this.ws.send(JSON.stringify({ action: 'stop' }));
         }.bind(this));
 
         this.core.on('error', function (err) {

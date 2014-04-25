@@ -41,6 +41,9 @@
                 <ul class="nav navbar-nav">
                     <li><a href="#" id="clear-logs">Clear Logs</a></li>
                 </ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="#" id="help" data-toggle="modal" data-target="#help-modal">Help</a></li>
+                </ul>
                 <div class="navbar-form navbar-right">
                     <div class="form-group">
                         <input id="platform-node-name" type="text" placeholder="Node name" class="form-control">
@@ -74,6 +77,41 @@
             </div>
         </div>
     </div>
+
+    <div id="help-modal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Help</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        This application act as a Kevoree platform (based on a JavascriptNode) running directly
+                        inside your browser.
+                    </p>
+                    <p>
+                        In order to start a new platform, you just have to define a <strong>node name</strong>
+                        (or use the randomly generated one) and click the <strong>Start</strong> button.
+                    </p>
+                    <p>
+                        By doing so, your newly created platform will add itself to the
+                        <strong>server platform</strong> by editing the server-side Kevoree model. Because of
+                        browsers limitations you won't be able to start a server (WebSocket server for instance)
+                        in this platform so be sure to properly set your model in order to run your servers server-side
+                    </p>
+                    <hr/>
+                    <p>
+                        This application keeps an active connection with the server in order to detect when platforms
+                        are shutdown. There is a connection status flag in the <strong>Logs tab</strong>.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->

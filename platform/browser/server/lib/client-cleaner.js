@@ -6,7 +6,8 @@ var config    = require('../config'),
 var noop = function () {};
 
 var REGISTER = 'register',
-    SETNAME  = 'setname';
+    SETNAME  = 'setname',
+    STOP     = 'stop';
 
 /**
  * Created by leiko on 17/04/14.
@@ -26,6 +27,7 @@ function ClientCleaner(server, model, knjs) {
                 switch (msg.action) {
                     case REGISTER:
                         client.uuid = msg.uuid;
+                        client.name = msg.name;
                         break;
 
                     case SETNAME:
