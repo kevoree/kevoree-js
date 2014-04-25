@@ -256,8 +256,7 @@ var WebSocketChannel = AbstractChannel.extend({
 
 function processPath(path) {
     if (path) {
-        console.log(typeof path);
-        if (path.startsWith('/')) {
+        if (path.substr(0, 1) === '/') {
             return path;
         } else {
             return '/' + path;
