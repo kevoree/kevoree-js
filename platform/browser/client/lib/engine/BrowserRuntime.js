@@ -50,8 +50,8 @@ var BrowserRuntime = Class({
 
         // connect to WebSocket server and register
         var wsConnect = function () {
-            console.log('Trying to connect to ws://'+window.location.host);
-            this.ws = new WebSocket('ws://'+window.location.host);
+            console.log('Trying to connect to ws://'+window.location.hostname+':9040');
+            this.ws = new WebSocket('ws://'+window.location.hostname+':9040');
             this.ws.onopen = function () {
                 this.ui.wsConnected();
                 this.ws.send(JSON.stringify({

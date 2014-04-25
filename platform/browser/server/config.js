@@ -9,7 +9,7 @@ module.exports = {
     // properties for server-side Kevoree NodeJS Platform
     serverPlatform: {
         nodeName: 'server-node',
-        serverHost: 'runjs.kevoree.fr',
+        serverHost: 'runjs.kevoree.org',
         groupName: 'sync',
         groupPort: 9000
     },
