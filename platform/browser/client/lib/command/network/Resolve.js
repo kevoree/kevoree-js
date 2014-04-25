@@ -19,7 +19,11 @@ var Resolve = AbstractCommand.extend({
                 forceInstall: forceInstall
             },
             success: function (res) {
-                callback(null, res);
+                if (res.error) {
+                    callback(new Error(res.error));
+                } else {
+                    callback(null, res);
+                }
             },
             error: function (err) {
                 if (err.statusText === 'timeout') {

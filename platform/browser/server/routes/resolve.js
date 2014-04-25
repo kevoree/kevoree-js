@@ -59,6 +59,6 @@ module.exports = function(req, res) {
         }
 
     } else {
-        return res.json(JSON.parse(new Error('Sorry, for now Kevoree Browser Runtime server is only able to resolve "npm" packages.')));
+        return res.json({error: 'Sorry, for now Kevoree Browser Runtime server is only able to resolve "npm" packages.'});
     }
 };

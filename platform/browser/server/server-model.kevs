@@ -8,4 +8,5 @@ attach {{nodeName}} {{groupName}}
 
 set {{groupName}}.port/{{nodeName}} = '{{groupPort}}'
 
-network {{nodeName}}.lan.ip {{serverHost}}
+network {{nodeName}}.ip.front {{serverHost}}
+network {{nodeName}}.ip.local 127.0.0.1
