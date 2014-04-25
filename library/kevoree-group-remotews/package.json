@@ -1,0 +1,21 @@
+{
+  "name": "kevoree-group-remotews",
+  "version": "0.1.0",
+  "main": "./lib/RemoteWS.js",
+  "scripts": {
+    "prepublish": "grunt"
+  },
+  "dependencies": {
+    "kevoree-entities": "^0.4.15",
+    "kevoree-library": "^0.5.0",
+    "smart-socket": "^0.1.0",
+    "uuid": "^1.4.1"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.1",
+    "grunt-kevoree": "^0.4.11",
+    "grunt-browserify": "^2.0.7",
+    "grunt-contrib-uglify": "^0.4.0",
+    "grunt-kevoree-genmodel": "^0.1.1"
+  }
+}

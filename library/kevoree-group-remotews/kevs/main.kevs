@@ -1,0 +1,10 @@
+include npm:kevoree-node-javascript
+include npm:kevoree-group-remotews
+
+add node0 : JavascriptNode
+add sync : RemoteWS
+
+attach node0 sync
+
+set sync.host/node0 = "localhost"
+set sync.port/node0 = "9000"
