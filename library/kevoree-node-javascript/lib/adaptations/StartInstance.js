@@ -20,14 +20,23 @@ module.exports = AdaptationPrimitive.extend({
                         var val = instance.dictionary.getValue(attr.name);
                         if (!val) {
                             // there is no value set for this attribute
-                            if (attr.optional) {
-                                // the attribute is optional, we will only add the value if defaultValue is set
-                                if (attr.defaultValue.length > 0) {
+                            // first of all: check if there is a value for this attribute in the model instance
+                            if (this.modelElement.dictionary && this.modelElement.dictionary.findValuesByID(attr.name)) {
+                                var kVal = this.modelElement.dictionary.findValuesByID(attr.name);
+                                instance.dictionary.setEntry(attr.name, kVal.value);
+
+                            } else {
+                                // there is no dictionary for this model instance
+                                // lets inflate dictionary with default values if any
+                                if (attr.optional) {
+                                    // the attribute is optional, we will only add the value if defaultValue is set
+                                    if (attr.defaultValue.length > 0) {
+                                        instance.dictionary.setEntry(attr.name, attr.defaultValue);
+                                    }
+                                } else {
+                                    // attribute is not optional, we have to have a value, then set defaultValue
                                     instance.dictionary.setEntry(attr.name, attr.defaultValue);
                                 }
-                            } else {
-                                // attribute is not optional, we have to have a value, then set defaultValue
-                                instance.dictionary.setEntry(attr.name, attr.defaultValue);
                             }
                         }
                     }
@@ -50,7 +59,5 @@ module.exports = AdaptationPrimitive.extend({
 
         var cmd = new StopInstance(this.node, this.mapper, this.adaptModel, this.modelElement);
         cmd.execute(callback);
-
-        return;
     }
 });
