@@ -18,6 +18,7 @@ var RemoteWSChan = AbstractChannel.extend({
 
     dic_port: {
         optional: false,
+        datatype: 'number',
         update: function () {
             this.stop();
             this.start();
