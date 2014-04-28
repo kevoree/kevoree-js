@@ -12,6 +12,8 @@ var connect          = require('connect'),
     mustache         = require('mustache'),
     ClientCleaner    = require('./lib/client-cleaner');
 
+var client_folder = path.join('..', 'client', 'dist');
+
 var compare = new kevoree.compare.DefaultModelCompare();
 var factory = new kevoree.impl.DefaultKevoreeFactory();
 var loader  = new kevoree.loader.JSONModelLoader();
@@ -23,7 +25,7 @@ var app = express();
 
 app.use(connect.urlencoded())
 app.use(connect.json())
-app.set('views', path.join(__dirname, '..', 'client', 'dist'));
+app.set('views', client_folder);
 app.set('port', config.port);
 
 // rendering engine (basic html renderer)
@@ -78,7 +80,7 @@ knjs.on('error', function (err) {
 
 knjs.start(config.serverPlatform.nodeName, config.serverPlatform.groupName);
 
-app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
+app.use(express.static(client_folder));
 
 app.get('/', routes.main);
 app.post('/bootstrap', routes.bootstrap(model));

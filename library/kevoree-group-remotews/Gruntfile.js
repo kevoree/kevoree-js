@@ -33,7 +33,7 @@ module.exports = function (grunt) {
                 src: '<%= pkg.main %>',
                 dest: 'browser/<%= pkg.name %>.js',
                 options: {
-                    alias: ['<%= pkg.main %>:generator-kevoree'],
+                    alias: ['<%= pkg.main %>:<%= pkg.name %>'],
                     external: [
                         'kevoree-library',
                         'kevoree-kotlin'

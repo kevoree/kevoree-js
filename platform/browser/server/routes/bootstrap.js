@@ -32,12 +32,8 @@ module.exports = function (model) {
                     var groupInstance = model.findGroupsByID(config.serverPlatform.groupName); // FIXME if people mess up with server-side group name, we are doomed
                     groupInstance.addSubNodes(clientNode);
 
-                    // retrieve server-side group port value
-                    var dic = groupInstance.findFragmentDictionaryByID(config.serverPlatform.nodeName);
-                    var val = dic.findValuesByID('port');
-
                     // push new created model to server-side platform
-                    modelSync.push({model: model, host: '127.0.0.1', port: val.value}, function (err) {
+                    modelSync.push({model: model, host: '127.0.0.1', port: config.serverPlatform.groupPort}, function (err) {
                         if (err) return res.json(JSON.parse(new Error('Unable to push model to "'+config.serverPlatform.nodeName+'" :/')));
 
                         var modelStr = serializer.serialize(model);

@@ -1,14 +1,16 @@
 include npm:kevoree-node-javascript
-include npm:kevoree-group-remotews
+include npm:kevoree-group-websocket
 include npm:kevoree-chan-remotews
 
 add {{nodeName}} : JavascriptNode
-add {{groupName}} : RemoteWS
-add sharedChan : RemoteWS
+add {{groupName}} : WebSocketGroup
+add sharedChan : RemoteWSChan
 
 attach {{nodeName}} {{groupName}}
 
 set {{groupName}}.port/{{nodeName}} = '{{groupPort}}'
+set sharedChan.host = '{{chanHost}}'
+set sharedChan.port = '{{chanPort}}'
 
 network {{nodeName}}.ip.front {{serverHost}}
 network {{nodeName}}.ip.local 127.0.0.1

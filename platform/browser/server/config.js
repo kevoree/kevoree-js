@@ -1,5 +1,7 @@
 var path = require('path');
 
+var HOST = 'runjs.kevoree.org';
+
 /**
  * Created by leiko on 12/03/14.
  */
@@ -8,10 +10,12 @@ module.exports = {
 
     // properties for server-side Kevoree NodeJS Platform
     serverPlatform: {
-        nodeName: 'server-node',
-        serverHost: 'runjs.kevoree.org',
-        groupName: 'sync',
-        groupPort: 9000
+        nodeName:   'server-node',
+        serverHost: HOST,
+        groupName:  'sync',
+        groupPort:  9000,
+        chanHost:   HOST,
+        chanPort:   9001
     },
 
     paths: {
