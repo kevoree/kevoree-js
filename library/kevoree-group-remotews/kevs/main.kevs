@@ -2,7 +2,7 @@ include npm:kevoree-node-javascript
 include npm:kevoree-group-remotews
 
 add node0 : JavascriptNode
-add sync : RemoteWS
+add sync : RemoteWSGroup
 
 attach node0 sync
 

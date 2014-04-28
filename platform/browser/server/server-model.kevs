@@ -1,8 +1,10 @@
 include npm:kevoree-node-javascript
-include npm:kevoree-group-websocket
+include npm:kevoree-group-remotews
+include npm:kevoree-chan-remotews
 
 add {{nodeName}} : JavascriptNode
-add {{groupName}} : WebSocketGroup
+add {{groupName}} : RemoteWS
+add sharedChan : RemoteWS
 
 attach {{nodeName}} {{groupName}}
 

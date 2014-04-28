@@ -8,7 +8,7 @@ add node0, node1 : JavascriptNode
 add sync : WebSocketGroup
 add node0.hello, node0.hello1, node0.hello2 : HelloWorldComponent
 add node1.console : FakeConsole
-add myChan : RemoteWS
+add myChan : RemoteWSChan
 
 attach node0, node1 sync
 

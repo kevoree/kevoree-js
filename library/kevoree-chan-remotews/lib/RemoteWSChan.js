@@ -3,10 +3,10 @@ var AbstractChannel = require('kevoree-entities').AbstractChannel,
 
 /**
  * Kevoree channel
- * @type {RemoteWS}
+ * @type {RemoteWSChan}
  */
-var RemoteWS = AbstractChannel.extend({
-    toString: 'RemoteWS',
+var RemoteWSChan = AbstractChannel.extend({
+    toString: 'RemoteWSChan',
 
     dic_host: {
         optional: false,
@@ -118,4 +118,4 @@ var RemoteWS = AbstractChannel.extend({
     }
 });
 
-module.exports = RemoteWS;
+module.exports = RemoteWSChan;

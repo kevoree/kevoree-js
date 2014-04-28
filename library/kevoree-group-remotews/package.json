@@ -1,7 +1,7 @@
 {
   "name": "kevoree-group-remotews",
-  "version": "0.6.0",
-  "main": "./lib/RemoteWS.js",
+  "version": "0.6.1",
+  "main": "./lib/RemoteWSGroup.js",
   "scripts": {
     "prepublish": "grunt"
   },

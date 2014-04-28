@@ -6,10 +6,10 @@ var TIMEOUT = 5000;
 
 /**
  * Kevoree group
- * @type {RemoteWS}
+ * @type {RemoteWSGroup}
  */
-var RemoteWS = AbstractGroup.extend({
-    toString: 'RemoteWS',
+var RemoteWSGroup = AbstractGroup.extend({
+    toString: 'RemoteWSGroup',
 
     dic_host: {
         optional: false,
@@ -114,4 +114,4 @@ function processPath(path) {
     return '';
 }
 
-module.exports = RemoteWS;
+module.exports = RemoteWSGroup;
