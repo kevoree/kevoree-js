@@ -4,7 +4,7 @@ var WSServer = require('ws').Server,
 var PUSH = 'push',
     PULL = 'pull';
 
-var wss = new WSServer({
+var options = {
     port: config.port,
     path: (function processPath(path) {
         if (path) {
@@ -16,7 +16,10 @@ var wss = new WSServer({
         }
         return '';
     })(config.path)
-});
+};
+
+var wss         = new WSServer(options),
+    registered  = {};
 
 /**
  * Broadcast "data" over all connected clients
@@ -39,11 +42,16 @@ wss.getClient = function (id) {
     }
 };
 
+function noAction(msg) {
+    console.log('No action found for incoming message (%j)', msg);
+}
+
 wss.on('connection', function (ws) {
     ws.on('message', function (msg) {
         if (msg.type) msg = msg.data;
 
         try {
+            // try to parse message as stringified JSON object
             msg = JSON.parse(msg);
             switch (msg.action) {
                 case 'pullAnswer':
@@ -52,9 +60,28 @@ wss.on('connection', function (ws) {
                         client.send(msg.model);
                     }
                     break;
+
+                case 'register':
+                    console.log('New client registered: '+msg.id);
+                    registered[msg.id] = ws;
+                    break;
+
+                case 'send':
+                    for (var i in msg.destIDs) {
+                        var conn = registered[msg.destIDs[i]];
+                        if (conn && conn.readyState === 1) {
+                            conn.send(msg.message);
+                        }
+                    }
+                    break;
+
+                default:
+                    noAction(msg);
+                    break;
             }
 
         } catch (err) {
+            // enable compatibility with Kevoree group protocol
             if (msg.substr(0, PUSH.length) === PUSH) {
                 var model = msg.substr('push'.length+1);
                 wss.broadcast(JSON.stringify({
@@ -74,7 +101,20 @@ wss.on('connection', function (ws) {
                         message: 'No connected client to pull model from'
                     }));
                 }
+            } else {
+                noAction(msg);
+            }
+        }
+    });
+
+    ws.on('close', function () {
+        for (var id in registered) {
+            if (registered[id] === ws) {
+                delete registered[id];
+                console.log('Removed registered client: '+id);
             }
         }
     });
 });
+
+console.log('WebSocket server started on port %s with path %s', options.port, options.path);

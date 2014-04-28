@@ -1,6 +1,6 @@
 {
   "name": "kevoree-chan-websocket",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "main": "./lib/WebSocketChannel.js",
   "scripts": {
     "prepublish": "grunt"
@@ -12,8 +12,8 @@
     "websocket"
   ],
   "dependencies": {
-    "kevoree-commons": ">=0.5.0",
-    "kevoree-entities": ">=0.5.0",
+    "kevoree-commons": ">=0.6.0",
+    "kevoree-entities": ">=0.6.0",
     "smart-socket": "^0.1.0",
     "ws": "^0.4.31"
   },
@@ -21,8 +21,8 @@
     "browserify": "^3.43.0",
     "grunt": "^0.4.2",
     "grunt-browserify": "^2.0.7",
-    "grunt-kevoree": ">=0.5.0",
-    "grunt-kevoree-genmodel": ">=0.5.0"
+    "grunt-kevoree": ">=0.6.0",
+    "grunt-kevoree-genmodel": ">=0.6.0"
   },
   "description": "Kevoree Channel using WebSocket protocol",
   "repository": {

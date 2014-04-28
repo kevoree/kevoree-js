@@ -1,6 +1,6 @@
 {
   "name": "kevoree-kotlin",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Kotlin as an npm module",
   "main": "./kevoree-kotlin.js",
   "scripts": {

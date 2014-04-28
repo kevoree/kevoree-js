@@ -1,9 +1,5 @@
-// if you have already created your own Channel extending AbstractChannel
-// you can replace AbstractChannel here and use your own
-// ex: var MyChan = require('./path/to/MyChan')
-// the only thing needed is that the top level channel extends AbstractChannel :)
 var AbstractChannel = require('kevoree-entities').AbstractChannel,
-    WebSocket = require('ws');
+    SmartSocket     = require('smart-socket');
 
 /**
  * Kevoree channel
@@ -12,9 +8,33 @@ var AbstractChannel = require('kevoree-entities').AbstractChannel,
 var RemoteWS = AbstractChannel.extend({
     toString: 'RemoteWS',
 
+    dic_host: {
+        optional: false,
+        update: function () {
+            this.stop();
+            this.start();
+        }
+    },
+
+    dic_port: {
+        optional: false,
+        update: function () {
+            this.stop();
+            this.start();
+        }
+    },
+
+    dic_path: {
+        optional: false,
+        update: function () {
+            this.stop();
+            this.start();
+        }
+    },
+
     construct: function () {
-        this.ws = null;
-        this.timeoutIDs = [];
+        this.ss = null;
+        this.conn = null;
     },
 
     /**
@@ -23,56 +43,58 @@ var RemoteWS = AbstractChannel.extend({
     start: function (_super) {
         _super.call(this);
 
-        var host = this.dictionary.getValue('host');
-        var port = this.dictionary.getValue('port');
-        var topic = this.dictionary.getValue('topic') || '';
-        if (typeof(host) == 'undefined' || host.length == 0 || typeof(port) == 'undefined' || port.length == 0)
-            throw new Error('RemoteWS channel expects "host" & "port" attributes to be defined and valid.');
+        var address = (function (host, port, path) {
+            if (!isNaN(parseInt(port))) {
+                if (path) {
+                    if (path.substr(0, 1) !== '/') {
+                        path = '/' + path;
+                    }
+                } else {
+                    path = '';
+                }
 
-        var connectToRemoteServer = function () {
-            this.ws = new WebSocket('ws://'+host+':'+port+'/'+topic);
+                return host + ':' + port + path;
+            } else {
+                throw new Error(this.toString() + ' error: "'+this.getName()+'" port attribute is not a number ('+port+')');
+            }
+        }.bind(this))(this.dic_host.value, this.dic_port.value, this.dic_path.value);
 
-            this.ws.onopen = function () {
-                this.log.info(this.toString(), 'Successfully connected to remote server ws://'+host+':'+port+'/'+topic);
+        this.ss = new SmartSocket({
+            addresses:  [address],
+            timeout:    2000,
+            handlers: {
+                onopen: function (ws) {
+                    this.conn = ws;
+                    var pattern = 'nodes['+this.getNodeName()+']';
+                    for (var path in this.inputs) {
+                        if (path.substr(0, pattern.length) === pattern) {
+                            this.conn.send(JSON.stringify({
+                                action: 'register',
+                                id: path
+                            }));
+                        }
+                    }
+                }.bind(this),
 
-                this.clearTimeouts();
-            }.bind(this);
+                onmessage: function (ws, msg) {
+                    if (msg.type) msg = msg.data;
 
-            this.ws.onmessage = function (e) {
-                var data = '';
-                if (typeof(e) === 'string') data = e;
-                else data = e.data;
+                    this.localDispatch(msg);
+                }.bind(this)
+            }
+        });
 
-                this.localDispatch(data);
-            }.bind(this);
-
-            this.ws.onclose = function () {
-                this.log.info(this.toString(), 'Connection closed with remote server. Reconnecting in 5 seconds...');
-                this.clearTimeouts();
-                var timeoutID = setTimeout(connectToRemoteServer, 5000);
-                this.timeoutIDs.push(timeoutID);
-            }.bind(this);
-
-            this.ws.onerror = function () {
-                this.log.info(this.toString(), 'Something went wrong with connection to remote server ('+host+':'+port+'). Reconnecting in 5 seconds...');
-                this.clearTimeouts();
-                var timeoutID = setTimeout(connectToRemoteServer, 5000);
-                this.timeoutIDs.push(timeoutID);
-            }.bind(this);
-
-        }.bind(this);
-
-        connectToRemoteServer();
+        this.ss.start();
     },
 
     /**
      * this method will be called by the Kevoree platform when your channel has to stop
      */
     stop: function () {
-        if (this.ws != null) {
-            this.ws.close();
-            this.ws = null;
+        if (this.ss) {
+            this.ss.stop();
         }
+        this.conn = null;
     },
 
     /**
@@ -84,40 +106,15 @@ var RemoteWS = AbstractChannel.extend({
      * @param msg
      */
     onSend: function (fromPortPath, destPortPaths, msg) {
-        var sendMessage = function () {
-            if (this.ws != null) {
-                if (this.ws.readyState == 1) { // open according to http://dev.w3.org/html5/websockets/
-                    this.ws.send(msg);
-                    return;
-                }
-            }
-            // we are not currently connected to remote server, wait a little and try again
-            var timeoutID = setTimeout(sendMessage, 2000);
-            this.timeoutIDs.push(timeoutID);
-        }.bind(this);
-
-        sendMessage();
-    },
-
-    clearTimeouts: function () {
-        // clear all pending timeouts
-        for (var i in this.timeoutIDs) clearTimeout(this.timeoutIDs[i]);
-        this.timeoutIDs.length = 0; // reset timeouts
-    },
-
-    dic_host: {
-        optional: false,
-        fragmentDependant: false
-    },
-
-    dic_port: {
-        optional: false,
-        fragmentDependant: false
-    },
-
-    dic_topic: {
-        optional: true,
-        fragmentDependant: false
+        if (this.conn && this.conn.readyState === 1) {
+            this.conn.send(JSON.stringify({
+                action: 'send',
+                message: msg,
+                destIDs: destPortPaths
+            }));
+        } else {
+            this.log.debug(this.toString(), 'Connection is not active yet. Dropping message for '+destPortPaths);
+        }
     }
 });
 

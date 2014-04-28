@@ -1,6 +1,6 @@
 {
   "name": "kevoree-ws-server",
-  "version": "0.1.0",
+  "version": "0.6.0",
   "description": "WebSocket server use as a centralized endpoint for Kevoree model sharing between several platforms",
   "main": "index.js",
   "scripts": {
@@ -25,5 +25,6 @@
   "homepage": "https://github.com/kevoree/kevoree-js",
   "dependencies": {
     "ws": "^0.4.31"
-  }
+  },
+  "devDependencies": {}
 }

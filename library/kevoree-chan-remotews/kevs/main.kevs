@@ -4,18 +4,23 @@ include npm:kevoree-comp-fakeconsole
 include npm:kevoree-comp-helloworld
 include npm:kevoree-chan-remotews
 
-add node0 : JavascriptNode
+add node0, node1 : JavascriptNode
 add sync : WebSocketGroup
-add node0.console : FakeConsole
-add node0.hello : HelloWorldComponent
+add node0.hello, node0.hello1, node0.hello2 : HelloWorldComponent
+add node1.console : FakeConsole
 add myChan : RemoteWS
 
-attach node0 sync
+attach node0, node1 sync
 
 set sync.port/node0 = "9000"
 
-bind node0.console.inMsg myChan
 bind node0.hello.sendText myChan
+bind node0.hello1.sendText myChan
+bind node0.hello2.sendText myChan
+bind node1.console.inMsg myChan
 
-set myChan.host/node0 = "localhost"
-set myChan.port/node0 = "9001"
+set myChan.host = "localhost"
+set myChan.port = "9001"
+
+network node0.ip.local 127.0.0.1
+network node1.ip.local 127.0.0.1
