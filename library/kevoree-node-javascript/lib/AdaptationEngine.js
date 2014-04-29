@@ -164,7 +164,7 @@ var AdaptationEngine = Class({
                 }
                 cmd = new AddBinding(this.node, this.modelObjMapper, model, modelElement);
                 cmdList.push(cmd);
-                addProcessedTrace(binding.path(), cmd);
+                addProcessedTrace(modelElement.path(), cmd);
 
             } else if (trace.refName === 'subNodes') {
                 modelElement = model.findByPath(trace.previousPath);
