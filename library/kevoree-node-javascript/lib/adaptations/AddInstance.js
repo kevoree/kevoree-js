@@ -22,11 +22,11 @@ module.exports = AdaptationPrimitive.extend({
         _super.call(this, callback);
 
         // inception check
-        if (this.modelElement && (this.modelElement.name != this.node.getName())) {
+        if (this.modelElement && (this.modelElement.name !== this.node.getName())) {
             // platform related check
             if (this.isRelatedToPlatform(this.modelElement)) {
                 var moduleName = this.findSuitableModuleName(this.modelElement);
-                if (moduleName != undefined && moduleName != null) {
+                if ((moduleName !== undefined) && (moduleName !== null)) {
                     try {
                         var InstanceClass = require(moduleName);
                         var instance = new InstanceClass();
@@ -48,7 +48,7 @@ module.exports = AdaptationPrimitive.extend({
 
                 } else {
                     // there is no DeployUnit installed for this instance TypeDefinition
-                    return callback(new Error(this.toString()+ " error: no DeployUnit installed for "+this.kInstance.path()));
+                    return callback(new Error(this.toString()+ " error: no DeployUnit installed for "+this.modelElement.path()));
                 }
             }
         }
