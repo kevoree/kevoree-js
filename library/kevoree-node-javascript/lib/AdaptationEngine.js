@@ -127,6 +127,24 @@ var AdaptationEngine = Class({
             }
         }.bind(this);
 
+        var startInstance = function (instance) {
+            cmd = new StartInstance(this.node, this.modelObjMapper, model, instance);
+            cmdList.push(cmd);
+            addProcessedTrace(trace.srcPath, cmd);
+
+            if (instance.dictionary) {
+                var values = instance.dictionary.values.iterator();
+                while (values.hasNext()) {
+                    var val = values.next();
+                    if (!traceAlreadyProcessed(val.path(), UpdateDictionary.prototype.toString())) {
+                        cmd = new UpdateDictionary(this.node, this.modelObjMapper, model, val);
+                        cmdList.push(cmd);
+                        addProcessedTrace(trace.srcPath, cmd);
+                    }
+                }
+            }
+        }.bind(this);
+
         // ADD - TRACES HANDLING
         if (Kotlin.isType(trace, ModelAddTrace)) {
             if (INSTANCE_TRACE.indexOf(trace.refName) !== -1) {
@@ -148,9 +166,7 @@ var AdaptationEngine = Class({
 
                     // also check if the instance has been started or not
                     if (!traceAlreadyProcessed(hub.path(), StartInstance.prototype.toString())) {
-                        cmd = new StartInstance(this.node, this.modelObjMapper, model, hub);
-                        cmdList.push(cmd);
-                        addProcessedTrace(hub.path(), cmd);
+                        startInstance(hub);
                     }
                 }
 
@@ -167,9 +183,7 @@ var AdaptationEngine = Class({
                         }
                         // also check if the instance has been started or not
                         if (!traceAlreadyProcessed(group.path(), StartInstance.prototype.toString())) {
-                            cmd = new StartInstance(this.node, this.modelObjMapper, model, group);
-                            cmdList.push(cmd);
-                            addProcessedTrace(group.path(), cmd);
+                            startInstance(group);
                         }
                     }
                 }
@@ -180,21 +194,7 @@ var AdaptationEngine = Class({
             modelElement = model.findByPath(trace.srcPath);
             if (trace.refName && trace.refName === "started") {
                 if (trace.content === 'true') {
-                    cmd = new StartInstance(this.node, this.modelObjMapper, model, modelElement);
-                    cmdList.push(cmd);
-                    addProcessedTrace(trace.srcPath, cmd);
-
-                    if (modelElement.dictionary) {
-                        var values = modelElement.dictionary.values.iterator();
-                        while (values.hasNext()) {
-                            var val = values.next();
-                            if (!traceAlreadyProcessed(val.path(), UpdateDictionary.prototype.toString())) {
-                                cmd = new UpdateDictionary(this.node, this.modelObjMapper, model, val);
-                                cmdList.push(cmd);
-                                addProcessedTrace(trace.srcPath, cmd);
-                            }
-                        }
-                    }
+                    startInstance(modelElement);
                 } else {
                     cmd = new StopInstance(this.node, this.modelObjMapper, model, modelElement);
                     cmdList.push(cmd);
