@@ -53,7 +53,6 @@ module.exports = Bootstrapper.extend({
 
             // uninstall success
             callback(null);
-            return;
         });
     }
 });

@@ -1,5 +1,4 @@
-var npm     = require('npm'),
-    path    = require('path'),
+var path    = require('path'),
     config  = require('../config.json'),
     kevoree = require('kevoree-library').org.kevoree;
 
