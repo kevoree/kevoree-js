@@ -86,19 +86,8 @@ var AdaptationEngine = Class({
             this.processTrace(traces.next(), targetModel, cmdList);
         }
 
-        // filter DUs to keep only platform-related ones
-        for (var duPath in this.tracesDUs) {
-            if (this.platformDUs.indexOf(duPath) === -1) {
-                var i = cmdList.indexOf(this.tracesDUs[duPath]);
-                cmdList.splice(i, 1);
-            }
-        }
-
         // reset maps
         this.alreadyProcessedTraces = {};
-        this.tracesDUs = {};
-        // reset platform DUs array
-        this.platformDUs.length = 0;
 
         return this.sortCommands(cmdList);
     },
@@ -121,27 +110,30 @@ var AdaptationEngine = Class({
             return this.alreadyProcessedTraces[path] && this.alreadyProcessedTraces[path][cmd];
         }.bind(this);
 
+        var addInstance = function (instance) {
+            // Add instance
+            if (!traceAlreadyProcessed(trace.previousPath, AddInstance.prototype.toString())) {
+                cmd = new AddInstance(this.node, this.modelObjMapper, model, instance);
+                cmdList.push(cmd);
+                addProcessedTrace(trace.previousPath, cmd);
+
+                if (cmd.isRelatedToPlatform(instance)) {
+                    if (!this.modelObjMapper.getObject(instance.typeDefinition.deployUnit.path())) {
+                        if (!traceAlreadyProcessed(instance.typeDefinition.deployUnit.path(), AddDeployUnit.prototype.toString())) {
+                            // Add deploy unit
+                            cmd = new AddDeployUnit(this.node, this.modelObjMapper, model, instance.typeDefinition.deployUnit);
+                            cmdList.push(cmd);
+                            addProcessedTrace(instance.typeDefinition.deployUnit.path(), cmd);
+                        }
+                    }
+                }
+            }
+        }.bind(this);
+
         // ADD - TRACES HANDLING
         if (Kotlin.isType(trace, ModelAddTrace)) {
             if (INSTANCE_TRACE.indexOf(trace.refName) !== -1) {
-                // Add instance
-                if (!traceAlreadyProcessed(trace.previousPath, AddInstance.prototype.toString())) {
-                    modelElement = model.findByPath(trace.previousPath);
-                    cmd = new AddInstance(this.node, this.modelObjMapper, model, modelElement);
-                    if (cmd.isRelatedToPlatform(modelElement)) {
-                        this.platformDUs.push(modelElement.typeDefinition.deployUnit.path());
-                    }
-                    cmdList.push(cmd);
-                    addProcessedTrace(trace.previousPath, cmd);
-                }
-
-            } else if (trace.refName === 'deployUnits') {
-                // Add deploy unit
-                modelElement = model.findByPath(trace.previousPath);
-                cmd = new AddDeployUnit(this.node, this.modelObjMapper, model, modelElement);
-                this.tracesDUs[modelElement.path()] = cmd;
-                cmdList.push(cmd);
-                addProcessedTrace(trace.previousPath, cmd);
+                addInstance(model.findByPath(trace.previousPath));
 
             } else if (trace.refName === 'mBindings') {
                 // Add binding
@@ -150,9 +142,7 @@ var AdaptationEngine = Class({
                     var hub = model.findByPath(modelElement.hub.path());
                     // this binding relies on a hub that hasn't been instantiated yet
                     if (!traceAlreadyProcessed(hub.path(), AddInstance.prototype.toString())) {
-                        cmd = new AddInstance(this.node, this.modelObjMapper, model, hub);
-                        cmdList.push(cmd);
-                        addProcessedTrace(hub.path(), cmd);
+                        addInstance(hub);
                     }
 
                     // also check if the instance has been started or not
@@ -175,9 +165,7 @@ var AdaptationEngine = Class({
                         // there is no group instance created on this platform yet
                         // lets check if there is already a primitive added for that or not
                         if (!traceAlreadyProcessed(group.path(), AddInstance.prototype.toString())) {
-                            cmd = new AddInstance(this.node, this.modelObjMapper, model, group);
-                            cmdList.push(cmd);
-                            addProcessedTrace(group.path(), cmd);
+                            addInstance(group);
                         }
                         // also check if the instance has been started or not
                         if (!traceAlreadyProcessed(group.path(), StartInstance.prototype.toString())) {
