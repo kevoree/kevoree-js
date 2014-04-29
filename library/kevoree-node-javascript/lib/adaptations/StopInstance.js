@@ -10,7 +10,7 @@ module.exports = AdaptationPrimitive.extend({
         var instance = this.mapper.getObject(this.modelElement.path());
         if (instance) {
             instance.stop();
-            this.log.debug(this.toString(), 'job done on '+instance.getName()+'@'+this.node.getName());
+            this.log.debug(this.toString(), instance.getName());
         }
         return callback();
     },

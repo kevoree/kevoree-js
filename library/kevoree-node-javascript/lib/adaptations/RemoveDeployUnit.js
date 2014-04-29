@@ -20,7 +20,7 @@ module.exports = AdaptationPrimitive.extend({
                 }
 
                 this.mapper.removeEntry(this.modelElement.path());
-                this.log.debug(this.toString(), 'job done on '+this.modelElement.name+'@'+this.node.getName());
+                this.log.debug(this.toString(), this.modelElement.path());
                 callback();
             }.bind(this));
         }

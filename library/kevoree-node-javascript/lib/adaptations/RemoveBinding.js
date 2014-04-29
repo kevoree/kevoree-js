@@ -18,11 +18,12 @@ module.exports = AdaptationPrimitive.extend({
                     if (this.isInputPortType(this.modelElement.port)) {
                         compInstance.removeInternalInputPort(portInstance);
                         chanInstance.removeInternalInputPort(portInstance);
+                        this.log.debug(this.toString(), 'input '+portInstance.getPath()+' <-> '+chanInstance.getPath());
                     } else {
                         compInstance.removeInternalOutputPort(portInstance);
+                        this.log.debug(this.toString(), 'output '+portInstance.getPath()+' <-> '+chanInstance.getPath());
                     }
 
-                    this.log.debug(this.toString(), 'job done between '+compInstance.getName()+'@'+this.node.getName()+' and '+chanInstance.getName()+'@'+this.node.getName());
                     return callback();
 
                 } catch (err) {

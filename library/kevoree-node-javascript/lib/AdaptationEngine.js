@@ -29,9 +29,6 @@ var INSTANCE_TRACE  = [
         'components',
         'hubs'
     ],
-    DEPLOY_UNIT     = [
-        'deployUnits'
-    ],
     COMMAND_RANK = {
         // highest priority
         StopInstance:     0,
@@ -99,7 +96,7 @@ var AdaptationEngine = Class({
      * @param cmdList
      */
     processTrace: function (trace, model, cmdList) {
-        var cmd, modelElement;
+        var cmd, modelElement, hub;
 
         var addProcessedTrace = function (path, cmd) {
             this.alreadyProcessedTraces[path] = this.alreadyProcessedTraces[path] || {};
@@ -138,8 +135,12 @@ var AdaptationEngine = Class({
             } else if (trace.refName === 'mBindings') {
                 // Add binding
                 modelElement = model.findByPath(trace.previousPath);
+                cmd = new AddBinding(this.node, this.modelObjMapper, model, modelElement);
+                cmdList.push(cmd);
+                addProcessedTrace(modelElement.path(), cmd);
+
                 if (modelElement && modelElement.hub && !this.modelObjMapper.getObject(modelElement.hub.path())) {
-                    var hub = model.findByPath(modelElement.hub.path());
+                    hub = model.findByPath(modelElement.hub.path());
                     // this binding relies on a hub that hasn't been instantiated yet
                     if (!traceAlreadyProcessed(hub.path(), AddInstance.prototype.toString())) {
                         addInstance(hub);
@@ -152,9 +153,6 @@ var AdaptationEngine = Class({
                         addProcessedTrace(hub.path(), cmd);
                     }
                 }
-                cmd = new AddBinding(this.node, this.modelObjMapper, model, modelElement);
-                cmdList.push(cmd);
-                addProcessedTrace(modelElement.path(), cmd);
 
             } else if (trace.refName === 'subNodes') {
                 modelElement = model.findByPath(trace.previousPath);
@@ -203,22 +201,23 @@ var AdaptationEngine = Class({
 
             if (INSTANCE_TRACE.indexOf(trace.refName) != -1) {
                 // Remove instance
-                // first of all, check if instance is stopped
-                if (modelElement.started) {
-                    // instance is in "started" state, but maybe we've already added a StopInstance primitive for it
-                    if (!traceAlreadyProcessed(tracePath, StopInstance.prototype.toString())) {
-                        // instance is started and there is no "StopInstance" primitive for it yet: add it
-                        var stopCmd = new StopInstance(this.node, this.modelObjMapper, model, modelElement);
-                        cmdList.push(stopCmd);
-                        addProcessedTrace(tracePath, stopCmd);
-                    }
-                }
                 // add RemoveInstance primitive
                 cmd = new RemoveInstance(this.node, this.modelObjMapper, model, modelElement);
                 cmdList.push(cmd);
                 addProcessedTrace(tracePath, cmd);
 
-            } else if (DEPLOY_UNIT.indexOf(trace.typeName) != -1) {
+                // check if instance is stopped
+                if (modelElement.started) {
+                    // instance is in "started" state, but maybe we've already added a StopInstance primitive for it
+                    if (!traceAlreadyProcessed(tracePath, StopInstance.prototype.toString())) {
+                        // instance is started and there is no "StopInstance" primitive for it yet: add it
+                        cmd = new StopInstance(this.node, this.modelObjMapper, model, modelElement);
+                        cmdList.push(cmd);
+                        addProcessedTrace(tracePath, cmd);
+                    }
+                }
+
+            } else if (trace.typeName === 'deployUnits') {
                 // Remove deploy unit
                 cmd = new RemoveDeployUnit(this.node, this.modelObjMapper, model, modelElement);
                 cmdList.push(cmd);
@@ -228,7 +227,24 @@ var AdaptationEngine = Class({
                 // Remove binding
                 cmd = new RemoveBinding(this.node, this.modelObjMapper, model, modelElement);
                 cmdList.push(cmd);
-                addProcessedTrace(tracePath, cmd);
+                addProcessedTrace(modelElement.path(), cmd);
+
+                if (modelElement.hub && this.modelObjMapper.getObject(modelElement.hub.path())) {
+                    hub = model.findByPath(modelElement.hub.path());
+                    // remove hub instance too
+                    if (!traceAlreadyProcessed(hub.path(), RemoveInstance.prototype.toString())) {
+                        cmd = new RemoveInstance(this.node, this.modelObjMapper, model, hub);
+                        cmdList.push(cmd);
+                        addProcessedTrace(hub.path(), cmd);
+                    }
+
+                    // also check if instance has been stopped or not
+                    if (!traceAlreadyProcessed(hub.path(), StopInstance.prototype.toString())) {
+                        cmd = new StopInstance(this.node, this.modelObjMapper, model, hub);
+                        cmdList.push(cmd);
+                        addProcessedTrace(hub.path(), cmd);
+                    }
+                }
             }
         }
     },

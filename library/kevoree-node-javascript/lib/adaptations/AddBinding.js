@@ -24,13 +24,13 @@ module.exports = AdaptationPrimitive.extend({
                         // binding related port is an 'in' port type
                         compInstance.addInternalInputPort(portInstance);
                         chanInstance.addInternalInputPort(portInstance);
-                        this.log.debug(this.toString(), 'new input binding between '+portInstance.getPath()+' and '+chanInstance.getPath());
+                        this.log.debug(this.toString(), 'input '+portInstance.getPath()+' <-> '+chanInstance.getPath());
                     } else {
                         // binding related port is an 'out' port type
                         // so we need to get all this channel 'in' ports
                         // and give them to this chan fragment
                         compInstance.addInternalOutputPort(portInstance);
-                        this.log.debug(this.toString(), 'new output binding between '+portInstance.getPath()+' and '+chanInstance.getPath());
+                        this.log.debug(this.toString(), 'output '+portInstance.getPath()+' <-> '+chanInstance.getPath());
 
                         // retrieve every bindings related to this binding chan
                         var bindings = this.modelElement.hub.bindings.iterator();
