@@ -39,7 +39,7 @@ module.exports = AdaptationPrimitive.extend({
 
                         this.mapper.addEntry(this.modelElement.path(), instance);
 
-                        this.log.debug(this.toString(), 'job done for '+instance.getName()+'@'+this.node.getName());
+                        this.log.debug(this.toString(), instance.getName()+' '+this.modelElement.typeDefinition.path());
                         return callback();
 
                     } catch (e) {

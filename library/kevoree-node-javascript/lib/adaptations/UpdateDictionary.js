@@ -28,7 +28,7 @@ module.exports = AdaptationPrimitive.extend({
                 dictionary.setEntry(this.modelElement.name, this.modelElement.value);
             }
 
-            this.log.debug(this.toString(), 'job done for attribute '+kDictionary.eContainer().name+'.'+this.modelElement.name+'@'+this.node.getName()+' = '+this.modelElement.value);
+            this.log.debug(this.toString(), kDictionary.eContainer().name+'.'+this.modelElement.name+' = '+this.modelElement.value);
             return callback();
         }.bind(this);
 

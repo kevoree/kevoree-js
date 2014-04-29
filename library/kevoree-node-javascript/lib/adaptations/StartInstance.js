@@ -43,7 +43,7 @@ module.exports = AdaptationPrimitive.extend({
                 }
 
                 instance.start();
-                this.log.debug(this.toString(), 'job done for '+instance.getName()+'@'+this.node.getName());
+                this.log.debug(this.toString(), instance.getName());
                 return callback();
 
             } else {
