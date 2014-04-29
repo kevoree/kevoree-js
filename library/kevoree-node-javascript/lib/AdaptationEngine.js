@@ -177,14 +177,31 @@ var AdaptationEngine = Class({
 
             // SET - TRACES HANDLING
         } else if (Kotlin.isType(trace, ModelSetTrace)) {
+            modelElement = model.findByPath(trace.srcPath);
             if (trace.refName && trace.refName === "started") {
-                var AdaptationPrimitive = (trace.content === 'true') ? StartInstance : StopInstance;
-                cmd = new AdaptationPrimitive(this.node, this.modelObjMapper, model, model.findByPath(trace.srcPath));
-                cmdList.push(cmd);
-                addProcessedTrace(trace.srcPath, cmd);
+                if (trace.content === 'true') {
+                    cmd = new StartInstance(this.node, this.modelObjMapper, model, modelElement);
+                    cmdList.push(cmd);
+                    addProcessedTrace(trace.srcPath, cmd);
+
+                    if (modelElement.dictionary) {
+                        var values = modelElement.dictionary.values.iterator();
+                        while (values.hasNext()) {
+                            var val = values.next();
+                            if (!traceAlreadyProcessed(val.path(), UpdateDictionary.prototype.toString())) {
+                                cmd = new UpdateDictionary(this.node, this.modelObjMapper, model, val);
+                                cmdList.push(cmd);
+                                addProcessedTrace(trace.srcPath, cmd);
+                            }
+                        }
+                    }
+                } else {
+                    cmd = new StopInstance(this.node, this.modelObjMapper, model, modelElement);
+                    cmdList.push(cmd);
+                    addProcessedTrace(trace.srcPath, cmd);
+                }
 
             } else if (trace.refName && trace.refName === 'value') {
-                modelElement = model.findByPath(trace.srcPath);
                 if (Kotlin.isType(modelElement, kevoree.impl.DictionaryValueImpl)) {
                     if (!traceAlreadyProcessed(trace.srcPath, UpdateDictionary.prototype.toString())) {
                         cmd = new UpdateDictionary(this.node, this.modelObjMapper, model, modelElement);
