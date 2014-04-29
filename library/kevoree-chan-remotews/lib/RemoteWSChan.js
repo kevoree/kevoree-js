@@ -1,6 +1,8 @@
 var AbstractChannel = require('kevoree-entities').AbstractChannel,
     SmartSocket     = require('smart-socket');
 
+var TIMEOUT = 2000;
+
 /**
  * Kevoree channel
  * @type {RemoteWSChan}
@@ -36,6 +38,7 @@ var RemoteWSChan = AbstractChannel.extend({
     construct: function () {
         this.ss = null;
         this.conn = null;
+        this.logDisplayed = false;
     },
 
     /**
@@ -62,9 +65,10 @@ var RemoteWSChan = AbstractChannel.extend({
 
         this.ss = new SmartSocket({
             addresses:  [address],
-            timeout:    2000,
+            timeout:    TIMEOUT,
             handlers: {
                 onopen: function (ws) {
+                    this.log.info(this.toString(), '"'+this.getName()+'" connected to remote WebSocket server ws://'+address);
                     this.conn = ws;
                     var pattern = 'nodes['+this.getNodeName()+']';
                     for (var path in this.inputs) {
@@ -81,6 +85,10 @@ var RemoteWSChan = AbstractChannel.extend({
                     if (msg.type) msg = msg.data;
 
                     this.localDispatch(msg);
+                }.bind(this),
+
+                onclose: function () {
+                    this.log.info(this.toString(), '"'+this.getName()+'" lost connection with remote WebSocket server ws://'+address+'. Retry every '+TIMEOUT+'ms');
                 }.bind(this)
             }
         });
@@ -108,13 +116,17 @@ var RemoteWSChan = AbstractChannel.extend({
      */
     onSend: function (fromPortPath, destPortPaths, msg) {
         if (this.conn && this.conn.readyState === 1) {
+            this.logDisplayed = false; // reset logDisplayed flag in order to re-show logs for the next disconnection
             this.conn.send(JSON.stringify({
                 action: 'send',
                 message: msg,
                 destIDs: destPortPaths
             }));
         } else {
-            this.log.debug(this.toString(), 'Connection is not active yet. Dropping message for '+destPortPaths);
+            if (!this.logDisplayed) {
+                this.log.debug(this.toString(), 'Connection is not active yet. Dropping messages for '+destPortPaths);
+                this.logDisplayed = true;
+            }
         }
     }
 });

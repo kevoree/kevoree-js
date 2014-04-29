@@ -1,6 +1,6 @@
 {
   "name": "kevoree-chan-remotews",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "main": "./lib/RemoteWSChan.js",
   "scripts": {
     "prepublish": "grunt"
