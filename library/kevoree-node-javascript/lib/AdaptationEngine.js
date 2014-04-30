@@ -109,10 +109,10 @@ var AdaptationEngine = Class({
 
         var addInstance = function (instance) {
             // Add instance
-            if (!traceAlreadyProcessed(trace.previousPath, AddInstance.prototype.toString())) {
+            if (!traceAlreadyProcessed(instance.path(), AddInstance.prototype.toString())) {
                 cmd = new AddInstance(this.node, this.modelObjMapper, model, instance);
                 cmdList.push(cmd);
-                addProcessedTrace(trace.previousPath, cmd);
+                addProcessedTrace(instance.path(), cmd);
 
                 if (cmd.isRelatedToPlatform(instance)) {
                     if (!this.modelObjMapper.getObject(instance.typeDefinition.deployUnit.path())) {
@@ -128,18 +128,20 @@ var AdaptationEngine = Class({
         }.bind(this);
 
         var startInstance = function (instance) {
-            cmd = new StartInstance(this.node, this.modelObjMapper, model, instance);
-            cmdList.push(cmd);
-            addProcessedTrace(trace.srcPath, cmd);
+            if (!traceAlreadyProcessed(instance.path(), StartInstance.prototype.toString())) {
+                cmd = new StartInstance(this.node, this.modelObjMapper, model, instance);
+                cmdList.push(cmd);
+                addProcessedTrace(instance.path(), cmd);
 
-            if (instance.dictionary) {
-                var values = instance.dictionary.values.iterator();
-                while (values.hasNext()) {
-                    var val = values.next();
-                    if (!traceAlreadyProcessed(val.path(), UpdateDictionary.prototype.toString())) {
-                        cmd = new UpdateDictionary(this.node, this.modelObjMapper, model, val);
-                        cmdList.push(cmd);
-                        addProcessedTrace(trace.srcPath, cmd);
+                if (instance.dictionary) {
+                    var values = instance.dictionary.values.iterator();
+                    while (values.hasNext()) {
+                        var val = values.next();
+                        if (!traceAlreadyProcessed(val.path(), UpdateDictionary.prototype.toString())) {
+                            cmd = new UpdateDictionary(this.node, this.modelObjMapper, model, val);
+                            cmdList.push(cmd);
+                            addProcessedTrace(val.path(), cmd);
+                        }
                     }
                 }
             }
