@@ -23,8 +23,8 @@ var firstDeploy = true;
 
 var app = express();
 
-app.use(connect.urlencoded())
-app.use(connect.json())
+app.use(connect.urlencoded());
+app.use(connect.json());
 app.set('views', client_folder);
 app.set('port', config.port);
 
