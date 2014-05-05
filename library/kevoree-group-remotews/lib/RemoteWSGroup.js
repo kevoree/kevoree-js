@@ -53,6 +53,7 @@ var RemoteWSGroup = AbstractGroup.extend({
             handlers: {
                 onopen: function (ws) {
                     this.log.info(this.toString(), 'Connected to ws://'+address);
+                    ws.send(JSON.stringify({action: 'register', id: this.getPath()}));
                 }.bind(this),
 
                 onclose: function () {
