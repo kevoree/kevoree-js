@@ -13,12 +13,9 @@ module.exports = {
         nodeName:   'server-node',
         serverHost: HOST,
         groupName:  'sync',
-        groupHost:   HOST,
-        groupPort:  80,
-        groupPath:  'sharedGroup',
+        groupPort:  9000,
         chanHost:   HOST,
-        chanPort:   80,
-        chanPath:   'sharedChan'
+        chanPort:   9001
     },
 
     paths: {
