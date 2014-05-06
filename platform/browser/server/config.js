@@ -14,10 +14,10 @@ module.exports = {
         serverHost: HOST,
         groupName:  'sync',
         groupPort:  9000,
-        groupPath:  '/sharedGroup',
+        groupPath:  'sharedGroup',
         chanHost:   HOST,
         chanPort:   9001,
-        chanPath:   '/sharedChan'
+        chanPath:   'sharedChan'
     },
 
     paths: {
