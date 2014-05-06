@@ -14,7 +14,7 @@ var REGISTER = 'register',
  */
 function ClientCleaner(server, model, knjs) {
     this.model = model;
-    var wss = new WSServer({server: server});
+    var wss = new WSServer({server: server, path: '/cc'});
     var clients = {};
 
     wss.on('connection', function (ws) {
