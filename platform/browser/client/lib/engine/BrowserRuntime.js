@@ -7,6 +7,8 @@ var Class               = require('pseudoclass'),
     uuid                = require('node-uuid'),
     WebSocket           = require('ws');
 
+var CLIENT_CLEANER_ADDRESS = 'ws://'+window.location.hostname+'/cc';
+
 /**
  * Created by leiko on 12/03/14.
  */
@@ -50,8 +52,8 @@ var BrowserRuntime = Class({
 
         // connect to WebSocket server and register
         var wsConnect = function () {
-            console.log('Trying to connect to ws://'+window.location.hostname+'/cc');
-            this.ws = new WebSocket('ws://'+window.location.hostname+'/cc');
+            console.log('Trying to connect to '+CLIENT_CLEANER_ADDRESS);
+            this.ws = new WebSocket(CLIENT_CLEANER_ADDRESS);
             this.ws.onopen = function () {
                 this.ui.wsConnected();
                 this.ws.send(JSON.stringify({
@@ -59,6 +61,7 @@ var BrowserRuntime = Class({
                     uuid: this.uuid,
                     name: this.core.getNodeName()
                 }));
+                console.log('Connected to '+CLIENT_CLEANER_ADDRESS);
             }.bind(this);
 
             this.ws.onclose = function () {

@@ -28,7 +28,7 @@
     "express": "^4.0.0",
     "kevoree-kevscript": ">=0.6.0",
     "kevoree-library": ">=0.6.0",
-    "kevoree-model-sync": ">=0.6.0",
+    "kevoree-model-sync": "^0.6.1",
     "kevoree-nodejs-runtime": ">=0.6.0",
     "kevoree-resolvers": ">=0.6.0",
     "mustache": "^0.8.1",

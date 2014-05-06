@@ -33,7 +33,13 @@ module.exports = function (model) {
                     groupInstance.addSubNodes(clientNode);
 
                     // push new created model to server-side platform
-                    modelSync.push({model: model, host: '127.0.0.1', port: config.serverPlatform.groupPort}, function (err) {
+                    var pushOptions = {
+                        model:  model,
+                        host:   '127.0.0.1',
+                        port:   config.serverPlatform.groupPort,
+                        path:   config.serverPlatform.groupPath
+                    };
+                    modelSync.push(pushOptions, function (err) {
                         if (err) return res.json(JSON.parse(new Error('Unable to push model to "'+config.serverPlatform.nodeName+'" :/')));
 
                         var modelStr = serializer.serialize(model);
