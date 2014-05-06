@@ -1,6 +1,6 @@
 {
   "name": "kevoree-model-sync",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Kevoree Model Sync - helper functions to bootstrap (with NPM) group types in order to call push() and pull()",
   "main": "kevoree-model-sync.js",
   "scripts": {
