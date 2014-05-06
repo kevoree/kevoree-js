@@ -1,11 +1,12 @@
 var WSServer = require('ws').Server,
-    config   = require('./config');
+    config   = require('./config'),
+    argv     = require('minimist')(process.argv.slice(2));
 
 var PUSH = 'push',
     PULL = 'pull';
 
 var options = {
-    port: config.port,
+    port: argv.port || config.port,
     path: (function processPath(path) {
         if (path) {
             if (path.substr(0, 1) === '/') {
@@ -15,7 +16,7 @@ var options = {
             }
         }
         return '';
-    })(config.path)
+    })(argv.path || config.path)
 };
 
 var wss         = new WSServer(options),
