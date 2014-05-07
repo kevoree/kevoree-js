@@ -1,6 +1,6 @@
 {
   "name": "kevoree-group-websocket",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "main": "./lib/WebSocketGroup.js",
   "description": "A Kevoree group that uses WebSocket to transfer models",
   "scripts": {

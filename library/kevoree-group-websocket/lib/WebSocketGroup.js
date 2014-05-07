@@ -29,20 +29,18 @@ var WebSocketGroup = AbstractGroup.extend({
     dic_port: {
         fragmentDependant: true,
         optional: true,
-        datatype: 'number',
-        update: function () {
-            this.stop();
-            this.start();
-        }
+        datatype: 'number'
     },
 
     dic_path: {
         fragmentDependant: true,
+        optional: true
+    },
+
+    dic_proxy_port: {
+        fragmentDependant: true,
         optional: true,
-        update: function () {
-            this.stop();
-            this.start();
-        }
+        datatype: 'number'
     },
     // END Dictionary attributes =====
 
@@ -62,7 +60,15 @@ var WebSocketGroup = AbstractGroup.extend({
 
         if (this.dic_port.value && this.dic_port.value.length > 0) {
             if (!isNaN(parseInt(this.dic_port.value))) {
-                this.server = this.startWSServer(this.dic_port.value, processPath(this.dic_path.value));
+                if (this.dic_proxy_port.value && this.dic_proxy_port.value.length > 0) {
+                    if (!isNaN(parseInt(this.dic_proxy_port.value))) {
+                        this.server = this.startWSServer(this.dic_proxy_port.value, processPath(this.dic_path.value));
+                    } else {
+                        throw new Error('WebSocketGroup error: '+this.getName()+'.proxy_port/'+this.getNodeName()+' attribute is not a number');
+                    }
+                } else {
+                    this.server = this.startWSServer(this.dic_port.value, processPath(this.dic_path.value));
+                }
             } else {
                 throw new Error('WebSocketGroup error: '+this.getName()+'.port/'+this.getNodeName()+' attribute is not a number');
             }
@@ -75,7 +81,7 @@ var WebSocketGroup = AbstractGroup.extend({
         _super.call(this);
 
         if (this.server) {
-            this.server.close();
+            try { this.server.close(); } catch (ignore) {}
             this.connectedNodes = {};
         }
 
@@ -83,6 +89,12 @@ var WebSocketGroup = AbstractGroup.extend({
             // close client connection
             this.smartSocket.close(true);
         }
+    },
+
+    update: function () {
+        this.log.debug(this.toString(), 'Woot update');
+        this.stop();
+        this.start();
     },
 
     checkNoMultipleMasterServer: function () {
