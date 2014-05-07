@@ -45,14 +45,25 @@ var KevoreeEntity = Class({
         this.started = false;
     },
 
+    /**
+     * Called on element start-up
+     */
     start: function () {
         this.log = this.kCore.getLogger();
         this.started = true;
     },
 
+    /**
+     * Called on element stop
+     */
     stop: function () {
         this.started = false;
     },
+
+    /**
+     * Called when a attribute has been changed (this method is called after all attribute-specific update() method)
+     */
+    update: function () {},
 
     setKevoreeCore: function (kCore) {
         this.kCore = kCore;
