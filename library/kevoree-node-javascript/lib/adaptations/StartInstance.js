@@ -34,8 +34,8 @@ module.exports = AdaptationPrimitive.extend({
                     }
                 }
 
-                instance.start();
                 this.log.debug(this.toString(), instance.getName());
+                instance.start();
                 return callback();
 
             } else {

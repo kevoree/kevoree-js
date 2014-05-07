@@ -22,12 +22,12 @@ module.exports = AdaptationPrimitive.extend({
             this.instance = instance;
             if (Kotlin.isType(kDictionary, kevoree.impl.FragmentDictionaryImpl)) {
                 if (kDictionary.name == this.node.getName()) {
-                    dictionary.setEntry(this.modelElement.name, this.modelElement.value);
                     this.log.debug(this.toString(), kDictionary.eContainer().name+'.'+this.modelElement.name+'/'+kDictionary.name+' = '+this.modelElement.value);
+                    dictionary.setEntry(this.modelElement.name, this.modelElement.value);
                 }
             } else {
-                dictionary.setEntry(this.modelElement.name, this.modelElement.value);
                 this.log.debug(this.toString(), kDictionary.eContainer().name+'.'+this.modelElement.name+' = '+this.modelElement.value);
+                dictionary.setEntry(this.modelElement.name, this.modelElement.value);
             }
 
             return callback();

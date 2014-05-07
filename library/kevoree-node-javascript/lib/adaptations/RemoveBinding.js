@@ -16,12 +16,12 @@ module.exports = AdaptationPrimitive.extend({
             if (chanInstance && compInstance) {
                 try {
                     if (this.isInputPortType(this.modelElement.port)) {
+                        this.log.debug(this.toString(), 'input '+portInstance.getPath()+' <-> '+chanInstance.getPath());
                         compInstance.removeInternalInputPort(portInstance);
                         chanInstance.removeInternalInputPort(portInstance);
-                        this.log.debug(this.toString(), 'input '+portInstance.getPath()+' <-> '+chanInstance.getPath());
                     } else {
-                        compInstance.removeInternalOutputPort(portInstance);
                         this.log.debug(this.toString(), 'output '+portInstance.getPath()+' <-> '+chanInstance.getPath());
+                        compInstance.removeInternalOutputPort(portInstance);
                     }
 
                     return callback();

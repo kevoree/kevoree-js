@@ -37,9 +37,8 @@ module.exports = AdaptationPrimitive.extend({
 
                         this.doSpecificTypeProcess(this.modelElement);
 
-                        this.mapper.addEntry(this.modelElement.path(), instance);
-
                         this.log.debug(this.toString(), instance.getName()+' '+this.modelElement.typeDefinition.path());
+                        this.mapper.addEntry(this.modelElement.path(), instance);
                         return callback();
 
                     } catch (e) {

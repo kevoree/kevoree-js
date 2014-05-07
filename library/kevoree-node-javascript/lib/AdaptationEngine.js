@@ -19,6 +19,7 @@ var AddInstance         = require('./adaptations/AddInstance'),
     RemoveInstance      = require('./adaptations/RemoveInstance'),
     StartInstance       = require('./adaptations/StartInstance'),
     StopInstance        = require('./adaptations/StopInstance'),
+    UpdateInstance      = require('./adaptations/UpdateInstance'),
     UpdateDictionary    = require('./adaptations/UpdateDictionary');
 
 
@@ -41,7 +42,8 @@ var INSTANCE_TRACE  = [
         AddInstance:      7,
         AddBinding:       8,
         UpdateDictionary: 9,
-        StartInstance:    10,
+        UpdateInstance:   10,
+        StartInstance:    11,
         Noop:             42
         // lowest priority
     };
@@ -141,6 +143,12 @@ var AdaptationEngine = Class({
                             cmd = new UpdateDictionary(this.node, this.modelObjMapper, model, val);
                             cmdList.push(cmd);
                             addProcessedTrace(val.path(), cmd);
+
+                            if (!traceAlreadyProcessed(instance.path(), UpdateInstance.prototype.toString())) {
+                                cmd = new UpdateInstance(this.node, this.modelObjMapper, model, instance);
+                                cmdList.push(cmd);
+                                addProcessedTrace(instance.path(), cmd);
+                            }
                         }
                     }
                 }
@@ -209,6 +217,13 @@ var AdaptationEngine = Class({
                         cmd = new UpdateDictionary(this.node, this.modelObjMapper, model, modelElement);
                         cmdList.push(cmd);
                         addProcessedTrace(trace.srcPath, cmd);
+
+                        var instance = modelElement.eContainer().eContainer();
+                        if (!traceAlreadyProcessed(instance.path(), UpdateInstance.prototype.toString())) {
+                            cmd = new UpdateInstance(this.node, this.modelObjMapper, model, instance);
+                            cmdList.push(cmd);
+                            addProcessedTrace(instance.path(), cmd);
+                        }
                     }
                 }
             }

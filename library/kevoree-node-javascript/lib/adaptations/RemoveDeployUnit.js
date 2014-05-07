@@ -19,8 +19,8 @@ module.exports = AdaptationPrimitive.extend({
                     return callback(err);
                 }
 
-                this.mapper.removeEntry(this.modelElement.path());
                 this.log.debug(this.toString(), this.modelElement.path());
+                this.mapper.removeEntry(this.modelElement.path());
                 callback();
             }.bind(this));
         }
