@@ -35,7 +35,7 @@ module.exports = function (model) {
                     // push new created model to server-side platform
                     var pushOptions = {
                         model:  model,
-                        host:   config.serverPlatform.groupHost,
+                        host:   config.serverPlatform.serverHost,
                         port:   config.serverPlatform.groupPort,
                         path:   config.serverPlatform.groupPath
                     };

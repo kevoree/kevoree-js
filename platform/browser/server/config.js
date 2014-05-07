@@ -10,15 +10,15 @@ module.exports = {
 
     // properties for server-side Kevoree NodeJS Platform
     serverPlatform: {
-        nodeName:   'server-node',
-        serverHost: HOST,
-        groupName:  'sync',
-        groupHost:  HOST,
-        groupPort:  80,
-        groupPath:  'sharedGroup',
-        chanHost:   HOST,
-        chanPort:   80,
-        chanPath:   'sharedChan'
+        nodeName:       'server-node',
+        serverHost:     HOST,
+        groupName:      'sync',
+        groupPort:      80,
+        groupProxyPort: 9000,
+        groupPath:      'sharedGroup',
+        chanHost:       HOST,
+        chanPort:       80,
+        chanPath:       'sharedChan'
     },
 
     paths: {
