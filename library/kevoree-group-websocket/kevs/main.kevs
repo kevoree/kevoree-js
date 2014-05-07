@@ -8,6 +8,7 @@ attach node0, node1 sync
 
 set sync.port/node0 = '80'
 set sync.proxy_port/node0 = '9000'
+set sync.path/node0 = '/foo'
 //set sync.path/node0 = 'foo'
 
 network node0.lan.ip 127.0.0.1

@@ -180,22 +180,29 @@ var WebSocketGroup = AbstractGroup.extend({
     getMasterServerAddresses: function () {
         var addresses = [];
         var port = null;
+        var path = null;
         var masterServerNodeName = null;
 
         var group = this.getModelEntity();
         var fragDics = group.fragmentDictionary.iterator();
         while (fragDics.hasNext()) {
             var fragDic = fragDics.next();
-            var values = fragDic.values.iterator();
-            while (values.hasNext()) {
-                var val = values.next();
-                if (val.name === 'port' && val.value.length > 0) {
-                    // found port attribute
-                    masterServerNodeName = fragDic.name;
-                    port = val.value;
-                    break;
+            var portVal = fragDic.findValuesByID('port'),
+                pathVal = fragDic.findValuesByID('path');
+                if (portVal && pathVal) {
+                    if (portVal.value && portVal.value.length > 0) {
+                        // found port attribute
+                        masterServerNodeName = fragDic.name;
+                        port = portVal.value;
+                        if (pathVal.value && pathVal.value.length > 0) {
+                            if (pathVal.value.substr(0, 1) !== '/') {
+                                path = '/' + pathVal.value;
+                            } else {
+                                path = pathVal.value;
+                            }
+                        }
+                    }
                 }
-            }
         }
 
         if (port) {
@@ -207,7 +214,7 @@ var WebSocketGroup = AbstractGroup.extend({
                     var prop = props.next();
                     if (net.name.toLowerCase().indexOf('ip') != -1 ||
                         prop.name.toLowerCase().indexOf('ip') != -1) {
-                        addresses.push(prop.value+':'+port);
+                        addresses.push(prop.value+':'+port+path);
                     }
                 }
             }
