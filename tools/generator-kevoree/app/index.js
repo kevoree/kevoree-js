@@ -4,11 +4,12 @@ var path = require('path');
 var yeoman = require('yeoman-generator');
 var _ = require('underscore.string');
 
-var ENTITY_TYPES = ['comp', 'chan', 'group'],
+var ENTITY_TYPES = ['comp', 'chan', 'group', 'node'],
     ENTITY_REAL_TYPES = {
         comp:  'AbstractComponent',
         chan:  'AbstractChannel',
-        group: 'AbstractGroup'
+        group: 'AbstractGroup',
+        node:  'AbstractNode'
     };
 
 var KevoreeGenerator = module.exports = function KevoreeGenerator(args, options, config) {
@@ -85,6 +86,12 @@ KevoreeGenerator.prototype.app = function app() {
             this.copy('defaultGruntfile.js', 'Gruntfile.js');
             this.template('_defaultPackage.json', 'package.json');
             this.template('_groupMain.kevs', 'kevs/main.kevs');
+            break;
+
+        case 'node':
+            this.copy('defaultGruntfile.js', 'Gruntfile.js');
+            this.template('_nodePackage.json', 'package.json');
+            this.template('_nodeMain.kevs', 'kevs/main.kevs');
             break;
     }
 };

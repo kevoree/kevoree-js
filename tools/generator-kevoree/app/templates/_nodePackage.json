@@ -6,7 +6,8 @@
         "prepublish": "grunt"
     },
     "dependencies": {
-        "kevoree-entities": "^0.6.0"
+        "kevoree-entities": "^0.6.0",
+        "kevoree-node-javascript": "^0.6.11"
     },
     "devDependencies": {
         "grunt": "^0.4.1",
