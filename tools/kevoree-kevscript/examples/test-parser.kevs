@@ -35,5 +35,6 @@ secondline"
 
 network node1.ip.eth0 127.0.0.1
 network node1.ip.eth0 192.168.0.1
+network node1.ip.0_eth0 fe80:0:0:0:be5f:f4ff:fe21:74e2%2
 
 bind node0.comp1.inMsg chan0
