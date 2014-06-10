@@ -3,6 +3,7 @@ var config        = require('./config.json'),
     NodeJSRuntime = require('./lib/NodeJSRuntime'),
     KevoreeLogger = require('kevoree-commons').KevoreeLogger,
     path          = require('path'),
+    os            = require('os'),
     fs            = require('fs'),
     kevoree       = require('kevoree-library').org.kevoree,
     NPMResolver   = require('kevoree-resolvers').NPMResolver,
@@ -14,7 +15,7 @@ var config        = require('./config.json'),
                         .alias('m', 'model')
                         .alias('k', 'kevscript')
                         .alias('p', 'modulesPath')
-                        .default('p', path.resolve('.'))
+                        .default('p', os.tmpdir())
                         .describe('nodeName', 'The name of the node platform you want to bootstrap on')
                         .describe('groupName', 'The group name to which your node is gonna be connected to')
                         .describe('model', 'A model to bootstrap on')
