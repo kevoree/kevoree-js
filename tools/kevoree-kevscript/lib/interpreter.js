@@ -74,6 +74,6 @@ var interpreter = function interpreter(ast, ctxModel, resolvers, callback) {
 
         return callback(null, model);
     });
-}
+};
 
 module.exports = interpreter;
