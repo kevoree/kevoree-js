@@ -20,12 +20,18 @@ module.exports = AdaptationPrimitive.extend({
         _super.call(this, callback);
 
         if (this.modelElement) {
-            var instance = this.mapper.getObject(this.modelElement.path());
-            if (instance) {
-                this.mapper.removeEntry(this.modelElement.path());
-                this.doSpecificTypeProcess(this.modelElement);
-                this.log.debug(this.toString(), instance.getName()+' '+this.modelElement.typeDefinition.path());
-                return callback();
+            if (this.modelElement.host && this.modelElement.host.name === this.node.getName()) {
+                // this element is a subNode to this.node
+                this.log.debug(this.toString(), this.node.getName()+' has to remove '+this.modelElement.name);
+                this.node.removeSubNode(this.modelElement);
+
+            } else {
+                var instance = this.mapper.getObject(this.modelElement.path());
+                if (instance) {
+                    this.mapper.removeEntry(this.modelElement.path());
+                    this.doSpecificTypeProcess(this.modelElement);
+                    this.log.debug(this.toString(), instance.getName()+' '+this.modelElement.typeDefinition.path());
+                }
             }
         }
 

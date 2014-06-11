@@ -1,6 +1,6 @@
 {
   "name": "kevoree-node-javascript",
-  "version": "0.6.12",
+  "version": "0.6.13",
   "main": "./lib/JavascriptNode.js",
   "scripts": {
     "prepublish": "grunt"
