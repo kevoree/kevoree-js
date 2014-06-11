@@ -25,7 +25,7 @@ module.exports = AdaptationPrimitive.extend({
         if (this.modelElement && (this.modelElement.name !== this.node.getName())) {
             // platform related check
             if (this.isRelatedToPlatform(this.modelElement)) {
-                var moduleName = this.findSuitableModuleName(this.modelElement);
+                var moduleName = this.mapper.getObject(this.modelElement.typeDefinition.deployUnit.path());
                 if ((moduleName !== undefined) && (moduleName !== null)) {
                     try {
                         var InstanceClass = require(moduleName);
@@ -59,11 +59,6 @@ module.exports = AdaptationPrimitive.extend({
         _super.call(this, callback);
         var cmd = new RemoveInstance(this.node, this.mapper, this.adaptModel, this.modelElement);
         cmd.execute(callback);
-    },
-
-    findSuitableModuleName: function (kInstance) {
-        var du = kInstance.typeDefinition.deployUnit;
-        return this.mapper.getObject(du.path());
     },
 
     doSpecificTypeProcess: function (kInstance) {

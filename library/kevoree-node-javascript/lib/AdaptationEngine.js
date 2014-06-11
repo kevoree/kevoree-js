@@ -28,7 +28,8 @@ var INSTANCE_TRACE  = [
         'groups',
         'nodes',
         'components',
-        'hubs'
+        'hubs',
+        'hosts'
     ],
     COMMAND_RANK = {
         // highest priority
@@ -99,6 +100,7 @@ var AdaptationEngine = Class({
      */
     processTrace: function (trace, model, cmdList) {
         var cmd, modelElement, hub;
+//        console.log(trace.refName+'\t\t'+trace.srcPath);
 
         var addProcessedTrace = function (path, cmd) {
             this.alreadyProcessedTraces[path] = this.alreadyProcessedTraces[path] || {};
@@ -158,7 +160,9 @@ var AdaptationEngine = Class({
         // ADD - TRACES HANDLING
         if (Kotlin.isType(trace, ModelAddTrace)) {
             if (INSTANCE_TRACE.indexOf(trace.refName) !== -1) {
-                addInstance(model.findByPath(trace.previousPath));
+                modelElement = model.findByPath(trace.previousPath);
+                addInstance(modelElement);
+                startInstance(modelElement);
 
             } else if (trace.refName === 'mBindings') {
                 // Add binding
@@ -170,14 +174,10 @@ var AdaptationEngine = Class({
                 if (modelElement && modelElement.hub && !this.modelObjMapper.getObject(modelElement.hub.path())) {
                     hub = model.findByPath(modelElement.hub.path());
                     // this binding relies on a hub that hasn't been instantiated yet
-                    if (!traceAlreadyProcessed(hub.path(), AddInstance.prototype.toString())) {
-                        addInstance(hub);
-                    }
+                    addInstance(hub);
 
                     // also check if the instance has been started or not
-                    if (!traceAlreadyProcessed(hub.path(), StartInstance.prototype.toString())) {
-                        startInstance(hub);
-                    }
+                    startInstance(hub);
                 }
 
             } else if (trace.refName === 'subNodes') {
@@ -188,13 +188,9 @@ var AdaptationEngine = Class({
                     if (group && !this.modelObjMapper.getObject(group.path())) {
                         // there is no group instance created on this platform yet
                         // lets check if there is already a primitive added for that or not
-                        if (!traceAlreadyProcessed(group.path(), AddInstance.prototype.toString())) {
-                            addInstance(group);
-                        }
+                        addInstance(group);
                         // also check if the instance has been started or not
-                        if (!traceAlreadyProcessed(group.path(), StartInstance.prototype.toString())) {
-                            startInstance(group);
-                        }
+                        startInstance(group);
                     }
                 }
             }

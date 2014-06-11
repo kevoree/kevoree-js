@@ -35,8 +35,7 @@ module.exports = Class({
      */
     execute: function (callback) {
         if (callback == undefined || callback == null || typeof(callback) != 'function') {
-            console.error("Execute method need a callback function as last parameter");
-            return;
+            throw new Error("Execute method need a callback function as last parameter");
         }
     },
 
@@ -45,33 +44,31 @@ module.exports = Class({
      */
     undo: function (callback) {
         if (callback == undefined || callback == null || typeof(callback) != 'function') {
-            console.error("Undo method need a callback function as last parameter");
-            return;
+            throw new Error("Undo method need a callback function as last parameter");
         }
     },
 
     isRelatedToPlatform: function (kInstance) {
+        var i;
         if (Kotlin.isType(kInstance.typeDefinition, kevoree.impl.ComponentTypeImpl)) {
             // if parent is this node platform: it's ok
-            return (kInstance.eContainer().name == this.node.getName());
+            return (kInstance.eContainer().name === this.node.getName());
 
         } else if (Kotlin.isType(kInstance.typeDefinition, kevoree.impl.ChannelTypeImpl)) {
             // if this channel has bindings with components hosted in this node platform: it's ok
             var bindings = kInstance.bindings;
-            for (var i=0; i < bindings.size(); i++) {
-                if (bindings.get(i).port.eContainer().eContainer().name == this.node.getName()) return true;
+            for (i=0; i < bindings.size(); i++) {
+                if (bindings.get(i).port.eContainer().eContainer().name === this.node.getName()) return true;
             }
 
         } else if (Kotlin.isType(kInstance.typeDefinition, kevoree.impl.GroupTypeImpl)) {
             var subNodes = kInstance.subNodes;
-            for (var i=0; i < subNodes.size(); i++) {
-                if (subNodes.get(i).name == this.node.name) return true;
+            for (i=0; i < subNodes.size(); i++) {
+                if (subNodes.get(i).name === this.node.name) return true;
             }
 
         } else if (Kotlin.isType(kInstance.typeDefinition, kevoree.impl.NodeTypeImpl)) {
-            // TODO take subnodes in account
             return false;
-
         }
 
         return false;
