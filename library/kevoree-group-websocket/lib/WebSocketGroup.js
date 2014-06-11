@@ -101,18 +101,18 @@ var WebSocketGroup = AbstractGroup.extend({
         var group = this.getModelEntity();
         if (group != null) {
             var portDefined = 0;
-            var kFragDics = (group.fragmentDictionary) ? group.fragmentDictionary.iterator() : null;
-            if (kFragDics) {
-                while (kFragDics.hasNext()) {
-                    var val = kFragDics.next().findValuesByID('port');
-                    if (val && val.value && val.value.length > 0) portDefined++;
+            var kFragDics = group.fragmentDictionary.iterator();
+            while (kFragDics.hasNext()) {
+                var val = kFragDics.next().findValuesByID('port');
+                if (val && val.value) {
+                    portDefined++;
                 }
             }
 
             if (portDefined > 1) {
                 throw new Error("WebSocketGroup error: multiple master server defined. You are not supposed to specify more than ONE port attribute on this group sub nodes.");
 
-            } else if (portDefined == 0) {
+            } else if (portDefined === 0) {
                 throw new Error("WebSocketGroup error: no master server defined. You should specify a node to be the master server (in order to do that, give to a node a value to its 'port' attribute)");
 
             } else {
@@ -189,17 +189,19 @@ var WebSocketGroup = AbstractGroup.extend({
             var fragDic = fragDics.next();
             var portVal = fragDic.findValuesByID('port'),
                 pathVal = fragDic.findValuesByID('path');
-                if (portVal && pathVal) {
-                    if (portVal.value && portVal.value.length > 0) {
+                if (portVal) {
+                    if (portVal.value) {
                         // found port attribute
                         masterServerNodeName = fragDic.name;
                         port = portVal.value;
-                        if (pathVal.value && pathVal.value.length > 0) {
+                        if (pathVal && pathVal.value && pathVal.value.length > 0) {
                             if (pathVal.value.substr(0, 1) !== '/') {
                                 path = '/' + pathVal.value;
                             } else {
                                 path = pathVal.value;
                             }
+                        } else {
+                            path = '';
                         }
                     }
                 }
