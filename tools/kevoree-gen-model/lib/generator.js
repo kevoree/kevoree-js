@@ -50,7 +50,7 @@ var generator = function generator(dirPath, verbose, callback) {
 
                 } else {
                     // this is not the Class you are looking for
-                    if (verbose) console.log(chalk.yellow('Ignored:')+"\n\tFile: '%s'\n\tReason: Not a KevoreeEntity", file);
+                    if (verbose) console.log(chalk.yellow('Ignored:')+"\n\tFile: '%s'\n\tReason: Not a KevoreeEntity (check that you have only one version of kevoree-entities in your dependency tree)", file);
                 }
             }
         } catch (e) {
