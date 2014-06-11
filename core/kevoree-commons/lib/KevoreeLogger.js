@@ -1,7 +1,7 @@
 var Class  = require('pseudoclass'),
     chalk  = require('chalk');
 
-var LEVELS = ['all', 'info', 'debug', 'warn', 'error', 'quiet'];
+var LEVELS = ['all', 'debug', 'info', 'warn', 'error', 'quiet'];
 
 var chalkInfo       = chalk.grey,
     chalkWarn       = chalk.grey.bgYellow,
