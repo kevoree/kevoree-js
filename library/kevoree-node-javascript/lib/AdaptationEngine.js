@@ -232,9 +232,11 @@ var AdaptationEngine = Class({
             if (INSTANCE_TRACE.indexOf(trace.refName) != -1) {
                 // Remove instance
                 // add RemoveInstance primitive
-                cmd = new RemoveInstance(this.node, this.modelObjMapper, model, modelElement);
-                cmdList.push(cmd);
-                addProcessedTrace(tracePath, cmd);
+                if (!traceAlreadyProcessed(modelElement.path(), RemoveInstance.prototype.toString())) {
+                    cmd = new RemoveInstance(this.node, this.modelObjMapper, model, modelElement);
+                    cmdList.push(cmd);
+                    addProcessedTrace(tracePath, cmd);
+                }
 
                 // check if instance is stopped
                 if (modelElement.started) {
