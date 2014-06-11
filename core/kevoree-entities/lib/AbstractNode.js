@@ -15,8 +15,14 @@ module.exports = KevoreeEntity.extend({
     startSubNode: function (node) {},
 
     /**
-     * Called the host node has to stop an hosted subNode
+     * Called when the host node has to stop an hosted subNode
      * @param node the hosted subNode
      */
-    stopSubNode: function (node) {}
+    stopSubNode: function (node) {},
+
+    /**
+     * Called when the host node has to remove an hosted subNode instance
+     * @param node the hosted subNode
+     */
+    removeSubNode: function (node) {}
 });
