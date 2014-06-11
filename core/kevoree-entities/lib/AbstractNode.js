@@ -12,5 +12,5 @@ module.exports = KevoreeEntity.extend({
      * Called by StartInstance when a host node has to start an hosted subNode
      * @param node
      */
-    onStartSubNode: function (node) {}
+    startSubNode: function (node) {}
 });
