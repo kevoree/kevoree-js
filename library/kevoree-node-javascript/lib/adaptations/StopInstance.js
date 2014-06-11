@@ -7,11 +7,19 @@ module.exports = AdaptationPrimitive.extend({
     execute: function (_super, callback) {
         _super.call(this, callback);
 
-        var instance = this.mapper.getObject(this.modelElement.path());
-        if (instance) {
-            this.log.debug(this.toString(), instance.getName());
-            instance.stop();
+        if (this.modelElement.host && this.modelElement.host.name === this.node.getName()) {
+            // this element is a subNode to this.node
+            this.log.debug(this.toString(), this.node.getName()+' has to stop '+this.modelElement.name);
+            this.node.stopSubNode(this.modelElement);
+
+        } else {
+            var instance = this.mapper.getObject(this.modelElement.path());
+            if (instance) {
+                this.log.debug(this.toString(), instance.getName());
+                instance.stop();
+            }
         }
+
         return callback();
     },
 
