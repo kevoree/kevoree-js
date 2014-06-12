@@ -264,18 +264,20 @@ var AdaptationEngine = Class({
 
                 if (modelElement.hub && this.modelObjMapper.getObject(modelElement.hub.path())) {
                     hub = model.findByPath(modelElement.hub.path());
-                    // remove hub instance too
-                    if (!traceAlreadyProcessed(hub.path(), RemoveInstance.prototype.toString())) {
-                        cmd = new RemoveInstance(this.node, this.modelObjMapper, model, hub);
-                        cmdList.push(cmd);
-                        addProcessedTrace(hub.path(), cmd);
-                    }
+                    if (hub) {
+                        // remove hub instance too
+                        if (!traceAlreadyProcessed(hub.path(), RemoveInstance.prototype.toString())) {
+                            cmd = new RemoveInstance(this.node, this.modelObjMapper, model, hub);
+                            cmdList.push(cmd);
+                            addProcessedTrace(hub.path(), cmd);
+                        }
 
-                    // also check if instance has been stopped or not
-                    if (!traceAlreadyProcessed(hub.path(), StopInstance.prototype.toString())) {
-                        cmd = new StopInstance(this.node, this.modelObjMapper, model, hub);
-                        cmdList.push(cmd);
-                        addProcessedTrace(hub.path(), cmd);
+                        // also check if instance has been stopped or not
+                        if (!traceAlreadyProcessed(hub.path(), StopInstance.prototype.toString())) {
+                            cmd = new StopInstance(this.node, this.modelObjMapper, model, hub);
+                            cmdList.push(cmd);
+                            addProcessedTrace(hub.path(), cmd);
+                        }
                     }
                 }
             }
