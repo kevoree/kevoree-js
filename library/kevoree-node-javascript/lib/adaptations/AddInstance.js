@@ -25,29 +25,32 @@ module.exports = AdaptationPrimitive.extend({
         if (this.modelElement && (this.modelElement.name !== this.node.getName())) {
             // platform related check
             if (this.isRelatedToPlatform(this.modelElement)) {
-                var moduleName = this.mapper.getObject(this.modelElement.typeDefinition.deployUnit.path());
-                if ((moduleName !== undefined) && (moduleName !== null)) {
-                    try {
-                        var InstanceClass = require(moduleName);
-                        var instance = new InstanceClass();
-                        instance.setKevoreeCore(this.node.getKevoreeCore());
-                        instance.setName(this.modelElement.name);
-                        instance.setPath(this.modelElement.path());
-                        instance.setNodeName(this.node.getName());
+                // already added check
+                if (!this.mapper.hasObject(this.modelElement.path())) {
+                    var moduleName = this.mapper.getObject(this.modelElement.typeDefinition.deployUnit.path());
+                    if ((moduleName !== undefined) && (moduleName !== null)) {
+                        try {
+                            var InstanceClass = require(moduleName);
+                            var instance = new InstanceClass();
+                            instance.setKevoreeCore(this.node.getKevoreeCore());
+                            instance.setName(this.modelElement.name);
+                            instance.setPath(this.modelElement.path());
+                            instance.setNodeName(this.node.getName());
 
-                        this.doSpecificTypeProcess(this.modelElement);
+                            this.doSpecificTypeProcess(this.modelElement);
 
-                        this.log.debug(this.toString(), instance.getName()+' '+this.modelElement.typeDefinition.path());
-                        this.mapper.addEntry(this.modelElement.path(), instance);
-                        return callback();
+                            this.log.debug(this.toString(), instance.getName()+' '+this.modelElement.typeDefinition.path());
+                            this.mapper.addEntry(this.modelElement.path(), instance);
+                            return callback();
 
-                    } catch (e) {
-                        return callback(e);
+                        } catch (e) {
+                            return callback(e);
+                        }
+
+                    } else {
+                        // there is no DeployUnit installed for this instance TypeDefinition
+                        return callback(new Error(this.toString()+ " error: no DeployUnit installed for "+this.modelElement.path()));
                     }
-
-                } else {
-                    // there is no DeployUnit installed for this instance TypeDefinition
-                    return callback(new Error(this.toString()+ " error: no DeployUnit installed for "+this.modelElement.path()));
                 }
             }
         }

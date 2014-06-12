@@ -10,7 +10,6 @@ module.exports = AdaptationPrimitive.extend({
         if (this.modelElement.name != this.node.getName()) {
             if (this.isRelatedToPlatform(this.modelElement)) {
                 var instance = this.mapper.getObject(this.modelElement.path());
-
                 if (instance != undefined && instance != null) {
                     // check dictionary value and give default values if none set
                     var dicType = this.modelElement.typeDefinition.dictionaryType;
@@ -35,8 +34,11 @@ module.exports = AdaptationPrimitive.extend({
                         }
                     }
 
-                    this.log.debug(this.toString(), instance.getName());
-                    instance.start();
+                    // check if instance is already started
+                    if (!instance.isStarted()) {
+                        this.log.debug(this.toString(), instance.getName());
+                        instance.start();
+                    }
                     return callback();
 
                 } else {

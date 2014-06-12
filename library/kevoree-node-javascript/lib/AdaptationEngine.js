@@ -100,7 +100,7 @@ var AdaptationEngine = Class({
      */
     processTrace: function (trace, model, cmdList) {
         var cmd, modelElement, hub;
-//        console.log(trace.refName+'\t\t'+trace.srcPath);
+//        if (trace.traceType.name() === 'SET' && trace.refName === 'started') console.log(trace.traceType.name()+'\n\tref= '+trace.refName+'\n\tsrc= '+trace.srcPath+'\n\tprev= '+trace.previousPath);
 
         var addProcessedTrace = function (path, cmd) {
             this.alreadyProcessedTraces[path] = this.alreadyProcessedTraces[path] || {};
@@ -113,12 +113,13 @@ var AdaptationEngine = Class({
 
         var addInstance = function (instance) {
             // Add instance
-            if (!traceAlreadyProcessed(instance.path(), AddInstance.prototype.toString())) {
-                cmd = new AddInstance(this.node, this.modelObjMapper, model, instance);
-                cmdList.push(cmd);
-                addProcessedTrace(instance.path(), cmd);
+            cmd = new AddInstance(this.node, this.modelObjMapper, model, instance);
+            if (cmd.isRelatedToPlatform(instance)) {
+                if (!traceAlreadyProcessed(instance.path(), AddInstance.prototype.toString())) {
+                    cmdList.push(cmd);
+                    addProcessedTrace(instance.path(), cmd);
 
-                if (cmd.isRelatedToPlatform(instance)) {
+
                     if (!this.modelObjMapper.getObject(instance.typeDefinition.deployUnit.path())) {
                         if (!traceAlreadyProcessed(instance.typeDefinition.deployUnit.path(), AddDeployUnit.prototype.toString())) {
                             // Add deploy unit
