@@ -14,7 +14,7 @@ module.exports = AdaptationPrimitive.extend({
 
         } else {
             var instance = this.mapper.getObject(this.modelElement.path());
-            if (instance) {
+            if (instance && instance.isStarted()) {
                 this.log.debug(this.toString(), instance.getName());
                 instance.stop();
             }
@@ -28,7 +28,5 @@ module.exports = AdaptationPrimitive.extend({
 
         var cmd = new StartInstance(this.node, this.mapper, this.adaptModel, this.modelElement);
         cmd.execute(callback);
-
-        return;
     }
 });

@@ -35,6 +35,7 @@ module.exports = AdaptationPrimitive.extend({
                     }
 
                     // check if instance is already started
+                    console.log("StartInstance", instance.getName(), instance.isStarted());
                     if (!instance.isStarted()) {
                         this.log.debug(this.toString(), instance.getName());
                         instance.start();

@@ -1,13 +1,13 @@
-include npm:kevoree-node-javascript
-include npm:kevoree-group-websocket
+include npm:kevoree-node-javascript:latest
+include npm:kevoree-group-websocket:latest
 //include npm:kevoree-chan-remotews
 
 add node0, node1 : JavascriptNode
 add sync : WebSocketGroup
 //add chan : RemoteWSChan
 
-attach node0 sync
+attach node0, node1 sync
 
 set sync.port/node0 = '9000'
 
-//network node0.lan.ip 127.0.0.1
+network node0.lan.ip 127.0.0.1
