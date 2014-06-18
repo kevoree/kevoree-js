@@ -1,6 +1,6 @@
 {
   "name": "kevoree-resolvers",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Standard Kevoree Javascript resolvers",
   "main": "./kevoree-resolvers.js",
   "scripts": {
@@ -24,10 +24,10 @@
   "homepage": "https://github.com/kevoree/kevoree-js",
   "dependencies": {
     "async": "^0.6.2",
-    "kevoree-commons": ">=0.7.0",
-    "kevoree-library": ">=0.7.0",
-    "npm": "1.4.4",
-    "npmi": ">=0.0.7",
-    "rimraf": "^2.2.6"
+    "kevoree-commons": "^0.7.0",
+    "kevoree-library": "^0.7.0",
+    "npm": "^1.4.16",
+    "npmi": "0.0.10",
+    "rimraf": "^2.2.8"
   }
 }
