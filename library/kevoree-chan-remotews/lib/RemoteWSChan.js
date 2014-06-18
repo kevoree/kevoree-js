@@ -47,53 +47,53 @@ var RemoteWSChan = AbstractChannel.extend({
     start: function (_super) {
         _super.call(this);
 
-        var address = (function (host, port, path) {
-            if (!isNaN(parseInt(port))) {
-                if (path) {
-                    if (path.substr(0, 1) !== '/') {
-                        path = '/' + path;
-                    }
-                } else {
-                    path = '';
+        var host = this.dictionary.getValue('host'),
+            port = this.dictionary.getValue('port'),
+            path = this.dictionary.getValue('path');
+
+        if (!isNaN(parseInt(port))) {
+            if (path) {
+                if (path.substr(0, 1) !== '/') {
+                    path = '/' + path;
                 }
-
-                return host + ':' + port + path;
             } else {
-                throw new Error(this.toString() + ' error: "'+this.getName()+'" port attribute is not a number ('+port+')');
+                path = '';
             }
-        }.bind(this))(this.dic_host.value, this.dic_port.value, this.dic_path.value);
 
-        this.ss = new SmartSocket({
-            addresses:  [address],
-            timeout:    TIMEOUT,
-            handlers: {
-                onopen: function (ws) {
-                    this.log.info(this.toString(), '"'+this.getName()+'" connected to remote WebSocket server ws://'+address);
-                    this.conn = ws;
-                    var pattern = 'nodes['+this.getNodeName()+']';
-                    for (var path in this.inputs) {
-                        if (path.substr(0, pattern.length) === pattern) {
-                            this.conn.send(JSON.stringify({
-                                action: 'register',
-                                id: path
-                            }));
+            this.ss = new SmartSocket({
+                addresses:  [host + ':' + port + path],
+                timeout:    TIMEOUT,
+                handlers: {
+                    onopen: function (ws) {
+                        this.log.info(this.toString(), '"'+this.getName()+'" connected to remote WebSocket server ws://'+host + ':' + port + path);
+                        this.conn = ws;
+                        var pattern = 'nodes['+this.getNodeName()+']';
+                        for (var p in this.inputs) {
+                            if (p.substr(0, pattern.length) === pattern) {
+                                this.conn.send(JSON.stringify({
+                                    action: 'register',
+                                    id: p
+                                }));
+                            }
                         }
-                    }
-                }.bind(this),
+                    }.bind(this),
 
-                onmessage: function (ws, msg) {
-                    if (msg.type) msg = msg.data;
+                    onmessage: function (ws, msg) {
+                        if (msg.type) msg = msg.data;
 
-                    this.localDispatch(msg);
-                }.bind(this),
+                        this.localDispatch(msg);
+                    }.bind(this),
 
-                onclose: function () {
-                    this.log.info(this.toString(), '"'+this.getName()+'" lost connection with remote WebSocket server ws://'+address+'. Retry every '+TIMEOUT+'ms');
-                }.bind(this)
-            }
-        });
+                    onclose: function () {
+                        this.log.info(this.toString(), '"'+this.getName()+'" lost connection with remote WebSocket server ws://'+host + ':' + port + path+'. Retry every '+TIMEOUT+'ms');
+                    }.bind(this)
+                }
+            });
 
-        this.ss.start();
+            this.ss.start();
+        } else {
+            throw new Error(this.toString() + ' error: "'+this.getName()+'" port attribute is not a number ('+port+')');
+        }
     },
 
     /**

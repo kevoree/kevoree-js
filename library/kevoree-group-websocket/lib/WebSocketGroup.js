@@ -58,16 +58,20 @@ var WebSocketGroup = AbstractGroup.extend({
         // assert('one and only one master server defined between all subnodes')
         this.checkNoMultipleMasterServer();
 
-        if (this.dic_port.value && this.dic_port.value.length > 0) {
-            if (!isNaN(parseInt(this.dic_port.value))) {
-                if (this.dic_proxy_port.value && this.dic_proxy_port.value.length > 0) {
-                    if (!isNaN(parseInt(this.dic_proxy_port.value))) {
-                        this.server = this.startWSServer(this.dic_proxy_port.value, processPath(this.dic_path.value));
+        var port = this.dictionary.getValue('port'),
+            path = this.dictionary.getValue('path'),
+            proxy_port = this.dictionary.getValue('proxy_port');
+
+        if (port && port.length > 0) {
+            if (!isNaN(parseInt(port))) {
+                if (proxy_port && proxy_port.length > 0) {
+                    if (!isNaN(parseInt(proxy_port))) {
+                        this.server = this.startWSServer(proxy_port, processPath(path));
                     } else {
                         throw new Error('WebSocketGroup error: '+this.getName()+'.proxy_port/'+this.getNodeName()+' attribute is not a number');
                     }
                 } else {
-                    this.server = this.startWSServer(this.dic_port.value, processPath(this.dic_path.value));
+                    this.server = this.startWSServer(port, processPath(path));
                 }
             } else {
                 throw new Error('WebSocketGroup error: '+this.getName()+'.port/'+this.getNodeName()+' attribute is not a number');

@@ -41,11 +41,15 @@ var RemoteWSGroup = AbstractGroup.extend({
     start: function (_super) {
         _super.call(this);
 
-        if (isNaN(parseInt(this.dic_port.value))) {
-            throw new Error(this.toString()+' error: attribute "port" is not a number ('+this.dic_port.value+')');
+        var host = this.dictionary.getValue('host'),
+            port = this.dictionary.getValue('port'),
+            path = this.dictionary.getValue('path');
+
+        if (isNaN(parseInt(port))) {
+            throw new Error(this.toString()+' error: attribute "port" is not a number ('+port+')');
         }
 
-        var address = this.dic_host.value + ':' + this.dic_port.value + processPath(this.dic_path.value);
+        var address = host + ':' + port + processPath(path);
 
         this.ss = new SmartSocket({
             addresses: [ address ],

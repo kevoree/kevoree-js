@@ -46,9 +46,9 @@ var WebSocketChannel = AbstractChannel.extend({
 
         this.checkNoMultipleMasterServer();
 
-        if (this.dic_port.value && this.dic_port.value.length > 0) {
-            if (!isNaN(parseInt(this.dic_port.value))) {
-                this.startWSServer(this.dic_port.value, processPath(this.dic_path.value));
+        if (this.port && this.port.length > 0) {
+            if (!isNaN(parseInt(this.port))) {
+                this.startWSServer(this.dictionary.getValue('port'), processPath(this.dictionary.getValue('path')));
             } else {
                 throw new Error('WebSocketChannel error: '+this.getName()+'.port/'+this.getNodeName()+' attribute is not a number');
             }
@@ -122,7 +122,7 @@ var WebSocketChannel = AbstractChannel.extend({
     startWSServer: function (port, path) {
         try {
             this.server = new WebSocketServer({port: port, path: path});
-            this.log.debug(this.toString(), 'Master server created at '+this.server.options.host+":"+port+path);
+            this.log.info(this.toString(), 'Master server created at '+this.server.options.host+":"+port+path);
 
             this.server.on('connection', function(ws) {
                 ws.onmessage = localDispatchHandler.bind(this)(ws);

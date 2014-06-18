@@ -36,4 +36,4 @@ module.exports = function (grunt) {
 
     grunt.registerTask('default', ['kevoree_genmodel', 'browserify']);
     grunt.registerTask('kev', ['kevoree']);
-}
+};

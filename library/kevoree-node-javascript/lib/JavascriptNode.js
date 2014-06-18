@@ -10,9 +10,8 @@ var JavascriptNode = AbstractNode.extend({
     dic_logLevel: {
         defaultValue: 'INFO',
         optional: false,
-        update: function () {
-            var level = this.dic_logLevel.value.toLowerCase().trim();
-            switch (level) {
+        update: function (value) {
+            switch (value.toLowerCase().trim()) {
                 default:
                 case 'info':
                     this.log.setLevel(KevoreeLogger.INFO);
@@ -35,8 +34,8 @@ var JavascriptNode = AbstractNode.extend({
 
     dic_logFilter: {
         optional: true,
-        update: function () {
-            this.log.setFilter(this.dic_logFilter.value);
+        update: function (value) {
+            this.log.setFilter(value);
         }
     },
 

@@ -36,7 +36,9 @@ var Dictionary = Class({
 
     setValue: function (name, value) {
         var entity = this.entity.getModelEntity();
-        if (!entity.dictionary) entity.dictionary = factory.createDictionary();
+        if (!entity.dictionary) {
+            entity.dictionary = factory.createDictionary();
+        }
         value = entity.dictionary.findValuesByID(name);
         if (!value) {
             value = factory.createDictionaryValue();
@@ -47,14 +49,19 @@ var Dictionary = Class({
         this.setEntry(name, value);
     },
 
+    /**
+     * Called by the platform to update the state of the dictionary
+     * Triggers a call to dic_<name>.update() and a call to on(<name>, function)
+     * @param name attribute name
+     * @param value new attribute value
+     */
     setEntry: function (name, value) {
         var oldValue = this.map[name];
         this.map[name] = value;
         // emit update event with the name, oldValue and newValue
-        this.entity['dic_'+name].value = value;
         if (this.entity.isStarted()) {
             if (this.entity['dic_'+name].update && (typeof this.entity['dic_'+name].update === 'function')) {
-                this.entity['dic_'+name].update.bind(this.entity)(oldValue);
+                this.entity['dic_'+name].update.bind(this.entity)(value, oldValue);
             }
             this.emitter.emit(name, value, oldValue);
         }

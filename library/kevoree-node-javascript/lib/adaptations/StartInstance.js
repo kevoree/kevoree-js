@@ -18,7 +18,7 @@ module.exports = AdaptationPrimitive.extend({
                         while (attrs.hasNext()) {
                             var attr = attrs.next();
                             var val = instance.dictionary.getValue(attr.name);
-                            if (!val) {
+                            if (typeof(val) === 'undefined') {
                                 // there is no value set for this attribute
                                 // lets inflate dictionary with default values if any
                                 if (attr.optional) {
