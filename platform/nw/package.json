@@ -1,6 +1,6 @@
 {
   "name": "kevoree-nw-runtime",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "scripts": {
     "postinstall": "./node_modules/bower/bin/bower install && cd app && npm install"

@@ -1,6 +1,6 @@
 {
   "name": "kevoree-node-javascript",
-  "version": "0.6.18",
+  "version": "0.7.0",
   "main": "./lib/JavascriptNode.js",
   "scripts": {
     "prepublish": "grunt"
@@ -24,17 +24,17 @@
   },
   "dependencies": {
     "async": "^0.2.10",
-    "kevoree-commons": ">=0.6.0",
-    "kevoree-entities": ">=0.6.0",
-    "kevoree-kotlin": ">=0.6.0",
-    "kevoree-library": ">=0.6.0",
+    "kevoree-commons": ">=0.7.0",
+    "kevoree-entities": ">=0.7.0",
+    "kevoree-kotlin": ">=0.7.0",
+    "kevoree-library": ">=0.7.0",
     "pseudoclass": "0.2.6"
   },
   "devDependencies": {
     "grunt": "^0.4.4",
     "grunt-browserify": "^2.0.7",
-    "grunt-kevoree": ">=0.6.0",
-    "grunt-kevoree-genmodel": ">=0.6.0"
+    "grunt-kevoree": ">=0.7.0",
+    "grunt-kevoree-genmodel": ">=0.7.0"
   },
   "optionalDependencies": {},
   "engines": {
