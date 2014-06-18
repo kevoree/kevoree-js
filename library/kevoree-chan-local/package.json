@@ -9,7 +9,6 @@
     "kevoree-entities": ">=0.6.0"
   },
   "devDependencies": {
-    "browserify": "^3.43.0",
     "grunt-browserify": "^2.0.7",
     "grunt-kevoree": ">=0.6.0",
     "grunt-kevoree-genmodel": ">=0.6.0"

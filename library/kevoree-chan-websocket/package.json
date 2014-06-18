@@ -12,13 +12,12 @@
     "websocket"
   ],
   "dependencies": {
-    "kevoree-commons": ">=0.6.0",
-    "kevoree-entities": ">=0.6.0",
-    "smart-socket": "^0.1.0",
+    "kevoree-commons": "^0.6.1",
+    "kevoree-entities": "^0.6.5",
+    "smart-socket": "^0.1.6",
     "ws": "^0.4.31"
   },
   "devDependencies": {
-    "browserify": "^3.43.0",
     "grunt": "^0.4.2",
     "grunt-browserify": "^2.0.7",
     "grunt-kevoree": ">=0.6.0",
