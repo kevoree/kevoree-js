@@ -4,4 +4,4 @@ module.exports = function (model, statements, stmt, opts, cb) {
     ret.push(statements[stmt.children[i].type](model, statements, stmt.children[i], opts, cb));
   }
   return ret;
-}
+};

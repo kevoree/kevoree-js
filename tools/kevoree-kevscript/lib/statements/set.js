@@ -159,4 +159,4 @@ module.exports = function (model, statements, stmt, opts, cb) {
     }
 
     cb();
-}
+};

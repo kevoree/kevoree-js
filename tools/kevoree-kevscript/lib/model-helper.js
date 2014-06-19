@@ -23,4 +23,4 @@ function findComponent(model, nodeName, compName) {
 module.exports = {
   findEntityByName: findChanNodeGroupByName,
   findComponentByName: findComponent
-}
+};

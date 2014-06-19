@@ -33,7 +33,10 @@ var statements = {
     newLine:                require('./statements/newLine'),
     singleQuoteLine:        require('./statements/singleQuoteLine'),
     doubleQuoteLine:        require('./statements/doubleQuoteLine'),
-    escaped:                require('./statements/escaped')
+    escaped:                require('./statements/escaped'),
+    start:                  require('./statements/start'),
+    stop:                   require('./statements/stop'),
+    pause:                  require('./statements/pause')
 };
 
 /**

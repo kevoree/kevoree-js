@@ -24,13 +24,14 @@
   },
   "homepage": "https://github.com/kevoree/kevoree-js",
   "dependencies": {
-    "pseudoclass": "~0.2.6",
-    "optimist": "~0.6.0",
     "async": "~0.2.9",
-    "kevoree-library": ">=0.7.0",
-    "kevoree-kotlin": ">=0.7.0",
     "kevoree-commons": ">=0.7.0",
-    "kevoree-resolvers": ">=0.7.0"
+    "kevoree-kotlin": ">=0.7.0",
+    "kevoree-library": ">=0.7.0",
+    "kevoree-resolvers": ">=0.7.0",
+    "optimist": "~0.6.0",
+    "pseudoclass": "~0.2.6",
+    "waxeye": "^0.8.1"
   },
   "devDependencies": {
     "browserify": "~2.35.2",

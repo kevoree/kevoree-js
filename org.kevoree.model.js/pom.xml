@@ -9,8 +9,8 @@
 
     <properties>
         <metamodel.ecore>${basedir}/target/metamodel/kevoree.ecore</metamodel.ecore>
-        <kmf.version>1.9.12-SNAPSHOT</kmf.version>
-        <kevoree.version>3.4.2-SNAPSHOT</kevoree.version>
+        <kmf.version>1.10.4</kmf.version>
+        <kevoree.version>3.6.8</kevoree.version>
     </properties>
 
     <dependencies>
@@ -70,6 +70,7 @@
                             <packagePrefix>org</packagePrefix>
                             <js>true</js>
                             <events>true</events>
+                            <!--<selector>true</selector>-->
                         </configuration>
                     </execution>
                 </executions>
