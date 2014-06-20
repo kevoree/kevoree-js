@@ -24,7 +24,8 @@ var config        = require('./config.json'),
                         .argv;
 
 // TODO enable install dir path in command-line
-var kRuntime = new NodeJSRuntime(argv.modulesPath);
+var resolver = new NPMResolver(argv.modulesPath, log);
+var kRuntime = new NodeJSRuntime(argv.modulesPath, resolver);
 var loader   = new kevoree.loader.JSONModelLoader();
 var log      = new KevoreeLogger('NodeJSRuntime');
 
@@ -37,7 +38,7 @@ kRuntime.on('started', function () {
             if (err) throw err;
 
             var options = {
-                resolvers: { npm: new NPMResolver(argv.modulesPath, log) }
+                resolvers: { npm: resolver }
             };
             var kevs = new KevScript(options);
             kevs.parse(text, function (err, model) {

@@ -12,9 +12,9 @@ module.exports = Bootstrapper.extend({
     /**
      *
      */
-    construct: function (modulesPath, logger) {
+    construct: function (modulesPath, logger, resolver) {
         this.log = logger;
-        this.resolver = new NPMResolver(modulesPath, logger);
+        this.resolver = resolver || new NPMResolver(modulesPath, logger);
     },
 
     /**

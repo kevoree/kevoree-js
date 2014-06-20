@@ -53,9 +53,9 @@ A string value that is used to determine the name of the group that will be atta
 
 #### options.modulesPath
 Type: `String`
-Default value: `'/path/to/grunt-kevoree'`
+Default value: `'.deploy_units'`
 
-A string value that is used to determine the modulesPath variable for Kevoree resolver (where downloaded modules are going to be installed)
+A string value that is used to determine the modulesPath variable for Kevoree resolver (where resolved modules are going to be installed)
 
 #### options.gui
 Type: `Boolean`

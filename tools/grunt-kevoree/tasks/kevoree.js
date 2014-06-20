@@ -12,7 +12,8 @@ var Kevoree         = require('kevoree-nodejs-runtime'),
     KevoreeLogger   = require('kevoree-commons').KevoreeLogger,
     NPMResolver     = require('kevoree-resolvers').NPMResolver,
     KevScript       = require('kevoree-kevscript'),
-    path            = require('path');
+    path            = require('path'),
+    npmi            = require('npmi');
 
 module.exports = function(grunt) {
 
@@ -25,7 +26,7 @@ module.exports = function(grunt) {
         var options = this.options({
             node: 'node0',
             group: 'sync',
-            modulesPath: path.resolve('node_modules/grunt-kevoree'),
+            modulesPath: path.resolve('.deploy_units'),
             gui: false // TODO not implemented yet
         });
         if (nodeName) {
@@ -33,12 +34,22 @@ module.exports = function(grunt) {
             options.node = nodeName;
         }
 
-//        if (options.gui) {
-//
-//
-//        } else {
-            var runtime     = new Kevoree(options.modulesPath),
-                npmResolver = new NPMResolver(options.modulesPath, logger),
+        options.modulesPath = path.resolve(options.modulesPath, options.node);
+
+        npmi({
+            name:           path.resolve('.'),  // local path
+            localInstall:   true,               // local library => local install
+            path:           options.modulesPath,
+            forceInstall:   true                // always reinstall local library (to keep them up-to-date)
+        }, function (err) {
+            if (err) {
+                grunt.fail.fatal(err.message);
+                done();
+                return;
+            }
+
+            var npmResolver = new NPMResolver(options.modulesPath, logger),
+                runtime     = new Kevoree(options.modulesPath, npmResolver),
                 kevsEngine  = new KevScript({ resolvers: { npm: npmResolver } });
 
             runtime.on('started', function () {
@@ -47,6 +58,7 @@ module.exports = function(grunt) {
                     if (err) {
                         grunt.fail.fatal(err.message);
                         done();
+                        return;
                     }
 
                     runtime.deploy(model);
@@ -61,7 +73,7 @@ module.exports = function(grunt) {
             runtime.on('deployed', deployedListener);
 
             runtime.start(options.node, options.group);
-//        }
+        }.bind(this));
     });
 
 };

@@ -31,7 +31,7 @@ var NPMResolver = Resolver.extend({
                 path:           this.modulesPath
             };
 
-        var npmiCallback = function (err) {
+        npmi(options, function (err) {
             if (err) {
                 this.log.error(this.toString(), err.message);
                 return callback(new Error("Bootstrap failure"));
@@ -46,30 +46,6 @@ var NPMResolver = Resolver.extend({
             } catch (err) {
                 // something went wrong while loading model :/
                 return callback(err);
-            }
-        }.bind(this);
-
-        // lets try to check if the current directory contains the library
-        // so that we can install it with the local content
-        fs.readFile(path.resolve('.', 'package.json'), function (err, pkgRawData) {
-            if (err) {
-                // unable to require current directory package.json, lets try to resolve module from npm registry
-                return npmi(options, npmiCallback);
-            }
-
-            var pkg = JSON.parse(pkgRawData);
-            if (pkg.name === deployUnit.name) {
-                // current directory contains the library we want to resolve
-                options = {
-                    name:           path.resolve('.'),  // local path
-                    localInstall:   true,               // local library => local install
-                    path:           this.modulesPath,
-                    forceInstall:   true                // always reinstall local library (to keep them up-to-date)
-                };
-                npmi(options, npmiCallback);
-            } else {
-                // well unable to find module locally, lets try to resolve it from npm registry
-                npmi(options, npmiCallback);
             }
         }.bind(this));
     },
