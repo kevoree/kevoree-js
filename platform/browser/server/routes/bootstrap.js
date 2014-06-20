@@ -3,7 +3,7 @@
  */
 var http       = require('http'),
     kevoree    = require('kevoree-library').org.kevoree,
-    modelSync  = require('kevoree-model-sync'),
+    pushModel  = require('../lib/pushModel'),
     config     = require('./../config.js');
 
 var NAME_PATTERN = /^[\w-]+$/;
@@ -33,18 +33,27 @@ module.exports = function (model) {
                     groupInstance.addSubNodes(clientNode);
 
                     // push new created model to server-side platform
-                    var pushOptions = {
-                        model:  model,
-                        host:   config.serverPlatform.serverHost,
-                        port:   config.serverPlatform.groupPort,
-                        path:   config.serverPlatform.groupPath
-                    };
-                    modelSync.push(pushOptions, function (err) {
-                        if (err) return res.json(JSON.parse(new Error('Unable to push model to "'+config.serverPlatform.nodeName+'" :/')));
-
+                    try {
                         var modelStr = serializer.serialize(model);
-                        return res.json({model: modelStr});
-                    });
+
+                        var options = {
+                            host:   config.serverPlatform.serverHost,
+                            port:   config.serverPlatform.groupProxyPort,
+                            path:   config.serverPlatform.groupPath
+                        };
+
+                        pushModel(options, modelStr, function (err) {
+                            if (err) {
+                                res.json({error: 'Unable to push model to "'+config.serverPlatform.nodeName+'" ('+err.message+')'});
+                                return;
+                            }
+
+                            res.json({model: modelStr});
+                        });
+                    } catch (err) {
+                        // model serialization error
+                        res.json({error: 'Unable to serialize model. Bootstrap failed.'});
+                    }
                 } else {
                     // node name unavailable
                     return res.json({error: '"'+req.body.nodename+'" node name is not available. Please choose another one.'});

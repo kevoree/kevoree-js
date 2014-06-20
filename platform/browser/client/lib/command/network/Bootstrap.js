@@ -27,7 +27,7 @@ var Bootstrap = AbstractCommand.extend({
             },
             error: function (err) {
                 if (err.statusText === 'timeout') {
-                    callback(new Error('Unable to reach '+window.location.href+'/bootstrap (connection timeout)'));
+                    callback(new Error('Unable to reach '+window.location.href+'bootstrap (connection timeout)'));
                 } else {
                     callback(new Error(err.responseText + ' ('+err.status+' '+err.statusText+')'));
                 }

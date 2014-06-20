@@ -52,7 +52,54 @@ function ClientCleaner(server, model, knjs) {
                 // and also clean model from removed node platform
                 var node = this.model.findNodesByID(client.name); // TODO what about name changes at runtime ?
                 if (node) {
-                    node.delete();
+                    // delete node
+                    var bindings, binding;
+                    // delete bindings related to this node
+                    var comps = node.components.iterator();
+                    while (comps.hasNext()) {
+                        var comp = comps.next();
+                        var provided = comp.provided.iterator();
+                        while (provided.hasNext()) {
+                            var pPort = provided.next();
+                            bindings = pPort.bindings.iterator();
+                            while (bindings.hasNext()) {
+                                binding = bindings.next();
+                                binding.hub.removeBindings(binding);
+                                this.model.removeMBindings(binding);
+                            }
+                        }
+                        var required = comp.required.iterator();
+                        while (required.hasNext()) {
+                            var rPort = required.next();
+                            bindings = rPort.bindings.iterator();
+                            while (bindings.hasNext()) {
+                                binding = bindings.next();
+                                binding.hub.removeBindings(binding);
+                                this.model.removeMBindings(binding);
+                            }
+                        }
+                    }
+
+                    // delete links with groups
+                    var groups = node.groups.iterator();
+                    while (groups.hasNext()) {
+                        var grp = groups.next();
+                        grp.removeSubNodes(node);
+                    }
+
+                    // delete channels fragment dictionaries related to this node
+                    var chans = this.model.hubs.iterator();
+                    while (chans.hasNext()) {
+                        var chan = chans.next();
+                        var dic = chan.findFragmentDictionaryByID(node.name);
+                        if (dic) {
+                            chan.removeFragmentDictionary(dic);
+                        }
+                    }
+
+                    this.model.removeNodes(node);
+
+                    // deploy cleaned model
                     knjs.deploy(this.model);
                     console.log('Client "'+client.name+'" disconnected. Removed from model.');
                 }
