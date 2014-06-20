@@ -7,7 +7,7 @@ var Class               = require('pseudoclass'),
     uuid                = require('node-uuid'),
     WebSocket           = require('ws');
 
-var CLIENT_CLEANER_ADDRESS = 'ws://'+window.location.hostname+'/cc';
+var CLIENT_CLEANER_ADDRESS = 'ws://'+window.location.host+'/cc';
 
 /**
  * Created by leiko on 12/03/14.

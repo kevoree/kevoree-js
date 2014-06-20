@@ -66,8 +66,6 @@ var AdaptationEngine = Class({
         this.modelObjMapper = new ModelObjectMapper();
         this.compare = new kevoree.compare.DefaultModelCompare();
         this.alreadyProcessedTraces = {};
-        this.tracesDUs = {};
-        this.platformDUs = [];
     },
 
     /**
@@ -203,9 +201,13 @@ var AdaptationEngine = Class({
                 if (trace.content === 'true') {
                     startInstance(modelElement);
                 } else {
-                    cmd = new StopInstance(this.node, this.modelObjMapper, model, modelElement);
-                    cmdList.push(cmd);
-                    addProcessedTrace(trace.srcPath, cmd);
+                    if (!traceAlreadyProcessed(modelElement.path(), StopInstance.prototype.toString())) {
+                        cmd = new StopInstance(this.node, this.modelObjMapper, model, modelElement);
+                        if (cmd.isRelatedToPlatform(modelElement)) {
+                            cmdList.push(cmd);
+                            addProcessedTrace(modelElement.path(), cmd);
+                        }
+                    }
                 }
 
             } else if (trace.refName && trace.refName === 'value') {
@@ -235,8 +237,10 @@ var AdaptationEngine = Class({
                 // add RemoveInstance primitive
                 if (!traceAlreadyProcessed(modelElement.path(), RemoveInstance.prototype.toString())) {
                     cmd = new RemoveInstance(this.node, this.modelObjMapper, model, modelElement);
-                    cmdList.push(cmd);
-                    addProcessedTrace(tracePath, cmd);
+                    if (cmd.isRelatedToPlatform(modelElement)) {
+                        cmdList.push(cmd);
+                        addProcessedTrace(tracePath, cmd);
+                    }
                 }
 
                 // check if instance is stopped
@@ -245,8 +249,10 @@ var AdaptationEngine = Class({
                     if (!traceAlreadyProcessed(tracePath, StopInstance.prototype.toString())) {
                         // instance is started and there is no "StopInstance" primitive for it yet: add it
                         cmd = new StopInstance(this.node, this.modelObjMapper, model, modelElement);
-                        cmdList.push(cmd);
-                        addProcessedTrace(tracePath, cmd);
+                        if (cmd.isRelatedToPlatform(modelElement)) {
+                            cmdList.push(cmd);
+                            addProcessedTrace(tracePath, cmd);
+                        }
                     }
                 }
 
@@ -268,15 +274,19 @@ var AdaptationEngine = Class({
                         // remove hub instance too
                         if (!traceAlreadyProcessed(hub.path(), RemoveInstance.prototype.toString())) {
                             cmd = new RemoveInstance(this.node, this.modelObjMapper, model, hub);
-                            cmdList.push(cmd);
-                            addProcessedTrace(hub.path(), cmd);
+                            if (cmd.isRelatedToPlatform(hub)) {
+                                cmdList.push(cmd);
+                                addProcessedTrace(hub.path(), cmd);
+                            }
                         }
 
                         // also check if instance has been stopped or not
                         if (!traceAlreadyProcessed(hub.path(), StopInstance.prototype.toString())) {
                             cmd = new StopInstance(this.node, this.modelObjMapper, model, hub);
-                            cmdList.push(cmd);
-                            addProcessedTrace(hub.path(), cmd);
+                            if (cmd.isRelatedToPlatform(hub)) {
+                                cmdList.push(cmd);
+                                addProcessedTrace(hub.path(), cmd);
+                            }
                         }
                     }
                 }

@@ -67,7 +67,7 @@ module.exports = Class({
             // starting loop function
             this.intervalId = setInterval(function () {}, 1e8);
 
-            this.log.info(this.toString(), "Platform started: "+nodeName);
+            this.log.info(this.toString(), "Platform node name: "+nodeName);
 
             this.emitter.emit('started');
         } else {
@@ -123,7 +123,7 @@ module.exports = Class({
             this.emitter.emit('error', new Error('Deploy model failure: unable to find '+this.nodeName+' in given model'));
 
         } else {
-            this.log.info(this.toString(), 'Deploy process started...');
+            this.log.debug(this.toString(), 'Deploy process started...');
             if (model) {
                 // check if there is an instance currently running
                 // if not, it will try to run it
@@ -194,7 +194,7 @@ module.exports = Class({
                                 }
 
                                 // adaptations succeed : woot
-                                core.log.info(core.toString(), "Model deployed successfully.");
+                                core.log.debug(core.toString(), "Model deployed successfully: "+adaptations.length+" changes");
                                 // save old model
                                 pushInArray(core.models, core.currentModel);
                                 // set new model to be the current deployed one
@@ -223,23 +223,23 @@ module.exports = Class({
         callback = callback || function () { console.warn('No callback defined for checkBootstrapNode(model, cb) in KevoreeCore'); };
 
         if (this.nodeInstance == undefined || this.nodeInstance == null) {
-            this.log.info(this.toString(), "Start '"+this.nodeName+"' bootstrapping...");
+            this.log.debug(this.toString(), "Start '"+this.nodeName+"' bootstrapping...");
             this.bootstrapper.bootstrapNodeType(this.nodeName, model, function (err, AbstractNode) {
                 if (err) {
                     err.message = "Unable to bootstrap '"+this.nodeName+"'! Start process aborted.";
                     return callback(err);
                 }
 
-                var nodePath = model.findNodesByID(this.nodeName).path();
+                var node = model.findNodesByID(this.nodeName);
 
                 this.nodeInstance = new AbstractNode();
                 this.nodeInstance.setKevoreeCore(this);
                 this.nodeInstance.setName(this.nodeName);
-                this.nodeInstance.setPath(nodePath);
+                this.nodeInstance.setPath(node.path());
 
                 this.nodeInstance.start();
 
-                this.log.info(this.toString(), "'"+this.nodeName+"' instance started successfully");
+                this.log.info(this.toString(), this.nodeName+' : '+node.typeDefinition.name+'/'+node.typeDefinition.version+' successfully started');
 
                 return callback();
             }.bind(this));
