@@ -38,7 +38,7 @@ module.exports = function (model) {
 
                         var options = {
                             host:   config.serverPlatform.serverHost,
-                            port:   config.serverPlatform.groupProxyPort,
+                            port:   config.serverPlatform.groupPort,
                             path:   config.serverPlatform.groupPath
                         };
 
