@@ -1,6 +1,6 @@
 var path = require('path');
 
-var HOST = '127.0.0.1';
+var HOST = 'runjs.kevoree.org';
 
 /**
  * Created by leiko on 12/03/14.
@@ -13,11 +13,11 @@ module.exports = {
         nodeName:       'server-node',
         serverHost:     HOST,
         groupName:      'sync',
-        groupPort:      9000,
-        groupProxyPort: undefined,
+        groupPort:      80,
+        groupProxyPort: 9000,
         groupPath:      'sharedGroup',
         chanHost:       HOST,
-        chanPort:       9002,
+        chanPort:       80,
         chanPath:       'sharedChan'
     },
 
