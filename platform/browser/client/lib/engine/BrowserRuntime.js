@@ -117,6 +117,7 @@ var BrowserRuntime = Class({
 
     stop: function () {
         this.core.stop();
+        this.ws.close(); // this will trigger node removal server-side
     },
 
     clearLogs: function () {

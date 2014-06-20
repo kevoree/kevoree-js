@@ -42,6 +42,9 @@
                     <li><a href="#" id="clear-logs">Clear Logs</a></li>
                 </ul>
                 <ul class="nav navbar-nav">
+                    <li><a href="http://editor.kevoree.org/?host=runjs.kevoree.org&port=80&path=sharedGroup" id="kwe" target="_blank">Kevoree Web Editor</a></li>
+                </ul>
+                <ul class="nav navbar-nav">
                     <li><a href="#" id="help" data-toggle="modal" data-target="#help-modal">Help</a></li>
                 </ul>
                 <div class="navbar-form navbar-right">
@@ -86,6 +89,9 @@
                     <h4 class="modal-title">Help</h4>
                 </div>
                 <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <p><strong>Kevoree Browser Runtime</strong> is under heavy development, so you may experience bugs. You have been warned :)</p>
+                    </div>
                     <p>
                         This application act as a Kevoree platform (based on a JavascriptNode) running directly
                         inside your browser.
@@ -96,7 +102,7 @@
                     </p>
                     <p>
                         By doing so, your newly created platform will add itself to the
-                        <strong>server platform</strong> by editing the server-side Kevoree model. Because of
+                        <a href="http://editor.kevoree.org/?host=runjs.kevoree.org&port=80&path=sharedGroup" target="_blank"><strong>server platform</strong></a> by editing the server-side Kevoree model. Because of
                         browsers limitations you won't be able to start a server (WebSocket server for instance)
                         in this platform so be sure to properly set your model in order to run your servers server-side
                     </p>
