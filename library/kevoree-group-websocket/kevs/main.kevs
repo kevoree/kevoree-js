@@ -12,4 +12,3 @@ set sync.path/node0 = '/foo'
 //set sync.path/node0 = 'foo'
 
 network node0.lan.ip 127.0.0.1
-network node1.lan.ip 127.0.0.1

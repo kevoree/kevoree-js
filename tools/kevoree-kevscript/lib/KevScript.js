@@ -13,6 +13,7 @@ var KevScript = Class({
     /**
      * Parses given KevScript source-code in parameter 'data' and returns a ContainerRoot.
      * @param data string
+     * @param ctxModel a model to "start" on (in order not to create a model from scratch)
      * @param callback function (Error, ContainerRoot)
      * @throws Error on SyntaxError and on source code validity and such
      */
