@@ -58,7 +58,10 @@ module.exports = function (model) {
     var nodes = model.nodes.iterator();
     while (nodes.hasNext()) {
         var node = nodes.next();
-        processInstance(node);
+        if (!node.host) {
+            // only process nodes that are not hosted (hosted nodes will be processed as subNodes later)
+            processInstance(node);
+        }
 
         var subNodes = node.hosts.iterator();
         while (subNodes.hasNext()) {
