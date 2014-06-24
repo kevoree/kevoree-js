@@ -7,7 +7,8 @@ var FakeConsole = AbstractComponent.extend({
 
     dic_proxy: {
         optional: true,
-        defaultValue: false
+        defaultValue: false,
+        datatype: 'boolean'
     },
 
     start: function (_super) {
