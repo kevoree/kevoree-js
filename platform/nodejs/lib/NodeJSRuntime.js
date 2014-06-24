@@ -61,7 +61,9 @@ var NodeJSRuntime = Class({
         this.nodename = nodename || this.nodename;
         this.groupname = groupname || this.groupname;
 
-        this.kCore.start(this.nodename, this.groupname);
+        process.nextTick(function () {
+            this.kCore.start(this.nodename, this.groupname);
+        }.bind(this));
     },
 
     deploy: function (model) {
@@ -77,7 +79,9 @@ var NodeJSRuntime = Class({
         bootstrapHelper(options, function (err, bootstrapModel) {
             if (err) throw err;
 
-            this.kCore.deploy(bootstrapModel);
+            process.nextTick(function () {
+                this.kCore.deploy(bootstrapModel);
+            }.bind(this));
 
         }.bind(this));
     },
