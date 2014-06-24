@@ -63,4 +63,4 @@ module.exports = function (model, statements, stmt, opts, cb) {
         // no resolver set for include statements with "type"
         return cb(new Error('Error: include '+type+':'+mergeDef+' (Unable to handle "'+type+'" include type. Did you add a resolver for that?)'));
     }
-}
+};

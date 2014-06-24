@@ -6,7 +6,8 @@ var Resolver      = require('kevoree-commons').Resolver,
     fs            = require('fs'),
     rimraf        = require('rimraf'),
     async         = require('async'),
-    path          = require('path');
+    path          = require('path'),
+    npmVers       = require('npm-vers');
 
 var NPMResolver = Resolver.extend({
     toString: 'NPMResolver',
@@ -31,23 +32,44 @@ var NPMResolver = Resolver.extend({
                 path:           this.modulesPath
             };
 
-        npmi(options, function (err) {
-            if (err) {
-                this.log.error(this.toString(), err.message);
-                return callback(new Error("Bootstrap failure"));
-            }
+        var npmiLoad = function () {
+            npmi(options, function (err) {
+                if (err) {
+                    this.log.error(this.toString(), err.message);
+                    callback(new Error("Bootstrap failure"));
+                    return;
+                }
 
-            // resolve deployUnit module (require it) and call callback
-            var KClass = require(pkgPath);
-            var jsonModel = require(path.resolve(pkgPath, 'kevlib.json'));
-            try {
-                var model = loader.loadModelFromString(JSON.stringify(jsonModel)).get(0);
-                return callback(null, KClass, model);
-            } catch (err) {
-                // something went wrong while loading model :/
-                return callback(err);
-            }
-        }.bind(this));
+                // resolve deployUnit module (require it) and call callback
+                var KClass = require(pkgPath);
+                var jsonModel = require(path.resolve(pkgPath, 'kevlib.json'));
+                try {
+                    var model = loader.loadModelFromString(JSON.stringify(jsonModel)).get(0);
+                    callback(null, KClass, model);
+                } catch (err) {
+                    // something went wrong while loading model :/
+                    callback(err);
+                }
+            }.bind(this));
+        }.bind(this);
+
+        if (options.version === 'release') {
+            npmVers(options.name, function (err, result) {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+
+                if (result.latestRelease) {
+                    options.version = result.latestRelease;
+                    npmiLoad();
+                } else {
+                    callback(new Error('No release version found for '+options.name));
+                }
+            }.bind(this));
+        } else {
+            npmiLoad();
+        }
     },
 
     uninstall: function (deployUnit, callback) {
