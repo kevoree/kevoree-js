@@ -27,7 +27,7 @@ var NPMResolver = Resolver.extend({
             pkgPath = path.resolve(this.modulesPath, 'node_modules', deployUnit.name), // default npm module location
             options = {
                 name:           deployUnit.name,
-                version:        deployUnit.version,
+                version:        deployUnit.version || 'latest',
                 forceInstall:   forceInstall,
                 path:           this.modulesPath
             };
@@ -35,8 +35,8 @@ var NPMResolver = Resolver.extend({
         var npmiLoad = function () {
             npmi(options, function (err) {
                 if (err) {
-                    this.log.error(this.toString(), err.message);
-                    callback(new Error("Bootstrap failure"));
+                    this.log.error(this.toString(), err.message+'@'+options.version);
+                    callback(new Error("Resolve failed"));
                     return;
                 }
 
@@ -64,11 +64,33 @@ var NPMResolver = Resolver.extend({
                     options.version = result.latestRelease;
                     npmiLoad();
                 } else {
-                    callback(new Error('No release version found for '+options.name));
+                    callback(new Error('No release version found for ' + options.name));
                 }
             }.bind(this));
         } else {
-            npmiLoad();
+            // lets try to check if the current directory contains the library
+            // so that we can install it with the local content
+            fs.readFile(path.resolve('.', 'package.json'), function (err, data) {
+                if (err) {
+                    // unable to require current directory package.json, lets try to resolve module from npm registry
+                    npmiLoad();
+                    return;
+                }
+
+                var pkg = JSON.parse(data);
+                if (pkg.name === deployUnit.name) {
+                    // current directory contains the library we want to resolve
+                    options = {
+                        name:    pkg.name,
+                        version: pkg.version,
+                        path:    this.modulesPath
+                    };
+                    npmiLoad();
+                } else {
+                    // unable to find module locally, lets try to resolve it from npm registry
+                    npmiLoad();
+                }
+            }.bind(this));
         }
     },
 
