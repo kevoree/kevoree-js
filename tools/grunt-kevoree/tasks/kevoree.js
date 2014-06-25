@@ -35,12 +35,15 @@ module.exports = function(grunt) {
         }
 
         options.modulesPath = path.resolve(options.modulesPath, options.node);
+        var pkg = grunt.file.readJSON('package.json');
 
+        // install project module into options.modulesPath so that it could be require() even if not published
         npmi({
-            name:           path.resolve('.'),  // local path
-            localInstall:   true,               // local library => local install
-            path:           options.modulesPath,
-            forceInstall:   true                // always reinstall local library (to keep them up-to-date)
+            name:           path.resolve('.'),      // project module path
+            version:        pkg.version,            // project module version
+            localInstall:   true,                   // npm install using local files (not from registry)
+            path:           options.modulesPath,    // install into .deploy_units/<node_name>/node_modules
+            forceInstall:   true                    // always reinstall wip module (to keep them up-to-date)
         }, function (err) {
             if (err) {
                 grunt.fail.fatal(err.message);
