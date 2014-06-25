@@ -6,14 +6,14 @@
         "prepublish": "grunt"
     },
     "dependencies": {
-        "kevoree-entities": "^0.6.0"
+        "kevoree-entities": ">= 0.7.0"
     },
     "devDependencies": {
         "grunt": "^0.4.1",
         "grunt-jade": "^0.4.0",
-        "grunt-kevoree": "^0.4.11",
+        "grunt-kevoree": "^0.7.1",
         "grunt-browserify": "^2.0.7",
         "grunt-contrib-uglify": "^0.4.0",
-        "grunt-kevoree-genmodel" : "^0.1.1"
+        "grunt-kevoree-genmodel" : "^0.7.0"
     }
 }
