@@ -1,6 +1,6 @@
 {
   "name": "kevoree-group-websocket",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "main": "./lib/WebSocketGroup.js",
   "description": "A Kevoree group that uses WebSocket to transfer models",
   "scripts": {
@@ -26,9 +26,9 @@
   },
   "dependencies": {
     "async": "^0.2.10",
-    "kevoree-commons": ">=0.8.0",
-    "kevoree-entities": ">=0.8.0",
-    "kevoree-library": ">=0.8.0",
+    "kevoree-commons": "^0.8.0",
+    "kevoree-entities": "^0.8.0",
+    "kevoree-library": "^0.8.0",
     "pseudoclass": "^1.0.0",
     "smart-socket": "0.1.0",
     "ws": "^0.4.31"
@@ -37,7 +37,7 @@
     "grunt": "^0.4.3",
     "grunt-browserify": "^2.0.7",
     "grunt-kevoree": ">=0.8.0",
-    "grunt-kevoree-genmodel": ">=0.8.0"
+    "grunt-kevoree-genmodel": "^0.8.0"
   },
   "optionalDependencies": {},
   "engines": {

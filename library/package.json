@@ -1,0 +1,30 @@
+{
+  "name": "kevoree-library-manager",
+  "version": "0.8.1",
+  "private": true,
+  "description": "Handle standard Kevoree library",
+  "scripts": {
+    "start": "grunt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kevoree/kevoree-js"
+  },
+  "keywords": [
+    "kevoree",
+    "library",
+    "manager"
+  ],
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "license": "LGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/kevoree/kevoree-js/issues"
+  },
+  "homepage": "https://github.com/kevoree/kevoree-js",
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "grunt-deps-manager": "0.0.2",
+    "grunt-publish": "0.0.3",
+    "grunt-version": "^0.3.0"
+  }
+}
