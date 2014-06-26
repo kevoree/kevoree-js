@@ -18,9 +18,10 @@ module.exports = AdaptationPrimitive.extend({
 
         var updateDictionary = function (instance) {
             var dictionary = instance.getDictionary();
+
             this.oldDictionaryMap = dictionary.cloneMap();
             this.instance = instance;
-            if (Kotlin.isType(kDictionary, kevoree.impl.FragmentDictionaryImpl)) {
+            if (Kotlin.isType(kDictionary, kevoree.FragmentDictionary)) {
                 if (kDictionary.name == this.node.getName()) {
                     this.log.debug(this.toString(), kDictionary.eContainer().name+'.'+this.modelElement.name+'/'+kDictionary.name+' = '+this.modelElement.value);
                     dictionary.setEntry(this.modelElement.name, this.modelElement.value);

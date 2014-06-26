@@ -96,7 +96,6 @@ var WebSocketGroup = AbstractGroup.extend({
     },
 
     update: function () {
-        this.log.debug(this.toString(), 'Woot update');
         this.stop();
         this.start();
     },

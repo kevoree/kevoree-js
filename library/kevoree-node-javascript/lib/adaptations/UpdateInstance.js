@@ -9,7 +9,7 @@ module.exports = AdaptationPrimitive.extend({
     execute: function (_super, callback) {
         _super.call(this, callback);
 
-        if (this.modelElement.name != this.node.getName() && this.isRelatedToPlatform(this.modelElement)) {
+        if (this.modelElement.name != this.node.getName()) {
             var instance = this.mapper.getObject(this.modelElement.path());
 
             if (instance !== undefined && instance !== null) {

@@ -43,27 +43,5 @@ module.exports = AdaptationPrimitive.extend({
 
         var cmd = new AddInstance(this.node, this.mapper, this.adaptModel, this.modelElement);
         cmd.execute(callback);
-    },
-
-    doSpecificTypeProcess: function (kInstance) {
-        if (Kotlin.isType(kInstance.typeDefinition, kevoree.impl.ComponentTypeImpl)) {
-            var provided = kInstance.provided;
-            for (var i=0; i < provided.size(); i++) {
-                this.mapper.removeEntry(provided.get(i).path());
-            }
-
-            var required = kInstance.required;
-            for (var i=0; i < required.size(); i++) {
-                this.mapper.removeEntry(required.get(i).path());
-            }
-
-        } else if (Kotlin.isType(kInstance.typeDefinition, kevoree.impl.ChannelTypeImpl)) {
-
-        } else if (Kotlin.isType(kInstance.typeDefinition, kevoree.impl.GroupTypeImpl)) {
-
-
-        } else if (Kotlin.isType(kInstance.typeDefinition, kevoree.impl.NodeTypeImpl)) {
-
-        }
     }
 });

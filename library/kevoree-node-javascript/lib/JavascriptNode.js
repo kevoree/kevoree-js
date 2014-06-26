@@ -8,17 +8,21 @@ var JavascriptNode = AbstractNode.extend({
     toString: 'JavascriptNode',
 
     dic_logLevel: {
-        defaultValue: 'INFO',
+        defaultValue: 'DEBUG',
         optional: false,
         update: function (value) {
             switch (value.toLowerCase().trim()) {
-                default:
-                case 'info':
-                    this.log.setLevel(KevoreeLogger.INFO);
+                case 'all':
+                    this.log.setLevel(KevoreeLogger.ALL);
                     break;
 
+                default:
                 case 'debug':
                     this.log.setLevel(KevoreeLogger.DEBUG);
+                    break;
+
+                case 'info':
+                    this.log.setLevel(KevoreeLogger.INFO);
                     break;
 
                 case 'error':
@@ -46,6 +50,30 @@ var JavascriptNode = AbstractNode.extend({
     start: function (_super) {
         _super.call(this);
         this.adaptationEngine.setLogger(this.getKevoreeCore().getLogger());
+        var logLevel = this.dictionary.getValue('logLevel') || this.dic_logLevel.defaultValue;
+        console.log('logLevel from dic', logLevel);
+        switch (logLevel.toLowerCase().trim()) {
+            case 'all':
+                this.log.setLevel(KevoreeLogger.ALL);
+                break;
+
+            default:
+            case 'debug':
+                this.log.setLevel(KevoreeLogger.DEBUG);
+                break;
+
+            case 'info':
+                this.log.setLevel(KevoreeLogger.INFO);
+                break;
+
+            case 'error':
+                this.log.setLevel(KevoreeLogger.ERROR);
+                break;
+
+            case 'warn':
+                this.log.setLevel(KevoreeLogger.WARN);
+                break;
+        }
     },
 
     stop: function (_super) {

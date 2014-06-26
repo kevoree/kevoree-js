@@ -13,6 +13,9 @@ module.exports = function (grunt) {
         kevoree: {
             run: {
                 kevscript: 'kevs/main.kevs'
+            },
+            comm: {
+                kevscript: 'kevs/communications.kevs'
             }
         },
         browserify: {

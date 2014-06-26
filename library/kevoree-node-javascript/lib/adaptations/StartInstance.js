@@ -8,7 +8,14 @@ module.exports = AdaptationPrimitive.extend({
         _super.call(this, callback);
 
         if (this.modelElement.name != this.node.getName()) {
-            if (this.isRelatedToPlatform(this.modelElement)) {
+            if (this.modelElement.host && this.modelElement.host.name === this.node.getName()) {
+                // this element is a subNode to this.node
+                this.log.debug(this.toString(), this.node.getName()+' has to start '+this.modelElement.name);
+                this.node.startSubNode(this.modelElement);
+                callback();
+                return;
+
+            } else {
                 var instance = this.mapper.getObject(this.modelElement.path());
                 if (instance != undefined && instance != null) {
                     // check dictionary value and give default values if none set
@@ -36,19 +43,16 @@ module.exports = AdaptationPrimitive.extend({
 
                     // check if instance is already started
                     if (!instance.isStarted()) {
-                        this.log.debug(this.toString(), instance.getName());
+                        this.log.debug(this.toString(), instance.getPath());
                         instance.start();
                     }
-                    return callback();
+                    callback();
+                    return;
 
                 } else {
-                    return callback(new Error(this.toString()+" error: unable to start instance "+this.modelElement.name));
+                    callback(new Error(this.toString()+" error: unable to find instance "+this.modelElement.name));
+                    return
                 }
-            } else if (this.modelElement.host && this.modelElement.host.name === this.node.getName()) {
-                // this element is a subNode to this.node
-                this.log.debug(this.toString(), this.node.getName()+' has to start '+this.modelElement.name);
-                this.node.startSubNode(this.modelElement);
-                return callback();
             }
         }
 

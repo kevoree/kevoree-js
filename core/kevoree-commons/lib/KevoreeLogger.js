@@ -15,7 +15,7 @@ var KevoreeLogger = Class({
 
     construct: function (tag) {
         this.tag = tag;
-        this.level = 0;
+        this.level = 2;
         this.filter = '';
     },
 

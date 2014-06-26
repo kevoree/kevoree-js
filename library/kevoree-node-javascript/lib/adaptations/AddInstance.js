@@ -2,7 +2,6 @@ var AdaptationPrimitive = require('./AdaptationPrimitive'),
     RemoveInstance      = require('./RemoveInstance'),
     kevoree             = require('kevoree-library').org.kevoree,
     Kotlin              = require('kevoree-kotlin'),
-    Port                = require('kevoree-entities').Port,
     path                = require('path');
 
 /**
@@ -24,33 +23,32 @@ module.exports = AdaptationPrimitive.extend({
         // inception check
         if (this.modelElement && (this.modelElement.name !== this.node.getName())) {
             // platform related check
-            if (this.isRelatedToPlatform(this.modelElement)) {
-                // already added check
-                if (!this.mapper.hasObject(this.modelElement.path())) {
-                    var moduleName = this.mapper.getObject(this.modelElement.typeDefinition.deployUnit.path());
-                    if ((moduleName !== undefined) && (moduleName !== null)) {
-                        try {
-                            var InstanceClass = require(moduleName);
-                            var instance = new InstanceClass();
-                            instance.setKevoreeCore(this.node.getKevoreeCore());
-                            instance.setName(this.modelElement.name);
-                            instance.setPath(this.modelElement.path());
-                            instance.setNodeName(this.node.getName());
+            // already added check
+            if (!this.mapper.hasObject(this.modelElement.path())) {
+                var moduleName = this.mapper.getObject(this.modelElement.typeDefinition.deployUnit.path());
+                if ((moduleName !== undefined) && (moduleName !== null)) {
+                    try {
+                        var InstanceClass = require(moduleName);
+                        var instance = new InstanceClass();
+                        instance.setKevoreeCore(this.node.getKevoreeCore());
+                        instance.setName(this.modelElement.name);
+                        instance.setPath(this.modelElement.path());
+                        instance.setNodeName(this.node.getName());
 
-                            this.doSpecificTypeProcess(this.modelElement);
+                        this.log.debug(this.toString(), instance.getName()+' '+this.modelElement.typeDefinition.path());
+                        this.mapper.addEntry(this.modelElement.path(), instance);
+                        callback();
+                        return;
 
-                            this.log.debug(this.toString(), instance.getName()+' '+this.modelElement.typeDefinition.path());
-                            this.mapper.addEntry(this.modelElement.path(), instance);
-                            return callback();
-
-                        } catch (e) {
-                            return callback(e);
-                        }
-
-                    } else {
-                        // there is no DeployUnit installed for this instance TypeDefinition
-                        return callback(new Error(this.toString()+ " error: no DeployUnit installed for "+this.modelElement.path()));
+                    } catch (e) {
+                        callback(e);
+                        return;
                     }
+
+                } else {
+                    // there is no DeployUnit installed for this instance TypeDefinition
+                    callback(new Error(this.toString()+ " error: no DeployUnit installed for "+this.modelElement.path()));
+                    return;
                 }
             }
         }
@@ -62,28 +60,5 @@ module.exports = AdaptationPrimitive.extend({
         _super.call(this, callback);
         var cmd = new RemoveInstance(this.node, this.mapper, this.adaptModel, this.modelElement);
         cmd.execute(callback);
-    },
-
-    doSpecificTypeProcess: function (kInstance) {
-        if (Kotlin.isType(kInstance.typeDefinition, kevoree.impl.ComponentTypeImpl)) {
-            var i;
-            var provided = kInstance.provided;
-            for (i=0; i < provided.size(); i++) {
-                var input = provided.get(i);
-                this.mapper.addEntry(input.path(), new Port(input.portTypeRef.name, input.path()));
-            }
-
-            var required = kInstance.required;
-            for (i=0; i < required.size(); i++) {
-                var output = required.get(i);
-                this.mapper.addEntry(output.path(), new Port(output.portTypeRef.name, output.path()));
-            }
-        } else if (Kotlin.isType(kInstance.typeDefinition, kevoree.impl.ChannelTypeImpl)) {
-            var bindings = kInstance.bindings.iterator();
-            while (bindings.hasNext()) {
-                var binding = bindings.next();
-                this.mapper.addEntry(binding.port.path(), new Port(binding.port.portTypeRef.name, binding.port.path()));
-            }
-        }
     }
 });

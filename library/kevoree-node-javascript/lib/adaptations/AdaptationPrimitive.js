@@ -46,31 +46,5 @@ module.exports = Class({
         if (callback == undefined || callback == null || typeof(callback) != 'function') {
             throw new Error("Undo method need a callback function as last parameter");
         }
-    },
-
-    isRelatedToPlatform: function (kInstance) {
-        var i;
-        if (Kotlin.isType(kInstance.typeDefinition, kevoree.impl.ComponentTypeImpl)) {
-            // if parent is this node platform: it's ok
-            return (kInstance.eContainer().name === this.node.getName());
-
-        } else if (Kotlin.isType(kInstance.typeDefinition, kevoree.impl.ChannelTypeImpl)) {
-            // if this channel has bindings with components hosted in this node platform: it's ok
-            var bindings = kInstance.bindings;
-            for (i=0; i < bindings.size(); i++) {
-                if (bindings.get(i).port.eContainer().eContainer().name === this.node.getName()) return true;
-            }
-
-        } else if (Kotlin.isType(kInstance.typeDefinition, kevoree.impl.GroupTypeImpl)) {
-            var subNodes = kInstance.subNodes;
-            for (i=0; i < subNodes.size(); i++) {
-                if (subNodes.get(i).name === this.node.name) return true;
-            }
-
-        } else if (Kotlin.isType(kInstance.typeDefinition, kevoree.impl.NodeTypeImpl)) {
-            return false;
-        }
-
-        return false;
     }
 });

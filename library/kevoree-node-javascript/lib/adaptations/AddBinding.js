@@ -1,4 +1,5 @@
 var AdaptationPrimitive = require('./AdaptationPrimitive'),
+    Port                = require('kevoree-entities').Port,
     RemoveBinding       = require('./RemoveBinding'),
     Kotlin              = require('kevoree-kotlin'),
     kevoree             = require('kevoree-library').org.kevoree;
@@ -9,53 +10,60 @@ module.exports = AdaptationPrimitive.extend({
     execute: function (_super, callback) {
         _super.call(this, callback);
 
-        if (this.modelElement.port.eContainer().eContainer().name === this.node.getName()) {
-            // this binding is related to the current node platform
-            var chanInstance = this.mapper.getObject(this.modelElement.hub.path()),
-                compInstance = this.mapper.getObject(this.modelElement.port.eContainer().path()),
-                portInstance = this.mapper.getObject(this.modelElement.port.path());
+        var bindings, binding;
 
-            if (chanInstance && compInstance) {
-                try {
-                    portInstance.setComponent(compInstance);
-                    portInstance.setChannel(chanInstance);
+        var chanInstance = this.mapper.getObject(this.modelElement.hub.path()),
+            compInstance = this.mapper.getObject(this.modelElement.port.eContainer().path()),
+            portInstance = this.mapper.getObject(this.modelElement.port.path());
 
-                    if (this.isInputPortType(this.modelElement.port)) {
-                        // binding related port is an 'in' port type
-                        compInstance.addInternalInputPort(portInstance);
-                        chanInstance.addInternalInputPort(portInstance);
-                        this.log.debug(this.toString(), 'input '+portInstance.getPath()+' <-> '+chanInstance.getPath());
-                    } else {
-                        // binding related port is an 'out' port type
-                        // so we need to get all this channel 'in' ports
-                        // and give them to this chan fragment
-                        compInstance.addInternalOutputPort(portInstance);
-                        this.log.debug(this.toString(), 'output '+portInstance.getPath()+' <-> '+chanInstance.getPath());
+        if (chanInstance) {
+            if (compInstance) {
+                if (!portInstance) {
+                    portInstance = new Port(this.modelElement.port.name, this.modelElement.port.path());
+                    this.mapper.addEntry(this.modelElement.port.path(), portInstance);
+                }
+                portInstance.setComponent(compInstance);
+                portInstance.setChannel(chanInstance);
 
-                        // retrieve every bindings related to this binding chan
-                        var bindings = this.modelElement.hub.bindings.iterator();
-                        while (bindings.hasNext()) {
-                            var binding = bindings.next();
-                            if (binding != this.modelElement) { // ignore this binding because we are already processing it
-                                if (this.isInputPortType(binding.port)) {
-                                    chanInstance.addInternalInputPort(this.mapper.getObject(binding.port.path()));
+                var provided = this.modelElement.port.eContainer().findProvidedByID(this.modelElement.port.name);
+                if (provided) {
+                    // binding related port is an 'in' port type
+                    compInstance.addInternalInputPort(portInstance);
+                    chanInstance.addInternalInputPort(portInstance);
+                    this.log.debug(this.toString(), 'input '+portInstance.getPath()+' <-> '+chanInstance.getPath());
+                } else {
+                    // binding related port is an 'out' port type
+                    // so we need to get all this channel 'in' ports
+                    // and give them to this chan fragment
+                    compInstance.addInternalOutputPort(portInstance);
+                    this.log.debug(this.toString(), 'output '+portInstance.getPath()+' <-> '+chanInstance.getPath());
+
+                    // retrieve every bindings related to this binding chan
+                    bindings = this.modelElement.hub.bindings.iterator();
+                    while (bindings.hasNext()) {
+                        binding = bindings.next();
+                        if (binding != this.modelElement) { // ignore this binding because we are already processing it
+                            provided = binding.port.eContainer().findProvidedByID(binding.port.name);
+                            if (provided) {
+                                portInstance = this.mapper.getObject(provided.path());
+                                if (!portInstance) {
+                                    portInstance = new Port(provided.name, provided.path());
+                                    this.mapper.addEntry(provided.path(), portInstance);
                                 }
+                                chanInstance.addInternalInputPort(portInstance);
                             }
                         }
                     }
-
-                    return callback();
-
-                } catch (err) {
-                    return callback(err);
                 }
 
-            } else {
-                return callback(new Error(this.toString()+" error: unable to find channel or component instance(s)."));
-            }
-        }
+                callback();
 
-        return callback();
+            } else {
+                callback(new Error(this.toString()+" error: unable to find component "+this.modelElement.port.eContainer().name+" instance on platform."));
+            }
+        } else {
+            callback(new Error(this.toString()+" error: unable to find channel "+this.modelElement.hub.name+" instance on platform."));
+        }
     },
 
     undo: function (_super, callback) {
@@ -63,9 +71,5 @@ module.exports = AdaptationPrimitive.extend({
 
         var cmd = new RemoveBinding(this.node, this.mapper, this.adaptModel, this.modelElement);
         cmd.execute(callback);
-    },
-
-    isInputPortType: function (kPort) {
-        return (kPort.getRefInParent() === 'provided');
     }
 });

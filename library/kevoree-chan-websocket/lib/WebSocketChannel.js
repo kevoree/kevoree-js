@@ -46,9 +46,10 @@ var WebSocketChannel = AbstractChannel.extend({
 
         this.checkNoMultipleMasterServer();
 
-        if (this.port && this.port.length > 0) {
-            if (!isNaN(parseInt(this.port))) {
-                this.startWSServer(this.dictionary.getValue('port'), processPath(this.dictionary.getValue('path')));
+        var port = this.dictionary.getValue('port');
+        if (port && port.length > 0) {
+            if (!isNaN(parseInt(port))) {
+                this.startWSServer(port, processPath(this.dictionary.getValue('path')));
             } else {
                 throw new Error('WebSocketChannel error: '+this.getName()+'.port/'+this.getNodeName()+' attribute is not a number');
             }

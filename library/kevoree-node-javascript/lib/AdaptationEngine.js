@@ -24,30 +24,23 @@ var AddInstance         = require('./adaptations/AddInstance'),
 
 
 // CONSTANTS
-var INSTANCE_TRACE  = [
-        'groups',
-        'nodes',
-        'components',
-        'hubs',
-        'hosts'
-    ],
-    COMMAND_RANK = {
-        // highest priority
-        StopInstance:     0,
-        RemoveBinding:    1,
-        RemoveInstance:   2,
-        RemoveTypeDef:    3,
-        RemoveDeployUnit: 4,
-        AddDeployUnit:    5,
-        AddTypeDef:       6,
-        AddInstance:      7,
-        AddBinding:       8,
-        UpdateDictionary: 9,
-        UpdateInstance:   10,
-        StartInstance:    11,
-        Noop:             42
-        // lowest priority
-    };
+var COMMAND_RANK = {
+    // highest priority
+    StopInstance:     0,
+    RemoveBinding:    1,
+    RemoveInstance:   2,
+    RemoveTypeDef:    3,
+    RemoveDeployUnit: 4,
+    AddDeployUnit:    5,
+    AddTypeDef:       6,
+    AddInstance:      7,
+    AddBinding:       8,
+    UpdateDictionary: 9,
+    UpdateInstance:   10,
+    StartInstance:    11,
+    Noop:             42
+    // lowest priority
+};
 
 /**
  * AdaptationEngine knows each AdaptationPrimitive command available
@@ -66,6 +59,7 @@ var AdaptationEngine = Class({
         this.modelObjMapper = new ModelObjectMapper();
         this.compare = new kevoree.compare.DefaultModelCompare();
         this.alreadyProcessedTraces = {};
+        this.targetModel = null;
     },
 
     /**
@@ -76,222 +70,239 @@ var AdaptationEngine = Class({
      * @returns {Array}
      */
     processTraces: function (diffSeq, targetModel) {
+        this.targetModel = targetModel;
         var cmdList = [];
+        // reset traces map
+        this.alreadyProcessedTraces = {};
+
+        // know if a trace has already been added to cmdList for {path <-> AdaptationPrimitive}
+        var traceAlreadyProcessed = function (cmd) {
+            return this.alreadyProcessedTraces[cmd.modelElement.path()] && this.alreadyProcessedTraces[cmd.modelElement.path()][cmd.toString()];
+        }.bind(this);
+
+        // add a trace to the processed trace map
+        var addProcessedTrace = function (cmd) {
+            this.alreadyProcessedTraces[cmd.modelElement.path()] = this.alreadyProcessedTraces[cmd.modelElement.path()] || {};
+            this.alreadyProcessedTraces[cmd.modelElement.path()][cmd.toString()] = cmd;
+        }.bind(this);
 
         // fill adaptation primitives list
         var traces = diffSeq.traces.iterator();
+        var cmds;
         while (traces.hasNext()) {
-            this.processTrace(traces.next(), targetModel, cmdList);
+            var trace = traces.next();
+            cmds = this.processTrace(trace, targetModel.findByPath(trace.previousPath || trace.srcPath));
+            for (var i=0; i < cmds.length; i++) {
+                if (!traceAlreadyProcessed(cmds[i])) {
+                    cmdList.push(cmds[i]);
+                    addProcessedTrace(cmds[i]);
+                }
+            }
         }
 
-        // reset maps
-        this.alreadyProcessedTraces = {};
+        // clean primitives (dont call UpdateInstance when StopInstance will be executed)
+        for (var path in this.alreadyProcessedTraces) {
+            if (this.alreadyProcessedTraces[path][UpdateInstance.prototype.toString()]) {
+                for (var type in this.alreadyProcessedTraces[path]) {
+                    if (type === StopInstance.prototype.toString() || type === StartInstance.prototype.toString()) {
+                        var index = cmdList.indexOf(this.alreadyProcessedTraces[path][UpdateInstance.prototype.toString()]);
+                        if (index > -1) {
+                            cmdList.splice(index, 1);
+                        }
+                    }
+                }
+            }
+        }
 
+        // return sorted command list (sort by COMMAND_RANK in order to process adaptations properly)
+//        cmds = this.sortCommands(cmdList);
+//        for (var j=0; j < cmds.length; j++) {
+//            console.log('CMD >>><<< ', cmds[j].toString(), cmds[j].modelElement.path());
+//        }
         return this.sortCommands(cmdList);
     },
 
     /**
-     * Fill up cmdList array parameter with the proper AdaptationPrimitive according to the trace parameter
+     * Creates an array of AdaptationPrimitive according to the trace
      * @param trace
-     * @param model
-     * @param cmdList
+     * @param modelElement
      */
-    processTrace: function (trace, model, cmdList) {
-        var cmd, modelElement, hub;
-//        if (trace.traceType.name() === 'SET' && trace.refName === 'started') console.log(trace.traceType.name()+'\n\tref= '+trace.refName+'\n\tsrc= '+trace.srcPath+'\n\tprev= '+trace.previousPath);
+    processTrace: function (trace, modelElement) {
+        var cmds = [];
 
-        var addProcessedTrace = function (path, cmd) {
-            this.alreadyProcessedTraces[path] = this.alreadyProcessedTraces[path] || {};
-            this.alreadyProcessedTraces[path][cmd.toString()] = true;
-        }.bind(this);
+        switch (trace.refName) {
+            case 'groups':
+            case 'hosts':
+            case 'components':
+                switch (trace.traceType.name()) {
+                    case 'ADD':
+                        if (this.isRelatedToPlatform(modelElement)) {
+                            if (!this.modelObjMapper.getObject(modelElement.typeDefinition.deployUnit.path())) {
+                                cmds.push(this.createCommand(AddDeployUnit, modelElement.typeDefinition.deployUnit));
+                            }
 
-        var traceAlreadyProcessed = function (path, cmd) {
-            return this.alreadyProcessedTraces[path] && this.alreadyProcessedTraces[path][cmd];
-        }.bind(this);
-
-        var addInstance = function (instance) {
-            // Add instance
-            cmd = new AddInstance(this.node, this.modelObjMapper, model, instance);
-            if (cmd.isRelatedToPlatform(instance)) {
-                if (!traceAlreadyProcessed(instance.path(), AddInstance.prototype.toString())) {
-                    cmdList.push(cmd);
-                    addProcessedTrace(instance.path(), cmd);
-
-
-                    if (!this.modelObjMapper.getObject(instance.typeDefinition.deployUnit.path())) {
-                        if (!traceAlreadyProcessed(instance.typeDefinition.deployUnit.path(), AddDeployUnit.prototype.toString())) {
-                            // Add deploy unit
-                            cmd = new AddDeployUnit(this.node, this.modelObjMapper, model, instance.typeDefinition.deployUnit);
-                            cmdList.push(cmd);
-                            addProcessedTrace(instance.typeDefinition.deployUnit.path(), cmd);
-                        }
-                    }
-                }
-            }
-        }.bind(this);
-
-        var startInstance = function (instance) {
-            if (!traceAlreadyProcessed(instance.path(), StartInstance.prototype.toString())) {
-                cmd = new StartInstance(this.node, this.modelObjMapper, model, instance);
-                cmdList.push(cmd);
-                addProcessedTrace(instance.path(), cmd);
-
-                if (instance.dictionary) {
-                    var values = instance.dictionary.values.iterator();
-                    while (values.hasNext()) {
-                        var val = values.next();
-                        if (!traceAlreadyProcessed(val.path(), UpdateDictionary.prototype.toString())) {
-                            cmd = new UpdateDictionary(this.node, this.modelObjMapper, model, val);
-                            cmdList.push(cmd);
-                            addProcessedTrace(val.path(), cmd);
-
-                            if (!traceAlreadyProcessed(instance.path(), UpdateInstance.prototype.toString())) {
-                                cmd = new UpdateInstance(this.node, this.modelObjMapper, model, instance);
-                                cmdList.push(cmd);
-                                addProcessedTrace(instance.path(), cmd);
+                            if (!this.modelObjMapper.getObject(modelElement.path())) {
+                                cmds.push(this.createCommand(AddInstance, modelElement));
                             }
                         }
-                    }
-                }
-            }
-        }.bind(this);
+                        break;
 
-        // ADD - TRACES HANDLING
-        if (Kotlin.isType(trace, ModelAddTrace)) {
-            if (INSTANCE_TRACE.indexOf(trace.refName) !== -1) {
-                modelElement = model.findByPath(trace.previousPath);
-                addInstance(modelElement);
-                startInstance(modelElement);
+                    case 'REMOVE':
+                        if (this.isRelatedToPlatform(modelElement)) {
+                            if (this.modelObjMapper.getObject(modelElement.typeDefinition.deployUnit.path())) {
+                                cmds.push(this.createCommand(RemoveDeployUnit, modelElement.typeDefinition.deployUnit));
+                            }
 
-            } else if (trace.refName === 'mBindings') {
-                // Add binding
-                modelElement = model.findByPath(trace.previousPath);
-                cmd = new AddBinding(this.node, this.modelObjMapper, model, modelElement);
-                cmdList.push(cmd);
-                addProcessedTrace(modelElement.path(), cmd);
-
-                if (modelElement && modelElement.hub && !this.modelObjMapper.getObject(modelElement.hub.path())) {
-                    hub = model.findByPath(modelElement.hub.path());
-                    // this binding relies on a hub that hasn't been instantiated yet
-                    addInstance(hub);
-
-                    // also check if the instance has been started or not
-                    startInstance(hub);
-                }
-
-            } else if (trace.refName === 'subNodes') {
-                modelElement = model.findByPath(trace.previousPath);
-                if (modelElement.name === this.node.getName()) {
-                    // this subNodes add-trace is related to this platform node
-                    var group = model.findByPath(trace.srcPath);
-                    if (group && !this.modelObjMapper.getObject(group.path())) {
-                        // there is no group instance created on this platform yet
-                        // lets check if there is already a primitive added for that or not
-                        addInstance(group);
-                        // also check if the instance has been started or not
-                        startInstance(group);
-                    }
-                }
-            }
-
-            // SET - TRACES HANDLING
-        } else if (Kotlin.isType(trace, ModelSetTrace)) {
-            modelElement = model.findByPath(trace.srcPath);
-            if (trace.refName && trace.refName === "started") {
-                if (trace.content === 'true') {
-                    startInstance(modelElement);
-                } else {
-                    if (!traceAlreadyProcessed(modelElement.path(), StopInstance.prototype.toString())) {
-                        cmd = new StopInstance(this.node, this.modelObjMapper, model, modelElement);
-                        if (cmd.isRelatedToPlatform(modelElement)) {
-                            cmdList.push(cmd);
-                            addProcessedTrace(modelElement.path(), cmd);
+                            if (modelElement.started) {
+                                cmds.push(this.createCommand(StopInstance, modelElement));
+                            }
                         }
-                    }
+                        break;
                 }
+                break;
 
-            } else if (trace.refName && trace.refName === 'value') {
-                if (Kotlin.isType(modelElement, kevoree.impl.DictionaryValueImpl)) {
-                    if (!traceAlreadyProcessed(trace.srcPath, UpdateDictionary.prototype.toString())) {
-                        cmd = new UpdateDictionary(this.node, this.modelObjMapper, model, modelElement);
-                        cmdList.push(cmd);
-                        addProcessedTrace(trace.srcPath, cmd);
+            case 'deployUnits':
+                break;
 
-                        var instance = modelElement.eContainer().eContainer();
-                        if (!traceAlreadyProcessed(instance.path(), UpdateInstance.prototype.toString())) {
-                            cmd = new UpdateInstance(this.node, this.modelObjMapper, model, instance);
-                            cmdList.push(cmd);
-                            addProcessedTrace(instance.path(), cmd);
+            case 'bindings':
+                switch (trace.traceType.name()) {
+                    case 'ADD':
+                        if (this.isRelatedToPlatform(modelElement)) {
+                            cmds.push(this.createCommand(AddBinding, modelElement));
+
+                            if (modelElement.hub && this.isRelatedToPlatform(modelElement.hub)) {
+                                if (!this.modelObjMapper.getObject(modelElement.hub.path())) {
+                                    if (!this.modelObjMapper.getObject(modelElement.hub.typeDefinition.deployUnit.path())) {
+                                        cmds.push(this.createCommand(AddDeployUnit, modelElement.hub.typeDefinition.deployUnit));
+                                    }
+
+                                    cmds.push(this.createCommand(AddInstance, modelElement.hub));
+                                    cmds.push(this.createCommand(StartInstance, modelElement.hub));
+                                }
+                            }
                         }
-                    }
-                }
-            }
+                        break;
 
-            // REMOVE - TRACES HANDLING
-        } else if (Kotlin.isType(trace, ModelRemoveTrace)) {
-            var tracePath = trace.previousPath || trace.objPath;
-            modelElement = this.node.getKevoreeCore().getCurrentModel().findByPath(tracePath);
+                    case 'REMOVE':
+                        var currentModel = this.node.getKevoreeCore().getCurrentModel(); // old model
+                        var binding = currentModel.findByPath(trace.objPath); // binding before removal trace
+                        if (binding) {
+                            var newChan = this.targetModel.findByPath(binding.hub.path());
+                            var chanStillUsed = false;
+                            if (newChan) {
+                                var bindings = newChan.bindings.iterator();
+                                while (bindings.hasNext()) {
+                                    if (this.isRelatedToPlatform(bindings.next())) {
+                                        // there is still a binding between this chan and this platform => cant remove
+                                        chanStillUsed = true;
+                                        break;
+                                    }
+                                }
+                            }
 
-            if (INSTANCE_TRACE.indexOf(trace.refName) != -1) {
-                // Remove instance
-                // add RemoveInstance primitive
-                if (!traceAlreadyProcessed(modelElement.path(), RemoveInstance.prototype.toString())) {
-                    cmd = new RemoveInstance(this.node, this.modelObjMapper, model, modelElement);
-                    if (cmd.isRelatedToPlatform(modelElement)) {
-                        cmdList.push(cmd);
-                        addProcessedTrace(tracePath, cmd);
-                    }
-                }
+                            if (!chanStillUsed && this.modelObjMapper.getObject(binding.hub.path())) {
+                                cmds.push(this.createCommand(RemoveInstance, binding.hub));
 
-                // check if instance is stopped
-                if (modelElement.started) {
-                    // instance is in "started" state, but maybe we've already added a StopInstance primitive for it
-                    if (!traceAlreadyProcessed(tracePath, StopInstance.prototype.toString())) {
-                        // instance is started and there is no "StopInstance" primitive for it yet: add it
-                        cmd = new StopInstance(this.node, this.modelObjMapper, model, modelElement);
-                        if (cmd.isRelatedToPlatform(modelElement)) {
-                            cmdList.push(cmd);
-                            addProcessedTrace(tracePath, cmd);
-                        }
-                    }
-                }
-
-            } else if (trace.typeName === 'deployUnits') {
-                // Remove deploy unit
-                cmd = new RemoveDeployUnit(this.node, this.modelObjMapper, model, modelElement);
-                cmdList.push(cmd);
-                addProcessedTrace(tracePath, cmd);
-
-            } else if (trace.refName === 'mBindings') {
-                // Remove binding
-                cmd = new RemoveBinding(this.node, this.modelObjMapper, model, modelElement);
-                cmdList.push(cmd);
-                addProcessedTrace(modelElement.path(), cmd);
-
-                if (modelElement.hub && this.modelObjMapper.getObject(modelElement.hub.path())) {
-                    hub = model.findByPath(modelElement.hub.path());
-                    if (hub) {
-                        // remove hub instance too
-                        if (!traceAlreadyProcessed(hub.path(), RemoveInstance.prototype.toString())) {
-                            cmd = new RemoveInstance(this.node, this.modelObjMapper, model, hub);
-                            if (cmd.isRelatedToPlatform(hub)) {
-                                cmdList.push(cmd);
-                                addProcessedTrace(hub.path(), cmd);
+                                if (binding.hub.started) {
+                                    cmds.push(this.createCommand(StopInstance, binding.hub));
+                                }
                             }
                         }
 
-                        // also check if instance has been stopped or not
-                        if (!traceAlreadyProcessed(hub.path(), StopInstance.prototype.toString())) {
-                            cmd = new StopInstance(this.node, this.modelObjMapper, model, hub);
-                            if (cmd.isRelatedToPlatform(hub)) {
-                                cmdList.push(cmd);
-                                addProcessedTrace(hub.path(), cmd);
+                        if (this.isRelatedToPlatform(binding)) {
+                            cmds.push(this.createCommand(RemoveBinding, binding));
+                        }
+                        break;
+                }
+                break;
+            case 'subNodes':
+                break;
+            case 'started':
+                if (trace.traceType.name() === 'SET' && Kotlin.isType(modelElement, kevoree.Instance)) {
+                    if (this.isRelatedToPlatform(modelElement)) {
+                        if (trace.content === 'true') {
+                            cmds.push(this.createCommand(StartInstance, modelElement));
+                            if (modelElement.dictionary) {
+                                if (modelElement.dictionary.values.size() > 0) {
+                                    cmds.push(this.createCommand(UpdateInstance, modelElement));
+                                }
+
+                                var values = modelElement.dictionary.values.iterator();
+                                while (values.hasNext()) {
+                                    cmds.push(this.createCommand(UpdateDictionary, values.next()));
+                                }
                             }
+                        } else {
+                            cmds.push(this.createCommand(StopInstance, modelElement));
                         }
                     }
                 }
-            }
+                break;
+            case 'value':
+                if (trace.traceType.name() === 'SET' && Kotlin.isType(modelElement, kevoree.DictionaryValue)) {
+                    if (this.isRelatedToPlatform(modelElement)) {
+                        if (modelElement.eContainer().eContainer().started) {
+                            cmds.push(this.createCommand(UpdateDictionary, modelElement));
+                            cmds.push(this.createCommand(UpdateInstance, modelElement.eContainer().eContainer()));
+                        }
+                    }
+                }
+                break;
         }
+
+        return cmds;
+    },
+
+    /**
+     * know if an modelElement is related to the current plarform node
+     * @param element
+     * @returns {boolean}
+     */
+    isRelatedToPlatform: function (element) {
+        if (Kotlin.isType(element, kevoree.ComponentInstance)) {
+            // if parent is this node platform: it's ok
+            return (element.eContainer().name === this.node.getName());
+
+        } else if (Kotlin.isType(element, kevoree.Channel)) {
+            // if this channel has bindings with components hosted in this node platform: it's ok
+            var bindings = element.bindings.iterator();
+            while (bindings.hasNext()) {
+                var binding = bindings.next();
+                if (binding.port && binding.port.eContainer()) {
+                    if (this.isRelatedToPlatform(binding.port.eContainer())) {
+                        return true;
+                    }
+                }
+            }
+
+        } else if (Kotlin.isType(element, kevoree.Group)) {
+            var subNodes = element.subNodes.iterator();
+            while (subNodes.hasNext()) {
+                if (this.isRelatedToPlatform(subNodes.next())) {
+                    return true;
+                }
+            }
+
+        } else if (Kotlin.isType(element, kevoree.ContainerNode)) {
+            return ((element.name === this.node.getName()) || (element.host && element.host.name === this.node.getName()));
+
+        } else if (Kotlin.isType(element, kevoree.MBinding)) {
+            if (element.port && element.port.eContainer()) {
+                return this.isRelatedToPlatform(element.port.eContainer());
+            }
+
+        } else if (Kotlin.isType(element, kevoree.DictionaryValue)) {
+            return this.isRelatedToPlatform(element.eContainer().eContainer());
+
+        } else if (Kotlin.isType(element, kevoree.Port)) {
+            return this.isRelatedToPlatform(element.eContainer());
+        }
+
+        return false;
+    },
+
+    createCommand: function (Cmd, element) {
+        return new Cmd(this.node, this.modelObjMapper, this.targetModel, element);
     },
 
     /**

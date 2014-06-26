@@ -7,29 +7,21 @@ module.exports = AdaptationPrimitive.extend({
     execute: function (_super, callback) {
         _super.call(this, callback);
 
-        if (this.modelElement && this.modelElement.port.eContainer().eContainer().name == this.node.getName()) {
-            // this binding is related to the current node platform
-            var chanInstance = this.mapper.getObject(this.modelElement.hub.path()),
-                compInstance = this.mapper.getObject(this.modelElement.port.eContainer().path()),
-                portInstance = this.mapper.getObject(this.modelElement.port.path());
+        var chanInstance = this.mapper.getObject(this.modelElement.hub.path()),
+            compInstance = this.mapper.getObject(this.modelElement.port.eContainer().path()),
+            portInstance = this.mapper.getObject(this.modelElement.port.path());
 
-            if (chanInstance && compInstance) {
-                try {
-                    if (this.isInputPortType(this.modelElement.port)) {
-                        this.log.debug(this.toString(), 'input '+portInstance.getPath()+' <-> '+chanInstance.getPath());
-                        compInstance.removeInternalInputPort(portInstance);
-                        chanInstance.removeInternalInputPort(portInstance);
-                    } else {
-                        this.log.debug(this.toString(), 'output '+portInstance.getPath()+' <-> '+chanInstance.getPath());
-                        compInstance.removeInternalOutputPort(portInstance);
-                    }
-
-                    return callback();
-
-                } catch (err) {
-                    return callback(err);
-                }
+        if (chanInstance && compInstance) {
+            var provided = this.modelElement.port.eContainer().findProvidedByID(this.modelElement.port.name);
+            if (provided) {
+                this.log.debug(this.toString(), 'input '+portInstance.getPath()+' <-> '+chanInstance.getPath());
+                compInstance.removeInternalInputPort(portInstance);
+                chanInstance.removeInternalInputPort(portInstance);
+            } else {
+                this.log.debug(this.toString(), 'output '+portInstance.getPath()+' <-> '+chanInstance.getPath());
+                compInstance.removeInternalOutputPort(portInstance);
             }
+            return callback();
         }
 
         return callback();
