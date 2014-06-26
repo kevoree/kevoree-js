@@ -12,6 +12,10 @@ module.exports = AdaptationPrimitive.extend({
             portInstance = this.mapper.getObject(this.modelElement.port.path());
 
         if (chanInstance && compInstance) {
+            if (portInstance) {
+                this.mapper.removeEntry(this.modelElement.port.path());
+            }
+
             var provided = this.modelElement.port.eContainer().findProvidedByID(this.modelElement.port.name);
             if (provided) {
                 this.log.debug(this.toString(), 'input '+portInstance.getPath()+' <-> '+chanInstance.getPath());
@@ -21,10 +25,25 @@ module.exports = AdaptationPrimitive.extend({
                 this.log.debug(this.toString(), 'output '+portInstance.getPath()+' <-> '+chanInstance.getPath());
                 compInstance.removeInternalOutputPort(portInstance);
             }
-            return callback();
+
+            // retrieve every bindings related to this binding chan
+            var bindings = this.modelElement.hub.bindings.iterator();
+            while (bindings.hasNext()) {
+                var binding = bindings.next();
+                if (binding != this.modelElement) { // ignore this binding because we are already processing it
+                    provided = binding.port.eContainer().findProvidedByID(binding.port.name);
+                    if (provided) {
+                        portInstance = this.mapper.getObject(provided.path());
+                        if (portInstance) {
+                            this.mapper.removeEntry(provided.path());
+                            chanInstance.removeInternalInputPort(portInstance);
+                        }
+                    }
+                }
+            }
         }
 
-        return callback();
+        callback();
     },
 
     undo: function (_super, callback) {

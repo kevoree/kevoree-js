@@ -29,7 +29,6 @@ module.exports = AdaptationPrimitive.extend({
                 var instance = this.mapper.getObject(this.modelElement.path());
                 if (instance) {
                     this.mapper.removeEntry(this.modelElement.path());
-                    this.doSpecificTypeProcess(this.modelElement);
                     this.log.debug(this.toString(), instance.getName()+' '+this.modelElement.typeDefinition.path());
                 }
             }
