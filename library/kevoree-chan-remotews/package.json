@@ -20,10 +20,10 @@
     "url": "https://github.com/kevoree/kevoree-js.git"
   },
   "keywords": [
-    "kevoree-std-lib",
-    "kevoree",
-    "channel",
-    "websocket"
+      "kevoree-std-lib",
+      "kevoree",
+      "library",
+      "channel"
   ],
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "license": "LGPL-3.0",

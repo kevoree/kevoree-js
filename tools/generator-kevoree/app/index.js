@@ -55,7 +55,6 @@ KevoreeGenerator.prototype.askFor = function askFor() {
         this.rawEntityType = props.entityType;
         this.entityType    = ENTITY_REAL_TYPES[this.rawEntityType];
         this.entityName    = props.entityName;
-
         cb();
     }.bind(this));
 };
