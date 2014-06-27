@@ -1,10 +1,15 @@
 {
-    "name": "kevoree-<%= rawEntityType %>-<%= _.slugify(entityName) %>",
+    "name": "kevoree-group-<%= _.slugify(entityName) %>",
     "version": "0.1.0",
     "main": "./lib/<%= entityName %>.js",
     "scripts": {
         "prepublish": "grunt"
     },
+    "keywords": [
+        "kevoree",
+        "library",
+        "group"
+    ],
     "dependencies": {
         "kevoree-entities": "^0.8.0"
     },

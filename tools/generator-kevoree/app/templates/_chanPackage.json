@@ -1,5 +1,5 @@
 {
-    "name": "kevoree-comp-<%= _.slugify(entityName) %>",
+    "name": "kevoree-chan-<%= _.slugify(entityName) %>",
     "version": "0.1.0",
     "main": "./lib/<%= entityName %>.js",
     "scripts": {
@@ -8,7 +8,7 @@
     "keywords": [
         "kevoree",
         "library",
-        "comp"
+        "channel"
     ],
     "dependencies": {
         "kevoree-entities": "^0.8.0"

@@ -64,7 +64,7 @@ KevoreeGenerator.prototype.app = function app() {
     this.mkdir('lib');
     this.template('entities/_'+this.entityType+'.js', 'lib/'+this.entityName+'.js');
     this.template('_README.md', 'README.md');
-    this.copy('_.gitignore', '.gitignore');
+    this.copy('_.npmignore', '.npmignore');
     this.mkdir('kevs');
 
     // type dependant config
@@ -78,13 +78,13 @@ KevoreeGenerator.prototype.app = function app() {
 
         case 'chan':
             this.copy('defaultGruntfile.js', 'Gruntfile.js');
-            this.template('_defaultPackage.json', 'package.json');
+            this.template('_chanPackage.json', 'package.json');
             this.template('_chanMain.kevs', 'kevs/main.kevs');
             break;
 
         case 'group':
             this.copy('defaultGruntfile.js', 'Gruntfile.js');
-            this.template('_defaultPackage.json', 'package.json');
+            this.template('_groupPackage.json', 'package.json');
             this.template('_groupMain.kevs', 'kevs/main.kevs');
             break;
 
