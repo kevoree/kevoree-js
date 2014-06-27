@@ -29,7 +29,8 @@ var <%= entityName %> = <%= entityType %>.extend({
     /**
     * this method will be called by the Kevoree platform when your group has to stop
     */
-    stop: function () {
+    stop: function (_super) {
+        _super.call(this);
         // TODO
         this.log.debug(this.toString(), 'STOP');
     }
