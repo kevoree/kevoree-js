@@ -2,7 +2,7 @@
 // Feel free to (and you really should) mess with this script =)
 // KevScript documentation http://kevoree.org/doc/#kevoree-script-aka-kevscript
 include npm:kevoree-node-javascript
-include npm:kevoree-<%= rawEntityType %>-<%= _.slugify(entityName) %> // this is your own project package
+include npm:<%= packageName %> // this is your own project package
 
 add node0 : JavascriptNode
 add sync : <%= entityName %>

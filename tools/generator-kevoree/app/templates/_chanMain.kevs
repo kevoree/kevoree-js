@@ -5,7 +5,7 @@ include npm:kevoree-node-javascript
 include npm:kevoree-group-websocket
 include npm:kevoree-comp-fakeconsole
 include npm:kevoree-comp-helloworld
-include npm:kevoree-<%= rawEntityType %>-<%= _.slugify(entityName) %> // this is your own project package
+include npm:<%= packageName %> // this is your own project package
 
 add node0 : JavascriptNode
 add sync : WebSocketGroup

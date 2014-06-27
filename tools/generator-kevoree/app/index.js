@@ -55,7 +55,23 @@ KevoreeGenerator.prototype.askFor = function askFor() {
         this.rawEntityType = props.entityType;
         this.entityType    = ENTITY_REAL_TYPES[this.rawEntityType];
         this.entityName    = props.entityName;
-        cb();
+
+        this.prompt([
+            {
+                name: 'packageName',
+                message: 'Choose a package name:',
+                default: 'kevoree-' + this.rawEntityType + '-' + _.slugify(this.entityName),
+                validate: function (answer) {
+                    var pattern = /[a-z0-9_-]+/;
+                    if (matcher(answer, pattern)) return true;
+                    else return 'Allowed pattern for package name is ' + pattern.toString();
+                }
+            }
+        ], function (props) {
+            this.packageName = props.packageName;
+            console.log('PACKAGE NAME', this.packageName);
+            cb();
+        }.bind(this));
     }.bind(this));
 };
 

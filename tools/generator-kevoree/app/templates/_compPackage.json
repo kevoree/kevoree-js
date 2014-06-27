@@ -1,5 +1,5 @@
 {
-    "name": "kevoree-comp-<%= _.slugify(entityName) %>",
+    "name": "<%= packageName %>",
     "version": "0.1.0",
     "main": "./lib/<%= entityName %>.js",
     "scripts": {
