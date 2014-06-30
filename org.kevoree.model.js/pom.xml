@@ -9,7 +9,7 @@
 
     <properties>
         <metamodel.ecore>${basedir}/target/metamodel/kevoree.ecore</metamodel.ecore>
-        <kmf.version>1.10.4</kmf.version>
+        <kmf.version>1.10.5-SNAPSHOT</kmf.version>
         <kevoree.version>3.6.8</kevoree.version>
     </properties>
 

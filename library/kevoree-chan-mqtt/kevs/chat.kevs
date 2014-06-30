@@ -1,0 +1,24 @@
+include npm:kevoree-node-javascript
+include npm:kevoree-group-websocket
+include npm:kevoree-comp-fakeconsole
+include npm:kevoree-comp-helloworld
+include npm:kevoree-chan-mqtt
+
+add node0, node1 : JavascriptNode
+add node0.log : FakeConsole
+add node1.blabla : HelloWorldComponent
+add sync : WebSocketGroup
+add chan : MQTTChannel
+
+attach node0, node1 sync
+
+bind node0.log.inMsg chan
+bind node1.blabla.sendText chan
+
+set sync.port/node0 = '9000'
+
+set chan.host   = 'mqtt.kevoree.org'
+set chan.port   = '81'
+set chan.topic  = 'kevoree'
+
+network node0.lan.ip 127.0.0.1
