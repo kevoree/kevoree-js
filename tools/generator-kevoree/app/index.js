@@ -69,7 +69,6 @@ KevoreeGenerator.prototype.askFor = function askFor() {
             }
         ], function (props) {
             this.packageName = props.packageName;
-            console.log('PACKAGE NAME', this.packageName);
             cb();
         }.bind(this));
     }.bind(this));

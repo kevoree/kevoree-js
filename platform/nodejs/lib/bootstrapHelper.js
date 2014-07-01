@@ -64,7 +64,7 @@ var bootstrapModel = function bootstrapModel(options, callback) {
     }
 
     return callback(null, options.model);
-}
+};
 
 module.exports = function (options, callback) {
     if (!options.model) {
@@ -81,13 +81,6 @@ module.exports = function (options, callback) {
     }
 
     function defaultBootstrap() {
-//    try {
-        // try to bootstrapModel without downloading and installing module from npm
-        //bootstrapModel(options, callback);
-
-//    } catch (err) {
-        // bootstrapping failed which means (probably) that module wasn't installed yet
-        // so let's do it :D
         var deployUnit = factory.createDeployUnit();
         deployUnit.name = 'kevoree-node-javascript';
         options.bootstrapper.bootstrap(deployUnit, false, function (err, Clazz, nodeModel) {
@@ -102,6 +95,5 @@ module.exports = function (options, callback) {
                 bootstrapModel(options, callback);
             });
         });
-//    }
     }
 };

@@ -34,8 +34,19 @@ var MQTTChannel = AbstractChannel.extend({
             var topic = this.dictionary.getValue('topic');
             if (topic && topic.length > 0) {
                 this.client = mqtt.createClient(port, host);
-                this.client.subscribe(topic);
-                this.log.info(this.toString(), this.getName()+' connected & subscribed to mqtt://'+host+':'+port+'/'+topic);
+
+                this.client.on('connect', function () {
+                    this.log.info(this.toString(), this.getName()+' connected to '+host+':'+port);
+                    this.client.subscribe(topic, function (err) {
+                        if (!err) {
+                            this.log.info(this.toString(), this.getName()+' subscribed to topic '+topic);
+                        }
+                    }.bind(this));
+                }.bind(this));
+
+                this.client.on('close', function () {
+                    this.log.info(this.toString(), this.getName()+' closed connection with '+host+':'+port);
+                }.bind(this));
 
                 this.client.on('message', this.onMessage.bind(this));
                 this.client.on('error', function (err) {
