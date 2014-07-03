@@ -114,7 +114,7 @@ var AdaptationEngine = Class({
             }
         }
 
-        // return sorted command list (sort by COMMAND_RANK in order to process adaptations properly)
+//        return sorted command list (sort by COMMAND_RANK in order to process adaptations properly)
 //        cmds = this.sortCommands(cmdList);
 //        for (var j=0; j < cmds.length; j++) {
 //            console.log('CMD >>><<< ', cmds[j].toString(), cmds[j].modelElement.path());
@@ -128,7 +128,7 @@ var AdaptationEngine = Class({
      * @param modelElement
      */
     processTrace: function (trace, modelElement) {
-        var cmds = [];
+        var cmds = [], currentModel;
 
         switch (trace.refName) {
             case 'groups':
@@ -148,20 +148,42 @@ var AdaptationEngine = Class({
                         break;
 
                     case 'REMOVE':
-                        if (this.isRelatedToPlatform(modelElement)) {
-                            if (this.modelObjMapper.getObject(modelElement.typeDefinition.deployUnit.path())) {
-                                cmds.push(this.createCommand(RemoveDeployUnit, modelElement.typeDefinition.deployUnit));
-                            }
-
-                            if (modelElement.started) {
-                                cmds.push(this.createCommand(StopInstance, modelElement));
+                        currentModel = this.node.getKevoreeCore().getCurrentModel(); // old model
+                        var instance = currentModel.findByPath(trace.objPath); // instance before removal trace
+                        if (this.modelObjMapper.getObject(instance.path())) {
+                            cmds.push(this.createCommand(RemoveInstance, instance));
+                            if (instance.started) {
+                                console.log('STOP INSTANCE', instance.name);
+                                cmds.push(this.createCommand(StopInstance, instance));
                             }
                         }
+
+//                        if (this.isRelatedToPlatform(modelElement)) {
+//                            if (modelElement.started) {
+//                                console.log('STOP INSTANCE 2nd', modelElement.name);
+//                                cmds.push(this.createCommand(StopInstance, modelElement));
+//                            }
+//                        }
                         break;
                 }
                 break;
 
             case 'deployUnits':
+                switch (trace.traceType.name()) {
+                    case 'ADD':
+                        if (this.isRelatedToPlatform(modelElement)) {
+                            cmds.push(this.createCommand(AddDeployUnit, modelElement));
+                        }
+                        break;
+
+                    case 'REMOVE':
+                        currentModel = this.node.getKevoreeCore().getCurrentModel();
+                        var du = currentModel.findByPath(trace.objPath);
+                        if (du) {
+                            cmds.push(this.createCommand(RemoveDeployUnit, du));
+                        }
+                        break;
+                }
                 break;
 
             case 'bindings':
@@ -184,7 +206,7 @@ var AdaptationEngine = Class({
                         break;
 
                     case 'REMOVE':
-                        var currentModel = this.node.getKevoreeCore().getCurrentModel(); // old model
+                        currentModel = this.node.getKevoreeCore().getCurrentModel(); // old model
                         var binding = currentModel.findByPath(trace.objPath); // binding before removal trace
                         if (binding) {
                             var newChan = this.targetModel.findByPath(binding.hub.path());
@@ -215,8 +237,7 @@ var AdaptationEngine = Class({
                         break;
                 }
                 break;
-            case 'subNodes':
-                break;
+
             case 'started':
                 if (trace.traceType.name() === 'SET' && Kotlin.isType(modelElement, kevoree.Instance)) {
                     if (this.isRelatedToPlatform(modelElement)) {
@@ -238,6 +259,7 @@ var AdaptationEngine = Class({
                     }
                 }
                 break;
+
             case 'value':
                 if (trace.traceType.name() === 'SET' && Kotlin.isType(modelElement, kevoree.DictionaryValue)) {
                     if (this.isRelatedToPlatform(modelElement)) {
