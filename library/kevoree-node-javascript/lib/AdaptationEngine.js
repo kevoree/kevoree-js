@@ -153,17 +153,9 @@ var AdaptationEngine = Class({
                         if (this.modelObjMapper.getObject(instance.path())) {
                             cmds.push(this.createCommand(RemoveInstance, instance));
                             if (instance.started) {
-                                console.log('STOP INSTANCE', instance.name);
                                 cmds.push(this.createCommand(StopInstance, instance));
                             }
                         }
-
-//                        if (this.isRelatedToPlatform(modelElement)) {
-//                            if (modelElement.started) {
-//                                console.log('STOP INSTANCE 2nd', modelElement.name);
-//                                cmds.push(this.createCommand(StopInstance, modelElement));
-//                            }
-//                        }
                         break;
                 }
                 break;
