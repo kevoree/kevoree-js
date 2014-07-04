@@ -13,14 +13,19 @@ module.exports = AdaptationPrimitive.extend({
             this.node.stopSubNode(this.modelElement);
 
         } else {
-            var instance = this.mapper.getObject(this.modelElement.path());
+            var instance;
+            if (this.modelElement.name === this.node.getName()) {
+                instance = this.node;
+            } else {
+                instance = this.mapper.getObject(this.modelElement.path());
+            }
             if (instance && instance.isStarted()) {
                 this.log.debug(this.toString(), instance.getName());
                 instance.stop();
             }
         }
 
-        return callback();
+        callback();
     },
 
     undo: function (_super, callback) {

@@ -91,13 +91,18 @@ module.exports = Class({
      * Stops Kevoree Core
      */
     stop: function () {
-        if (this.intervalId != undefined && this.intervalId != null) {
-            if (this.nodeInstance != null) {
+        if (this.intervalId !== undefined && this.intervalId !== null) {
+            if (this.nodeInstance !== null) {
                 this.nodeInstance.stop();
             }
             clearInterval(this.intervalId);
-            this.intervalId = null;
-            this.currentModel = null;
+
+            this.currentModel   = null;
+            this.deployModel    = null;
+            this.models         = [];
+            this.nodeName       = null;
+            this.nodeInstance   = null;
+            this.intervalId     = null;
 
             this.log.info(this.toString(), "Platform stopped: "+this.nodeName);
             this.emitter.emit('stopped');
