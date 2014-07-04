@@ -6,8 +6,7 @@ var config    = require('../config'),
 var noop = function () {};
 
 var REGISTER = 'register',
-    SETNAME  = 'setname',
-    STOP     = 'stop';
+    SETNAME  = 'setname';
 
 /**
  * Created by leiko on 17/04/14.

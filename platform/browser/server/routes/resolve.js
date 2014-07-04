@@ -9,7 +9,7 @@ var fs      = require('fs'),
     path    = require('path');
 
 module.exports = function(req, res) {
-    if (req.body.type == 'npm') {
+    if (req.body.type === 'npm') {
         var publicInstall     = config.paths.publicInstall,
             npmInstallDir     = config.paths.npmInstallDir(req.body.uuid),
             modulePath        = config.paths.modulePath(npmInstallDir, req.body.name),

@@ -1,3 +1,4 @@
+// KevScript model used by the server-side kevoree-nodejs-runtime to bootstrap
 include npm:kevoree-node-javascript
 include npm:kevoree-group-websocket
 include npm:kevoree-chan-remotews

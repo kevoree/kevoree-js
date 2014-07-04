@@ -1,8 +1,7 @@
 /**
  * Created by leiko on 12/03/14.
  */
-var http       = require('http'),
-    kevoree    = require('kevoree-library').org.kevoree,
+var kevoree    = require('kevoree-library').org.kevoree,
     pushModel  = require('../lib/pushModel'),
     config     = require('./../config.js');
 
@@ -65,5 +64,5 @@ module.exports = function (model) {
         } else {
             return res.json({error: '"'+req.body.nodename+'" node name is not valid. Valid name must match this regex '+NAME_PATTERN.toString()});
         }
-    }
+    };
 };

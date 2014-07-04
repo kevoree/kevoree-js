@@ -1,6 +1,8 @@
 var path = require('path');
 
-var HOST = 'runjs.kevoree.org';
+var HOST = process.env['HOST_URL'] || 'runjs.kevoree.org';
+var GROUP_PORT = process.env['GROUP_PORT'] || 80;
+var CHAN_PORT = process.env['CHAN_PORT'] || 80;
 
 /**
  * Created by leiko on 12/03/14.
@@ -13,11 +15,11 @@ module.exports = {
         nodeName:       'server-node',
         serverHost:     HOST,
         groupName:      'sync',
-        groupPort:      80,
+        groupPort:      GROUP_PORT,
         groupProxyPort: 9000,
         groupPath:      'sharedGroup',
         chanHost:       HOST,
-        chanPort:       80,
+        chanPort:       CHAN_PORT,
         chanPath:       'sharedChan'
     },
 
