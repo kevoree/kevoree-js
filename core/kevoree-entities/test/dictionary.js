@@ -1,18 +1,29 @@
 var Dictionary = require('../lib/Dictionary');
+var Class = require('pseudoclass');
 
-function FakeEntity() {
-    var that = this;
+var FakeEntity = Class({
+	toString: 'FakeEntity',
 
-    this.dic_myAttr = {
-        optional: true,
-            defaultValue: '1000',
-            update: function (oldValue) {
-            console.log('update', that.dic_myAttr.value, oldValue);
+	dic_myAttr: {
+		optional: true,
+        defaultValue: 1000,
+        datatype: 'number',
+        update: function () {
+        	console.log('update', arguments);
         }
-    }
-}
+	},
+
+	isStarted: function () {
+		return true;
+	}
+});
 
 var d = new Dictionary(new FakeEntity());
-console.log(d)
+console.log('=======');
+console.log(d);
+console.log('=======');
 d.setEntry('myAttr', 9000);
 d.setEntry('myAttr', 9001);
+console.log('=======');
+console.log(d);
+console.log('=======');

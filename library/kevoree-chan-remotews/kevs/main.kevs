@@ -14,13 +14,9 @@ attach node0, node1 sync
 
 set sync.port/node0 = "9000"
 
-bind node0.hello.sendText myChan
-bind node0.hello1.sendText myChan
-bind node0.hello2.sendText myChan
-bind node1.console.inMsg myChan
+
 
 set myChan.host = "localhost"
 set myChan.port = "9001"
 
 network node0.ip.local 127.0.0.1
-network node1.ip.local 127.0.0.1

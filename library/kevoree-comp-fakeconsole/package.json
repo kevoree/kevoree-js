@@ -1,6 +1,6 @@
 {
   "name": "kevoree-comp-fakeconsole",
-  "version": "0.8.1",
+  "version": "0.8.5",
   "main": "./lib/FakeConsole.js",
   "scripts": {
     "prepublish": "grunt"

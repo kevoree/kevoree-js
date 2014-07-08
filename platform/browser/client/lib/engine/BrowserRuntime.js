@@ -100,8 +100,14 @@ var BrowserRuntime = Class({
         }.bind(this));
 
         this.core.on('error', function (err) {
+            console.log('ERROR', err);
             this.logger.error(err.message);
             this.ui.stopped();
+        }.bind(this));
+
+        this.core.on('adaptationError', function (err) {
+            console.log('adaptationError', err);
+            this.logger.error(err.message);
         }.bind(this));
     },
 

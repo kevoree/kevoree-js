@@ -37,6 +37,23 @@ module.exports = function (grunt) {
                     ]
                 }
             }
+        },
+
+        uglify: {
+            options: {
+                banner: '// Browserify bundle of <%= pkg.name %>@<%= pkg.version %> - Generated on <%= getDate() %>\n',
+                mangle: {
+                    except: ['_super']
+                }
+            },
+            bundle: {
+                src: '<%= browserify.main.dest %>',
+                dest: '<%= browserify.main.dest %>'
+            }
+        },
+        getDate: function () {
+            var d = new Date();
+            return d.toISOString().split('T')[0] + ' ' + d.toLocaleTimeString();
         }
     });
 
@@ -44,7 +61,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-kevoree');
     grunt.loadNpmTasks('grunt-kevoree-genmodel');
     grunt.loadNpmTasks('grunt-browserify');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
 
-    grunt.registerTask('default', ['jade', 'kevoree_genmodel', 'browserify']);
+    grunt.registerTask('default', ['jade', 'kevoree_genmodel', 'browserify', 'uglify']);
     grunt.registerTask('kev', ['kevoree']);
-}
+};
