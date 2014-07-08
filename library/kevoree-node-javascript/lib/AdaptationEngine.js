@@ -190,6 +190,24 @@ var AdaptationEngine = Class({
                                         cmds.push(this.createCommand(AddDeployUnit, modelElement.hub.typeDefinition.deployUnit));
                                     }
 
+                                    if (modelElement.hub.dictionary) {
+                                        var dicVals = modelElement.hub.dictionary.values.iterator();
+                                        while (dicVals.hasNext()) {
+                                            var val = dicVals.next();
+                                            cmds.push(this.createCommand(UpdateDictionary, val));
+                                        }
+                                    }
+
+                                    var fragDics = modelElement.hub.fragmentDictionary.iterator();
+                                    while (fragDics.hasNext()) {
+                                        var fragDic = fragDics.next();
+                                        var fragDicVals = fragDic.values.iterator();
+                                        while (fragDicVals.hasNext()) {
+                                            var fragDicVal = fragDicVals.next();
+                                            cmds.push(this.createCommand(UpdateDictionary, fragDicVal));
+                                        }
+                                    }
+
                                     cmds.push(this.createCommand(AddInstance, modelElement.hub));
                                     cmds.push(this.createCommand(StartInstance, modelElement.hub));
                                 }

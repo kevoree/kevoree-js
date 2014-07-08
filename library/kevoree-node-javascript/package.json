@@ -1,6 +1,6 @@
 {
   "name": "kevoree-node-javascript",
-  "version": "0.8.4",
+  "version": "0.8.6",
   "main": "./lib/JavascriptNode.js",
   "scripts": {
     "prepublish": "grunt"
@@ -31,8 +31,9 @@
     "pseudoclass": "0.2.6"
   },
   "devDependencies": {
-    "grunt": "^0.4.4",
+    "grunt": "^0.4.5",
     "grunt-browserify": "^2.0.7",
+    "grunt-contrib-uglify": "^0.5.0",
     "grunt-kevoree": ">=0.8.0",
     "grunt-kevoree-genmodel": "^0.8.0"
   },
