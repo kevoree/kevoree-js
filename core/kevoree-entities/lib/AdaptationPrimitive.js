@@ -1,13 +1,10 @@
-var Class   = require('pseudoclass'),
-    Kotlin = require('kevoree-kotlin'),
-    kevoree = require('kevoree-library').org.kevoree,
-    KevoreeLogger = require('kevoree-commons').KevoreeLogger;
+var Class   = require('pseudoclass');
 
 /**
  * Abstract AdaptationPrimitive command
  *
- * @param node JavascriptNode context
- * @param mapper ModelObjectMapper that handles mapping betweend model objects and 'real-life' object
+ * @param node AbstractNode context
+ * @param mapper ModelObjectMapper that handles mapping between model objects and 'real-life' object
  * @type {AdaptationPrimitive}
  */
 module.exports = Class({
@@ -16,7 +13,7 @@ module.exports = Class({
     /**
      * Construct an AdaptationPrimitive object
      *
-     * @param node KevoreeNode platform
+     * @param node AbstractNode platform
      * @param mapper ModelObjectMapper
      * @param model model to deploy (that triggers adaptations)
      * @param modelElement model element linked with this primitive
