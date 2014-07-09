@@ -1,4 +1,4 @@
-var AdaptationPrimitive = require('./AdaptationPrimitive');
+var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive;
 var kevoree = require('kevoree-library').org.kevoree;
 var Kotlin = require('kevoree-kotlin');
 

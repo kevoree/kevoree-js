@@ -1,4 +1,4 @@
-var AdaptationPrimitive = require('./AdaptationPrimitive'),
+var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive,
     StopInstance        = require('./StopInstance');
 
 module.exports = AdaptationPrimitive.extend({

@@ -1,4 +1,4 @@
-var AdaptationPrimitive = require('./AdaptationPrimitive');
+var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive;
 
 /**
  * Created by leiko on 07/05/14.

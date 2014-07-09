@@ -1,4 +1,4 @@
-var AdaptationPrimitive = require('./AdaptationPrimitive'),
+var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive,
     Port                = require('kevoree-entities').Port,
     RemoveBinding       = require('./RemoveBinding'),
     Kotlin              = require('kevoree-kotlin'),
