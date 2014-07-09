@@ -19,8 +19,8 @@
   "devDependencies": {},
   "optionalDependencies": {},
   "dependencies": {
-    "kevoree-commons": ">=0.9.0",
-    "kevoree-library": ">=0.9.0",
+    "kevoree-commons": "^0.9.0",
+    "kevoree-library": "^0.9.0",
     "pseudoclass": "^1.0.1"
   },
   "license": "LGPL-3.0"

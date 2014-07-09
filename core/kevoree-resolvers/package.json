@@ -24,8 +24,8 @@
   "homepage": "https://github.com/kevoree/kevoree-js",
   "dependencies": {
     "async": "^0.6.2",
-    "kevoree-commons": ">=0.9.0",
-    "kevoree-library": ">=0.9.0",
+    "kevoree-commons": "^0.9.0",
+    "kevoree-library": "^0.9.0",
     "npm": "^1.4.16",
     "npm-vers": "^0.1.0",
     "npmi": "0.0.10",
