@@ -12,7 +12,6 @@
     "websocket"
   ],
   "dependencies": {
-    "kevoree-commons": "^0.8.0",
     "kevoree-entities": "^0.8.0",
     "smart-socket": "^0.1.6",
     "ws": "^0.4.31"

@@ -47,8 +47,8 @@ var JavascriptNode = AbstractNode.extend({
         this.adaptationEngine = new AdaptationEngine(this);
     },
 
-    start: function (_super) {
-        _super.call(this);
+    start: function () {
+        this._super();
         this.adaptationEngine.setLogger(this.getKevoreeCore().getLogger());
         var logLevel = this.dictionary.getValue('logLevel') || this.dic_logLevel.defaultValue;
         switch (logLevel.toLowerCase().trim()) {
@@ -75,8 +75,8 @@ var JavascriptNode = AbstractNode.extend({
         }
     },
 
-    stop: function (_super) {
-        _super.call(this);
+    stop: function () {
+        this._super();
         // TODO improve that, this is not a "stop" this is a complete "destroy"
         // clone current model
         var cloner = new kevoree.cloner.DefaultModelCloner();

@@ -24,8 +24,8 @@ var MQTTChannel = AbstractChannel.extend({
         defaultValue: 'kevoree'
     },
 
-    start: function (_super) {
-        _super.call(this);
+    start: function () {
+        this._super();
 
         var host = this.dictionary.getValue('host'),
             port = this.dictionary.getValue('port');
@@ -62,15 +62,15 @@ var MQTTChannel = AbstractChannel.extend({
         }
     },
 
-    stop: function (_super) {
-        _super.call(this);
+    stop: function () {
+        this._super();
         if (this.client) {
             this.client.end();
         }
     },
 
-    update: function (_super) {
-        _super.call(this);
+    update: function () {
+        this._super();
         this.stop();
         this.start();
     },
@@ -95,6 +95,7 @@ var MQTTChannel = AbstractChannel.extend({
     * @param msg
     */
     onSend: function (fromPortPath, destPortPaths, msg) {
+        this._super();
         var model = this.getKevoreeCore().getCurrentModel();
         destPortPaths.forEach(function (path) {
             var port = model.findByPath(path);

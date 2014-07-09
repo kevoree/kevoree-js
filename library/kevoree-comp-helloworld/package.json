@@ -4,8 +4,7 @@
   "main": "./lib/HelloWorld.js",
   "description": "A Kevoree component that displays an hello world",
   "scripts": {
-    "prepublish": "grunt",
-    "kevoree": "node node_modules/kevoree-nodejs-runtime/cli.js -n node0 -g sync -k kevs/main.kevs"
+    "prepublish": "grunt"
   },
   "keywords": [
     "kevoree-std-lib",
@@ -24,9 +23,7 @@
   },
   "dependencies": {
     "grunt-jade": "^0.4.0",
-    "kevoree-commons": "^0.8.0",
-    "kevoree-entities": "^0.8.0",
-    "pseudoclass": "0.2.6"
+    "kevoree-entities": "^0.8.0"
   },
   "devDependencies": {
     "grunt": "^0.4.2",

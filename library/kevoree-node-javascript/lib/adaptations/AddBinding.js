@@ -7,8 +7,8 @@ var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive,
 module.exports = AdaptationPrimitive.extend({
     toString: 'AddBinding',
 
-    execute: function (_super, callback) {
-        _super.call(this, callback);
+    execute: function (callback) {
+        this._super(callback);
 
         var bindings, binding;
 
@@ -66,8 +66,8 @@ module.exports = AdaptationPrimitive.extend({
         }
     },
 
-    undo: function (_super, callback) {
-        _super.call(this, callback);
+    undo: function (callback) {
+        this._super(callback);
 
         var cmd = new RemoveBinding(this.node, this.mapper, this.adaptModel, this.modelElement);
         cmd.execute(callback);

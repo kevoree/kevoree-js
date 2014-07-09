@@ -41,8 +41,8 @@ var WebSocketChannel = AbstractChannel.extend({
     /**
      * this method will be called by the Kevoree platform when your channel has to start
      */
-    start: function (_super) {
-        _super.call(this);
+    start: function () {
+        this._super();
 
         this.checkNoMultipleMasterServer();
 
@@ -61,8 +61,8 @@ var WebSocketChannel = AbstractChannel.extend({
     /**
      * this method will be called by the Kevoree platform when your channel has to stop
      */
-    stop: function (_super) {
-        _super.call(this);
+    stop: function () {
+        this._super();
 
         if (this.server) {
             this.server.close();
@@ -83,6 +83,8 @@ var WebSocketChannel = AbstractChannel.extend({
      * @param msg
      */
     onSend: function (fromPortPath, destPortPaths, msg) {
+        this._super();
+
         // rework msg object a bit
         var recipients = [];
         for (var i in destPortPaths) {
@@ -269,7 +271,7 @@ function processPath(path) {
 /**
  * you should call this method with a WebSocketChannel context (because it uses 'this', and expects it
  * to be a WebSocketChannel instance)
- * @param data
+ * @param ws
  */
 var localDispatchHandler = function (ws) {
     return function (data) {

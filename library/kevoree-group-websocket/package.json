@@ -27,10 +27,8 @@
   },
   "dependencies": {
     "async": "^0.2.10",
-    "kevoree-commons": "^0.8.0",
     "kevoree-entities": "^0.8.0",
     "kevoree-library": "^0.8.0",
-    "pseudoclass": "^1.0.0",
     "smart-socket": "0.1.0",
     "ws": "^0.4.31"
   },

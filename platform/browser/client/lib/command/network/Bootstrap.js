@@ -8,6 +8,7 @@ var Bootstrap = AbstractCommand.extend({
     toString: 'Bootstrap',
 
     execute: function (nodeName, callback) {
+        this._super();
         $.ajax({
             type: 'POST',
             url: 'bootstrap',

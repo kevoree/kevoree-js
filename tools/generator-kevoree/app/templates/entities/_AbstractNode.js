@@ -17,8 +17,8 @@ var <%= entityName %> = JavascriptNode.extend({
     /**
      * this method will be called by the Kevoree platform when your group has to start
      */
-    start: function (_super) {
-        _super.call(this);
+    start: function () {
+        this._super();
         // TODO
         this.log.debug(this.toString(), 'START');
     },
@@ -26,8 +26,8 @@ var <%= entityName %> = JavascriptNode.extend({
     /**
      * this method will be called by the Kevoree platform when your group has to stop
      */
-    stop: function (_super) {
-        _super.call(this);
+    stop: function () {
+        this._super();
         // TODO
         this.log.debug(this.toString(), 'STOP');
     }

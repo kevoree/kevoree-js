@@ -11,8 +11,8 @@ var FakeConsole = AbstractComponent.extend({
         datatype: 'boolean'
     },
 
-    start: function (_super) {
-        _super.call(this);
+    start: function () {
+        this._super();
 
         this.setUIContent(view({btn: 'Send msg!'}), function (err, root) {
             if (err) {
@@ -46,8 +46,8 @@ var FakeConsole = AbstractComponent.extend({
         });
     },
 
-    stop: function (_super) {
-        _super.call(this);
+    stop: function () {
+        this._super();
     },
 
     in_inMsg: function (msg) {

@@ -17,8 +17,8 @@ module.exports = AdaptationPrimitive.extend({
      * @param _super AdaptationPrimitive parent
      * @param callback function: if this function first parameter != null it means that there is an error
      */
-    execute: function (_super, callback) {
-        _super.call(this, callback);
+    execute: function (callback) {
+        this._super(callback);
 
         // inception check
         if (this.modelElement && (this.modelElement.name !== this.node.getName())) {
@@ -56,8 +56,8 @@ module.exports = AdaptationPrimitive.extend({
         callback();
     },
 
-    undo: function (_super, callback) {
-        _super.call(this, callback);
+    undo: function (callback) {
+        this._super(callback);
         var cmd = new RemoveInstance(this.node, this.mapper, this.adaptModel, this.modelElement);
         cmd.execute(callback);
     }

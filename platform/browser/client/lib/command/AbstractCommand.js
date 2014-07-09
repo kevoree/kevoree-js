@@ -11,7 +11,7 @@ var AbstractCommand = Class({
     },
 
     execute: function () {
-        console.debug('Command '+this.toString()+'.execute(): not implemented yet.');
+        console.debug('Command '+this.toString()+'.execute()...');
     }
 });
 

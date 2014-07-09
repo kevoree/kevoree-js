@@ -1,29 +1,29 @@
 {
-  "name": "kevoree-core",
-  "version": "0.8.0",
-  "description": "Kevoree Core",
-  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
-  "main": "./kevoree-core.js",
-  "keywords": [
-    "kevoree",
-    "core",
-    "platform"
-  ],
-  "contributors": [],
-  "bugs": {
-    "url": "https://github.com/kevoree/kevoree-js/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kevoree/kevoree-js"
-  },
-  "devDependencies": {},
-  "optionalDependencies": {},
-  "dependencies": {
-    "kevoree-library": ">=0.8.0",
-    "kevoree-commons": ">=0.8.0",
-    "async": "0.2.9",
-    "pseudoclass": "0.2.6"
-  },
-  "license": "LGPL-3.0"
+    "name": "kevoree-core",
+    "version": "0.8.0",
+    "description": "Kevoree Core",
+    "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+    "main": "./kevoree-core.js",
+    "keywords": [
+        "kevoree",
+        "core",
+        "platform"
+    ],
+    "contributors": [],
+    "bugs": {
+        "url": "https://github.com/kevoree/kevoree-js/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kevoree/kevoree-js"
+    },
+    "devDependencies": {},
+    "optionalDependencies": {},
+    "dependencies": {
+        "kevoree-library": ">=0.8.0",
+        "kevoree-commons": ">=0.8.0",
+        "async": "0.2.9",
+        "pseudoclass": "^1.0.1"
+    },
+    "license": "LGPL-3.0"
 }

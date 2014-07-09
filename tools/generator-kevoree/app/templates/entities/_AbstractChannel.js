@@ -20,8 +20,8 @@ var <%= entityName %> = <%= entityType %>.extend({
     /**
     * this method will be called by the Kevoree platform when your channel has to start
     */
-    start: function (_super) {
-        _super.call(this);
+    start: function () {
+        this._super();
         // TODO
         this.log.debug(this.toString(), 'START');
     },
@@ -29,8 +29,8 @@ var <%= entityName %> = <%= entityType %>.extend({
     /**
     * this method will be called by the Kevoree platform when your channel has to stop
     */
-    stop: function (_super) {
-        _super.call(this);
+    stop: function () {
+        this._super();
         // TODO
         this.log.debug(this.toString(), 'STOP');
     },
@@ -43,6 +43,7 @@ var <%= entityName %> = <%= entityType %>.extend({
     * @param msg
     */
     onSend: function (fromPortPath, destPortPaths, msg) {
+        this._super();
         // TODO
         this.log.debug(this.toString(), 'TODO send message to all destPort');
     }

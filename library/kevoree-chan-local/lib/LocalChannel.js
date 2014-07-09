@@ -3,12 +3,13 @@ var AbstractChannel = require('kevoree-entities').AbstractChannel;
 var LocalChannel = AbstractChannel.extend({
     toString: 'LocalChannel',
 
-    start: function (_super) {
-        _super.call(this);
+    start: function () {
+        this._super();
         this.log.info('Local channel started');
     },
 
     onSend: function (fromPortPath, destPortPaths, msg) {
+        this._super();
         if (this.started) {
             // directly dispatching message locally
             // without using client/server architecture because it is the purpose

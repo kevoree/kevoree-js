@@ -18,7 +18,7 @@ var Resolver = Class({
      *
      * @param deployUnit Kevoree DeployUnit
      * @param force [optional] boolean that indicates whether or not we should force re-installation no matter what
-     * @param callback(err, Class, model)
+     * @param callback function(err, Class, model)
      */
     resolve: function (deployUnit, force, callback) {},
 

@@ -14,8 +14,8 @@ module.exports = AdaptationPrimitive.extend({
      * @param _super AdaptationPrimitive parent
      * @param callback function: if this function first parameter != null it means that there is an error
      */
-    execute: function (_super, callback) {
-        _super.call(this, callback);
+    execute: function (callback) {
+        this._super(callback);
 
         if (!this.mapper.hasObject(this.modelElement.path())) {
             var bootstrapper = this.node.getKevoreeCore().getBootstrapper();
@@ -34,8 +34,8 @@ module.exports = AdaptationPrimitive.extend({
         }
     },
 
-    undo: function (_super, callback) {
-        _super.call(this, callback);
+    undo: function (callback) {
+        this._super(callback);
 
         var cmd = new RemoveDeployUnit(this.node, this.mapper, this.adaptModel, this.modelElement);
         cmd.execute(callback);

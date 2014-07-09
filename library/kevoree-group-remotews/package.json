@@ -14,8 +14,7 @@
   "dependencies": {
     "kevoree-entities": "^0.8.0",
     "kevoree-library": "^0.8.0",
-    "smart-socket": "^0.1.0",
-    "uuid": "^1.4.1"
+    "smart-socket": "^0.1.0"
   },
   "devDependencies": {
     "grunt": "^0.4.5",

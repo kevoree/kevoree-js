@@ -28,7 +28,7 @@
     "kevoree-entities": "^0.8.0",
     "kevoree-kotlin": "^0.8.0",
     "kevoree-library": "^0.8.0",
-    "pseudoclass": "0.2.6"
+    "pseudoclass": "^1.0.1"
   },
   "devDependencies": {
     "grunt": "^0.4.5",

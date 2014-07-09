@@ -14,8 +14,8 @@ var HelloWorldComponent = AbstractComponent.extend({
     /**
      *
      */
-    start: function (_super) {
-        _super.call(this);
+    start: function () {
+        this._super();
 
         this.id = setInterval(function () {
             // send a message through output port 'sendText' every 2 seconds
@@ -27,8 +27,8 @@ var HelloWorldComponent = AbstractComponent.extend({
         });
     },
 
-    stop: function (_super) {
-        _super.call(this);
+    stop: function () {
+        this._super();
         clearInterval(this.id);
         this.id = null;
     },

@@ -6,8 +6,8 @@ var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive;
 module.exports = AdaptationPrimitive.extend({
     toString: 'UpdateInstance',
 
-    execute: function (_super, callback) {
-        _super.call(this, callback);
+    execute: function (callback) {
+        this._super(callback);
 
         if (this.modelElement.name != this.node.getName()) {
             var instance = this.mapper.getObject(this.modelElement.path());
@@ -26,8 +26,8 @@ module.exports = AdaptationPrimitive.extend({
         return callback();
     },
 
-    undo: function (_super, callback) {
-        _super.call(this, callback);
+    undo: function (callback) {
+        this._super(callback);
         return callback();
     }
 });

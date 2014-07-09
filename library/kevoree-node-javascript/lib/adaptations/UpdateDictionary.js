@@ -10,8 +10,8 @@ module.exports = AdaptationPrimitive.extend({
         this.instance = null;
     },
 
-    execute: function (_super, callback) {
-        _super.call(this, callback);
+    execute: function (callback) {
+        this._super(callback);
 
         var instance = this.findEntityInstance();
         var kDictionary = this.modelElement.eContainer();
@@ -47,8 +47,8 @@ module.exports = AdaptationPrimitive.extend({
         return callback();
     },
 
-    undo: function (_super, callback) {
-        _super.call(this, callback);
+    undo: function (callback) {
+        this._super(callback);
 
         if (this.instance != null && this.oldDictionaryMap != null) {
             this.instance.getDictionary().setMap(this.oldDictionaryMap);

@@ -44,8 +44,8 @@ var RemoteWSChan = AbstractChannel.extend({
     /**
      * this method will be called by the Kevoree platform when your channel has to start
      */
-    start: function (_super) {
-        _super.call(this);
+    start: function () {
+        this._super();
 
         var host = this.dictionary.getValue('host'),
             port = this.dictionary.getValue('port'),
@@ -100,6 +100,7 @@ var RemoteWSChan = AbstractChannel.extend({
      * this method will be called by the Kevoree platform when your channel has to stop
      */
     stop: function () {
+        this._super();
         if (this.ss) {
             this.ss.stop();
         }
@@ -115,6 +116,7 @@ var RemoteWSChan = AbstractChannel.extend({
      * @param msg
      */
     onSend: function (fromPortPath, destPortPaths, msg) {
+        this._super();
         if (this.conn && this.conn.readyState === 1) {
             this.logDisplayed = false; // reset logDisplayed flag in order to re-show logs for the next disconnection
             this.conn.send(JSON.stringify({

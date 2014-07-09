@@ -30,7 +30,7 @@
     "kevoree-library": ">=0.8.0",
     "kevoree-resolvers": ">=0.8.0",
     "optimist": "~0.6.0",
-    "pseudoclass": "~0.2.6",
+    "pseudoclass": "^1.0.1",
     "waxeye": "^0.8.1"
   },
   "devDependencies": {

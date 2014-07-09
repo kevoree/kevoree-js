@@ -21,6 +21,7 @@ var BrowserBootstrapper = Bootstrapper.extend({
      * @param callback
      */
     bootstrap: function (deployUnit, forceInstall, callback) {
+        this._super();
         if (typeof(callback) == 'undefined') {
             // "forceInstall" parameter is not specified (optional)
             callback = forceInstall;
@@ -41,6 +42,7 @@ var BrowserBootstrapper = Bootstrapper.extend({
     },
 
     uninstall: function (deployUnit, callback) {
+        this._super();
         var bootstrapper = this;
         this.resolver.uninstall(deployUnit, function (err) {
             if (err) {

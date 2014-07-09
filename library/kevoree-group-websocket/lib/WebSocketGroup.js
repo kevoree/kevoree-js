@@ -50,8 +50,8 @@ var WebSocketGroup = AbstractGroup.extend({
         this.connectedNodes = {};
     },
 
-    start: function (_super) {
-        _super.call(this);
+    start: function () {
+        this._super();
 
         this.stopped = false;
 
@@ -81,8 +81,8 @@ var WebSocketGroup = AbstractGroup.extend({
         }
     },
 
-    stop: function (_super) {
-        _super.call(this);
+    stop: function () {
+        this._super();
 
         if (this.server) {
             try { this.server.close(); } catch (ignore) {}
@@ -96,6 +96,7 @@ var WebSocketGroup = AbstractGroup.extend({
     },
 
     update: function () {
+        this._super();
         this.stop();
         this.start();
     },

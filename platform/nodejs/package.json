@@ -2,7 +2,7 @@
   "name": "kevoree-nodejs-runtime",
   "version": "0.8.0",
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
-  "main": "kevoree-nodejs-runtime.js",
+  "main": "./lib/NodeJSRuntime",
   "bin": {
     "kevoreejs": "./cli.js"
   },
@@ -10,13 +10,13 @@
     "start": "node cli.js"
   },
   "dependencies": {
-    "kevoree-core": ">=0.8.0",
-    "kevoree-library": ">=0.8.0",
     "kevoree-commons": ">=0.8.0",
-    "pseudoclass": "0.2.6",
-    "optimist": "~0.6.0",
+    "kevoree-core": ">=0.8.0",
     "kevoree-kevscript": ">=0.8.0",
-    "kevoree-resolvers": ">=0.8.0"
+    "kevoree-library": ">=0.8.0",
+    "kevoree-resolvers": ">=0.8.0",
+    "optimist": "~0.6.0",
+    "pseudoclass": "^1.0.1"
   },
   "license": "LGPL-3.0",
   "description": "TODO",

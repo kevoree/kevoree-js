@@ -12,7 +12,7 @@
     "kevoree-kotlin": ">=0.8.0",
     "kevoree-library": ">=0.8.0",
     "node-uuid": "^1.4.1",
-    "pseudoclass": "^1.0.0",
+    "pseudoclass": "^1.0.1",
     "underscore.string": "^2.3.3",
     "ws": "^0.4.31"
   },

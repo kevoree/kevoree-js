@@ -4,9 +4,9 @@ var Bootstrapper    = require('kevoree-commons').Bootstrapper,
 
 /**
  *
- * @type {NPMBootstrapper}
+ * @type {NodeJSBootstrapper}
  */
-module.exports = Bootstrapper.extend({
+var NodeJSBootstrapper = Bootstrapper.extend({
     toString: "NodeJSBootstrapper",
 
     /**
@@ -20,9 +20,11 @@ module.exports = Bootstrapper.extend({
     /**
      *
      * @param deployUnit
-     * @param callback(Error, Clazz, ContainerRoot)
+     * @param forceInstall
+     * @param callback function(err, Clazz, ContainerRoot)
      */
     bootstrap: function (deployUnit, forceInstall, callback) {
+        this._super(deployUnit, forceInstall, callback);
         if (!callback) {
             // "forceInstall" parameter is not specified (optional)
             callback = forceInstall;
@@ -33,7 +35,7 @@ module.exports = Bootstrapper.extend({
         var bootstrapper = this;
         this.resolver.resolve(deployUnit, forceInstall, function (err, EntityClass, model) {
             if (err) {
-                bootstrapper.log.error(err.message);
+                bootstrapper.log.error(bootstrapper.toString(), err.stack);
                 return callback(new Error("'"+deployUnit.name+"' bootstrap failed!"));
             }
 
@@ -43,10 +45,11 @@ module.exports = Bootstrapper.extend({
     },
 
     uninstall: function (deployUnit, callback) {
+        this._super(deployUnit, callback);
         var bootstrapper = this;
         this.resolver.uninstall(deployUnit, function (err) {
             if (err) {
-                bootstrapper.log.error(err.message);
+                bootstrapper.log.error(bootstrapper.toString(), err.stack);
                 callback(new Error("'"+deployUnit.name+"' uninstall failed!"));
                 return;
             }
@@ -56,3 +59,5 @@ module.exports = Bootstrapper.extend({
         });
     }
 });
+
+module.exports = NodeJSBootstrapper;

@@ -7,6 +7,7 @@ var Resolve = AbstractCommand.extend({
     toString: 'Resolve',
 
     execute: function (deployUnit, forceInstall, callback) {
+        this._super();
         $.ajax({
             type: 'POST',
             timeout: 15000,

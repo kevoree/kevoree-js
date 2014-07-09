@@ -20,7 +20,7 @@ var NPMResolver = Resolver.extend({
     },
 
     resolve: function (deployUnit, forceInstall, callback) {
-        var self = this;
+        this._super(deployUnit, forceInstall, callback);
         if (typeof(callback) == 'undefined') {
             // "forceInstall" parameter is not specified (optional)
             callback = forceInstall;
@@ -66,6 +66,7 @@ var NPMResolver = Resolver.extend({
     },
 
     uninstall: function (deployUnit, callback) {
+        this._super(deployUnit, callback);
         console.warn(this.toString(), "NPMResolver.uninstall(...): Not implemented yet (I did NOT uninstall the module, but I told the bootstrapper that I did)");
         // TODO remove module from Browser FileSystem
         callback();

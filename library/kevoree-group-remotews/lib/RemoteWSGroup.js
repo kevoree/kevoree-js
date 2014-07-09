@@ -38,8 +38,8 @@ var RemoteWSGroup = AbstractGroup.extend({
     /**
     * this method will be called by the Kevoree platform when your group has to start
     */
-    start: function (_super) {
-        _super.call(this);
+    start: function () {
+        this._super();
 
         var host = this.dictionary.getValue('host'),
             port = this.dictionary.getValue('port'),
@@ -104,6 +104,7 @@ var RemoteWSGroup = AbstractGroup.extend({
     * this method will be called by the Kevoree platform when your group has to stop
     */
     stop: function () {
+        this._super();
         this.ss.close(true);
     }
 });

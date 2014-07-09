@@ -15,13 +15,13 @@ var AbstractComponent = KevoreeEntity.extend({
         this.ui = new KevoreeUI(this);
     },
 
-    start: function (_super) {
-        _super.call(this);
+    start: function () {
+        this._super();
         this.ui.name = this.name; // default ui name is component name
     },
 
-    stop: function (_super) {
-        _super.call(this);
+    stop: function () {
+        this._super();
         if (this.ui.isReady()) {
             // there is an UI running for this comp
             // remove it

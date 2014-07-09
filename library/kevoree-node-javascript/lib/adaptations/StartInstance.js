@@ -4,8 +4,8 @@ var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive,
 module.exports = AdaptationPrimitive.extend({
     toString: 'StartInstance',
 
-    execute: function (_super, callback) {
-        _super.call(this, callback);
+    execute: function (callback) {
+        this._super(callback);
 
         if (this.modelElement.host && this.modelElement.host.name === this.node.getName()) {
             // this element is a subNode to this.node
@@ -57,8 +57,8 @@ module.exports = AdaptationPrimitive.extend({
         }
     },
 
-    undo: function (_super, callback) {
-        _super.call(this, callback);
+    undo: function (callback) {
+        this._super(callback);
 
         var cmd = new StopInstance(this.node, this.mapper, this.adaptModel, this.modelElement);
         cmd.execute(callback);

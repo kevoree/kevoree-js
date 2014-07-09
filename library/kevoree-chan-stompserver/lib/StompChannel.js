@@ -21,8 +21,8 @@ var StompChannel = AbstractChannel.extend({
     /**
      * this method will be called by the Kevoree platform when your channel has to start
      */
-    start: function (_super) {
-        _super.call(this);
+    start: function () {
+        this._super();
 
         var host  = this.dictionary.getValue('host');
         var port  = this.dictionary.getValue('serverPort');
@@ -56,6 +56,7 @@ var StompChannel = AbstractChannel.extend({
      * this method will be called by the Kevoree platform when your channel has to stop
      */
     stop: function () {
+        this._super();
         if (this.client != null) {
             this.client.disconnect();
             this.client = null;
@@ -71,6 +72,7 @@ var StompChannel = AbstractChannel.extend({
      * @param msg
      */
     onSend: function (fromPortPath, destPortPaths, msg) {
+        this._super();
         var sendMessage = function () {
             if (this.client != null) {
                 var topic = this.dictionary.getValue('topic') || '/';
