@@ -149,13 +149,18 @@ var AdaptationEngine = Class({
 
                     case 'REMOVE':
                         currentModel = this.node.getKevoreeCore().getCurrentModel(); // old model
-                        var instance = currentModel.findByPath(trace.objPath); // instance before removal trace
-                        if (this.modelObjMapper.getObject(instance.path())) {
-                            cmds.push(this.createCommand(RemoveInstance, instance));
-                            if (instance.started) {
-                                cmds.push(this.createCommand(StopInstance, instance));
+                        var instFromCurrModel = currentModel.findByPath(trace.objPath); // instance from current model
+                        var instFromTargModel = this.targetModel.findByPath(trace.objPath); // instance in target model
+                        if ((instFromTargModel && !this.isRelatedToPlatform(instFromTargModel)) || !instFromTargModel) {
+                            // instance is no longer related to platform or present in new model: stop & remove
+                            if (this.modelObjMapper.getObject(instFromCurrModel.path())) {
+                                if (instFromCurrModel.started) {
+                                    cmds.push(this.createCommand(StopInstance, instFromCurrModel));
+                                }
+                                cmds.push(this.createCommand(RemoveInstance, instFromCurrModel));
                             }
                         }
+
                         break;
                 }
                 break;
