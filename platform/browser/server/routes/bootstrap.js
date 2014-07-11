@@ -12,16 +12,17 @@ var factory    = new kevoree.impl.DefaultKevoreeFactory();
 
 module.exports = function (model) {
     return function (req, res) {
-        if (req.body.nodename && req.body.nodename.match(NAME_PATTERN)) {
+        var nodename = req.body.nodename;
+        if (nodename && nodename.match(NAME_PATTERN)) {
             var serverNode = model.findNodesByID(config.serverPlatform.nodeName);
             if (serverNode) {
                 // let's be really cautious about given name
-                var node = model.findNodesByID(req.body.nodename);
+                var node = model.findNodesByID(nodename);
                 if (!node) {
                     // this node name is available
                     // create a node instance for the new client
                     var clientNode = factory.createContainerNode();
-                    clientNode.name = req.body.nodename;
+                    clientNode.name = nodename;
                     clientNode.typeDefinition = serverNode.typeDefinition;
 
                     // add this instance to model
@@ -55,14 +56,14 @@ module.exports = function (model) {
                     }
                 } else {
                     // node name unavailable
-                    return res.json({error: '"'+req.body.nodename+'" node name is not available. Please choose another one.'});
+                    return res.json({error: '"'+nodename+'" node name is not available. Please choose another one.'});
                 }
 
             } else {
                 return res.json({error: '"'+config.serverPlatform.nodeName+'" is not reachable. Something crashed server-side obviously :/'});
             }
         } else {
-            return res.json({error: '\'nodename\' ('+req.body.nodename+') node name is not valid. Valid name must match this regex '+NAME_PATTERN.toString()});
+            return res.json({error: '\'nodename\' ('+nodename+') node name is not valid. Valid name must match this regex '+NAME_PATTERN.toString()});
         }
     };
 };

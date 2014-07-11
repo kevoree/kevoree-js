@@ -9,32 +9,37 @@ var fs      = require('fs'),
     path    = require('path');
 
 module.exports = function(req, res) {
-    if (req.body.type === 'npm') {
+    var type = req.body.type,
+        uuid = req.body.uuid,
+        name = req.body.name,
+        vers = req.body.version;
+
+    if (type === 'npm') {
         var publicInstall     = config.paths.publicInstall,
-            npmInstallDir     = config.paths.npmInstallDir(req.body.uuid),
-            modulePath        = config.paths.modulePath(npmInstallDir, req.body.name),
-            browserModulePath = config.paths.browserModulePath(publicInstall, req.body.name),
-            moduleZip         = config.paths.moduleZip(browserModulePath, req.body.name, req.body.version),
-            downloadLink      = config.paths.downloadLink(req.body.name, req.body.version);
+            npmInstallDir     = config.paths.npmInstallDir(uuid),
+            modulePath        = config.paths.modulePath(npmInstallDir, name),
+            browserModulePath = config.paths.browserModulePath(publicInstall, name),
+            moduleZip         = config.paths.moduleZip(browserModulePath, name, vers),
+            downloadLink      = config.paths.downloadLink(name, vers);
 
         // check if bundle as already been downloaded
-        if (!fs.existsSync(browserModulePath+'.zip')) {
+        if (!fs.existsSync(moduleZip)) {
             var options = {
-                name: req.body.name,
-                version: req.body.version,
+                name: name,
+                version: vers,
                 path: path.resolve(npmInstallDir, '..')
             };
 
             npmi(options, function (err) {
                 if (err) {
-                    var message = 'Unable to install '+req.body.name;
+                    var message = 'Unable to install '+name;
                     console.error(message);
                     return res.send(500, message);
                 }
 
                 // module installed successfully: zip browserified bundle
                 var zip = new AdmZip();
-                zip.addLocalFile(path.resolve(modulePath, 'browser', req.body.name+'.js'));
+                zip.addLocalFile(path.resolve(modulePath, 'browser', name+'.js'));
                 zip.writeZip(moduleZip);
                 zip.location = moduleZip;
 
@@ -44,7 +49,7 @@ module.exports = function(req, res) {
                     // send response
                     return res.json({
                         zipPath: downloadLink,
-                        zipName: req.body.name+'@'+req.body.version
+                        zipName: name+'@'+vers
                     });
                 });
             });
@@ -54,7 +59,7 @@ module.exports = function(req, res) {
             // send response
             return res.json({
                 zipPath: downloadLink,
-                zipName: req.body.name+'@'+req.body.version
+                zipName: name+'@'+vers
             });
         }
 

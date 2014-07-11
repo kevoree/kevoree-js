@@ -52,7 +52,6 @@ var BrowserRuntime = Class({
 
         // connect to WebSocket server and register
         var wsConnect = function () {
-            console.log('Trying to connect to '+CLIENT_CLEANER_ADDRESS);
             this.ws = new WebSocket(CLIENT_CLEANER_ADDRESS);
             this.ws.onopen = function () {
                 this.ui.wsConnected();
@@ -100,14 +99,22 @@ var BrowserRuntime = Class({
         }.bind(this));
 
         this.core.on('error', function (err) {
-            console.log('ERROR', err);
             this.logger.error(err.message);
+            this.logger.error('Open the console to see the full stack');
+            console.log(err.stack);
             this.ui.stopped();
         }.bind(this));
 
         this.core.on('adaptationError', function (err) {
-            console.log('adaptationError', err);
             this.logger.error(err.message);
+            this.logger.error('Open the console to see the full stack');
+            console.log(err.stack);
+        }.bind(this));
+
+        this.core.on('rollbackError', function (err) {
+            this.logger.error(err.message);
+            this.logger.error('Open the console to see the full stack');
+            console.log(err.stack);
         }.bind(this));
     },
 

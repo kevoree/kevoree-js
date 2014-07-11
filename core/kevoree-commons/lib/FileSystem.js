@@ -1,4 +1,4 @@
-var Class         = require('pseudoclass');
+var Class = require('pseudoclass');
 
 var FileSystem = Class({
     toString: 'FileSystem',
@@ -30,6 +30,6 @@ var getBrowserFileSystem = function getBrowserFileSystem(fsapi, size, callback) 
 
         navigator.persistentStorage.requestQuota(size, successHandler, errorHandler);
     }
-}
+};
 
 module.exports = FileSystem;

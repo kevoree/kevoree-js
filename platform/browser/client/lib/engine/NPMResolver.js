@@ -42,26 +42,52 @@ var NPMResolver = Resolver.extend({
                 return callback(new Error(err.responseText));
             }
 
-            // server response contains a zipPath & name of the requested module package
-            // (retrieved server-side from npm registry)
-            installZip(resp.zipPath, resp.zipName, function (err) {
-                if (err) {
-                    errorHandler(err);
-                    callback(err);
-                    return;
-                }
-
-                // zip installed successfully
-                $.ajax({
-                    type: 'GET',
-                    url: 'filesystem:'+window.location.origin+'/persistent/kev_libraries/'+deployUnit.name+'@'+deployUnit.version+'/'+deployUnit.name+'.js',
-                    success: loadSuccess,
-                    error: function (e) {
-                        console.log('Unable to find filesystem:'+window.location.origin+'/persistent/kev_libraries/'+deployUnit.name+'@'+deployUnit.version+'/'+deployUnit.name+'.js');
-                        return callback(new Error('Unable to load \''+deployUnit.name+'@'+deployUnit.version+'\' locally :/'));
+            // server response contains a zipPath & name of the requested module package (retrieved server-side from npm registry)
+            if (window.requestFileSystem) {
+                // Chrome-based browser
+                installZip(resp.zipPath, resp.zipName, function (err) {
+                    if (err) {
+                        errorHandler(err);
+                        callback(err);
+                        return;
                     }
+
+                    // zip installed successfully
+                    $.ajax({
+                        type: 'GET',
+                        url: 'filesystem:'+window.location.origin+'/persistent/kev_libraries/'+deployUnit.name+'@'+deployUnit.version+'/'+deployUnit.name+'.js',
+                        success: loadSuccess,
+                        error: function (e) {
+                            console.log('Unable to find filesystem:'+window.location.origin+'/persistent/kev_libraries/'+deployUnit.name+'@'+deployUnit.version+'/'+deployUnit.name+'.js');
+                            callback(new Error('Unable to load \''+deployUnit.name+'@'+deployUnit.version+'\' locally :/'));
+                        }
+                    });
                 });
-            });
+            } else {
+                // other browser that don't support FileSystem API
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', resp.zipPath, true);
+                xhr.responseType = 'blob';
+
+                xhr.onreadystatechange = function(e) {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            var zip = new JSZip(e.target.result);
+                            var entries = zip.file(/.+\.js/);
+                            var rawScript = 'var require = require || function () {};\n' +
+                                ';(function (global, window, document, $, jQuery) {\n' +
+                                entries[0].data +
+                                '\n' +
+                                '})({WebSocket: WebSocket});';
+                            loadSuccess(rawScript);
+                        };
+                        reader.readAsArrayBuffer(this.response);
+                    }
+                };
+
+                xhr.send();
+            }
         });
     },
 
@@ -202,7 +228,7 @@ var processFileEntry = function processFileEntry(entry, zipDir, callback) {
 
         }, callback);
     }, callback);
-}
+};
 
 /**
  * Recursively creates directory tree according to given path
