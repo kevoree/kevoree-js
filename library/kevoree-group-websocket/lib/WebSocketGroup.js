@@ -51,9 +51,7 @@ var WebSocketGroup = AbstractGroup.extend({
     },
 
     start: function () {
-        console.log('START', this);
         this._super();
-        console.log('FOO', this);
 
         this.stopped = false;
 
