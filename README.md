@@ -1,5 +1,7 @@
 # Kevoree JS ![Kevoree](http://kwe.braindead.fr/images/logo.png)
 
+> **DISCLAIMER: This documentation might be a little outdated as the API of KevoreeJS entities is still evolving**
+
 ## Project description
 __kevoree-js__ provides several tools in order to use **[Kevoree](http://kevoree.org)** in **Javascript**.  
 The idea behind that is to provided (for now) two Javascript containers for Kevoree:  
