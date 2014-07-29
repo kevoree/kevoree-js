@@ -26,7 +26,7 @@ module.exports = function (grunt) {
                 kevscript: 'kevs/main.kevs'
             },
             comm: {
-                kevscript: 'kevs/communications.kevs'
+                kevscript: 'kevs/comm.kevs'
             }
         },
 

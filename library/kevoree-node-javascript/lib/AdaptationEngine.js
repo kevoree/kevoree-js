@@ -100,7 +100,8 @@ var AdaptationEngine = Class({
             }
         }
 
-        // clean primitives (dont call UpdateInstance when StopInstance will be executed)
+        // clean primitives:
+        //  - don't call UpdateInstance when StopInstance will be executed
         for (var path in this.alreadyProcessedTraces) {
             if (this.alreadyProcessedTraces[path][UpdateInstance.prototype.toString()]) {
                 for (var type in this.alreadyProcessedTraces[path]) {
@@ -214,7 +215,9 @@ var AdaptationEngine = Class({
                                     }
 
                                     cmds.push(this.createCommand(AddInstance, modelElement.hub));
-                                    cmds.push(this.createCommand(StartInstance, modelElement.hub));
+                                    if (modelElement.hub.started) {
+                                        cmds.push(this.createCommand(StartInstance, modelElement.hub));
+                                    }
                                 }
                             }
                         }
@@ -269,7 +272,10 @@ var AdaptationEngine = Class({
                                 }
                             }
                         } else {
-                            cmds.push(this.createCommand(StopInstance, modelElement));
+                            var instance = this.modelObjMapper.getObject(modelElement.path());
+                            if (instance && instance.isStarted()) {
+                                cmds.push(this.createCommand(StopInstance, modelElement));
+                            }
                         }
                     }
                 }
