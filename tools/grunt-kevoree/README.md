@@ -67,9 +67,14 @@ A boolean that indicates whether or not you want to use Kevoree GUI Runtime (def
 
 #### kevscript
 Type: `String`
-Default value: `'none, this has to be set'`
+Default value: `'none, it has to be set here or from command-line with --kevs=/path/to/your/model.kevs'`
 
-Path that leads to your KevScript file in order to create the Kevoree model to bootstrap on.
+Path that leads to your KevScript file in order to create the Kevoree model to bootstrap on.  
+KevScript file can be specified from the command-line (if provided, it will be used instead of the file given in the Gruntfile.js)  
+
+```sh
+grunt kevoree:run --kevs=/path/to/my/model.kevs
+```
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).

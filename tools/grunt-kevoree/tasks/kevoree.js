@@ -34,6 +34,16 @@ module.exports = function(grunt) {
             options.node = nodeName;
         }
 
+        var kevscriptPath = grunt.option('kevs');
+        if (typeof kevscriptPath !== 'string') {
+            kevscriptPath = this.data.kevscript;
+            if (!kevscriptPath) {
+                grunt.fail.fatal('You must specify a KevScript file to bootstrap on.');
+                done();
+                return;
+            }
+        }
+
         options.modulesPath = path.resolve(options.modulesPath, options.node);
         var pkg = grunt.file.readJSON('package.json');
 
@@ -56,7 +66,7 @@ module.exports = function(grunt) {
                 kevsEngine  = new KevScript({ resolvers: { npm: npmResolver } });
 
             runtime.on('started', function () {
-                var kevs = grunt.file.read(this.data.kevscript);
+                var kevs = grunt.file.read(kevscriptPath);
                 kevsEngine.parse(kevs, function (err, model) {
                     if (err) {
                         grunt.fail.fatal(err.message);
@@ -66,12 +76,12 @@ module.exports = function(grunt) {
 
                     runtime.deploy(model);
                 });
-            }.bind(this));
+            });
 
-            var deployedListener = function () {
-                grunt.log.ok('grunt-kevoree: model from '+this.data.kevscript+' deployed successfully :)');
+            function deployedListener() {
+                grunt.log.ok('grunt-kevoree: model from '+kevscriptPath+' deployed successfully :)');
                 runtime.off('deployed', deployedListener);
-            }.bind(this);
+            }
 
             runtime.on('deployed', deployedListener);
 

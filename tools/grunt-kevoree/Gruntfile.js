@@ -35,6 +35,9 @@ module.exports = function(grunt) {
                     group: 'sync'
                 },
                 kevscript: 'test/kevs/main.kevs'
+            },
+            nooptions: {
+
             }
         }
     });
