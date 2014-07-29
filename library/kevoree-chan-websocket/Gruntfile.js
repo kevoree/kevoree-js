@@ -24,6 +24,9 @@ module.exports = function (grunt) {
         kevoree: {
             run: {
                 kevscript: 'kevs/main.kevs'
+            },
+            stop: {
+                kevscript: 'kevs/stop.kevs'
             }
         },
 

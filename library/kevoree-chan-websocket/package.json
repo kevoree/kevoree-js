@@ -1,6 +1,6 @@
 {
   "name": "kevoree-chan-websocket",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "main": "./lib/WebSocketChannel.js",
   "scripts": {
     "prepublish": "grunt"

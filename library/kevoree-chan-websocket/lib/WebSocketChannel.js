@@ -85,41 +85,44 @@ var WebSocketChannel = AbstractChannel.extend({
     onSend: function (fromPortPath, destPortPaths, msg) {
         this._super();
 
-        // rework msg object a bit
-        var recipients = [];
-        for (var i in destPortPaths) {
-            // extract nodeName from destPortPath
-            // TODO this is ugly :O API should only give nodeName not the whole destPortPath ?
-            recipients.push(/nodes\[([\w_.-]+)\].+/g.exec(destPortPaths[i])[1]);
-        }
-        
-        var jsonMsg = JSON.stringify({
-            type: MESSAGE,
-            message: msg,
-            recipients: recipients
-        });
-        
-        if (this.client) {
-            // directly send message to server because we can't do much more =)
-            if (this.client.readyState === 1) {
-                this.client.send(jsonMsg);
-            } else {
-                // TODO client is not connected => put in a queue
+        // do not send messages if channel is not started
+        if (this.isStarted()) {
+            // rework msg object a bit
+            var recipients = [];
+            for (var i in destPortPaths) {
+                // extract nodeName from destPortPath
+                // TODO this is ugly :O API should only give nodeName not the whole destPortPath ?
+                recipients.push(/nodes\[([\w_.-]+)\].+/g.exec(destPortPaths[i])[1]);
             }
 
-        } else if (this.server) {
-            // broadcast message to each connected clients
-            for (var nodeName in this.connectedClients) {
-                if (this.connectedClients[nodeName].readyState === 1) {
-                    this.connectedClients[nodeName].send(jsonMsg);
+            var jsonMsg = JSON.stringify({
+                type: MESSAGE,
+                message: msg,
+                recipients: recipients
+            });
+
+            if (this.client) {
+                // directly send message to server because we can't do much more =)
+                if (this.client.readyState === 1) {
+                    this.client.send(jsonMsg);
                 } else {
                     // TODO client is not connected => put in a queue
                 }
-            }
-        }
 
-        // and to myself just in case
-        this.localDispatch(msg);
+            } else if (this.server) {
+                // broadcast message to each connected clients
+                for (var nodeName in this.connectedClients) {
+                    if (this.connectedClients[nodeName].readyState === 1) {
+                        this.connectedClients[nodeName].send(jsonMsg);
+                    } else {
+                        // TODO client is not connected => put in a queue
+                    }
+                }
+            }
+
+            // and to myself just in case
+            this.localDispatch(msg);
+        }
     },
 
     startWSServer: function (port, path) {
