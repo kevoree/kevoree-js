@@ -116,10 +116,10 @@ var AdaptationEngine = Class({
         }
 
         // return sorted command list (sort by COMMAND_RANK in order to process adaptations properly)
-//        cmds = this.sortCommands(cmdList);
-//        for (var j=0; j < cmds.length; j++) {
-//            console.log('CMD >>><<< ', cmds[j].toString(), cmds[j].modelElement.path());
-//        }
+        cmds = this.sortCommands(cmdList);
+        for (var j=0; j < cmds.length; j++) {
+            console.log('CMD >>><<< ', cmds[j].toString(), cmds[j].modelElement.path());
+        }
         return this.sortCommands(cmdList);
     },
 
@@ -259,22 +259,26 @@ var AdaptationEngine = Class({
             case 'started':
                 if (trace.traceType.name() === 'SET' && Kotlin.isType(modelElement, kevoree.Instance)) {
                     if (this.isRelatedToPlatform(modelElement)) {
-                        if (trace.content === 'true') {
-                            cmds.push(this.createCommand(StartInstance, modelElement));
-                            if (modelElement.dictionary) {
-                                if (modelElement.dictionary.values.size() > 0) {
-                                    cmds.push(this.createCommand(UpdateInstance, modelElement));
-                                }
-
-                                var values = modelElement.dictionary.values.iterator();
-                                while (values.hasNext()) {
-                                    cmds.push(this.createCommand(UpdateDictionary, values.next()));
-                                }
-                            }
+                        if (Kotlin.isType(modelElement, kevoree.ContainerNode) && modelElement.name === this.node.getName()) {
+                            // do not restart this platform: makes no sense
                         } else {
-                            var instance = this.modelObjMapper.getObject(modelElement.path());
-                            if (instance && instance.isStarted()) {
-                                cmds.push(this.createCommand(StopInstance, modelElement));
+                            if (trace.content === 'true') {
+                                cmds.push(this.createCommand(StartInstance, modelElement));
+                                if (modelElement.dictionary) {
+                                    if (modelElement.dictionary.values.size() > 0) {
+                                        cmds.push(this.createCommand(UpdateInstance, modelElement));
+                                    }
+
+                                    var values = modelElement.dictionary.values.iterator();
+                                    while (values.hasNext()) {
+                                        cmds.push(this.createCommand(UpdateDictionary, values.next()));
+                                    }
+                                }
+                            } else {
+                                var instance = this.modelObjMapper.getObject(modelElement.path());
+                                if (instance && instance.isStarted()) {
+                                    cmds.push(this.createCommand(StopInstance, modelElement));
+                                }
                             }
                         }
                     }
