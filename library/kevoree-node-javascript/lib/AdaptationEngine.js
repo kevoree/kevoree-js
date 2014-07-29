@@ -116,10 +116,10 @@ var AdaptationEngine = Class({
         }
 
         // return sorted command list (sort by COMMAND_RANK in order to process adaptations properly)
-        cmds = this.sortCommands(cmdList);
-        for (var j=0; j < cmds.length; j++) {
-            console.log('CMD >>><<< ', cmds[j].toString(), cmds[j].modelElement.path());
-        }
+//        cmds = this.sortCommands(cmdList);
+//        for (var j=0; j < cmds.length; j++) {
+//            console.log('CMD >>><<< ', cmds[j].toString(), cmds[j].modelElement.path());
+//        }
         return this.sortCommands(cmdList);
     },
 
