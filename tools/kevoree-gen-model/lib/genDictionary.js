@@ -46,7 +46,7 @@ module.exports = function (typeDef, obj) {
             } else {
                 // datatype is not defined
                 // try to guess with given defaultValue
-                if (attr.defaultValue) {
+                if (typeof (attr.defaultValue) !== 'undefined') {
                     attr.datatype = typeof (attr.defaultValue);
                 } else {
                     // if no datatype specified AND no given defaultValue => use string as datatype
