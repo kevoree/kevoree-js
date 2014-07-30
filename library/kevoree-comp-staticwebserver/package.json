@@ -1,11 +1,12 @@
 {
   "name": "kevoree-comp-staticwebserver",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "main": "./lib/StaticWebServer.js",
   "scripts": {
     "prepublish": "grunt"
   },
   "keywords": [
+    "kevoree-std-lib",
     "kevoree",
     "library",
     "comp"
