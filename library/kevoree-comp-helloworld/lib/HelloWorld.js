@@ -12,7 +12,7 @@ var HelloWorldComponent = AbstractComponent.extend({
     },
 
     /**
-     *
+     * Component start
      */
     start: function () {
         this._super();
@@ -23,10 +23,15 @@ var HelloWorldComponent = AbstractComponent.extend({
         }.bind(this), 2000);
 
         this.setUIContent('<p>Hello world</p>', function (err) {
-            if (err) this.log.info(this.toString(), 'Hello world!');
+            if (err) {
+                this.log.info(this.toString(), 'Hello world!');
+            }
         });
     },
 
+    /**
+     * Component stop
+     */
     stop: function () {
         this._super();
         clearInterval(this.id);
