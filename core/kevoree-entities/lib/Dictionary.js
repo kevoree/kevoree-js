@@ -90,7 +90,7 @@ var Dictionary = Class({
     getNumber: function (name, defaultVal) {
         var val = this.map[name];
 
-        if (typeof (val) === 'number') {
+        if (!isNaN(parseInt(val))) {
             return val;
         }
 
