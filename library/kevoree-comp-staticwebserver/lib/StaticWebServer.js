@@ -5,9 +5,15 @@ var http        = require('http');
 var finalHandler= require('finalhandler');
 var serveStatic = require('serve-static');
 
-var HOST    = '127.0.0.1',
-    PORT    = 9090,
-    ROOT    = path.join('path', 'to', 'a', 'folder');
+var HOST          = '127.0.0.1',
+    PORT          = 9090,
+    ROOT          = path.join('path', 'to', 'a', 'folder'),
+    SHOW_DOTFILES = false,
+    DOTFILES_403  = false,
+    ETAG          = true,
+    INDEX         = 'index.html',
+    MAX_AGE       = '2h',
+    REDIRECT      = true;
 
 /**
  * Kevoree component
@@ -16,21 +22,15 @@ var HOST    = '127.0.0.1',
 var StaticWebServer = AbstractComponent.extend({
     toString: 'StaticWebServer',
 
-    /* This is an example of dictionary attribute that you can set for your entity */
-    dic_host: {
-      optional: false,
-      defaultValue: HOST
-    },
-
-    dic_port: {
-        optional: false,
-        defaultValue: PORT
-    },
-
-    dic_root: {
-        optional: true,
-        defaultValue: ROOT
-    },
+    dic_host:           { defaultValue: HOST },
+    dic_port:           { defaultValue: PORT },
+    dic_root:           { defaultValue: ROOT },
+    dic_index:          { defaultValue: INDEX },
+    dic_maxAge:         { defaultValue: MAX_AGE },
+    dic_redirect:       { defaultValue: REDIRECT },
+    dic_showDotfiles:   { defaultValue: SHOW_DOTFILES },
+    dic_dotfilesGive403:{ defaultValue: DOTFILES_403 },
+    dic_etag:           { defaultValue: ETAG },
 
     /**
     * this method will be called by the Kevoree platform when your component has to start
@@ -38,25 +38,26 @@ var StaticWebServer = AbstractComponent.extend({
     start: function () {
         this._super();
 
-        var host = this.dictionary.getValue('host');
-        if (!host || host.length === 0) {
-            // default host for web server
-            host = HOST;
+        var host = this.dictionary.getString('host', HOST);
+        var port = this.dictionary.getNumber('port', PORT);
+        var root = this.dictionary.getString('root', ROOT);
+
+        var dotfiles = 'ignore';
+        if (this.dictionary.getBoolean('dotfilesGive403', DOTFILES_403)) {
+            if (this.dictionary.getBoolean('showDotfiles', SHOW_DOTFILES)) {
+                dotfiles = 'allow';
+            }
+        } else {
+            dotfiles = 'deny';
         }
 
-        var port = this.dictionary.getValue('port');
-        if (!port || port.length === 0 || isNaN(parseInt(port))) {
-            // default port
-            port = PORT;
-        }
-
-        var root = this.dictionary.getValue('root');
-        if (!root || root.length === 0) {
-            // default root folder to statically serve
-            root = ROOT;
-        }
-
-        var serve = serveStatic(root);
+        var serve = serveStatic(root, {
+            dotfiles:   dotfiles,
+            etag:       this.dictionary.getBoolean('etag', ETAG),
+            index:      this.dictionary.getString('index', INDEX),
+            maxAge:     this.dictionary.getString('maxAge', MAX_AGE),
+            redirect:   this.dictionary.getBoolean('redirect', REDIRECT)
+        });
         this.server = http.createServer(function (req, res) {
             var done = finalHandler(req, res);
             serve(req, res, done);
