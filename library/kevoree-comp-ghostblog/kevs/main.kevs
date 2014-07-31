@@ -1,0 +1,17 @@
+include npm:kevoree-node-javascript
+include npm:kevoree-group-websocket
+include npm:kevoree-comp-ghostblog
+
+add node0 : JavascriptNode
+add sync : WebSocketGroup
+add node0.blog : GhostBlog
+
+set node0.blog.root = '/tmp/topBlog'
+set node0.blog.env = 'development'
+set node0.blog.url = 'http://localhost:9090'
+set node0.blog.host = '127.0.0.1'
+set node0.blog.port = '9090'
+
+attach node0 sync
+
+set sync.port/node0 = "9000"
