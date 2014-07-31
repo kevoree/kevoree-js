@@ -69,7 +69,23 @@ KevoreeGenerator.prototype.askFor = function askFor() {
             }
         ], function (props) {
             this.packageName = props.packageName;
-            cb();
+
+            if (this.rawEntityType === 'comp') {
+                this.prompt([
+                    {
+                        name: 'browserCompat',
+                        message: 'Do you plan on using this component with a browser runtime?',
+                        type: 'confirm'
+                    }
+                ], function (props) {
+                    this.browserCompat = props.browserCompat;
+                    cb();
+
+                }.bind(this));
+            } else {
+                cb();
+            }
+
         }.bind(this));
     }.bind(this));
 };
@@ -77,7 +93,6 @@ KevoreeGenerator.prototype.askFor = function askFor() {
 KevoreeGenerator.prototype.app = function app() {
     // common files & dirs for all entities
     this.mkdir('lib');
-    this.template('entities/_'+this.entityType+'.js', 'lib/'+this.entityName+'.js');
     this.template('_README.md', 'README.md');
     this.copy('_.npmignore', '.npmignore');
     this.mkdir('kevs');
@@ -85,25 +100,40 @@ KevoreeGenerator.prototype.app = function app() {
     // type dependant config
     switch (this.rawEntityType) {
         case 'comp':
-            this.mkdir('ui');
-            this.copy('compGruntfile.js', 'Gruntfile.js');
-            this.template('_compPackage.json', 'package.json');
+            if (this.browserCompat) {
+                this.mkdir('ui');
+                this.mkdir('resources/css');
+
+                this.copy('compGruntfileUI.js', 'Gruntfile.js');
+                this.template('_compPackageUI.json', 'package.json');
+                this.template('entities/_'+this.entityType+'WithUI.js', 'lib/'+this.entityName+'.js');
+                this.template('main.css', 'resources/css/main.css');
+                this.template('view.jade', 'ui/view.jade');
+            } else {
+                this.template('entities/_'+this.entityType+'.js', 'lib/'+this.entityName+'.js');
+                this.copy('compGruntfile.js', 'Gruntfile.js');
+                this.template('_compPackage.json', 'package.json');
+            }
+
             this.template('_compMain.kevs', 'kevs/main.kevs');
             break;
 
         case 'chan':
+            this.template('entities/_'+this.entityType+'.js', 'lib/'+this.entityName+'.js');
             this.copy('defaultGruntfile.js', 'Gruntfile.js');
             this.template('_chanPackage.json', 'package.json');
             this.template('_chanMain.kevs', 'kevs/main.kevs');
             break;
 
         case 'group':
+            this.template('entities/_'+this.entityType+'.js', 'lib/'+this.entityName+'.js');
             this.copy('defaultGruntfile.js', 'Gruntfile.js');
             this.template('_groupPackage.json', 'package.json');
             this.template('_groupMain.kevs', 'kevs/main.kevs');
             break;
 
         case 'node':
+            this.template('entities/_'+this.entityType+'.js', 'lib/'+this.entityName+'.js');
             this.copy('defaultGruntfile.js', 'Gruntfile.js');
             this.template('_nodePackage.json', 'package.json');
             this.template('_nodeMain.kevs', 'kevs/main.kevs');
