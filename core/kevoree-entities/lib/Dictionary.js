@@ -34,6 +34,73 @@ var Dictionary = Class({
         return this.map[name];
     },
 
+    /**
+     * Returns a boolean for the given dictionary attribute name.
+     * If no value is found and no defaultVal is given, it will return "false"
+     * If a defaultVal is given, and no value is found in dictionary, then defaultVal is returned
+     * @param name
+     * @param [defaultVal] a default boolean to return if no value is found in the dictionary using the given name
+     * @returns {Boolean}
+     */
+    getBoolean: function (name, defaultVal) {
+        var val = this.map[name];
+        if (val === 'true' || val === 'false') {
+            return val === 'true';
+        }
+
+        if (typeof (defaultVal) === 'undefined') {
+            defaultVal = false;
+        }
+
+        return defaultVal;
+    },
+
+    /**
+     * Returns a string for the given dictionary attribute name.
+     * If no value is found and no defaultVal is given, it will return "null"
+     * (nb: it will also return "null" if the given defaultVal is not a string)
+     * If a defaultVal is given, and no value is found in dictionary, then defaultVal is returned
+     * @param name
+     * @param [defaultVal] a default string to return if no value is found in the dictionary using the given name
+     * @returns {String}
+     */
+    getString: function (name, defaultVal) {
+        var val = this.map[name];
+
+        if (typeof (val) === 'string') {
+            return val;
+        }
+
+        if (typeof (defaultVal) !== 'string') {
+            defaultVal = null;
+        }
+
+        return defaultVal;
+    },
+
+    /**
+     * Returns a number for the given dictionary attribute name.
+     * If no value is found and no defaultVal is given, it will return "null"
+     * (nb: it will also return "null" if the given defaultVal is not a number)
+     * If a defaultVal is given, and no value is found in dictionary, then defaultVal is returned
+     * @param name
+     * @param [defaultVal] a default number to return if no value is found in the dictionary using the given name
+     * @returns {Number}
+     */
+    getNumber: function (name, defaultVal) {
+        var val = this.map[name];
+
+        if (typeof (val) === 'number') {
+            return val;
+        }
+
+        if (typeof (defaultVal) !== 'number') {
+            defaultVal = null;
+        }
+
+        return defaultVal;
+    },
+
     setValue: function (name, value) {
         var entity = this.entity.getModelEntity();
         if (!entity.dictionary) {
