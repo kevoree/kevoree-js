@@ -1,6 +1,6 @@
 {
   "name": "kevoree-comp-staticwebserver",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "main": "./lib/StaticWebServer.js",
   "scripts": {
     "prepublish": "grunt"

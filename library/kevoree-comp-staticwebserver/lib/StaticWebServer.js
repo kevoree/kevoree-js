@@ -38,9 +38,9 @@ var StaticWebServer = AbstractComponent.extend({
     start: function () {
         this._super();
 
-        var host = this.dictionary.getString('host', HOST);
-        var port = this.dictionary.getNumber('port', PORT);
-        var root = this.dictionary.getString('root', ROOT);
+        this.host = this.dictionary.getString('host', HOST);
+        this.port = this.dictionary.getNumber('port', PORT);
+        this.root = this.dictionary.getString('root', ROOT);
 
         var dotfiles = 'ignore';
         if (this.dictionary.getBoolean('dotfilesGive403', DOTFILES_403)) {
@@ -51,10 +51,15 @@ var StaticWebServer = AbstractComponent.extend({
             dotfiles = 'deny';
         }
 
-        var serve = serveStatic(root, {
+        var index = this.dictionary.getString('index', INDEX);
+        if (index === 'false') {
+            index = false;
+        }
+
+        var serve = serveStatic(this.root, {
             dotfiles:   dotfiles,
             etag:       this.dictionary.getBoolean('etag', ETAG),
-            index:      this.dictionary.getString('index', INDEX),
+            index:      index,
             maxAge:     this.dictionary.getString('maxAge', MAX_AGE),
             redirect:   this.dictionary.getBoolean('redirect', REDIRECT)
         });
@@ -62,8 +67,8 @@ var StaticWebServer = AbstractComponent.extend({
             var done = finalHandler(req, res);
             serve(req, res, done);
         });
-        this.server.listen(port, host, function () {
-            this.log.info(this.toString(), 'Web Server started on port ' + port);
+        this.server.listen(this.port, this.host, function () {
+            this.log.info(this.toString(), 'Web Server started ' + this.host + ':' + this.port + ' using folder ' + this.root);
         }.bind(this));
     },
 
@@ -74,8 +79,12 @@ var StaticWebServer = AbstractComponent.extend({
         this._super();
 
         if (this.server) {
+            (function (host, port, root) {
+                this.server.on('close', function () {
+                    this.log.info(this.toString(), 'Web Server closed ' + host + ':' + port + ' using folder ' + root);
+                }.bind(this));
+            }.bind(this))(this.host, this.port, this.root);
             this.server.close();
-            this.log.info(this.toString(), 'Web Server closed.');
         }
     },
 
