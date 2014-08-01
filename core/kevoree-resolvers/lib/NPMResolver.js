@@ -82,9 +82,10 @@ var NPMResolver = Resolver.extend({
                 if (pkg.name === deployUnit.name) {
                     // current directory contains the library we want to resolve
                     options = {
-                        name:    pkg.name,
-                        version: pkg.version,
-                        path:    this.modulesPath
+                        name:         path.resolve('.'),
+                        version:      pkg.version,
+                        path:         this.modulesPath,
+                        localInstall: true
                     };
                     npmiLoad();
                 } else {

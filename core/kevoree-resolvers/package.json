@@ -1,6 +1,6 @@
 {
   "name": "kevoree-resolvers",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Standard Kevoree Javascript resolvers",
   "main": "./kevoree-resolvers.js",
   "scripts": {
