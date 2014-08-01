@@ -31,8 +31,8 @@ var GhostBlog = AbstractComponent.extend({
     dic_port: { optional: true,  defaultValue: PORT },
 
     /**
-    * this method will be called by the Kevoree platform when your component has to start
-    */
+     * this method will be called by the Kevoree platform when your component has to start
+     */
     start: function () {
         this._super();
 
@@ -63,7 +63,7 @@ var GhostBlog = AbstractComponent.extend({
             paths: null
         };
 
-        function create() {
+        var create = function () {
             mkdirp(root, function (err) {
                 if (err) throw err;
 
@@ -75,15 +75,16 @@ var GhostBlog = AbstractComponent.extend({
                         if (err) throw err;
 
                         process.env.NODE_ENV = env;
-                        ghost({ config: blogConfPath }).otherwise(function (err) {
+                        ghost({ config: blogConfPath }).then(function () {
+//                            this.server = server;
+                            this.log.info('Ghost blog root folder: ' + root);
+                        }.bind(this)).otherwise(function (err) {
                             errors.logErrorAndExit(err, err.context, err.help);
-                        }).then(function () {
-                            console.log('Ghost blog root folder: ' + root);
                         });
-                    });
-                });
-            });
-        }
+                    }.bind(this));
+                }.bind(this));
+            }.bind(this));
+        }.bind(this);
 
         fs.exists(root, function (exists) {
             if (exists) {
@@ -99,12 +100,18 @@ var GhostBlog = AbstractComponent.extend({
     },
 
     /**
-    * this method will be called by the Kevoree platform when your component has to stop
-    */
+     * this method will be called by the Kevoree platform when your component has to stop
+     */
     stop: function () {
         this._super();
         // TODO
         this.log.debug(this.toString(), 'STOP');
+//        if (this.server) {
+//            this.server.on('close', function () {
+//                console.log('CLOSED §!!!!!!!');
+//            });
+//            this.server.close();
+//        }
     }
 });
 

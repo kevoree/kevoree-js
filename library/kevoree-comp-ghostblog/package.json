@@ -1,29 +1,29 @@
 {
-    "name": "kevoree-comp-ghostblog",
-    "version": "0.9.0",
-    "main": "./lib/GhostBlog.js",
-    "scripts": {
-        "prepublish": "grunt"
-    },
-    "keywords": [
-        "kevoree-std-lib",
-        "kevoree",
-        "library",
-        "comp"
-    ],
-    "dependencies": {
-        "ghost": "^0.4.2",
-        "kevoree-entities": "^0.9.0",
-        "mkdirp": "^0.5.0",
-        "ncp": "^0.6.0",
-        "rmdir": "^1.0.4"
-    },
-    "devDependencies": {
-        "grunt": "^0.4.1",
-        "grunt-jade": "^0.4.0",
-        "grunt-kevoree": "^0.9.0",
-        "grunt-browserify": "^2.0.7",
-        "grunt-contrib-uglify": "^0.4.0",
-        "grunt-kevoree-genmodel": "^0.9.0"
-    }
+  "name": "kevoree-comp-ghostblog",
+  "version": "0.9.1",
+  "main": "./lib/GhostBlog.js",
+  "scripts": {
+    "prepublish": "grunt"
+  },
+  "keywords": [
+    "kevoree-std-lib",
+    "kevoree",
+    "library",
+    "comp"
+  ],
+  "dependencies": {
+    "ghost": "^0.4.2",
+    "kevoree-entities": "^0.9.0",
+    "mkdirp": "^0.5.0",
+    "ncp": "^0.6.0",
+    "rmdir": "^1.0.4"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.1",
+    "grunt-jade": "^0.4.0",
+    "grunt-kevoree": "^0.9.0",
+    "grunt-browserify": "^2.0.7",
+    "grunt-contrib-uglify": "^0.4.0",
+    "grunt-kevoree-genmodel": "^0.9.0"
+  }
 }
