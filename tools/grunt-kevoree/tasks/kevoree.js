@@ -45,8 +45,17 @@ module.exports = function(grunt) {
         }
 
         options.modulesPath = path.resolve(options.modulesPath, options.node);
-        var pkg = grunt.file.readJSON('package.json');
-        grunt.file.delete(path.resolve(options.modulesPath, 'node_modules', pkg.name));
+
+        var noReinstall = grunt.option('no-reinstall');
+        if (!noReinstall) {
+            var pkg = grunt.file.readJSON('package.json'),
+                modulePath = path.resolve(options.modulesPath, 'node_modules', pkg.name);
+            if (grunt.file.exists(modulePath)) {
+                grunt.file.delete(modulePath);
+                grunt.log.ok('Old module ' + path.relative(process.cwd(), modulePath)['blue'] + ' deleted.');
+            }
+        }
+
 
         var npmResolver = new NPMResolver(options.modulesPath, logger),
             runtime     = new Kevoree(options.modulesPath, npmResolver),
@@ -64,13 +73,6 @@ module.exports = function(grunt) {
                 runtime.deploy(model);
             });
         });
-
-        function deployedListener() {
-            grunt.log.ok('grunt-kevoree: model from '+kevscriptPath+' deployed successfully :)');
-            runtime.off('deployed', deployedListener);
-        }
-
-        runtime.on('deployed', deployedListener);
 
         runtime.start(options.node, options.group);
     });
