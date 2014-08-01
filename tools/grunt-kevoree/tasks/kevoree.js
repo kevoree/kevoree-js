@@ -46,47 +46,33 @@ module.exports = function(grunt) {
 
         options.modulesPath = path.resolve(options.modulesPath, options.node);
         var pkg = grunt.file.readJSON('package.json');
+        grunt.file.delete(path.resolve(options.modulesPath, 'node_modules', pkg.name));
 
-        // install project module into options.modulesPath so that it could be require() even if not published
-        npmi({
-            name:           path.resolve('.'),      // project module path
-            version:        pkg.version,            // project module version
-            localInstall:   true,                   // npm install using local files (not from registry)
-            path:           options.modulesPath,    // install into .deploy_units/<node_name>/node_modules
-            forceInstall:   true                    // always reinstall wip module (to keep them up-to-date)
-        }, function (err) {
-            if (err) {
-                grunt.fail.fatal(err.message);
-                done();
-                return;
-            }
+        var npmResolver = new NPMResolver(options.modulesPath, logger),
+            runtime     = new Kevoree(options.modulesPath, npmResolver),
+            kevsEngine  = new KevScript({ resolvers: { npm: npmResolver } });
 
-            var npmResolver = new NPMResolver(options.modulesPath, logger),
-                runtime     = new Kevoree(options.modulesPath, npmResolver),
-                kevsEngine  = new KevScript({ resolvers: { npm: npmResolver } });
+        runtime.on('started', function () {
+            var kevs = grunt.file.read(kevscriptPath);
+            kevsEngine.parse(kevs, function (err, model) {
+                if (err) {
+                    grunt.fail.fatal(err.message);
+                    done();
+                    return;
+                }
 
-            runtime.on('started', function () {
-                var kevs = grunt.file.read(kevscriptPath);
-                kevsEngine.parse(kevs, function (err, model) {
-                    if (err) {
-                        grunt.fail.fatal(err.message);
-                        done();
-                        return;
-                    }
-
-                    runtime.deploy(model);
-                });
+                runtime.deploy(model);
             });
+        });
 
-            function deployedListener() {
-                grunt.log.ok('grunt-kevoree: model from '+kevscriptPath+' deployed successfully :)');
-                runtime.off('deployed', deployedListener);
-            }
+        function deployedListener() {
+            grunt.log.ok('grunt-kevoree: model from '+kevscriptPath+' deployed successfully :)');
+            runtime.off('deployed', deployedListener);
+        }
 
-            runtime.on('deployed', deployedListener);
+        runtime.on('deployed', deployedListener);
 
-            runtime.start(options.node, options.group);
-        }.bind(this));
+        runtime.start(options.node, options.group);
     });
 
 };

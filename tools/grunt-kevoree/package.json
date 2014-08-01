@@ -1,7 +1,7 @@
 {
   "name": "grunt-kevoree",
   "description": "Automatically runs kevoree runtime (works like mvn kev:run plugin)",
-  "version": "0.9.1",
+  "version": "0.9.4",
   "homepage": "https://github.com/kevoree/kevoree-js",
   "author": {
     "name": "Maxime Tricoire",
@@ -46,6 +46,6 @@
     "kevoree-kevscript": "^0.9.0",
     "kevoree-nodejs-runtime": "^0.9.0",
     "kevoree-resolvers": "^0.9.0",
-    "npmi": "0.0.10"
+    "npmi": "~0.0.10"
   }
 }

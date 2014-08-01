@@ -40,25 +40,25 @@ grunt.initConfig({
 ### Options
 
 #### options.node
-Type: `String`
+Type: `String`  
 Default value: `'node0'`
 
 A string value that is used to determine the node name of the launched Kevoree runtime platform
 
 #### options.group
-Type: `String`
+Type: `String`  
 Default value: `'sync'`
 
 A string value that is used to determine the name of the group that will be attached to the node
 
 #### options.modulesPath
-Type: `String`
+Type: `String`  
 Default value: `'.deploy_units'`
 
 A string value that is used to determine the modulesPath variable for Kevoree resolver (where resolved modules are going to be installed)
 
 #### options.gui
-Type: `Boolean`
+Type: `Boolean`  
 Default value: `false`
 
 A boolean that indicates whether or not you want to use Kevoree GUI Runtime (default is false which means it uses the command-line kevoree-nodejs-runtime)
@@ -66,14 +66,36 @@ A boolean that indicates whether or not you want to use Kevoree GUI Runtime (def
 ### Kevscript
 
 #### kevscript
-Type: `String`
-Default value: `'none, it has to be set here or from command-line with --kevs=/path/to/your/model.kevs'`
+Type: `String`  
+Default value: `none`  **this argument is mandatory, whether from command-line or from Gruntfile.js options**
 
 Path that leads to your KevScript file in order to create the Kevoree model to bootstrap on.  
 KevScript file can be specified from the command-line (if provided, it will be used instead of the file given in the Gruntfile.js)  
 
 ```sh
-grunt kevoree:run --kevs=/path/to/my/model.kevs
+grunt kevoree --kevs=/path/to/my/model.kevs
+```
+
+### Command-line arguments
+#### kevscript
+Type: `String`  
+Default value: `none` **this argument is mandatory, it has to be given whether from command-line or in Gruntfile.js**
+
+If set, `grunt-kevoree` will use the given filepath to load the KevScript model.  
+This argument overrides the given `kevscript` option in **Gruntfile.js**
+
+```sh
+grunt kevoree --kevs=/path/to/my/model.kevs
+```
+
+#### no-reinstall
+Type: `Boolean`
+Default value: `true`
+
+If set, `grunt-kevoree` will not delete the old deploy unit for the current module.  
+
+```sh
+grunt kevoree --no-reinstall
 ```
 
 ## Contributing
