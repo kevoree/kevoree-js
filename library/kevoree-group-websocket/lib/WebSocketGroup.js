@@ -26,22 +26,9 @@ var WebSocketGroup = AbstractGroup.extend({
     toString: 'WebSocketGroup',
 
     // START Dictionary attributes =====
-    dic_port: {
-        fragmentDependant: true,
-        optional: true,
-        datatype: 'number'
-    },
-
-    dic_path: {
-        fragmentDependant: true,
-        optional: true
-    },
-
-    dic_proxy_port: {
-        fragmentDependant: true,
-        optional: true,
-        datatype: 'number'
-    },
+    dic_port:       { fragmentDependant: true, optional: true, datatype: 'number' },
+    dic_path:       { fragmentDependant: true, optional: true },
+    dic_proxy_port: { fragmentDependant: true, optional: true, datatype: 'number' },
     // END Dictionary attributes =====
 
     construct: function () {

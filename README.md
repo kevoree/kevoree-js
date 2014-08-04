@@ -1,4 +1,4 @@
-# Kevoree JS ![Kevoree](http://kwe.braindead.fr/images/logo.png)
+# Kevoree JS ![Kevoree](http://editor.kevoree.org/images/logo.png)
 
 > **DISCLAIMER: This documentation might be a little outdated as the API of KevoreeJS entities is still evolving**
 
@@ -77,7 +77,7 @@ You can see in the logs that your component `HelloWorld` has been started within
 
 Because you used `grunt kevoree`, your model has been added within the default **JavascriptNode** container. This node is also attached to a **WebSocketGroup**.  
 You can now see your own architecture model using **Kevoree Web Editor**, open your browser to this address  
-http://kwe.braindead.fr/?host=127.0.0.1&port=9000
+http://editor.kevoree.org/?host=127.0.0.1&port=9000
 
 ## Enhance your component
 #### Create a dictionary attribute
@@ -109,7 +109,7 @@ grunt kevoree
 ```
 
 Yes, nothing new. Well, not exactly...  
-If you re-open your browser to http://kwe.braindead.fr/?host=127.0.0.1&port=9000 you can see a little difference.  
+If you re-open your browser to http://editor.kevoree.org/?host=127.0.0.1&port=9000 you can see a little difference.  
 Not directly in the displayed model, but if you click on your component, its properties will show up. Within its dictionary attributes, you will be able to see the **myMsg** attribute, with the "Hello world" default value set.  
 This simply means that you are now able to apply some reconfiguration to your component using **Kevoree Web Editor**.  
 
