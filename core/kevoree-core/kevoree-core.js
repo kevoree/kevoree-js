@@ -121,7 +121,12 @@ module.exports = Class({
      * Compare current with model
      * Get traces and call command (that can be redefined)
      *
-     * @param model
+     * @param model ContainerRoot model
+     * @emit error
+     * @emit deployed
+     * @emit adaptationError
+     * @emit rollbackError
+     * @emit rollbackSucceed
      */
     deploy: function (model) {
         if (model && !model.findNodesByID(this.nodeName)) {
@@ -309,7 +314,11 @@ module.exports = Class({
     },
 
     off: function (event, callback) {
-        this.emitter.removeListener(callback);
+        this.emitter.removeListener(event, callback);
+    },
+
+    once: function (event, callback) {
+        this.emitter.once(event, callback);
     }
 });
 
