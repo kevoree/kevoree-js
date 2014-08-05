@@ -1,13 +1,14 @@
 var AbstractComponent = require('kevoree-entities').AbstractComponent,
     view = require('./../generated-ui/view');
 
+var PROXY = false;
 
 var FakeConsole = AbstractComponent.extend({
     toString: 'FakeConsole',
 
     dic_proxy: {
         optional: true,
-        defaultValue: false,
+        defaultValue: PROXY,
         datatype: 'boolean'
     },
 
@@ -51,15 +52,9 @@ var FakeConsole = AbstractComponent.extend({
     },
 
     in_inMsg: function (msg) {
-        var proxy = this.dictionary.getValue('proxy');
-        if (typeof(proxy) === 'boolean') {
-            if (proxy) {
-                this.out_sendMsg(msg);
-            }
-        } else if (typeof(proxy) === 'string') {
-            if (proxy === 'true') {
-                this.out_sendMsg(msg);
-            }
+        var proxy = this.dictionary.getBoolean('proxy', PROXY);
+        if (proxy) {
+            this.out_sendMsg(msg);
         }
 
         this.addMessageUI('>', msg);
