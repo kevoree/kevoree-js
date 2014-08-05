@@ -1,5 +1,6 @@
 var Class       = require('pseudoclass'),
-    Dictionary  = require('./Dictionary');
+    Dictionary  = require('./Dictionary'),
+    KevScript   = require('kevoree-kevscript');
 
 /**
  * Abstract class: KevoreeEntity
@@ -131,6 +132,57 @@ var KevoreeEntity = Class({
 
     isStarted: function () {
         return this.started;
+    },
+
+    /**
+     * Executes script with current model context. If callback parameter is set,
+     * it means something went wrong and the parameter is the error object.
+     * NB: you cannot use this method while in "deploying" state.
+     * @param script KevScript string
+     * @param [callback] function (err)
+     */
+    submitScript: function (script, callback) {
+        callback = callback || function () {};
+
+        if (this.kCore.getDeployModel() === null) {
+            var kevs = new KevScript({
+                resolvers: { npm: this.kCore.getBootstrapper().resolver } // refactor according to #26
+            });
+            kevs.parse(script, this.kCore.getCurrentModel(), function (err, model) {
+                if (err) {
+                    var e = new Error('KevScript submission failed ('+err.message+')');
+                    callback(e);
+                    return;
+                }
+
+                var deployHandler, errHandler, adaptHandler;
+                deployHandler = function () {
+                    this.kCore.off('error', errHandler);
+                    this.kCore.off('adaptationError', adaptHandler);
+                    callback();
+                }.bind(this);
+                errHandler = function (err) {
+                    this.kCore.off('deployed', deployHandler);
+                    this.kCore.off('adaptationError', adaptHandler);
+                    var e = new Error('KevScript submission failed ('+err.message+')');
+                    callback(e);
+                }.bind(this);
+                adaptHandler = function (err) {
+                    this.kCore.off('error', errHandler);
+                    this.kCore.off('deployed', deployHandler);
+                    var e = new Error('KevScript submission failed ('+err.message+')');
+                    callback(e);
+                }.bind(this);
+
+                this.kCore.once('deployed', deployHandler);
+                this.kCore.once('error', errHandler);
+                this.kCore.once('adaptationError', adaptHandler);
+
+                this.kCore.deploy(model);
+            }.bind(this));
+        } else {
+            callback(new Error('KevScript submission failed (unable to submit script when a model is currently deployed)'));
+        }
     }
 });
 
