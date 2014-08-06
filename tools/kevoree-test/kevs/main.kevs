@@ -1,0 +1,11 @@
+include npm:kevoree-node-javascript
+include npm:kevoree-group-websocket
+
+add node0, node1 : JavascriptNode
+add sync : WebSocketGroup
+
+attach node0, node1 sync
+
+set sync.port/node0 = "9000"
+
+network node0.lan.ip 127.0.0.1
