@@ -2,9 +2,9 @@ var path    = require('path'),
     config  = require('../config.json'),
     kevoree = require('kevoree-library').org.kevoree;
 
-var loader  = new kevoree.loader.JSONModelLoader();
-var factory = new kevoree.impl.DefaultKevoreeFactory();
-var compare = new kevoree.compare.DefaultModelCompare();
+var factory = new kevoree.factory.DefaultKevoreeFactory();
+var loader  = factory.createJSONLoader();
+var compare = factory.createModelCompare();
 
 var bootstrapModel = function bootstrapModel(options, callback) {
     if (!options.model) options.model = factory.createContainerRoot();
@@ -25,8 +25,8 @@ var bootstrapModel = function bootstrapModel(options, callback) {
             // create a node instance
             var nodeInstance = factory.createContainerNode();
             nodeInstance.name = options.nodeName;
-            var nodeTDef = options.model.findTypeDefinitionsByID('JavascriptNode/'+jsNodePackage.version);
-            if (!nodeTDef) return callback(new Error('Unable to find JavascriptNode/'+jsNodePackage.version+' TypeDefinition :/'));
+            var nodeTDef = options.model.findTypeDefinitionsByID('name=JavascriptNode,version='+jsNodePackage.version);
+            if (!nodeTDef) return callback(new Error('Unable to find name=JavascriptNode,version='+jsNodePackage.version+' TypeDefinition :/'));
             nodeInstance.typeDefinition = nodeTDef;
             // create a default network information
             var net = factory.createNetworkInfo();
@@ -41,8 +41,8 @@ var bootstrapModel = function bootstrapModel(options, callback) {
             // create a group instance
             var grpInstance = factory.createGroup();
             grpInstance.name = options.groupName;
-            var grpTDef = options.model.findTypeDefinitionsByID('WebSocketGroup/'+wsGrpPackage.version);
-            if (!grpTDef) return callback(new Error('Unable to find WebSocketGroup/'+wsGrpPackage.version+' TypeDefinition :/'));
+            var grpTDef = options.model.findTypeDefinitionsByID('name=WebSocketGroup,version='+wsGrpPackage.version);
+            if (!grpTDef) return callback(new Error('Unable to find name=WebSocketGroup,version='+wsGrpPackage.version+' TypeDefinition :/'));
             grpInstance.typeDefinition = grpTDef;
 
             // TODO watch out here: those lines are REALLY implem-dependant and are here (as the filename says 'helper')

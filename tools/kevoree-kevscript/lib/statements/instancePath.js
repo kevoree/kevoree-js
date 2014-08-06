@@ -34,15 +34,7 @@ module.exports = function (model, statements, stmt, opts, cb) {
             return callback.apply(null, instancePath);
         },
 
-        resolve: function () {
-            if (stmt.children.length < 3) {
-
-            } else {
-
-            }
-        },
-
-        toString:   function () {
+        toString: function () {
             var str = instancePath.join('.');
             if (str[0] === '.') {
                 return str.substr(1);

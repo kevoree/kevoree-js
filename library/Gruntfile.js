@@ -19,6 +19,7 @@ module.exports = function(grunt) {
         },
         publish: {
             options: {
+                installBefore: true,
                 ignore: [ 'node_modules' ]
             },
             src: [ '*' ]

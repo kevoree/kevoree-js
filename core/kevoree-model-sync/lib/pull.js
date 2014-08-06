@@ -1,7 +1,8 @@
 var WebSocket = require('ws');
 var kevoree = require('kevoree-library').org.kevoree;
 
-var loader = new kevoree.loader.JSONModelLoader();
+var factory = new kevoree.factory.DefaultKevoreeFactory();
+var loader = factory.createJSONLoader();
 
 module.exports = function (options, callback) {
     if (!callback) {

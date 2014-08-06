@@ -68,12 +68,13 @@ var RemoteWSGroup = AbstractGroup.extend({
                     if (msg.type) msg = msg.data;
 
                     try {
+                        var factory = new kevoree.factory.DefaultKevoreeFactory();
                         msg = JSON.parse(msg);
                         switch (msg.action) {
                             case 'push':
                                 this.log.info(this.toString(), ws._socket.remoteAddress+":"+ws._socket.remotePort+" asked for a PUSH");
 
-                                var jsonLoader = new kevoree.loader.JSONModelLoader();
+                                var jsonLoader = factory.createJSONLoader();
                                 var model = jsonLoader.loadModelFromString(msg.model).get(0);
                                 this.kCore.deploy(model);
                                 break;
@@ -81,7 +82,7 @@ var RemoteWSGroup = AbstractGroup.extend({
                             case 'pull':
                                 this.log.info(this.toString(), ws._socket.remoteAddress+":"+ws._socket.remotePort+" asked for a PULL");
 
-                                var serializer = new kevoree.serializer.JSONModelSerializer();
+                                var serializer = factory.createJSONSerializer();
                                 var strModel = serializer.serialize(this.kCore.getCurrentModel());
                                 ws.send(JSON.stringify({
                                     action: 'pullAnswer',

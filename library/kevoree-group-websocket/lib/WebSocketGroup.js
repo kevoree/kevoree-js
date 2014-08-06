@@ -150,7 +150,8 @@ var WebSocketGroup = AbstractGroup.extend({
                         var data = '';
                         if (typeof(event) === 'string') data = event;
                         else data = event.data;
-                        var jsonLoader = new kevoree.loader.JSONModelLoader();
+                        var factory = new kevoree.factory.DefaultKevoreeFactory();
+                        var jsonLoader = factory.createJSONLoader();
                         var model = jsonLoader.loadModelFromString(data).get(0);
                         this.kCore.deploy(model);
                     }.bind(this),
@@ -256,7 +257,8 @@ var WebSocketGroup = AbstractGroup.extend({
     onMasterServerPush: function (clientSocket, strData) {
         this.log.info(this.toString(), clientSocket._socket.remoteAddress+":"+clientSocket._socket.remotePort+" asked for a PUSH");
 
-        var jsonLoader = new kevoree.loader.JSONModelLoader();
+        var factory = new kevoree.factory.DefaultKevoreeFactory();
+        var jsonLoader = factory.createJSONLoader();
 
         try {
             var model = jsonLoader.loadModelFromString(strData).get(0);
@@ -277,7 +279,8 @@ var WebSocketGroup = AbstractGroup.extend({
     onMasterServerPull: function (clientSocket) {
         this.log.info(this.toString(), clientSocket._socket.remoteAddress+":"+clientSocket._socket.remotePort+" asked for a PULL (json)");
 
-        var serializer = new kevoree.serializer.JSONModelSerializer();
+        var factory = new kevoree.factory.DefaultKevoreeFactory();
+        var serializer = factory.createJSONSerializer();
         var strModel = serializer.serialize(this.kCore.getCurrentModel());
         clientSocket.send(strModel);
     },

@@ -1,5 +1,5 @@
 var kevoree    = require('kevoree-library').org.kevoree;
-var factory    = new kevoree.impl.DefaultKevoreeFactory();
+var factory    = new kevoree.factory.DefaultKevoreeFactory();
 var Kotlin     = require('kevoree-kotlin');
 
 module.exports = function (model, statements, stmt, opts, cb) {
@@ -7,7 +7,7 @@ module.exports = function (model, statements, stmt, opts, cb) {
     var typeDef  = statements[stmt.children[1].type](model, statements, stmt.children[1], opts, cb);
 
     // try to find TypeDefinition in model
-    var tDef = model.findTypeDefinitionsByID(typeDef);
+    var tDef = model.findTypeDefinitionsByID('name='+typeDef.name+',version='+typeDef.version);
 
     // add node instance function
     function addNodeInstance(namespace, nodeName, parentNode) {
@@ -15,6 +15,7 @@ module.exports = function (model, statements, stmt, opts, cb) {
             var node = factory.createContainerNode();
             node.name = nodeName;
             node.typeDefinition = tDef;
+            node.started = true;
             model.addNodes(node);
             if (parentNode) parentNode.addHosts(node);
 
@@ -31,7 +32,7 @@ module.exports = function (model, statements, stmt, opts, cb) {
     }
 
     // create proper entity according to the type
-    if (Kotlin.isType(tDef, kevoree.impl.NodeTypeImpl)) {
+    if (Kotlin.isType(tDef, kevoree.NodeType)) {
         for (var i in nameList) {
             nameList[i].expect(1, 3, function (err, namespace, parentName, childName) {
                 if (err) {
@@ -65,7 +66,7 @@ module.exports = function (model, statements, stmt, opts, cb) {
             });
         }
 
-    } else if (Kotlin.isType(tDef, kevoree.impl.GroupTypeImpl)) {
+    } else if (Kotlin.isType(tDef, kevoree.GroupType)) {
         for (var i in nameList) {
             nameList[i].expect(1, 2, function (err, namespace, instanceName) {
                 if (err) {
@@ -77,6 +78,7 @@ module.exports = function (model, statements, stmt, opts, cb) {
                     var group = factory.createGroup();
                     group.name = instanceName;
                     group.typeDefinition = tDef;
+                    group.started = true;
                     model.addGroups(group);
 
                     if (namespace) {
@@ -92,7 +94,7 @@ module.exports = function (model, statements, stmt, opts, cb) {
             });
         }
 
-    } else if (Kotlin.isType(tDef, kevoree.impl.ChannelTypeImpl)) {
+    } else if (Kotlin.isType(tDef, kevoree.ChannelType)) {
         for (var i in nameList) {
             nameList[i].expect(1, 2, function (err, namespace, instanceName) {
                 if (err) {
@@ -104,6 +106,7 @@ module.exports = function (model, statements, stmt, opts, cb) {
                     var chan = factory.createChannel();
                     chan.name = instanceName;
                     chan.typeDefinition = tDef;
+                    chan.started = true;
                     model.addHubs(chan);
 
                     if (namespace) {
@@ -119,7 +122,7 @@ module.exports = function (model, statements, stmt, opts, cb) {
             });
         }
 
-    } else if (Kotlin.isType(tDef, kevoree.impl.ComponentTypeImpl)) {
+    } else if (Kotlin.isType(tDef, kevoree.ComponentType)) {
         for (var i in nameList) {
             nameList[i].expect(2, 3, function (err, namespace, nodeName, compName) {
                 if (err) {
@@ -135,22 +138,25 @@ module.exports = function (model, statements, stmt, opts, cb) {
                     return cb(new Error('You cannot name a component instance "*" (add '+nameList[i].toString()+' : '+typeDef.toString()+')'));
 
                 } else {
+                    var comp;
                     if (nodeName === '*') {
                         // add compName instance to all nodes in the model
                         var nodes = model.nodes.iterator();
                         while (nodes.hasNext()) {
-                            var comp = factory.createComponentInstance();
+                            comp = factory.createComponentInstance();
                             comp.name = compName;
                             comp.typeDefinition = tDef;
+                            comp.started = true;
                             nodes.next().addComponents(comp);
                         }
 
                     } else {
                         var node = model.findNodesByID(nodeName);
                         if (node) {
-                            var comp = factory.createComponentInstance();
+                            comp = factory.createComponentInstance();
                             comp.name = compName;
                             comp.typeDefinition = tDef;
+                            comp.started = true;
                             node.addComponents(comp);
 
                         } else {
@@ -165,4 +171,4 @@ module.exports = function (model, statements, stmt, opts, cb) {
         return cb(new Error('TypeDefinition "'+typeDef+'" doesn\'t exist in current model. (Maybe you should add an "include" for it?)'));
     }
     cb();
-}
+};

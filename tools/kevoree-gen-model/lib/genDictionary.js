@@ -8,7 +8,7 @@ var kevoree = require('kevoree-library').org.kevoree;
  * @returns {DictionaryType}
  */
 module.exports = function (typeDef, obj) {
-    var factory = new kevoree.impl.DefaultKevoreeFactory();
+    var factory = new kevoree.factory.DefaultKevoreeFactory();
 
     // create a new dictionary
     var dictionary = factory.createDictionaryType();
@@ -63,4 +63,4 @@ module.exports = function (typeDef, obj) {
     typeDef.dictionaryType = dictionary;
 
     return dictionary;
-}
+};

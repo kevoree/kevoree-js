@@ -9,7 +9,7 @@ var genDictionary = require('./genDictionary');
  * @param model
  */
 module.exports = function (deployUnit, obj, model) {
-    var factory = new kevoree.impl.DefaultKevoreeFactory();
+    var factory = new kevoree.factory.DefaultKevoreeFactory();
 
     // create a new component type
     var compType = factory.createComponentType();

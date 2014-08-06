@@ -116,7 +116,8 @@ var UIBrowserRuntime = Class({
             backBtnListener();
 
             readFile(function (fileContent) {
-                var loader = new kevoree.loader.JSONModelLoader();
+                var factory = new kevoree.factory.DefaultKevoreeFactory();
+                var loader = factory.createJSONLoader();
                 try {
                     var model = loader.loadModelFromString(fileContent).get(0);
                     parseModel(model);

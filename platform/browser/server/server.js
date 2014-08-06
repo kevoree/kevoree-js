@@ -14,9 +14,9 @@ var connect          = require('connect'),
 
 var client_folder = path.join('..', 'client', 'dist');
 
-var compare = new kevoree.compare.DefaultModelCompare();
-var factory = new kevoree.impl.DefaultKevoreeFactory();
-var loader  = new kevoree.loader.JSONModelLoader();
+var factory = new kevoree.factory.DefaultKevoreeFactory();
+var compare = factory.createModelCompare();
+var loader  = factory.createJSONLoader();
 var model   = factory.createContainerRoot();
 
 var firstDeploy = true;

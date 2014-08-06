@@ -1,8 +1,7 @@
 var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive,
     Port                = require('kevoree-entities').Port,
     RemoveBinding       = require('./RemoveBinding'),
-    Kotlin              = require('kevoree-kotlin'),
-    kevoree             = require('kevoree-library').org.kevoree;
+    Kotlin              = require('kevoree-kotlin');
 
 module.exports = AdaptationPrimitive.extend({
     toString: 'AddBinding',

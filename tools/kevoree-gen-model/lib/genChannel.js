@@ -8,7 +8,7 @@ var genDictionary = require('./genDictionary');
  * @param model
  */
 module.exports = function (deployUnit, obj, model) {
-    var factory = new kevoree.impl.DefaultKevoreeFactory();
+    var factory = new kevoree.factory.DefaultKevoreeFactory();
 
     // create a new group type
     var chanType = factory.createChannelType();
@@ -29,4 +29,4 @@ module.exports = function (deployUnit, obj, model) {
     model.addTypeDefinitions(chanType);
 
     return chanType;
-}
+};

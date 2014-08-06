@@ -4,7 +4,6 @@ var Resolver      = require('kevoree-commons').Resolver,
     npm           = require('npm'),
     npmi          = require('npmi'),
     fs            = require('fs'),
-    rimraf        = require('rimraf'),
     async         = require('async'),
     path          = require('path'),
     npmVers       = require('npm-vers');
@@ -24,7 +23,8 @@ var NPMResolver = Resolver.extend({
             forceInstall = false;
         }
 
-        var loader  = new kevoree.loader.JSONModelLoader(),
+        var factory = new kevoree.factory.DefaultKevoreeFactory(),
+            loader  = factory.createJSONLoader(),
             pkgPath = path.resolve(this.modulesPath, 'node_modules', deployUnit.name), // default npm module location
             options = {
                 name:           deployUnit.name,

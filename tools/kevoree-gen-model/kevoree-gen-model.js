@@ -83,7 +83,8 @@ module.exports = function (dirPath, logLevel, callback) {
             return genCallback(new Error('No TypeDefinition found in project'));
         }
 
-        var jsonSerializer = new kevoree.serializer.JSONModelSerializer(),
+        var factory = new kevoree.factory.DefaultKevoreeFactory(),
+            jsonSerializer = factory.createJSONSerializer(),
             filepath = path.resolve(dirPath, 'kevlib.json'),
             // hack to indent output string properly
             beautifulModel = JSON.stringify(JSON.parse(jsonSerializer.serialize(model)), null, 4);

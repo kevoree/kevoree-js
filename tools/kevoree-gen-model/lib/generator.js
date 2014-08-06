@@ -11,7 +11,7 @@ var fs               = require('fs'),
 // init Kevoree entities types
 var KevoreeEntity, AbstractComponent, AbstractGroup, AbstractChannel, AbstractNode;
 // init Kevoree factory
-var factory = new kevoree.impl.DefaultKevoreeFactory();
+var factory = new kevoree.factory.DefaultKevoreeFactory();
 
 /**
  *

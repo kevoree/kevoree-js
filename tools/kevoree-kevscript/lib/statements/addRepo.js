@@ -1,5 +1,5 @@
 var kevoree = require('kevoree-library').org.kevoree;
-var factory = new kevoree.impl.DefaultKevoreeFactory();
+var factory = new kevoree.factory.DefaultKevoreeFactory();
 
 module.exports = function (model, statements, stmt, opts, cb) {
     if (!opts.resolvers) return cb(new Error('Unable to process addRepo. No resolver given'));
@@ -15,4 +15,4 @@ module.exports = function (model, statements, stmt, opts, cb) {
     for (var type in opts.resolvers) opts.resolvers[type].addRepository(url);
 
     cb();
-}
+};

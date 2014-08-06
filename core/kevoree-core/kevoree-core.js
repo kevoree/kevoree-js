@@ -1,5 +1,5 @@
 var Class         = require('pseudoclass'),
-    kLib          = require('kevoree-library'),
+    kevoree       = require('kevoree-library').org.kevoree,
     KevoreeLogger = require('kevoree-commons').KevoreeLogger,
     async         = require('async'),
     EventEmitter  = require('events').EventEmitter;
@@ -20,10 +20,10 @@ module.exports = Class({
     construct: function(modulesPath, logger) {
         this.log = (logger != undefined) ? logger : new KevoreeLogger(this.toString());
 
-        this.factory = new kLib.org.kevoree.impl.DefaultKevoreeFactory();
-        this.loader  = new kLib.org.kevoree.loader.JSONModelLoader();
-        this.compare = new kLib.org.kevoree.compare.DefaultModelCompare();
-        this.cloner  = new kLib.org.kevoree.cloner.DefaultModelCloner();
+        this.factory = new kevoree.factory.DefaultKevoreeFactory();
+        this.loader  = this.factory.createJSONLoader();
+        this.compare = this.factory.createModelCompare();
+        this.cloner  = this.factory.createModelCloner();
 
         this.currentModel   = null;
         this.deployModel    = null;

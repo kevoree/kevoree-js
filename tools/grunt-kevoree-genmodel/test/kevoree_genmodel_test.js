@@ -25,7 +25,8 @@ var grunt   = require('grunt'),
 
 exports.kevoree_genmodel = {
     setUp: function(done) {
-        this.loader = new kevoree.loader.JSONModelLoader();
+        var factory = new kevoree.factory.DefaultKevoreeFactory();
+        this.loader = factory.createJSONLoader();
         done();
     },
     main: function(test) {
@@ -33,7 +34,7 @@ exports.kevoree_genmodel = {
 
         var genModelStr = grunt.file.read('test/fixtures/kevlib.json', {encoding: 'utf8'});
         var genModel = this.loader.loadModelFromString(genModelStr).get(0);
-        var tdef = genModel.findTypeDefinitionsByID('FakeComp/0.0.42');
+        var tdef = genModel.findTypeDefinitionsByID('name=FakeComp,version=0.0.42');
         var library = genModel.findLibrariesByID('Javascript');
 
         test.equal(genModel.typeDefinitions.size(), 1, 'Should be 1 and only one TypeDefinition generated');

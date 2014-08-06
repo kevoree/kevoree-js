@@ -1,8 +1,8 @@
 var kevoree = require('kevoree-library').org.kevoree;
 var path = require('path');
 
-var factory = new kevoree.impl.DefaultKevoreeFactory();
-var compare = new kevoree.compare.DefaultModelCompare();
+var factory = new kevoree.factory.DefaultKevoreeFactory();
+var compare = factory.createModelCompare();
 
 module.exports = function (model, statements, stmt, opts, cb) {
     if (!cb) {
@@ -50,8 +50,8 @@ module.exports = function (model, statements, stmt, opts, cb) {
         opts.resolvers[type].resolve(du, function (err, Clazz, duModel) {
             if (err) return cb(err);
 
-            var loader = new kevoree.loader.JSONModelLoader();
-            var serializer = new kevoree.serializer.JSONModelSerializer();
+            var loader = factory.createJSONLoader();
+            var serializer = factory.createJSONSerializer();
 
             var tmp = loader.loadModelFromString(serializer.serialize(duModel)).get(0);
             var mergeSeq = compare.merge(model, tmp);

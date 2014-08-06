@@ -1,6 +1,6 @@
 var kevoree = require('kevoree-library').org.kevoree;
 var Kotlin = require('kevoree-kotlin');
-var factory = kevoree.impl.DefaultKevoreeFactory();
+var factory = kevoree.factory.DefaultKevoreeFactory();
 var helper = require('../model-helper');
 
 module.exports = function (model, statements, stmt, opts, cb) {
@@ -28,7 +28,7 @@ module.exports = function (model, statements, stmt, opts, cb) {
     }
 
     function doRemove(instance) {
-        if (Kotlin.isType(instance.typeDefinition, kevoree.impl.NodeTypeImpl)) {
+        if (Kotlin.isType(instance, kevoree.ContainerNode)) {
             // remove groups fragment dictionary related to this node
             var groups = model.groups.iterator();
             while (groups.hasNext()) {
@@ -79,14 +79,14 @@ module.exports = function (model, statements, stmt, opts, cb) {
             if (instance.host) instance.host.removeHosts(instance);
             model.removeNodes(instance);
 
-        } else if (Kotlin.isType(instance.typeDefinition, kevoree.impl.GroupTypeImpl)) {
+        } else if (Kotlin.isType(instance, kevoree.Group)) {
             // remove link between this group and nodes
             var nodes = instance.subNodes.iterator();
             while (nodes.hasNext()) nodes.next().removeGroups(instance);
             // remove group
             model.removeGroups(instance);
 
-        } else if (Kotlin.isType(instance.typeDefinition, kevoree.impl.ChannelTypeImpl)) {
+        } else if (Kotlin.isType(instance, kevoree.Channel)) {
             var bindings = model.mBindings.iterator();
             while (bindings.hasNext()) {
                 var binding = bindings.next();
@@ -98,7 +98,7 @@ module.exports = function (model, statements, stmt, opts, cb) {
             }
             model.removeHubs(instance);
 
-        } else if (Kotlin.isType(instance.typeDefinition, kevoree.impl.ComponentTypeImpl)) {
+        } else if (Kotlin.isType(instance, kevoree.ComponentInstance)) {
             function deleteBindings(ports) {
                 while (ports.hasNext()) {
                     var bindings = ports.next().bindings.iterator();
@@ -176,12 +176,12 @@ module.exports = function (model, statements, stmt, opts, cb) {
     for (var i in names) {
         var entity = helper.findEntityByName(model, names[i]);
         if (entity != null) {
-            if (Kotlin.isType(entity.typeDefinition, kevoree.impl.NodeTypeImpl)) {
+            if (Kotlin.isType(entity, kevoree.ContainerNode)) {
                 var groups = (model.groups) ? model.groups.iterator() : null;
                 if (groups != null) {
                     while (groups.hasNext()) {
                         var group = groups.next();
-                        var subNodes = group.subNodes.iterator()
+                        var subNodes = group.subNodes.iterator();
                         while (subNodes.hasNext()) {
                             if (subNodes.next().name == entity.name) group.removeSubNodes(entity);
                         }
@@ -194,11 +194,11 @@ module.exports = function (model, statements, stmt, opts, cb) {
                 }
                 model.removeNodes(entity);
 
-            } else if (Kotlin.isType(entity.typeDefinition, kevoree.impl.GroupTypeImpl)) {
+            } else if (Kotlin.isType(entity, kevoree.Group)) {
                 model.removeGroups(entity);
-            } else if (Kotlin.isType(entity.typeDefinition, kevoree.impl.ChannelTypeImpl)) {
+            } else if (Kotlin.isType(entity, kevoree.Channel)) {
                 model.removeHubs(entity);
-            } else if (Kotlin.isType(entity.typeDefinition, kevoree.impl.ComponentTypeImpl)) {
+            } else if (Kotlin.isType(entity, kevoree.ComponentInstance)) {
                 entity.eContainer().removeComponents(entity);
             } else {
                 return cb(new Error('Unable to remove instance "'+names[i]+'" from current model. (Are you sure it is a node, group, chan, component?)'));
@@ -207,4 +207,4 @@ module.exports = function (model, statements, stmt, opts, cb) {
     }
 
     cb();
-}
+};

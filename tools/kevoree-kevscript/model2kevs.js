@@ -14,7 +14,8 @@ var path = require('path'),
 
 var input = path.resolve(argv.m);
 var output = path.resolve(argv.o);
-var loader = new kevoree.loader.JSONModelLoader();
+var factory = new kevoree.factory.DefaultKevoreeFactory();
+var loader = factory.createJSONLoader();
 var kevs = new KevScript();
 
 fs.readFile(input, 'utf8', function (err, data) {

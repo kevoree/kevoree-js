@@ -1,10 +1,5 @@
 var Class               = require('pseudoclass'),
     kevoree             = require('kevoree-library').org.kevoree,
-    ModelAddTrace       = kevoree.modeling.api.trace.ModelAddTrace,
-    ModelSetTrace       = kevoree.modeling.api.trace.ModelSetTrace,
-    ModelRemoveTrace    = kevoree.modeling.api.trace.ModelRemoveTrace,
-    ModelRemoveAllTrace = kevoree.modeling.api.trace.ModelRemoveAllTrace,
-    ModelAddAllTrace    = kevoree.modeling.api.trace.ModelAddAllTrace,
     Kotlin              = require('kevoree-kotlin'),
     ModelObjectMapper   = require('./ModelObjectMapper'),
     KevoreeLogger       = require('kevoree-commons').KevoreeLogger;
@@ -59,7 +54,8 @@ var AdaptationEngine = Class({
 
         this.node = node;
         this.modelObjMapper = new ModelObjectMapper();
-        this.compare = new kevoree.compare.DefaultModelCompare();
+        var factory = new kevoree.factory.DefaultKevoreeFactory();
+        this.compare = factory.createModelCompare();
         this.alreadyProcessedTraces = {};
         this.targetModel = null;
     },

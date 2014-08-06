@@ -1,7 +1,7 @@
 var kevoree = require('./../kevoree-library').org.kevoree;
 
-var factory = new kevoree.impl.DefaultKevoreeFactory();
-var serializer = new kevoree.serializer.JSONModelSerializer();
+var factory = new kevoree.factory.DefaultKevoreeFactory();
+var serializer = factory.createJSONSerializer();
 
 var model = factory.createContainerRoot();
 

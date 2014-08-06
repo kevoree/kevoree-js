@@ -79,7 +79,8 @@ var JavascriptNode = AbstractNode.extend({
         this._super();
         // TODO improve that, this is not a "stop" this is a complete "destroy"
         // clone current model
-        var cloner = new kevoree.cloner.DefaultModelCloner();
+        var factory = new kevoree.factory.DefaultKevoreeFactory();
+        var cloner = factory.createModelCloner();
         var emptyNodeModel = cloner.clone(this.getKevoreeCore().getCurrentModel(), false);
         var node = emptyNodeModel.findNodesByID(this.getName());
         if (node) {
@@ -87,12 +88,11 @@ var JavascriptNode = AbstractNode.extend({
             node.delete();
 
             // re-add this "empty" node to the cloned model
-            var factory = new kevoree.impl.DefaultKevoreeFactory();
             node = factory.createContainerNode();
             node.name = this.getName();
 
             // compare emptyNodeModel with currentModel in order to create primitives for this platform fragments stops
-            var compare = new kevoree.compare.DefaultModelCompare();
+            var compare = factory.createModelCompare();
             var diffSeq = compare.diff(this.getKevoreeCore().getCurrentModel(), emptyNodeModel);
             var primitives = this.processTraces(diffSeq, emptyNodeModel);
 

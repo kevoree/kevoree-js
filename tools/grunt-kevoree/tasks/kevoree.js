@@ -76,5 +76,4 @@ module.exports = function(grunt) {
 
         runtime.start(options.node, options.group);
     });
-
 };

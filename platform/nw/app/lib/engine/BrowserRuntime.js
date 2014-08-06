@@ -150,7 +150,8 @@ function processArgv(runtime, argv, done) {
                 process.exit(2);
             }
             try {
-                var loader = new kevoree.loader.JSONModelLoader();
+                var factory = new kevoree.factory.DefaultKevoreeFactory();
+                var loader = factory.createJSONLoader();
                 var model = loader.loadModelFromString(rawModel).get(0);
                 runtime.setBootstrapModel(model);
                 done(true);

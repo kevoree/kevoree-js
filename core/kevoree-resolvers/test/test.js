@@ -5,7 +5,7 @@ var os = require('os');
 var path = require('path');
 var NPMResolver = require('../lib/NPMResolver');
 var kevoree = require('kevoree-library').org.kevoree;
-var factory = new kevoree.impl.DefaultKevoreeFactory();
+var factory = new kevoree.factory.DefaultKevoreeFactory();
 
 describe('NPMResolver', function () {
     describe('#resolve()', function () {

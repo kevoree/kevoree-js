@@ -2,8 +2,8 @@ var kevoree = require('kevoree-library').org.kevoree,
     async   = require('async'),
     path    = require('path');
 
-var factory = new kevoree.impl.DefaultKevoreeFactory();
-var cloner  = new kevoree.cloner.DefaultModelCloner();
+var factory = new kevoree.factory.DefaultKevoreeFactory();
+var cloner  = factory.createModelCloner();
 
 // retrieve statements processors
 var statements = {

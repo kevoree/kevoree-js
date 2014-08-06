@@ -1,8 +1,5 @@
 var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive,
-    RemoveInstance      = require('./RemoveInstance'),
-    kevoree             = require('kevoree-library').org.kevoree,
-    Kotlin              = require('kevoree-kotlin'),
-    path                = require('path');
+    RemoveInstance      = require('./RemoveInstance');
 
 /**
  * AddInstance Adaptation command
@@ -14,7 +11,6 @@ module.exports = AdaptationPrimitive.extend({
 
     /**
      *
-     * @param _super AdaptationPrimitive parent
      * @param callback function: if this function first parameter != null it means that there is an error
      */
     execute: function (callback) {

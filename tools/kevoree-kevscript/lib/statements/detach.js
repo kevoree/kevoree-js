@@ -1,5 +1,5 @@
 var kevoree = require('kevoree-library').org.kevoree;
-var factory = kevoree.impl.DefaultKevoreeFactory();
+var factory = kevoree.factory.DefaultKevoreeFactory();
 
 module.exports = function (model, statements, stmt, opts, cb) {
     var names = [];
@@ -36,4 +36,4 @@ module.exports = function (model, statements, stmt, opts, cb) {
     }
 
     cb();
-}
+};

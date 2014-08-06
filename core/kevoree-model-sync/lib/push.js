@@ -1,7 +1,8 @@
 var WebSocket = require('ws');
 var kevoree = require('kevoree-library').org.kevoree;
 
-var serializer = new kevoree.serializer.JSONModelSerializer();
+var factory = new kevoree.factory.DefaultKevoreeFactory();
+var serializer = factory.createJSONSerializer();
 
 var PUSH = 'push';
 
@@ -30,4 +31,4 @@ module.exports = function (options, callback) {
     } finally {
         //if (ws) ws.close();
     }
-}
+};

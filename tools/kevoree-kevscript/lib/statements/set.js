@@ -1,5 +1,5 @@
 var kevoree = require('kevoree-library').org.kevoree;
-var factory = new kevoree.impl.DefaultKevoreeFactory();
+var factory = new kevoree.factory.DefaultKevoreeFactory();
 var helper  = require('../model-helper');
 
 module.exports = function (model, statements, stmt, opts, cb) {

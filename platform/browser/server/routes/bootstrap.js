@@ -7,8 +7,8 @@ var kevoree    = require('kevoree-library').org.kevoree,
 
 var NAME_PATTERN = /^[\w-]+$/;
 
-var serializer = new kevoree.serializer.JSONModelSerializer();
-var factory    = new kevoree.impl.DefaultKevoreeFactory();
+var factory    = new kevoree.factory.DefaultKevoreeFactory();
+var serializer = factory.createJSONSerializer();
 
 module.exports = function (model) {
     return function (req, res) {

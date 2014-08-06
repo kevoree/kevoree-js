@@ -15,7 +15,8 @@ var path = require('path'),
 
 var input = path.resolve(argv.k);
 var output = path.resolve(argv.o);
-var serializer = new kevoree.serializer.JSONModelSerializer();
+var factory = new kevoree.factory.DefaultKevoreeFactory();
+var serializer = factory.createJSONSerializer();
 var options = {
   resolvers: { npm: new NPMResolver() }
 };
