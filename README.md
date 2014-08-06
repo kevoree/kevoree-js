@@ -7,7 +7,7 @@ __kevoree-js__ provides several tools in order to use **[Kevoree](http://kevoree
 The idea behind that is to provided (for now) two Javascript containers for Kevoree:  
 
  * __NodeJS__: command-line Kevoree runtime
- * __Browser__: Kevoree runtime within your browser (actually, you'll need a browser that handles the new FileSystem API, like Google Chrome for instance :) )
+ * __Browser__: Kevoree runtime within your browser
 
 ## Getting started
 #### Requirements & Installation
