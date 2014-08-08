@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-var config        = require('./config.json'),
-    NodeJSRuntime = require('./lib/NodeJSRuntime'),
+var NodeJSRuntime = require('./lib/NodeJSRuntime'),
     KevoreeLogger = require('kevoree-commons').KevoreeLogger,
     path          = require('path'),
     os            = require('os'),
@@ -107,6 +106,5 @@ if (argv.argv.help) {
         }
     };
 
-
-    kRuntime.start(argv.nodeName || config.nodeName, argv.groupName || config.groupName);
+    kRuntime.start(argv.nodeName, argv.groupName);
 }

@@ -1,5 +1,4 @@
 var path    = require('path'),
-    config  = require('../config.json'),
     kevoree = require('kevoree-library').org.kevoree;
 
 var factory = new kevoree.factory.DefaultKevoreeFactory();
@@ -25,8 +24,12 @@ var bootstrapModel = function bootstrapModel(options, callback) {
             // create a node instance
             var nodeInstance = factory.createContainerNode();
             nodeInstance.name = options.nodeName;
+            nodeInstance.started = true;
             var nodeTDef = options.model.findTypeDefinitionsByID('name=JavascriptNode,version='+jsNodePackage.version);
-            if (!nodeTDef) return callback(new Error('Unable to find name=JavascriptNode,version='+jsNodePackage.version+' TypeDefinition :/'));
+            if (!nodeTDef) {
+                callback(new Error('Unable to find name=JavascriptNode,version='+jsNodePackage.version+' TypeDefinition :/'));
+                return;
+            }
             nodeInstance.typeDefinition = nodeTDef;
             // create a default network information
             var net = factory.createNetworkInfo();
@@ -41,8 +44,12 @@ var bootstrapModel = function bootstrapModel(options, callback) {
             // create a group instance
             var grpInstance = factory.createGroup();
             grpInstance.name = options.groupName;
+            grpInstance.started = true;
             var grpTDef = options.model.findTypeDefinitionsByID('name=WebSocketGroup,version='+wsGrpPackage.version);
-            if (!grpTDef) return callback(new Error('Unable to find name=WebSocketGroup,version='+wsGrpPackage.version+' TypeDefinition :/'));
+            if (!grpTDef) {
+                callback(new Error('Unable to find name=WebSocketGroup,version='+wsGrpPackage.version+' TypeDefinition :/'));
+                return;
+            }
             grpInstance.typeDefinition = grpTDef;
 
             // TODO watch out here: those lines are REALLY implem-dependant and are here (as the filename says 'helper')
@@ -52,7 +59,7 @@ var bootstrapModel = function bootstrapModel(options, callback) {
             fragDic.name = options.nodeName;
             var portVal = factory.createDictionaryValue();
             portVal.name = 'port';
-            portVal.value = config.groupPort || '9000';
+            portVal.value = '9000';
             fragDic.addValues(portVal);
             grpInstance.addFragmentDictionary(fragDic);
             grpInstance.addSubNodes(nodeInstance);
