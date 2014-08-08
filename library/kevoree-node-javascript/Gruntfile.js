@@ -27,6 +27,12 @@ module.exports = function (grunt) {
             },
             comm: {
                 kevscript: 'kevs/comm.kevs'
+            },
+            cloud: {
+                options: {
+                    node: 'host'
+                },
+                kevscript: 'kevs/cloud.kevs'
             }
         },
 

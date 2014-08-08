@@ -3,6 +3,11 @@ var AbstractNode        = require('kevoree-entities').AbstractNode,
     AdaptationEngine    = require('./AdaptationEngine'),
     kevoree             = require('kevoree-library').org.kevoree,
     async               = require('async');
+//    spawn               = require('child_process').spawn,
+//    KevoreeRuntime      = require('kevoree-nodejs-runtime'),
+//    fs                  = require('fs'),
+//    os                  = require('os'),
+//    path                = require('path');
 
 var JavascriptNode = AbstractNode.extend({
     toString: 'JavascriptNode',
@@ -73,6 +78,55 @@ var JavascriptNode = AbstractNode.extend({
                 this.log.setLevel(KevoreeLogger.WARN);
                 break;
         }
+    },
+
+    /**
+     * Called when the host node has to start an hosted subNode
+     * @param node the hosted subNode
+     */
+    startSubNode: function (node) {
+        this._super();
+        this.log.warn(this.toString(), 'startSubNode(): not implemented yet');
+
+//        var modelPath = path.resolve(os.tmpdir(), 'kevoree_tmp.json');
+//        var factory = new kevoree.factory.DefaultKevoreeFactory();
+//        var serializer = factory.createJSONSerializer();
+//        fs.writeFile(modelPath, serializer.serialize(this.getKevoreeCore().getDeployModel()), function (err) {
+//            if (err) {
+//                throw err;
+//            }
+//
+//            var runtimePath = path.resolve(__dirname, '..', 'node_modules', 'kevoree-nodejs-runtime', 'cli.js');
+//            var child = spawn(process.execPath+' '+runtimePath, ['-n', node.name, '-m', modelPath], {stdio: 'inherit'});
+//
+////            child.stdout.on('data', function (data) {
+////                process.stdout.write(node.name+'\t'+data);
+////            });
+////            child.stderr.on('data', function (data) {
+////                process.stderr.write(node.name+'\t'+data);
+////            });
+//            child.on('close', function (code) {
+//                this.log.info(this.toString(), 'Child '+node.name+' exited with code '+code);
+//            }.bind(this));
+//        }.bind(this));
+    },
+
+    /**
+     * Called when the host node has to stop an hosted subNode
+     * @param node the hosted subNode
+     */
+    stopSubNode: function (node) {
+        this._super();
+        this.log.warn(this.toString(), 'stopSubNode(): not implemented yet');
+    },
+
+    /**
+     * Called when the host node has to remove an hosted subNode instance
+     * @param node the hosted subNode
+     */
+    removeSubNode: function (node) {
+        this._super();
+        this.log.warn(this.toString(), 'removeSubNode(): not implemented yet');
     },
 
     stop: function () {

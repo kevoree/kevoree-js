@@ -1,6 +1,6 @@
 {
   "name": "kevoree-node-javascript",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "./lib/JavascriptNode.js",
   "scripts": {
     "prepublish": "grunt"
@@ -28,6 +28,7 @@
     "kevoree-entities": "^1.0.0",
     "kevoree-kotlin": "^1.0.0",
     "kevoree-library": "^1.0.0",
+    "kevoree-nodejs-runtime": "^1.0.0",
     "pseudoclass": "^1.0.1"
   },
   "devDependencies": {
