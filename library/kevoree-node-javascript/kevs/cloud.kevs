@@ -1,0 +1,15 @@
+include npm:kevoree-node-javascript
+include npm:kevoree-group-websocket
+
+add host, host.child : JavascriptNode
+add sync, children : WebSocketGroup
+
+attach host sync
+attach child children
+
+set sync.port/host = '9000'
+
+set children.port/child = '9050'
+
+network host.lan.ip 127.0.0.1
+network child.lan.ip 127.0.0.1
