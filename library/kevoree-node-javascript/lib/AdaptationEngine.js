@@ -264,20 +264,28 @@ var AdaptationEngine = Class({
                         } else {
                             if (trace.content === 'true') {
                                 cmds.push(this.createCommand(StartInstance, modelElement));
-                                if (modelElement.dictionary) {
-                                    if (modelElement.dictionary.values.size() > 0) {
-                                        cmds.push(this.createCommand(UpdateInstance, modelElement));
-                                    }
+                                if (!modelElement.host) {
+                                    if (modelElement.dictionary) {
+                                        if (modelElement.dictionary.values.size() > 0) {
+                                            cmds.push(this.createCommand(UpdateInstance, modelElement));
+                                        }
 
-                                    var values = modelElement.dictionary.values.iterator();
-                                    while (values.hasNext()) {
-                                        cmds.push(this.createCommand(UpdateDictionary, values.next()));
+                                        var values = modelElement.dictionary.values.iterator();
+                                        while (values.hasNext()) {
+                                            cmds.push(this.createCommand(UpdateDictionary, values.next()));
+                                        }
                                     }
                                 }
                             } else {
-                                var instance = this.modelObjMapper.getObject(modelElement.path());
-                                if (instance && instance.isStarted()) {
+                                if (modelElement.host && modelElement.host.name === this.node.getName()) {
+                                    // modelElement is an hosted node (so it does not have an instance in this platform)
                                     cmds.push(this.createCommand(StopInstance, modelElement));
+
+                                } else {
+                                    var instance = this.modelObjMapper.getObject(modelElement.path());
+                                    if (instance && instance.isStarted()) {
+                                        cmds.push(this.createCommand(StopInstance, modelElement));
+                                    }
                                 }
                             }
                         }
@@ -288,7 +296,8 @@ var AdaptationEngine = Class({
             case 'value':
                 if (trace.traceType.name() === 'SET' && Kotlin.isType(modelElement, kevoree.DictionaryValue)) {
                     if (this.isRelatedToPlatform(modelElement)) {
-                        if (modelElement.eContainer().eContainer().started) {
+                        var instance = modelElement.eContainer().eContainer();
+                        if (instance.started && !instance.host) {
                             cmds.push(this.createCommand(UpdateDictionary, modelElement));
                             cmds.push(this.createCommand(UpdateInstance, modelElement.eContainer().eContainer()));
                         }
