@@ -61,7 +61,7 @@ if (argv.argv.help) {
     }
 
     var resolver = new NPMResolver(argv.modulesPath, log);
-    var kRuntime = new NodeJSRuntime(argv.modulesPath, resolver);
+    var kRuntime = new NodeJSRuntime(argv.modulesPath, log, resolver);
     var factory  = new kevoree.factory.DefaultKevoreeFactory();
     var loader   = factory.createJSONLoader();
 

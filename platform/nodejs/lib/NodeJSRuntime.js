@@ -9,9 +9,9 @@ var Class         = require('pseudoclass'),
 var NodeJSRuntime = Class({
     toString: 'NodeJSRuntime',
 
-    construct: function (modulesPath, resolver) {
+    construct: function (modulesPath, logger, resolver) {
         this.modulesPath = modulesPath || path.resolve(__dirname, '..');
-        this.log = new KevoreeLogger(this.toString());
+        this.log = logger;
         this.kCore = new KevoreeCore(this.modulesPath, this.log);
         this.bootstrapper = new Bootstrapper(this.modulesPath, this.log, resolver);
         this.nodename = 'node0'; // default nodename
