@@ -232,7 +232,7 @@ module.exports = Class({
     checkBootstrapNode: function (model, callback) {
         callback = callback || function () { console.warn('No callback defined for checkBootstrapNode(model, cb) in KevoreeCore'); };
 
-        if (this.nodeInstance == undefined || this.nodeInstance == null) {
+        if (typeof (this.nodeInstance) === 'undefined' || this.nodeInstance === null) {
             this.log.debug(this.toString(), "Start '"+this.nodeName+"' bootstrapping...");
             this.bootstrapper.bootstrapNodeType(this.nodeName, model, function (err, AbstractNode) {
                 if (err) {
