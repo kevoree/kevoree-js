@@ -58,7 +58,7 @@ module.exports = function(grunt) {
 
 
         var npmResolver = new NPMResolver(options.modulesPath, logger),
-            runtime     = new Kevoree(options.modulesPath, npmResolver),
+            runtime     = new Kevoree(options.modulesPath, logger, npmResolver),
             kevsEngine  = new KevScript({ resolvers: { npm: npmResolver } });
 
         runtime.on('started', function () {
