@@ -1,7 +1,6 @@
 var AbstractChannel = require('kevoree-entities').AbstractChannel,
-    SmartSocket     = require('smart-socket');
-
-var TIMEOUT = 2000;
+    SmartSocket     = require('smart-socket'),
+    async           = require('async');
 
 /**
  * Kevoree channel
@@ -10,30 +9,9 @@ var TIMEOUT = 2000;
 var RemoteWSChan = AbstractChannel.extend({
     toString: 'RemoteWSChan',
 
-    dic_host: {
-        optional: false,
-        update: function () {
-            this.stop();
-            this.start();
-        }
-    },
-
-    dic_port: {
-        optional: false,
-        datatype: 'number',
-        update: function () {
-            this.stop();
-            this.start();
-        }
-    },
-
-    dic_path: {
-        optional: false,
-        update: function () {
-            this.stop();
-            this.start();
-        }
-    },
+    dic_host: { optional: false },
+    dic_port: { optional: false, datatype: 'number' },
+    dic_path: { optional: false },
 
     construct: function () {
         this.ss = null;
@@ -43,68 +21,85 @@ var RemoteWSChan = AbstractChannel.extend({
 
     /**
      * this method will be called by the Kevoree platform when your channel has to start
+     * @param done
      */
-    start: function () {
-        this._super();
+    start: function (done) {
+        this._super(function () {
+            var host = this.dictionary.getValue('host'),
+                port = this.dictionary.getValue('port'),
+                path = this.dictionary.getValue('path');
 
-        var host = this.dictionary.getValue('host'),
-            port = this.dictionary.getValue('port'),
-            path = this.dictionary.getValue('path');
-
-        if (!isNaN(parseInt(port))) {
-            if (path) {
-                if (path.substr(0, 1) !== '/') {
-                    path = '/' + path;
+            if (!isNaN(parseInt(port))) {
+                if (path) {
+                    if (path.substr(0, 1) !== '/') {
+                        path = '/' + path;
+                    }
+                } else {
+                    path = '';
                 }
-            } else {
-                path = '';
-            }
 
-            this.ss = new SmartSocket({
-                addresses:  [host + ':' + port + path],
-                timeout:    TIMEOUT,
-                handlers: {
-                    onopen: function (ws) {
-                        this.log.info(this.toString(), '"'+this.getName()+'" connected to remote WebSocket server ws://'+host + ':' + port + path);
-                        this.conn = ws;
-                        var pattern = 'nodes['+this.getNodeName()+']';
-                        for (var p in this.inputs) {
-                            if (p.substr(0, pattern.length) === pattern) {
-                                this.conn.send(JSON.stringify({
-                                    action: 'register',
-                                    id: p
-                                }));
+                this.ss = new SmartSocket({
+                    addresses:  [host + ':' + port + path],
+                    handlers: {
+                        onopen: function (ws) {
+                            this.log.info(this.toString(), '"'+this.getName()+'" connected to remote WebSocket server ws://'+host + ':' + port + path);
+                            this.conn = ws;
+                            var pattern = 'nodes['+this.getNodeName()+']';
+                            for (var p in this.inputs) {
+                                if (p.substr(0, pattern.length) === pattern) {
+                                    this.conn.send(JSON.stringify({
+                                        action: 'register',
+                                        id: p
+                                    }));
+                                }
                             }
-                        }
-                    }.bind(this),
+                        }.bind(this),
 
-                    onmessage: function (ws, msg) {
-                        if (msg.type) msg = msg.data;
+                        onmessage: function (ws, msg) {
+                            if (msg.type) msg = msg.data;
 
-                        this.localDispatch(msg);
-                    }.bind(this),
+                            this.localDispatch(msg);
+                        }.bind(this),
 
-                    onclose: function () {
-                        this.log.info(this.toString(), '"'+this.getName()+'" lost connection with remote WebSocket server ws://'+host + ':' + port + path+'. Retry every '+TIMEOUT+'ms');
-                    }.bind(this)
-                }
-            });
+                        onclose: function () {
+                            this.log.info(this.toString(), '"'+this.getName()+'" lost connection with remote WebSocket server ws://'+host + ':' + port + path);
+                        }.bind(this)
+                    }
+                });
 
-            this.ss.start();
-        } else {
-            throw new Error(this.toString() + ' error: "'+this.getName()+'" port attribute is not a number ('+port+')');
-        }
+                this.ss.start();
+                done();
+            } else {
+                done(new Error(this.toString() + ' error: "'+this.getName()+'" port attribute is not a number ('+port+')'));
+            }
+        }.bind(this));
     },
 
     /**
      * this method will be called by the Kevoree platform when your channel has to stop
+     * @param done
      */
-    stop: function () {
-        this._super();
-        if (this.ss) {
-            this.ss.stop();
-        }
-        this.conn = null;
+    stop: function (done) {
+        this._super(function () {
+            if (this.ss) {
+                this.ss.stop();
+            }
+            this.conn = null;
+            done();
+        }.bind(this));
+    },
+
+    /**
+     *
+     * @param done
+     */
+    update: function (done) {
+        this._super(function () {
+            async.series([
+                function (cb) { this.stop(cb);  }.bind(this),
+                function (cb) { this.start(cb); }.bind(this)
+            ], done);
+        }.bind(this));
     },
 
     /**
