@@ -37,55 +37,87 @@ var WebSocketGroup = AbstractGroup.extend({
         this.connectedNodes = {};
     },
 
-    start: function () {
-        this._super();
+    /**
+     *
+     * @param done
+     */
+    start: function (done) {
+        this._super(function (err) {
+            if (err) { done(err); return; }
 
-        this.stopped = false;
+            this.stopped = false;
 
-        // assert('one and only one master server defined between all subnodes')
-        this.checkNoMultipleMasterServer();
+            try  {
+                // assert('one and only one master server defined between all subnodes')
+                this.checkNoMultipleMasterServer();
 
-        var port = this.dictionary.getValue('port'),
-            path = this.dictionary.getValue('path'),
-            proxy_port = this.dictionary.getValue('proxy_port');
+                var port = this.dictionary.getValue('port'),
+                    path = this.dictionary.getValue('path'),
+                    proxy_port = this.dictionary.getValue('proxy_port');
 
-        if (port && port.length > 0) {
-            if (!isNaN(parseInt(port))) {
-                if (proxy_port && proxy_port.length > 0) {
-                    if (!isNaN(parseInt(proxy_port))) {
-                        this.server = this.startWSServer(proxy_port, processPath(path));
+                if (port && port.length > 0) {
+                    if (!isNaN(parseInt(port))) {
+                        if (proxy_port && proxy_port.length > 0) {
+                            if (!isNaN(parseInt(proxy_port))) {
+                                this.server = this.startWSServer(proxy_port, processPath(path));
+                            } else {
+                                done(new Error('WebSocketGroup error: '+this.getName()+'.proxy_port/'+this.getNodeName()+' attribute is not a number'));
+                                return;
+                            }
+                        } else {
+                            this.server = this.startWSServer(port, processPath(path));
+                        }
                     } else {
-                        throw new Error('WebSocketGroup error: '+this.getName()+'.proxy_port/'+this.getNodeName()+' attribute is not a number');
+                        done(new Error('WebSocketGroup error: '+this.getName()+'.port/'+this.getNodeName()+' attribute is not a number'));
+                        return;
                     }
                 } else {
-                    this.server = this.startWSServer(port, processPath(path));
+                    this.startWSClient();
                 }
-            } else {
-                throw new Error('WebSocketGroup error: '+this.getName()+'.port/'+this.getNodeName()+' attribute is not a number');
+
+                done();
+
+            } catch (err) {
+                done(err);
             }
-        } else {
-            this.startWSClient();
-        }
+        }.bind(this));
     },
 
-    stop: function () {
-        this._super();
+    /**
+     *
+     * @param done
+     */
+    stop: function (done) {
+        this._super(function (err) {
+            if (err) { done(err); return; }
 
-        if (this.server) {
-            try { this.server.close(); } catch (ignore) {}
-            this.connectedNodes = {};
-        }
+            if (this.server) {
+                try { this.server.close(); } catch (ignore) {}
+                this.connectedNodes = {};
+            }
 
-        if (this.smartSocket) {
-            // close client connection
-            this.smartSocket.close(true);
-        }
+            if (this.smartSocket) {
+                // close client connection
+                this.smartSocket.close(true);
+            }
+
+            done();
+        }.bind(this));
     },
 
-    update: function () {
-        this._super();
-        this.stop();
-        this.start();
+    /**
+     *
+     * @param done
+     */
+    update: function (done) {
+        this._super(function (err) {
+            if (err) { done(err); return; }
+
+            async.series([
+                function (cb) { this.stop(cb);  }.bind(this),
+                function (cb) { this.start(cb); }.bind(this)
+            ], done);
+        }.bind(this));
     },
 
     checkNoMultipleMasterServer: function () {
