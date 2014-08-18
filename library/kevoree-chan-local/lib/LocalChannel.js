@@ -3,10 +3,7 @@ var AbstractChannel = require('kevoree-entities').AbstractChannel;
 var LocalChannel = AbstractChannel.extend({
     toString: 'LocalChannel',
 
-    start: function () {
-        this._super();
-        this.log.info('Local channel started');
-    },
+    dic_delay: { optional: false, defaultValue: 0, fragmentDependant: false },
 
     onSend: function (fromPortPath, destPortPaths, msg) {
         this._super();
@@ -19,12 +16,6 @@ var LocalChannel = AbstractChannel.extend({
                 this.localDispatch(msg);
             }.bind(this), delay); // and applying some delay if requested
         }
-    },
-
-    dic_delay: {
-        optional: false,
-        defaultValue: 0,
-        fragmentDependant: false
     }
 });
 
