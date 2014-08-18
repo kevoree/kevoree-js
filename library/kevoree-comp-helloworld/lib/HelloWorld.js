@@ -13,29 +13,34 @@ var HelloWorldComponent = AbstractComponent.extend({
 
     /**
      * Component start
+     * @param done
      */
-    start: function () {
-        this._super();
+    start: function (done) {
+        this._super(function () {
+            this.id = setInterval(function () {
+                // send a message through output port 'sendText' every 2 seconds
+                this.out_sendText('hello world '+(new Date()));
+            }.bind(this), 2000);
 
-        this.id = setInterval(function () {
-            // send a message through output port 'sendText' every 2 seconds
-            this.out_sendText('hello world '+(new Date()));
-        }.bind(this), 2000);
+            this.setUIContent('<p>Hello world</p>', function (err) {
+                if (err) {
+                    this.log.info(this.toString(), 'Hello world!');
+                }
+            });
 
-        this.setUIContent('<p>Hello world</p>', function (err) {
-            if (err) {
-                this.log.info(this.toString(), 'Hello world!');
-            }
-        });
+            done();
+        }.bind(this));
     },
 
     /**
      * Component stop
      */
-    stop: function () {
-        this._super();
-        clearInterval(this.id);
-        this.id = null;
+    stop: function (done) {
+        this._super(function () {
+            clearInterval(this.id);
+            this.id = null;
+            done();
+        }.bind(this));
     },
 
     // define an output port called "sendText" (this will be bind later with a function to send your messages through it)

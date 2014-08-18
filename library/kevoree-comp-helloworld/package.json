@@ -1,39 +1,39 @@
 {
-  "name": "kevoree-comp-helloworld",
-  "version": "1.0.0",
-  "main": "./lib/HelloWorld.js",
-  "description": "A Kevoree component that displays an hello world",
-  "scripts": {
-    "prepublish": "grunt"
-  },
-  "keywords": [
-    "kevoree-std-lib",
-    "kevoree",
-    "component"
-  ],
-  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
-  "contributors": [],
-  "bugs": {
-    "url": "https://github.com/kevoree/kevoree-js/issues"
-  },
-  "license": "LGPL-3.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kevoree/kevoree-js"
-  },
-  "dependencies": {
-    "grunt-jade": "^0.4.0",
-    "kevoree-entities": "^1.0.0"
-  },
-  "devDependencies": {
-    "grunt": "^0.4.2",
-    "grunt-browserify": "^2.0.7",
-    "grunt-contrib-uglify": "^0.5.0",
-    "grunt-kevoree": "^1.0.0",
-    "grunt-kevoree-genmodel": "^1.0.0"
-  },
-  "optionalDependencies": {},
-  "engines": {
-    "node": "*"
-  }
+    "name": "kevoree-comp-helloworld",
+    "version": "2.0.0-SNAPSHOT",
+    "main": "./lib/HelloWorld.js",
+    "description": "A Kevoree component that displays an hello world",
+    "scripts": {
+        "prepublish": "grunt"
+    },
+    "keywords": [
+        "kevoree-std-lib",
+        "kevoree",
+        "component"
+    ],
+    "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+    "contributors": [],
+    "bugs": {
+        "url": "https://github.com/kevoree/kevoree-js/issues"
+    },
+    "license": "LGPL-3.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kevoree/kevoree-js"
+    },
+    "dependencies": {
+        "kevoree-entities": "^2.0.0"
+    },
+    "devDependencies": {
+        "grunt": "^0.4.2",
+        "grunt-jade": "^0.4.0",
+        "grunt-browserify": "^2.0.7",
+        "grunt-contrib-uglify": "^0.5.0",
+        "grunt-kevoree": "^2.0.0",
+        "grunt-kevoree-genmodel": "^1.0.0"
+    },
+    "optionalDependencies": {},
+    "engines": {
+        "node": "*"
+    }
 }
