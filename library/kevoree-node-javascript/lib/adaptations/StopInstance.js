@@ -1,5 +1,6 @@
 var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive,
-    StartInstance       = require('./StartInstance');
+    StartInstance       = require('./StartInstance'),
+    timeout             = require('../timeout-handler');
 
 module.exports = AdaptationPrimitive.extend({
     toString: 'StopInstance',
@@ -10,7 +11,8 @@ module.exports = AdaptationPrimitive.extend({
         if (this.modelElement.host && this.modelElement.host.name === this.node.getName()) {
             // this element is a subNode to this.node
             this.log.debug(this.toString(), this.node.getName()+' has to stop '+this.modelElement.name);
-            this.node.stopSubNode(this.modelElement);
+            this.node.stopSubNode(this.modelElement, timeout(this.node.getName() + '.stopSubNode(...)', callback));
+            return;
 
         } else {
             var instance;
@@ -21,10 +23,12 @@ module.exports = AdaptationPrimitive.extend({
             }
             if (instance && instance.isStarted()) {
                 this.log.debug(this.toString(), instance.getName());
-                instance.stop();
+                instance.stop(timeout(instance.getName() + '.stop(...)', callback));
+                return;
             }
         }
 
+        this.log.warn(this.toString(), 'Nothing performed...shouldnt see that');
         callback();
     },
 

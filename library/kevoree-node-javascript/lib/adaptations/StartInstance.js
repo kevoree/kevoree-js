@@ -1,5 +1,6 @@
 var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive,
-    StopInstance        = require('./StopInstance');
+    StopInstance        = require('./StopInstance'),
+    timeout             = require('../timeout-handler');
 
 module.exports = AdaptationPrimitive.extend({
     toString: 'StartInstance',
@@ -10,8 +11,8 @@ module.exports = AdaptationPrimitive.extend({
         if (this.modelElement.host && this.modelElement.host.name === this.node.getName()) {
             // this element is a subNode to this.node
             this.log.debug(this.toString(), this.node.getName()+' has to start '+this.modelElement.name);
-            this.node.startSubNode(this.modelElement);
-            callback();
+
+            this.node.startSubNode(this.modelElement, timeout(this.node.getName() + '.startSubNode(...)', callback));
 
         } else {
             var instance;
@@ -47,9 +48,10 @@ module.exports = AdaptationPrimitive.extend({
                 // check if instance is already started
                 if (!instance.isStarted()) {
                     this.log.debug(this.toString(), instance.getPath());
-                    instance.start();
+                    instance.start(timeout(instance.getName() + '.start(...)', callback));
+                } else {
+                    callback();
                 }
-                callback();
 
             } else {
                 callback(new Error(this.toString()+" error: unable to find instance "+this.modelElement.name));

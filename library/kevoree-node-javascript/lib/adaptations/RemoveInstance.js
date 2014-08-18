@@ -1,5 +1,6 @@
 var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive,
-    AddInstance         = require('./AddInstance');
+    AddInstance         = require('./AddInstance'),
+    timeout             = require('../timeout-handler');
 
 /**
  * RemoveInstance Adaptation command
@@ -16,22 +17,25 @@ module.exports = AdaptationPrimitive.extend({
     execute: function (callback) {
         this._super(callback);
 
-        if (this.modelElement) {
-            if (this.modelElement.host && this.modelElement.host.name === this.node.getName()) {
-                // this element is a subNode to this.node
-                this.log.debug(this.toString(), this.node.getName()+' has to remove '+this.modelElement.name);
-                this.node.removeSubNode(this.modelElement);
+        if (this.modelElement.host && this.modelElement.host.name === this.node.getName()) {
+            // this element is a subNode to this.node
+            this.log.debug(this.toString(), this.node.getName()+' has to remove '+this.modelElement.name);
+            this.node.removeSubNode(this.modelElement, timeout(this.node.getName() + '.removeSubNode(...)', callback));
+            callback();
+            return;
 
-            } else {
-                var instance = this.mapper.getObject(this.modelElement.path());
-                if (instance) {
-                    this.mapper.removeEntry(this.modelElement.path());
-                    this.log.debug(this.toString(), instance.getName()+' '+this.modelElement.typeDefinition.path());
-                }
+        } else {
+            var instance = this.mapper.getObject(this.modelElement.path());
+            if (instance) {
+                this.mapper.removeEntry(this.modelElement.path());
+                this.log.debug(this.toString(), instance.getName()+' '+this.modelElement.typeDefinition.path());
+                callback();
+                return;
             }
         }
 
-        return callback();
+        this.log.warn(this.toString(), 'Nothing performed...shouldnt see that');
+        callback();
     },
 
     undo: function (callback) {

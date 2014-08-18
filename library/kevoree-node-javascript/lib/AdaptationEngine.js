@@ -8,7 +8,6 @@ var Class               = require('pseudoclass'),
 var AddInstance         = require('./adaptations/AddInstance'),
     AddBinding          = require('./adaptations/AddBinding'),
     AddDeployUnit       = require('./adaptations/AddDeployUnit'),
-    Noop                = require('./adaptations/Noop'),
     RemoveBinding       = require('./adaptations/RemoveBinding'),
     RemoveDeployUnit    = require('./adaptations/RemoveDeployUnit'),
     RemoveInstance      = require('./adaptations/RemoveInstance'),
@@ -34,8 +33,7 @@ var COMMAND_RANK = {
     AddBinding:       10,
     UpdateDictionary: 11,
     UpdateInstance:   12,
-    StartInstance:    13,
-    Noop:             42
+    StartInstance:    13
     // lowest priority
 };
 
@@ -156,8 +154,10 @@ var AdaptationEngine = Class({
                                 if (instFromCurrModel.started) {
                                     cmds.push(this.createCommand(StopInstance, instFromCurrModel));
                                 }
-                                cmds.push(this.createCommand(RemoveInstance, instFromCurrModel));
-                                cmds.push(this.createCommand(DestroyInstance, instFromCurrModel));
+                                if (this.modelObjMapper.getObject(trace.objPath)) {
+                                    cmds.push(this.createCommand(RemoveInstance, instFromCurrModel));
+                                    cmds.push(this.createCommand(DestroyInstance, instFromCurrModel));
+                                }
                             }
                         }
 
@@ -240,8 +240,10 @@ var AdaptationEngine = Class({
                             }
 
                             if (!chanStillUsed && this.modelObjMapper.getObject(binding.hub.path())) {
-                                cmds.push(this.createCommand(RemoveInstance, binding.hub));
-                                cmds.push(this.createCommand(DestroyInstance, binding.hub));
+                                if (this.modelObjMapper.getObject(binding.hub.path())) {
+                                    cmds.push(this.createCommand(RemoveInstance, binding.hub));
+                                    cmds.push(this.createCommand(DestroyInstance, binding.hub));
+                                }
 
                                 if (binding.hub.started) {
                                     cmds.push(this.createCommand(StopInstance, binding.hub));

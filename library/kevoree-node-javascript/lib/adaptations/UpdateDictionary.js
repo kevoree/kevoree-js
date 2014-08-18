@@ -31,20 +31,22 @@ module.exports = AdaptationPrimitive.extend({
                 dictionary.setEntry(this.modelElement.name, this.modelElement.value);
             }
 
-            return callback();
+            callback();
         }.bind(this);
 
         if (instance != null) {
-            return updateDictionary(instance);
+            updateDictionary(instance);
+            return;
 
         } else {
             if (kDictionary.eContainer().name === this.node.getName()) {
                 // this dictionary is for this platform node
-                return updateDictionary(this.node);
+                updateDictionary(this.node);
+                return;
             }
         }
 
-        return callback();
+        callback();
     },
 
     undo: function (callback) {

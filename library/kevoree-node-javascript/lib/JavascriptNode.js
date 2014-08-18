@@ -52,41 +52,47 @@ var JavascriptNode = AbstractNode.extend({
         this.adaptationEngine = new AdaptationEngine(this);
     },
 
-    start: function () {
-        this._super();
-        this.adaptationEngine.setLogger(this.getKevoreeCore().getLogger());
-        var logLevel = this.dictionary.getValue('logLevel') || this.dic_logLevel.defaultValue;
-        switch (logLevel.toLowerCase().trim()) {
-            case 'all':
-                this.log.setLevel(KevoreeLogger.ALL);
-                break;
+    start: function (done) {
+        this._super(function () {
+            this.adaptationEngine.setLogger(this.getKevoreeCore().getLogger());
+            var logLevel = this.dictionary.getValue('logLevel') || this.dic_logLevel.defaultValue;
+            switch (logLevel.toLowerCase().trim()) {
+                case 'all':
+                    this.log.setLevel(KevoreeLogger.ALL);
+                    break;
 
-            default:
-            case 'debug':
-                this.log.setLevel(KevoreeLogger.DEBUG);
-                break;
+                default:
+                case 'debug':
+                    this.log.setLevel(KevoreeLogger.DEBUG);
+                    break;
 
-            case 'info':
-                this.log.setLevel(KevoreeLogger.INFO);
-                break;
+                case 'info':
+                    this.log.setLevel(KevoreeLogger.INFO);
+                    break;
 
-            case 'error':
-                this.log.setLevel(KevoreeLogger.ERROR);
-                break;
+                case 'error':
+                    this.log.setLevel(KevoreeLogger.ERROR);
+                    break;
 
-            case 'warn':
-                this.log.setLevel(KevoreeLogger.WARN);
-                break;
-        }
+                case 'warn':
+                    this.log.setLevel(KevoreeLogger.WARN);
+                    break;
+            }
+
+            done();
+        }.bind(this));
     },
 
     /**
      * Called when the host node has to start an hosted subNode
      * @param node the hosted subNode
+     * @param done
      */
-    startSubNode: function (node) {
-        this._super();
-        this.log.warn(this.toString(), 'startSubNode(): not implemented yet');
+    startSubNode: function (node, done) {
+        this._super(function () {
+            this.log.warn(this.toString(), 'startSubNode(): not implemented yet');
+            done();
+        }.bind(this));
 
 //        var modelPath = path.resolve(os.tmpdir(), 'kevoree_tmp.json');
 //        var factory = new kevoree.factory.DefaultKevoreeFactory();
@@ -114,53 +120,43 @@ var JavascriptNode = AbstractNode.extend({
     /**
      * Called when the host node has to stop an hosted subNode
      * @param node the hosted subNode
+     * @param done
      */
-    stopSubNode: function (node) {
-        this._super();
-        this.log.warn(this.toString(), 'stopSubNode(): not implemented yet');
+    stopSubNode: function (node, done) {
+        this._super(function () {
+            this.log.warn(this.toString(), 'stopSubNode(): not implemented yet');
+            done();
+        }.bind(this));
     },
 
     /**
      * Called when the host node has to remove an hosted subNode instance
      * @param node the hosted subNode
+     * @param done
      */
-    removeSubNode: function (node) {
-        this._super();
-        this.log.warn(this.toString(), 'removeSubNode(): not implemented yet');
+    removeSubNode: function (node, done) {
+        this._super(function () {
+            this.log.warn(this.toString(), 'removeSubNode(): not implemented yet');
+            done();
+        }.bind(this));
     },
 
-    stop: function () {
-        this._super();
-        // TODO improve that, this is not a "stop" this is a complete "destroy"
-        // clone current model
-        var factory = new kevoree.factory.DefaultKevoreeFactory();
-        var cloner = factory.createModelCloner();
-        var emptyNodeModel = cloner.clone(this.getKevoreeCore().getCurrentModel(), false);
-        var node = emptyNodeModel.findNodesByID(this.getName());
-        if (node) {
-            // delete everything from cloned model that is related to this node
-            node.delete();
+    stop: function (done) {
+        this._super(function () {
+            this.log.warn(this.toString(), 'Not implemented yet');
+            done();
+        }.bind(this));
+    },
 
-            // re-add this "empty" node to the cloned model
-            node = factory.createContainerNode();
-            node.name = this.getName();
-
-            // compare emptyNodeModel with currentModel in order to create primitives for this platform fragments stops
-            var compare = factory.createModelCompare();
-            var diffSeq = compare.diff(this.getKevoreeCore().getCurrentModel(), emptyNodeModel);
-            var primitives = this.processTraces(diffSeq, emptyNodeModel);
-
-            function execPrimitive(primitive, cb) {
-                primitive.execute(cb);
-            }
-
-            async.eachSeries(primitives, execPrimitive, function (err) {
-                if (err) {
-                    // something went wrong while stopping node
-                    this.log.error(this.toString(), 'Something went wrong while stopping '+this.getName());
-                }
-            }.bind(this));
-        }
+    /**
+     *
+     * @param done
+     */
+    destroy: function (done) {
+        this._super(function () {
+            this.log.warn(this.toString(), 'Not implemented yet');
+            done();
+        }.bind(this));
     },
 
     /**
