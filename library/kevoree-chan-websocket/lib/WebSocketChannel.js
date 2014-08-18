@@ -1,6 +1,7 @@
 var AbstractChannel = require('kevoree-entities').AbstractChannel,
     WebSocket       = require('ws'),
     WebSocketServer = require('ws').Server,
+    async           = require('async'),
     SmartSocket     = require('smart-socket');
 
 var REGISTER = 'register',
@@ -13,24 +14,8 @@ var REGISTER = 'register',
 var WebSocketChannel = AbstractChannel.extend({
     toString: 'WebSocketChannel',
 
-    dic_port: {
-        fragmentDependant: true,
-        optional: true,
-        datatype: 'number',
-        update: function () {
-            this.stop();
-            this.start();
-        }
-    },
-
-    dic_path: {
-        fragmentDependant: true,
-        optional: true,
-        update: function () {
-            this.stop();
-            this.start();
-        }
-    },
+    dic_port: { fragmentDependant: true, optional: true, datatype: 'number' },
+    dic_path: { fragmentDependant: true, optional: true },
 
     construct: function () {
         this.server = null;
@@ -40,39 +25,63 @@ var WebSocketChannel = AbstractChannel.extend({
 
     /**
      * this method will be called by the Kevoree platform when your channel has to start
+     * @param done
      */
-    start: function () {
-        this._super();
+    start: function (done) {
+        this._super(function () {
+            try {
+                var port = this.dictionary.getValue('port');
+                if (port && port.length > 0) {
+                    if (!isNaN(parseInt(port))) {
+                        this.startWSServer(port, processPath(this.dictionary.getValue('path')));
+                    } else {
+                        done(new Error('WebSocketChannel error: '+this.getName()+'.port/'+this.getNodeName()+' attribute is not a number'));
+                        return;
+                    }
+                } else {
+                    this.startWSClient();
+                }
+
+                done();
+            } catch (err) {
+                done(err);
+            }
+        }.bind(this));
 
         this.checkNoMultipleMasterServer();
-
-        var port = this.dictionary.getValue('port');
-        if (port && port.length > 0) {
-            if (!isNaN(parseInt(port))) {
-                this.startWSServer(port, processPath(this.dictionary.getValue('path')));
-            } else {
-                throw new Error('WebSocketChannel error: '+this.getName()+'.port/'+this.getNodeName()+' attribute is not a number');
-            }
-        } else {
-            this.startWSClient();
-        }
     },
 
     /**
      * this method will be called by the Kevoree platform when your channel has to stop
+     * @param done
      */
-    stop: function () {
-        this._super();
+    stop: function (done) {
+        this._super(function () {
+            if (this.server) {
+                this.server.close();
+                this.connectedClients = {};
+            }
 
-        if (this.server) {
-            this.server.close();
-            this.connectedClients = {};
-        }
+            if (this.smartSocket) {
+                this.smartSocket.close();
+                this.client = null;
+            }
 
-        if (this.smartSocket) {
-            this.smartSocket.close();
-            this.client = null;
-        }
+            done();
+        }.bind(this));
+    },
+
+    /**
+     *
+     * @param done
+     */
+    update: function (done) {
+        this._super(function () {
+            async.series([
+                function (cb) { this.stop(cb);  }.bind(this),
+                function (cb) { this.start(cb); }.bind(this)
+            ], done);
+        }.bind(this));
     },
 
     /**
@@ -300,13 +309,13 @@ var localDispatchHandler = function (ws) {
                         var nodeName = msgObj.recipients[i];
                         if (nodeName === this.getNodeName()) {
                             this.localDispatch(msgObj.message);
-                            
+
                         } else if (this.connectedClients[nodeName]) {
                             // this node is already registered
                             if (this.connectedClients[nodeName].readyState === 1) {
                                 // and still connected
                                 this.connectedClients[nodeName].send(data);
-                                
+
                             } else {
                                 // TODO client not connected => put in queue
                             }
