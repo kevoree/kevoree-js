@@ -12,43 +12,45 @@ var FakeConsole = AbstractComponent.extend({
         datatype: 'boolean'
     },
 
-    start: function () {
-        this._super();
+    start: function (done) {
+        this._super(function () {
+            this.setUIContent(view({btn: 'Send msg!'}), function (err, root) {
+                if (err) {
+                    // no KevoreeUI provided by runtime (NodeJS platform obviously)
+                    this.log.info(this.toString(), 'FakeConsole setUIContent in NodeJS runtime!');
 
-        this.setUIContent(view({btn: 'Send msg!'}), function (err, root) {
-            if (err) {
-                // no KevoreeUI provided by runtime (NodeJS platform obviously)
-                this.log.info(this.toString(), 'FakeConsole setUIContent in NodeJS runtime!');
+                } else {
+                    // view set successfully
+                    var msgInput = root.querySelector('#msg'),
+                        sendBtn  = root.querySelector('#send');
+                    var sendMsg = function() {
+                        if (msgInput.value.length > 0) {
+                            // update message list
+                            this.addMessageUI('<', msgInput.value);
+                            // send it through output port 'sendMsg'
+                            this.out_sendMsg(msgInput.value);
+                        }
+                    }.bind(this);
 
-            } else {
-                // view set successfully
-                var msgInput = root.querySelector('#msg'),
-                    sendBtn  = root.querySelector('#send');
-                var sendMsg = function() {
-                    if (msgInput.value.length > 0) {
-                        // update message list
-                        this.addMessageUI('<', msgInput.value);
-                        // send it through output port 'sendMsg'
-                        this.out_sendMsg(msgInput.value);
-                    }
-                }.bind(this);
+                    // send message on click event if value.length > 0
+                    sendBtn.onclick = sendMsg;
 
-                // send message on click event if value.length > 0
-                sendBtn.onclick = sendMsg;
+                    // send message on 'enter' key keyup event if value.length > 0
+                    msgInput.onkeyup = function (e) {
+                        if (e && e.keyCode && e.keyCode == 13) {
+                            // 'enter' key pressed
+                            sendMsg();
+                        }
+                    };
+                }
+            });
 
-                // send message on 'enter' key keyup event if value.length > 0
-                msgInput.onkeyup = function (e) {
-                    if (e && e.keyCode && e.keyCode == 13) {
-                        // 'enter' key pressed
-                        sendMsg();
-                    }
-                };
-            }
-        });
+            done();
+        }.bind(this));
     },
 
-    stop: function () {
-        this._super();
+    stop: function (done) {
+        this._super(done);
     },
 
     in_inMsg: function (msg) {
