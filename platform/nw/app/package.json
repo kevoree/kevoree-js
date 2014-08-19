@@ -15,7 +15,7 @@
   "dependencies": {
     "async": "^0.2.10",
     "kevoree-commons": "^1.0.0",
-    "kevoree-core": "^1.0.0",
+    "kevoree-core": "^2.0.0",
     "kevoree-kevscript": "^1.0.0",
     "kevoree-library": "^1.0.0",
     "kevoree-resolvers": "^1.0.0",

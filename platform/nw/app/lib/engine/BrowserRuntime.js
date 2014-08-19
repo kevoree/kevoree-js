@@ -55,9 +55,9 @@ var BrowserRuntime = Class({
                 if (this.bootstrapModel) {
                     this.core.deploy(this.bootstrapModel);
                 } else {
-                    var nodeName = this.core.getNodeName()  || 'node0',
-                        grpName  = this.groupName || 'sync',
-                        port     = this.groupPort || 9000;
+                    var nodeName = this.core.getNodeName()  || 'node0',
+                        grpName  = this.groupName || 'sync',
+                        port     = this.groupPort || 9000;
 
                     var kevsModel = '' +
                         'include npm:kevoree-node-javascript:latest' + '\n' +

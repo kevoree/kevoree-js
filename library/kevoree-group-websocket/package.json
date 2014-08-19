@@ -1,52 +1,52 @@
 {
-  "name": "kevoree-group-websocket",
-  "version": "2.0.0-SNAPSHOT",
-  "main": "./lib/WebSocketGroup.js",
-  "description": "A Kevoree group that uses WebSocket to transfer models",
-  "scripts": {
-    "prepublish": "grunt"
-  },
-  "keywords": [
-    "kevoree-std-lib",
-    "kevoree",
-    "library",
-    "group"
-  ],
-  "author": {
-    "name": "Maxime Tricoire",
-    "email": "max.tricoire@gmail.com"
-  },
-  "contributors": [],
-  "bugs": {
-    "url": "https://github.com/kevoree/kevoree-js/issues"
-  },
-  "license": "LGPL-3.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kevoree/kevoree-js"
-  },
-  "dependencies": {
-    "async": "^0.2.10",
-    "kevoree-entities": "^2.0.0",
-    "kevoree-library": "^1.0.0",
-    "smart-socket": "^0.1.7",
-    "ws": "^0.4.31"
-  },
-  "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-browserify": "^2.0.7",
-    "grunt-contrib-uglify": "^0.5.0",
-    "grunt-kevoree": "^1.0.0",
-    "grunt-kevoree-genmodel": "^1.0.0"
-  },
-  "optionalDependencies": {},
-  "engines": {
-    "node": "*"
-  },
-  "maintainers": [
-    {
-      "name": "leiko",
-      "email": "max.tricoire@gmail.com"
-    }
-  ]
+    "name": "kevoree-group-websocket",
+    "version": "2.0.0-SNAPSHOT",
+    "main": "./lib/WebSocketGroup.js",
+    "description": "A Kevoree group that uses WebSocket to transfer models",
+    "scripts": {
+        "prepublish": "grunt"
+    },
+    "keywords": [
+        "kevoree-std-lib",
+        "kevoree",
+        "library",
+        "group"
+    ],
+    "author": {
+        "name": "Maxime Tricoire",
+        "email": "max.tricoire@gmail.com"
+    },
+    "contributors": [],
+    "bugs": {
+        "url": "https://github.com/kevoree/kevoree-js/issues"
+    },
+    "license": "LGPL-3.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kevoree/kevoree-js"
+    },
+    "dependencies": {
+        "async": "^0.2.10",
+        "kevoree-entities": "^2.0.0",
+        "kevoree-library": "^1.0.0",
+        "smart-socket": "^0.1.7",
+        "ws": "^0.4.31"
+    },
+    "devDependencies": {
+        "grunt": "^0.4.5",
+        "grunt-browserify": "^2.0.7",
+        "grunt-contrib-uglify": "^0.5.0",
+        "grunt-kevoree": "^2.0.0",
+        "grunt-kevoree-genmodel": "^1.0.0"
+    },
+    "optionalDependencies": {},
+    "engines": {
+        "node": "*"
+    },
+    "maintainers": [
+        {
+            "name": "leiko",
+            "email": "max.tricoire@gmail.com"
+        }
+    ]
 }

@@ -5,9 +5,9 @@ var path    = require('path'),
     kevoree = require('kevoree-library').org.kevoree;
 
 module.exports = function (dirPath, logLevel, callback) {
-    var quiet    = logLevel.quiet    || false,
-        verbose  = logLevel.verbose  || false,
-        callback = callback || function () {};
+    var quiet    = logLevel.quiet    || false,
+        verbose  = logLevel.verbose  || false,
+        callback = callback || function () {};
 
     if (quiet) {
         var noop = function () {};

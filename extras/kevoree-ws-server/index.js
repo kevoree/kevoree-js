@@ -6,7 +6,7 @@ var PUSH = 'push',
     PULL = 'pull';
 
 var options = {
-    port: argv.port || config.port,
+    port: argv.port || config.port,
     path: (function processPath(path) {
         if (path) {
             if (path.substr(0, 1) === '/') {
@@ -16,7 +16,7 @@ var options = {
             }
         }
         return '';
-    })(argv.path || config.path)
+    })(argv.path || config.path)
 };
 
 var wss         = new WSServer(options),
