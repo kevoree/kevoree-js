@@ -28,7 +28,7 @@ var NPMResolver = Resolver.extend({
             pkgPath = path.resolve(this.modulesPath, 'node_modules', deployUnit.name), // default npm module location
             options = {
                 name:           deployUnit.name,
-                version:        deployUnit.version || 'latest',
+                version:        deployUnit.version || 'latest',
                 forceInstall:   forceInstall,
                 path:           this.modulesPath
             };
