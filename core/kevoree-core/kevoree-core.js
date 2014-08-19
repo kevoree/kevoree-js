@@ -198,7 +198,7 @@ module.exports = Class({
                                             core.emitter.emit('rollbackError', er);
                                             // stop everything :/
                                             // TODO clean stop() => shouldnt process.exit()
-                                            process.exit(1);
+                                            process.exit(1); // TODO this wont work if platform runs in browser
 //                                            core.stop();
                                         } else {
                                             // rollback succeed
@@ -235,7 +235,7 @@ module.exports = Class({
     },
 
     checkBootstrapNode: function (model, callback) {
-        callback = callback || function () { console.warn('No callback defined for checkBootstrapNode(model, cb) in KevoreeCore'); };
+        callback = callback || function () { console.warn('No callback defined for checkBootstrapNode(model, cb) in KevoreeCore'); };
 
         if (typeof (this.nodeInstance) === 'undefined' || this.nodeInstance === null) {
             this.log.debug(this.toString(), "Start '"+this.nodeName+"' bootstrapping...");
