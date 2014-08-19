@@ -44,6 +44,7 @@ var KevoreeEntity = Class({
         this.path = null;
         this.nodeName = null;
         this.started = false;
+        this.queue = [];
     },
 
     /**
@@ -147,7 +148,7 @@ var KevoreeEntity = Class({
     /**
      * Executes script with current model context. If callback parameter is set,
      * it means something went wrong and the parameter is the error object.
-     * NB: you cannot use this method while in "deploying" state.
+     * NB: scripts submitted while in "deploying" state are queued and executed after.
      * @param script KevScript string
      * @param [callback] function (err)
      */
@@ -155,6 +156,7 @@ var KevoreeEntity = Class({
         callback = callback || function () {};
 
         if (this.kCore.getDeployModel() === null) {
+            // not in "deploying state"
             var kevs = new KevScript({
                 resolvers: { npm: this.kCore.getBootstrapper().resolver } // refactor according to #26
             });
@@ -191,7 +193,62 @@ var KevoreeEntity = Class({
                 this.kCore.deploy(model);
             }.bind(this));
         } else {
-            callback(new Error('KevScript submission failed (unable to submit script when a model is currently deployed)'));
+            // in "deploying state" => need to queue request to process it afterwards
+            this.queue.push({script: script, callback: callback});
+            this.log.debug(this.toString(), 'Script added to queue..');
+            //callback(new Error('KevScript submission failed (unable to submit script when a model is currently deployed)'));
+        }
+    },
+
+    /**
+     * Called when a model has been successfully deployed
+     */
+    onModelDeployed: function () {
+        if (this.queue.length > 0) {
+            // create a KevScript engine
+            var kevs = new KevScript({
+                resolvers: { npm: this.kCore.getBootstrapper().resolver } // refactor according to #26
+            });
+
+            // retrieve first queued script
+            var item = this.queue[0];
+            // remove first queued script from the queue
+            this.queue.splice(0, 1);
+            // execute first queued script
+            kevs.parse(item.script, this.kCore.getCurrentModel(), function (err, model) {
+                if (err) {
+                    // queued script submission failed
+                    var e = new Error('KevScript submission failed ('+err.message+')');
+                    item.callback(e);
+
+                } else {
+                    // queued script submission succeed
+                    var deployHandler, errHandler, adaptHandler;
+                    deployHandler = function () {
+                        this.kCore.off('error', errHandler);
+                        this.kCore.off('adaptationError', adaptHandler);
+                        item.callback();
+                    }.bind(this);
+                    errHandler = function (err) {
+                        this.kCore.off('deployed', deployHandler);
+                        this.kCore.off('adaptationError', adaptHandler);
+                        var e = new Error('KevScript submission failed ('+err.message+')');
+                        item.callback(e);
+                    }.bind(this);
+                    adaptHandler = function (err) {
+                        this.kCore.off('error', errHandler);
+                        this.kCore.off('deployed', deployHandler);
+                        var e = new Error('KevScript submission failed ('+err.message+')');
+                        item.callback(e);
+                    }.bind(this);
+
+                    this.kCore.once('deployed', deployHandler);
+                    this.kCore.once('error', errHandler);
+                    this.kCore.once('adaptationError', adaptHandler);
+
+                    this.kCore.deploy(model);
+                }
+            }.bind(this));
         }
     }
 });
