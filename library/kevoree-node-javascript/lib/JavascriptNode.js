@@ -55,7 +55,7 @@ var JavascriptNode = AbstractNode.extend({
     start: function (done) {
         this._super(function () {
             this.adaptationEngine.setLogger(this.getKevoreeCore().getLogger());
-            var logLevel = this.dictionary.getValue('logLevel') || this.dic_logLevel.defaultValue;
+            var logLevel = this.dictionary.getValue('logLevel') || this.dic_logLevel.defaultValue;
             switch (logLevel.toLowerCase().trim()) {
                 case 'all':
                     this.log.setLevel(KevoreeLogger.ALL);

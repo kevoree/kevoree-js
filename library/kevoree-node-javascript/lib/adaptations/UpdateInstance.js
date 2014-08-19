@@ -15,7 +15,7 @@ module.exports = AdaptationPrimitive.extend({
         if (instance !== undefined && instance !== null) {
             if (instance.isStarted()) {
                 this.log.debug(this.toString(), instance.getName());
-                instance.update(timeout(instance.getName() + '.update(...)', callback));
+                instance.update(timeout(instance.getPath() + ' update(...)', callback));
             }
         } else {
             callback(new Error(this.toString()+" error: unable to update instance "+this.modelElement.name));
@@ -24,6 +24,6 @@ module.exports = AdaptationPrimitive.extend({
 
     undo: function (callback) {
         this._super(callback);
-        return callback();
+        callback();
     }
 });

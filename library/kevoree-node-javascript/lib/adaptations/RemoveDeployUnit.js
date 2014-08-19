@@ -1,5 +1,4 @@
-var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive,
-    AddDeployUnit       = require('./AddDeployUnit');
+var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive;
 
 /**
  * RemoveDeployUnit Adaptation
@@ -31,6 +30,7 @@ module.exports = AdaptationPrimitive.extend({
     undo: function (callback) {
         this._super(callback);
 
+        var AddDeployUnit = require('./AddDeployUnit');
         var cmd = new AddDeployUnit(this.node, this.mapper, this.adaptModel, this.modelElement);
         cmd.execute(callback);
     }

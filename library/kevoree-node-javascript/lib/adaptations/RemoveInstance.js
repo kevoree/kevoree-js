@@ -1,5 +1,4 @@
 var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive,
-    AddInstance         = require('./AddInstance'),
     timeout             = require('../timeout-handler');
 
 /**
@@ -41,6 +40,7 @@ module.exports = AdaptationPrimitive.extend({
     undo: function (callback) {
         this._super(callback);
 
+        var AddInstance = require('./AddInstance');
         var cmd = new AddInstance(this.node, this.mapper, this.adaptModel, this.modelElement);
         cmd.execute(callback);
     }

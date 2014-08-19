@@ -19,7 +19,7 @@ module.exports = AdaptationPrimitive.extend({
             if (instance !== undefined && instance !== null) {
                 if (!instance.isStarted()) {
                     this.log.debug(this.toString(), instance.getName());
-                    instance.destroy(timeout(instance.getName() + '.destroy(...)', callback));
+                    instance.destroy(timeout(instance.getPath() + ' destroy(...)', callback));
                     return;
                 }
             } else {
@@ -34,6 +34,6 @@ module.exports = AdaptationPrimitive.extend({
 
     undo: function (callback) {
         this._super(callback);
-        return callback();
+        callback();
     }
 });

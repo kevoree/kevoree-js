@@ -1,8 +1,7 @@
-var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive,
-    StopInstance        = require('./StopInstance'),
-    timeout             = require('../timeout-handler');
+var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive;
+var timeout             = require('../timeout-handler');
 
-module.exports = AdaptationPrimitive.extend({
+var StartInstance = AdaptationPrimitive.extend({
     toString: 'StartInstance',
 
     execute: function (callback) {
@@ -48,7 +47,7 @@ module.exports = AdaptationPrimitive.extend({
                 // check if instance is already started
                 if (!instance.isStarted()) {
                     this.log.debug(this.toString(), instance.getPath());
-                    instance.start(timeout(instance.getName() + '.start(...)', callback));
+                    instance.start(timeout(instance.getPath() + ' start(...)', callback));
                 } else {
                     callback();
                 }
@@ -62,7 +61,10 @@ module.exports = AdaptationPrimitive.extend({
     undo: function (callback) {
         this._super(callback);
 
+        var StopInstance = require('./StopInstance');
         var cmd = new StopInstance(this.node, this.mapper, this.adaptModel, this.modelElement);
         cmd.execute(callback);
     }
 });
+
+module.exports = StartInstance;

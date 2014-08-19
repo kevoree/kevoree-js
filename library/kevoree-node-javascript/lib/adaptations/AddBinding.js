@@ -1,6 +1,5 @@
 var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive,
     Port                = require('kevoree-entities').Port,
-    RemoveBinding       = require('./RemoveBinding'),
     Kotlin              = require('kevoree-kotlin');
 
 module.exports = AdaptationPrimitive.extend({
@@ -68,6 +67,7 @@ module.exports = AdaptationPrimitive.extend({
     undo: function (callback) {
         this._super(callback);
 
+        var RemoveBinding = require('./RemoveBinding');
         var cmd = new RemoveBinding(this.node, this.mapper, this.adaptModel, this.modelElement);
         cmd.execute(callback);
     }

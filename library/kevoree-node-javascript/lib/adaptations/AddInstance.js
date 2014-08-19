@@ -1,5 +1,4 @@
-var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive,
-    RemoveInstance      = require('./RemoveInstance');
+var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive;
 
 /**
  * AddInstance Adaptation command
@@ -54,6 +53,8 @@ module.exports = AdaptationPrimitive.extend({
 
     undo: function (callback) {
         this._super(callback);
+
+        var RemoveInstance = require('./RemoveInstance');
         var cmd = new RemoveInstance(this.node, this.mapper, this.adaptModel, this.modelElement);
         cmd.execute(callback);
     }

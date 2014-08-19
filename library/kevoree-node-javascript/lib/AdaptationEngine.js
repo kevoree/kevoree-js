@@ -87,7 +87,7 @@ var AdaptationEngine = Class({
         var cmds;
         while (traces.hasNext()) {
             var trace = traces.next();
-            cmds = this.processTrace(trace, targetModel.findByPath(trace.previousPath || trace.srcPath));
+            cmds = this.processTrace(trace, targetModel.findByPath(trace.previousPath || trace.srcPath));
             for (var i=0; i < cmds.length; i++) {
                 if (!traceAlreadyProcessed(cmds[i])) {
                     cmdList.push(cmds[i]);
@@ -101,7 +101,7 @@ var AdaptationEngine = Class({
         for (var path in this.alreadyProcessedTraces) {
             if (this.alreadyProcessedTraces[path][UpdateInstance.prototype.toString()]) {
                 for (var type in this.alreadyProcessedTraces[path]) {
-                    if (type === StopInstance.prototype.toString() || type === StartInstance.prototype.toString()) {
+                    if (type === StopInstance.prototype.toString() || type === StartInstance.prototype.toString()) {
                         var index = cmdList.indexOf(this.alreadyProcessedTraces[path][UpdateInstance.prototype.toString()]);
                         if (index > -1) {
                             cmdList.splice(index, 1);
@@ -148,7 +148,7 @@ var AdaptationEngine = Class({
                         currentModel = this.node.getKevoreeCore().getCurrentModel(); // old model
                         var instFromCurrModel = currentModel.findByPath(trace.objPath); // instance from current model
                         var instFromTargModel = this.targetModel.findByPath(trace.objPath); // instance in target model
-                        if ((instFromTargModel && !this.isRelatedToPlatform(instFromTargModel)) || !instFromTargModel) {
+                        if ((instFromTargModel && !this.isRelatedToPlatform(instFromTargModel)) || !instFromTargModel) {
                             // instance is no longer related to platform or present in new model: stop & remove
                             if (this.modelObjMapper.getObject(instFromCurrModel.path())) {
                                 if (instFromCurrModel.started) {
@@ -342,7 +342,7 @@ var AdaptationEngine = Class({
             }
 
         } else if (Kotlin.isType(element, kevoree.ContainerNode)) {
-            return ((element.name === this.node.getName()) || (element.host && element.host.name === this.node.getName()));
+            return ((element.name === this.node.getName()) || (element.host && element.host.name === this.node.getName()));
 
         } else if (Kotlin.isType(element, kevoree.MBinding)) {
             if (element.port && element.port.eContainer()) {
