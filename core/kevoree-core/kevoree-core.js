@@ -44,7 +44,15 @@ module.exports = Class({
     destruct: function() {
         this.log.debug(this.toString(), 'Destroying Kevoree platform "'+this.nodeInstance.getName()+'"...');
         if (this.nodeInstance !== null) {
-            this.nodeInstance.destroy();
+            this.nodeInstance.destroy(function (err) {
+                if (err) {
+                    this.emitter.emit('error', err);
+                } else {
+                    this.emitter.emit('destroyed');
+                }
+            }.bind(this));
+        } else {
+            this.emitter.emit('error', new Error('Cannot destroy platform: node instance platform is undefined'));
         }
     },
 
@@ -163,25 +171,16 @@ module.exports = Class({
                                 cmdStack.unshift(cmd);
 
                                 // execute cmd
-                                cmd.execute(function (err) {
-                                    if (err) {
-                                        //core.log.error(cmd.toString(), err.message);
-                                        return iteratorCallback(err);
-                                    }
-
-                                    // adaptation succeed
-                                    iteratorCallback();
-                                });
+                                cmd.execute(iteratorCallback);
                             }
 
                             // rollbackCommand: function that calls undo() on cmds in the stack
                             function rollbackCommand(cmd, iteratorCallback) {
-                                cmd.undo(function (err) {
-                                    if (err) return iteratorCallback(err);
-
-                                    // undo succeed
-                                    iteratorCallback();
-                                });
+                                try {
+                                    cmd.undo(iteratorCallback);
+                                } catch (err) {
+                                    iteratorCallback(err);
+                                }
                             }
 
                             // execute each command synchronously
@@ -192,27 +191,33 @@ module.exports = Class({
                                     core.log.info(core.toString(), 'Rollbacking to previous model...');
 
                                     // rollback process
-                                    return async.eachSeries(cmdStack, rollbackCommand, function (er) {
+                                    async.eachSeries(cmdStack, rollbackCommand, function (er) {
                                         if (er) {
                                             // something went wrong while rollbacking
-                                            return core.emitter.emit('rollbackError', er);
+                                            er.message = "Something went wrong while rollbacking. Process will exit.\n"+er.message;
+                                            core.emitter.emit('rollbackError', er);
+                                            // stop everything :/
+                                            // TODO clean stop() => shouldnt process.exit()
+                                            process.exit(1);
+//                                            core.stop();
+                                        } else {
+                                            // rollback succeed
+                                            core.emitter.emit('rollbackSucceed');
                                         }
-
-                                        // rollback succeed
-                                        core.emitter.emit('rollbackSucceed');
                                     });
-                                }
 
-                                // adaptations succeed : woot
-                                core.log.debug(core.toString(), "Model deployed successfully: "+adaptations.length+" adaptations");
-                                // save old model
-                                pushInArray(core.models, core.currentModel);
-                                // set new model to be the current deployed one
-                                core.currentModel = model; // do not give core.deployModel here because it is a readOnly model
-                                // reset deployModel
-                                core.deployModel = null;
-                                // all good :)
-                                core.emitter.emit('deployed', core.currentModel);
+                                } else {
+                                    // adaptations succeed : woot
+                                    core.log.debug(core.toString(), "Model deployed successfully: "+adaptations.length+" adaptations");
+                                    // save old model
+                                    pushInArray(core.models, core.currentModel);
+                                    // set new model to be the current deployed one
+                                    core.currentModel = model; // do not give core.deployModel here because it is a readOnly model
+                                    // reset deployModel
+                                    core.deployModel = null;
+                                    // all good :)
+                                    core.emitter.emit('deployed', core.currentModel);
+                                }
                             });
                         } catch (err) {
                             err.message = 'Something went wrong while deploying model.\n'+err.message;
@@ -237,7 +242,8 @@ module.exports = Class({
             this.bootstrapper.bootstrapNodeType(this.nodeName, model, function (err, AbstractNode) {
                 if (err) {
                     err.message = "Unable to bootstrap '"+this.nodeName+"'! Start process aborted.";
-                    return callback(err);
+                    callback(err);
+                    return;
                 }
 
                 var node = model.findNodesByID(this.nodeName);
@@ -247,15 +253,18 @@ module.exports = Class({
                 this.nodeInstance.setName(this.nodeName);
                 this.nodeInstance.setPath(node.path());
 
-                this.nodeInstance.start();
-
-                this.log.info(this.toString(), this.nodeName+' : '+node.typeDefinition.name+'/'+node.typeDefinition.version+' successfully started');
-
-                return callback();
+                this.nodeInstance.start(function (err) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        this.log.info(this.toString(), this.nodeName+' : '+node.typeDefinition.name+'/'+node.typeDefinition.version+' successfully started');
+                        callback();
+                    }
+                }.bind(this));
             }.bind(this));
 
         } else {
-            return callback();
+            callback();
         }
     },
 
