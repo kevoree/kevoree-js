@@ -216,6 +216,9 @@ module.exports = Class({
                                     // reset deployModel
                                     core.deployModel = null;
                                     // all good :)
+                                    if (typeof (core.nodeInstance.onModelDeployed) === 'function') { // backward compatibility with kevoree-entities < 2.1.0
+                                        core.nodeInstance.onModelDeployed();
+                                    }
                                     core.emitter.emit('deployed', core.currentModel);
                                 }
                             });
