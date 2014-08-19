@@ -31,7 +31,7 @@ module.exports = Class({
      * @param callback Function(err, [args]) if 'err' is defined => something went wrong
      */
     execute: function (callback) {
-        if (callback == undefined || callback == null || typeof(callback) != 'function') {
+        if (typeof (callback) !== 'function') {
             throw new Error("Execute method need a callback function as last parameter");
         }
     },
@@ -40,7 +40,7 @@ module.exports = Class({
      * Undo the process done by execute()
      */
     undo: function (callback) {
-        if (callback == undefined || callback == null || typeof(callback) != 'function') {
+        if (typeof (callback) !== 'function') {
             throw new Error("Undo method need a callback function as last parameter");
         }
     }

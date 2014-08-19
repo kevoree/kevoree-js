@@ -47,29 +47,39 @@ var KevoreeEntity = Class({
     },
 
     /**
-     * Called on element start-up
+     * Called when an entity has to start
+     * @param done
      */
-    start: function () {
+    start: function (done) {
         this.log = this.kCore.getLogger();
         this.started = true;
+        done();
     },
 
     /**
-     * Called on element stop
+     * Called when an entity has to stop
+     * @param done
      */
-    stop: function () {
+    stop: function (done) {
         this.started = false;
+        done();
     },
 
     /**
      * Called when a attribute has been changed (this method is called after all attribute-specific update() method)
+     * @param done
      */
-    update: function () {},
+    update: function (done) {
+        done();
+    },
 
     /**
-     * Called before entity is remove from node host
+     * Called before entity is removed from node host
+     * @param done
      */
-    destroy: function () {},
+    destroy: function (done) {
+        done();
+    },
 
     setKevoreeCore: function (kCore) {
         this.kCore = kCore;
@@ -142,7 +152,7 @@ var KevoreeEntity = Class({
      * @param [callback] function (err)
      */
     submitScript: function (script, callback) {
-        callback = callback || function () {};
+        callback = callback || function () {};
 
         if (this.kCore.getDeployModel() === null) {
             var kevs = new KevScript({

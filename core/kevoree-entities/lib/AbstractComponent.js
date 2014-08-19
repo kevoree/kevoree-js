@@ -15,18 +15,30 @@ var AbstractComponent = KevoreeEntity.extend({
         this.ui = new KevoreeUI(this);
     },
 
-    start: function () {
-        this._super();
-        this.ui.name = this.name; // default ui name is component name
+    /**
+     * Called when an entity has to start
+     * @param done
+     */
+    start: function (done) {
+        this._super(function () {
+            this.ui.name = this.name; // default ui name is component name
+            done();
+        }.bind(this));
     },
 
-    stop: function () {
-        this._super();
-        if (this.ui.isReady()) {
-            // there is an UI running for this comp
-            // remove it
-            this.ui.destroy();
-        }
+    /**
+     * Called when an entity has to stop
+     * @param done
+     */
+    stop: function (done) {
+        this._super(function () {
+            if (this.ui.isReady()) {
+                // there is an UI running for this comp
+                // remove it
+                this.ui.destroy();
+            }
+            done();
+        }.bind(this));
     },
 
     addInternalInputPort: function (port) {

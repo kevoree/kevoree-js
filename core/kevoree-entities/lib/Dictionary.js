@@ -42,7 +42,7 @@ var Dictionary = Class({
      */
     getBoolean: function (name, defaultVal) {
         var val = this.map[name];
-        if (val === 'true' || val === 'false') {
+        if (val === 'true' || val === 'false') {
             return val === 'true';
         }
 
