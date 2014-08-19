@@ -1,6 +1,6 @@
 {
   "name": "kevoree-nodejs-runtime",
-  "version": "1.0.2",
+  "version": "2.0.0-SNAPSHOT",
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "main": "./lib/NodeJSRuntime",
   "bin": {
@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "kevoree-commons": "^1.0.0",
-    "kevoree-core": "^1.0.0",
+    "kevoree-core": "^2.0.0",
     "kevoree-kevscript": "^1.0.0",
     "kevoree-library": "^1.0.0",
     "kevoree-resolvers": "^1.0.0",

@@ -14,7 +14,7 @@ var NodeJSBootstrapper = Bootstrapper.extend({
      */
     construct: function (modulesPath, logger, resolver) {
         this.log = logger;
-        this.resolver = resolver || new NPMResolver(modulesPath, logger);
+        this.resolver = resolver || new NPMResolver(modulesPath, logger);
     },
 
     /**
