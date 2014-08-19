@@ -1,9 +1,6 @@
-// if you have already created your own Channel extending AbstractChannel
-// you can replace AbstractChannel here and use your own
-// ex: var MyChan = require('./path/to/MyChan')
-// the only thing needed is that the top level channel extends AbstractChannel :)
 var AbstractChannel = require('kevoree-entities').AbstractChannel,
-    Stomp           = require('./stomp');
+    Stomp           = require('./stomp'),
+    async           = require('async');
 
 /**
  * Kevoree channel
@@ -20,47 +17,67 @@ var StompChannel = AbstractChannel.extend({
 
     /**
      * this method will be called by the Kevoree platform when your channel has to start
+     * @param done
      */
-    start: function () {
-        this._super();
+    start: function (done) {
+        this._super(function () {
+            var host  = this.dictionary.getValue('host');
+            var port  = this.dictionary.getValue('serverPort');
+            var topic = this.dictionary.getValue('topic') || '/';
 
-        var host  = this.dictionary.getValue('host');
-        var port  = this.dictionary.getValue('serverPort');
-        var topic = this.dictionary.getValue('topic') || '/';
+            this.client = new Stomp.client('ws://'+host+':'+port);
 
-        this.client = new Stomp.client('ws://'+host+':'+port);
+            var that = this;
 
-        var that = this;
+            var connectToServer = function () {
+                var successCb = function () {
+                    this.clearTimeouts();
 
-        var connectToServer = function () {
-            var successCb = function () {
-                this.clearTimeouts();
+                    this.client.subscribe(topic, function(message) {
+                        that.localDispatch(message);
+                    });
+                }.bind(this);
 
-                this.client.subscribe(topic, function(message) {
-                    that.localDispatch(message);
-                });
+                var errorCb = function () {
+                    var timeoutID = setTimeout(connectToServer, 5000);
+                    this.timeoutIDs.push(timeoutID);
+                }.bind(this);
+
+                this.client.connect('', '', successCb, errorCb);
             }.bind(this);
 
-            var errorCb = function () {
-                var timeoutID = setTimeout(connectToServer, 5000);
-                this.timeoutIDs.push(timeoutID);
-            }.bind(this);
+            connectToServer();
 
-            this.client.connect('', '', successCb, errorCb);
-        }.bind(this);
-
-        connectToServer();
+            done();
+        }.bind(this));
     },
 
     /**
      * this method will be called by the Kevoree platform when your channel has to stop
+     * @param done
      */
-    stop: function () {
-        this._super();
-        if (this.client != null) {
-            this.client.disconnect();
-            this.client = null;
-        }
+    stop: function (done) {
+        this._super(function () {
+            if (this.client != null) {
+                this.client.disconnect();
+                this.client = null;
+            }
+
+            done();
+        }.bind(this));
+    },
+
+    /**
+     *
+     * @param done
+     */
+    update: function (done) {
+        this._super(function () {
+            async.series([
+                function (cb) { this.stop(cb);  }.bind(this),
+                function (cb) { this.start(cb); }.bind(this)
+            ], done);
+        }.bind(this));
     },
 
     /**
@@ -101,12 +118,6 @@ var StompChannel = AbstractChannel.extend({
     dic_topic: {
         optional: true,
         defaultValue: '/'
-    },
-    dic_login: {
-        // TODO
-    },
-    dic_pass: {
-        // TODO
     }
 });
 
