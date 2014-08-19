@@ -1,6 +1,6 @@
 {
   "name": "kevoree-comp-fakeconsole",
-  "version": "2.0.0-SNAPSHOT",
+  "version": "2.0.0-SNAPSHOT.0",
   "main": "./lib/FakeConsole.js",
   "scripts": {
     "prepublish": "grunt"
@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "grunt": "~0.4.1",
-    "grunt-browserify": "^2.0.7",
+    "grunt-browserify": "^2.1.4",
     "grunt-contrib-uglify": "^0.4.0",
     "grunt-jade": "~0.4.0",
     "grunt-kevoree": "^2.0.0",
