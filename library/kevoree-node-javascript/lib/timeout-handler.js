@@ -11,8 +11,8 @@ function timeoutHandler(name, callback) {
     var id = setTimeout(function () {
         // out of time
         timedOut = true;
-        callback(new Error('Method '+name+' timed out (10000ms)'));
-    }, 10000);
+        callback(new Error('Method '+name+' timed out (30000ms)'));
+    }, 30000);
 
     return function () {
         if (!timedOut) {
