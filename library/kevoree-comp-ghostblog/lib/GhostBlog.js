@@ -32,80 +32,86 @@ var GhostBlog = AbstractComponent.extend({
 
     /**
      * this method will be called by the Kevoree platform when your component has to start
+     * @param done
      */
-    start: function () {
-        this._super();
-
-        var root = this.dictionary.getString('root');
-        if (!root && root.length === 0) {
+    start: function (done) {
+        this._super(function () {
+            var root = this.dictionary.getString('root');
+            if (!root && root.length === 0) {
 //            root = path.resolve(os.tmpdir(), 'blog_'+crypto.randomBytes(5).toString('hex'));
-            throw new Error('You must define a root folder for your blog');
-        }
-        root = path.resolve(root);
-        var env = this.dictionary.getString('env', ENV);
+                done(new Error('You must define a root folder for your blog'));
+                return;
+            }
+            root = path.resolve(root);
+            var env = this.dictionary.getString('env', ENV);
 
-        var defaultContent = path.resolve(__dirname, '..', 'node_modules', 'ghost', 'content'),
-            blogContent = path.resolve(root, 'content'),
-            blogConfPath = path.resolve(root, 'config.js');
+            var defaultContent = path.resolve(__dirname, '..', 'node_modules', 'ghost', 'content'),
+                blogContent = path.resolve(root, 'content'),
+                blogConfPath = path.resolve(root, 'config.js');
 
-        var myConfig = {};
-        myConfig[env] = {
-            url: this.dictionary.getString('url', URL),
-            server: {
-                host: this.dictionary.getString('host', HOST),
-                port: this.dictionary.getNumber('port', PORT)
-            },
-            database: {
-                connection: {
-                    filename: path.resolve(blogContent, 'data', 'ghost.db')
-                }
-            },
-            paths: null
-        };
+            var myConfig = {};
+            myConfig[env] = {
+                url: this.dictionary.getString('url', URL),
+                server: {
+                    host: this.dictionary.getString('host', HOST),
+                    port: this.dictionary.getNumber('port', PORT)
+                },
+                database: {
+                    connection: {
+                        filename: path.resolve(blogContent, 'data', 'ghost.db')
+                    }
+                },
+                paths: null
+            };
 
-        var create = function () {
-            mkdirp(root, function (err) {
-                if (err) throw err;
+            var create = function () {
+                mkdirp(root, function (err) {
+                    if (err) { done(err); return; }
 
-                ncp(defaultContent, blogContent, function (err) {
-                    if (err) throw err;
+                    ncp(defaultContent, blogContent, function (err) {
+                        if (err) { done(err); return; }
 
-                    var blogConf = "var path = require('path'),\n\tconfig;\n\nconfig = " + JSON.stringify(extend(defaultConf, myConfig), null, 4) + ';\n\nmodule.exports = config;';
-                    fs.writeFile(blogConfPath, blogConf, function (err) {
-                        if (err) throw err;
+                        var blogConf = "var path = require('path'),\n\tconfig;\n\nconfig = " + JSON.stringify(extend(defaultConf, myConfig), null, 4) + ';\n\nmodule.exports = config;';
+                        fs.writeFile(blogConfPath, blogConf, function (err) {
+                            if (err) { done(err); return; }
 
-                        process.env.NODE_ENV = env;
-                        ghost({ config: blogConfPath }).then(function () {
+                            process.env.NODE_ENV = env;
+                            ghost({ config: blogConfPath }).then(function () {
 //                            this.server = server;
-                            this.log.info('Ghost blog root folder: ' + root);
-                        }.bind(this)).otherwise(function (err) {
-                            errors.logErrorAndExit(err, err.context, err.help);
-                        });
+                                this.log.info('Ghost blog root folder: ' + root);
+                                done();
+                            }.bind(this)).otherwise(function (err) {
+                                errors.logErrorAndExit(err, err.context, err.help);
+                            });
+                        }.bind(this));
                     }.bind(this));
                 }.bind(this));
-            }.bind(this));
-        }.bind(this);
+            }.bind(this);
 
-        fs.exists(root, function (exists) {
-            if (exists) {
-                rmdir(root, function (err) {
-                    if (err) throw err;
+            fs.exists(root, function (exists) {
+                if (exists) {
+                    rmdir(root, function (err) {
+                        if (err) { done(err); return; }
 
+                        create();
+                    });
+                } else {
                     create();
-                });
-            } else {
-                create();
-            }
-        });
+                }
+            });
+        }.bind(this));
     },
 
     /**
      * this method will be called by the Kevoree platform when your component has to stop
+     * @param done
      */
-    stop: function () {
-        this._super();
+    stop: function (done) {
+        this._super(function () {
+            this.log.warn(this.toString(), 'stop(): not implemented yet');
+            done();
+        }.bind(this));
         // TODO
-        this.log.debug(this.toString(), 'STOP');
 //        if (this.server) {
 //            this.server.on('close', function () {
 //                console.log('CLOSED §!!!!!!!');
