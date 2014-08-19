@@ -3,7 +3,7 @@ var Logger = require('./../lib/KevoreeLogger');
 var log = new Logger('MyTag');
 
 function doLog(level) {
-    level = level || 0;
+    level = level || 0;
     log.setLevel(level);
 
     log.debug('This is a debug');

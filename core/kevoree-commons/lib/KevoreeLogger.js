@@ -26,7 +26,7 @@ var KevoreeLogger = Class({
                 tag = this.tag;
             }
 
-            if (this.filter.length === 0 || (this.filter.length > 0 && tag === this.filter)) {
+            if (this.filter.length === 0 || (this.filter.length > 0 && tag === this.filter)) {
                 console.log(getTime()+'  '+chalkInfo('INFO')+'   '+processTag(tag)+'  '+chalkInfo(msg));
             }
         }
@@ -39,7 +39,7 @@ var KevoreeLogger = Class({
                 tag = this.tag;
             }
 
-            if (this.filter.length === 0 || (this.filter.length > 0 && tag === this.filter)) {
+            if (this.filter.length === 0 || (this.filter.length > 0 && tag === this.filter)) {
                 console.log(getTime()+'  '+chalkDebug('DEBUG ')+' '+processTag(tag)+'  '+chalkDebug(msg));
             }
         }
@@ -52,7 +52,7 @@ var KevoreeLogger = Class({
                 tag = this.tag;
             }
 
-            if (this.filter.length === 0 || (this.filter.length > 0 && tag === this.filter)) {
+            if (this.filter.length === 0 || (this.filter.length > 0 && tag === this.filter)) {
                 console.warn(getTime()+'  '+chalkWarn('WARN')+'   '+processTag(tag)+'  '+chalkWarnMsg(msg));
             }
         }
@@ -65,7 +65,7 @@ var KevoreeLogger = Class({
                 tag = this.tag;
             }
 
-            if (this.filter.length === 0 || (this.filter.length > 0 && tag === this.filter)) {
+            if (this.filter.length === 0 || (this.filter.length > 0 && tag === this.filter)) {
                 console.error(getTime() + '  ' + chalkError('ERROR') + '  ' + processTag(tag) + '  ' + chalkErrorMsg(msg));
             }
         }
