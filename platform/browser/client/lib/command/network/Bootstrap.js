@@ -19,7 +19,8 @@ var Bootstrap = AbstractCommand.extend({
             },
             success: function (res) {
                 if (res.model) {
-                    var loader = new kevoree.loader.JSONModelLoader();
+                    var factory = new kevoree.factory.DefaultKevoreeFactory();
+                    var loader = factory.createJSONLoader();
                     var model = loader.loadModelFromString(res.model).get(0);
                     callback(null, model);
                 } else {

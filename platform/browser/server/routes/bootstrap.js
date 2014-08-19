@@ -24,6 +24,7 @@ module.exports = function (model) {
                     var clientNode = factory.createContainerNode();
                     clientNode.name = nodename;
                     clientNode.typeDefinition = serverNode.typeDefinition;
+                    clientNode.started = true;
 
                     // add this instance to model
                     model.addNodes(clientNode);

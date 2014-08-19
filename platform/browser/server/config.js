@@ -1,6 +1,6 @@
 var path = require('path');
 
-var HOST = process.env['HOST_URL'] || 'runjs.kevoree.org';
+var HOST = process.env['HOST_URL'] || 'runjs.kevoree.org';
 var GROUP_PORT = process.env['GROUP_PORT'] || 80;
 var CHAN_PORT = process.env['CHAN_PORT'] || 80;
 
@@ -24,10 +24,10 @@ module.exports = {
     },
 
     paths: {
-        serverNodeDir: path.resolve(__dirname, 'server-node'),
+        serverNodeDir: path.resolve(__dirname, '.server-node'),
         publicInstall: path.resolve(__dirname, '..', 'client', 'dist', 'node_modules'),
         npmInstallDir: function (uuid) {
-            return path.resolve(__dirname, 'client-nodes', uuid, 'node_modules');
+            return path.resolve(__dirname, '.client-nodes', uuid, 'node_modules');
         },
         modulePath: function (npmInstallDir, name) {
             return path.resolve(npmInstallDir, name)
