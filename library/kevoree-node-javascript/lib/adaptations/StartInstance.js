@@ -9,9 +9,12 @@ var StartInstance = AdaptationPrimitive.extend({
 
         if (this.modelElement.host && this.modelElement.host.name === this.node.getName()) {
             // this element is a subNode to this.node
-            this.log.debug(this.toString(), this.node.getName()+' has to start '+this.modelElement.name);
-
-            this.node.startSubNode(this.modelElement, timeout(this.node.getName() + '.startSubNode(...)', callback));
+            this.node.startSubNode(this.modelElement, timeout(this.node.getName() + '.startSubNode(...)', function (err) {
+                if (!err) {
+                    this.log.debug(this.toString(), this.node.getName()+' has to start '+this.modelElement.name);
+                }
+                callback(err);
+            }.bind(this)));
 
         } else {
             var instance;
@@ -46,8 +49,12 @@ var StartInstance = AdaptationPrimitive.extend({
 
                 // check if instance is already started
                 if (!instance.isStarted()) {
-                    this.log.debug(this.toString(), instance.getPath());
-                    instance.start(timeout(instance.getPath() + ' start(...)', callback));
+                    instance.start(timeout(instance.getPath() + ' start(...)', function (err) {
+                        if (!err) {
+                            this.log.debug(this.toString(), instance.getPath());
+                        }
+                        callback(err);
+                    }.bind(this)));
                 } else {
                     callback();
                 }

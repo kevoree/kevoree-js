@@ -18,8 +18,12 @@ module.exports = AdaptationPrimitive.extend({
 
         if (this.modelElement.host && this.modelElement.host.name === this.node.getName()) {
             // this element is a subNode to this.node
-            this.log.debug(this.toString(), this.node.getName()+' has to remove '+this.modelElement.name);
-            this.node.removeSubNode(this.modelElement, timeout(this.node.getName() + '.removeSubNode(...)', callback));
+            this.node.removeSubNode(this.modelElement, timeout(this.node.getName() + '.removeSubNode(...)', function (err) {
+                if (!err) {
+                    this.log.debug(this.toString(), this.node.getName()+' has to remove '+this.modelElement.name);
+                }
+                callback(err);
+            }.bind(this)));
             callback();
             return;
 

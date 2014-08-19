@@ -14,8 +14,12 @@ module.exports = AdaptationPrimitive.extend({
 
         if (instance !== undefined && instance !== null) {
             if (instance.isStarted()) {
-                this.log.debug(this.toString(), instance.getName());
-                instance.update(timeout(instance.getPath() + ' update(...)', callback));
+                instance.update(timeout(instance.getPath() + ' update(...)', function (err) {
+                    if (!err) {
+                        this.log.debug(this.toString(), instance.getName());
+                    }
+                    callback(err);
+                }.bind(this)));
             }
         } else {
             callback(new Error(this.toString()+" error: unable to update instance "+this.modelElement.name));

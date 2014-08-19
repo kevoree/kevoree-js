@@ -18,8 +18,12 @@ module.exports = AdaptationPrimitive.extend({
 
             if (instance !== undefined && instance !== null) {
                 if (!instance.isStarted()) {
-                    this.log.debug(this.toString(), instance.getName());
-                    instance.destroy(timeout(instance.getPath() + ' destroy(...)', callback));
+                    instance.destroy(timeout(instance.getPath() + ' destroy(...)', function (err) {
+                        if (!err) {
+                            this.log.debug(this.toString(), instance.getName());
+                        }
+                        callback(err);
+                    }.bind(this)));
                     return;
                 }
             } else {

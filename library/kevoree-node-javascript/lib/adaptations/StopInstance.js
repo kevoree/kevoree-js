@@ -9,8 +9,12 @@ var StopInstance = AdaptationPrimitive.extend({
 
         if (this.modelElement.host && this.modelElement.host.name === this.node.getName()) {
             // this element is a subNode to this.node
-            this.log.debug(this.toString(), this.node.getName()+' has to stop '+this.modelElement.name);
-            this.node.stopSubNode(this.modelElement, timeout(this.node.getName() + '.stopSubNode(...)', callback));
+            this.node.stopSubNode(this.modelElement, timeout(this.node.getName() + '.stopSubNode(...)', function (err) {
+                if (!err) {
+                    this.log.debug(this.toString(), this.node.getName()+' has to stop '+this.modelElement.name);
+                }
+                callback(err);
+            }.bind(this)));
             return;
 
         } else {
@@ -22,12 +26,10 @@ var StopInstance = AdaptationPrimitive.extend({
             }
             if (instance && instance.isStarted()) {
                 instance.stop(timeout(instance.getPath() + ' stop(...)', function (err) {
-                    if (err) {
-                        callback(err);
-                    } else {
+                    if (!err) {
                         this.log.debug(this.toString(), instance.getName());
-                        callback();
                     }
+                    callback(err);
                 }.bind(this)));
                 return;
             }
