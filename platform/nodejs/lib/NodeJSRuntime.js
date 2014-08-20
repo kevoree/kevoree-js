@@ -54,12 +54,22 @@ var NodeJSRuntime = Class({
             self.log.error(err.stack);
             self.emitter.emit('adaptationError', err);
         });
+
+        this.kCore.on('stopped', function () {
+            process.exit(0);
+        });
     },
 
     start: function (nodename, groupname) {
         // TODO add some verification over given names (no spaces & stuff like that)
         this.nodename = nodename || this.nodename;
         this.groupname = groupname || this.groupname;
+
+        process.on('SIGINT', function() {
+            process.stdout.write('\033[0G'); // http://stackoverflow.com/a/9628935/906441
+            this.log.warn(this.toString(), 'Got SIGINT.  Shutting down Kevoree gracefully...');
+            this.kCore.stop();
+        }.bind(this));
 
         process.nextTick(function () {
             this.kCore.start(this.nodename, this.groupname);
