@@ -13,7 +13,17 @@ module.exports = AdaptationPrimitive.extend({
     execute: function (callback) {
         this._super(callback);
 
-        if (this.modelElement.name !== this.node.getName()) {
+        if (this.modelElement.host && this.modelElement.host.name === this.node.getName()) {
+            // this element is a subNode to this.node
+            this.node.destroySubNode(this.modelElement, timeout(this.node.getName() + '.destroySubNode(...)', function (err) {
+                if (!err) {
+                    this.log.debug(this.toString(), this.node.getName()+' destroyed '+this.modelElement.name);
+                }
+                callback(err);
+            }.bind(this)));
+            return;
+
+        } else {
             var instance = this.mapper.getObject(this.modelElement.path());
 
             if (instance !== undefined && instance !== null) {

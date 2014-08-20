@@ -54,7 +54,7 @@ var JavascriptNode = AbstractNode.extend({
 
     start: function (done) {
         this._super(function () {
-            this.adaptationEngine.setLogger(this.getKevoreeCore().getLogger());
+            this.adaptationEngine.setLogger(this.log);
             var logLevel = this.dictionary.getValue('logLevel') || this.dic_logLevel.defaultValue;
             switch (logLevel.toLowerCase().trim()) {
                 case 'all':
@@ -79,6 +79,20 @@ var JavascriptNode = AbstractNode.extend({
                     break;
             }
 
+            done();
+        }.bind(this));
+    },
+
+    stop: function (done) {
+        this._super(function () {
+            this.log.warn(this.toString(), 'stop(): not implemented');
+            done();
+        }.bind(this));
+    },
+
+    destroy: function (done) {
+        this._super(function () {
+            this.log.warn(this.toString(), 'destroy(): not implemented');
             done();
         }.bind(this));
     },
@@ -130,6 +144,18 @@ var JavascriptNode = AbstractNode.extend({
     },
 
     /**
+     * Called when the host node has to destroy an hosted subNode instance
+     * @param node the hosted subNode
+     * @param done
+     */
+    destroySubNode: function (node, done) {
+        this._super(node, function () {
+            this.log.warn(this.toString(), 'destroySubNode(): not implemented yet');
+            done();
+        }.bind(this));
+    },
+
+    /**
      * Called when the host node has to remove an hosted subNode instance
      * @param node the hosted subNode
      * @param done
@@ -137,24 +163,6 @@ var JavascriptNode = AbstractNode.extend({
     removeSubNode: function (node, done) {
         this._super(node, function () {
             this.log.warn(this.toString(), 'removeSubNode(): not implemented yet');
-            done();
-        }.bind(this));
-    },
-
-    stop: function (done) {
-        this._super(function () {
-            this.log.warn(this.toString(), 'Not implemented yet');
-            done();
-        }.bind(this));
-    },
-
-    /**
-     *
-     * @param done
-     */
-    destroy: function (done) {
-        this._super(function () {
-            this.log.warn(this.toString(), 'Not implemented yet');
             done();
         }.bind(this));
     },
