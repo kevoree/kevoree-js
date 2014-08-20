@@ -25,6 +25,7 @@ module.exports = Class({
         this.compare = this.factory.createModelCompare();
         this.cloner  = this.factory.createModelCloner();
 
+        this.stopping       = false;
         this.currentModel   = null;
         this.deployModel    = null;
         this.models         = [];
@@ -101,13 +102,39 @@ module.exports = Class({
     stop: function () {
         if (this.intervalId !== undefined && this.intervalId !== null) {
             if (this.nodeInstance !== null) {
-                this.nodeInstance.stop(function (err) {
-                    if (err) {
-                        this.emitter.emit('error', err);
-                    }
 
+                var stopModel = this.cloner.clone(this.currentModel, false);
+                var node = stopModel.findNodesByID(this.nodeInstance.getName());
+                var subNodes = node.hosts.iterator();
+                while (subNodes.hasNext()) {
+                    subNodes.next().started = false;
+                }
+
+                var groups = node.groups.iterator();
+                while (groups.hasNext()) {
+                    groups.next().started = false;
+                }
+
+                var bindings = stopModel.mBindings.iterator();
+                while (bindings.hasNext()) {
+                    var binding = bindings.next();
+                    if (binding.port.eContainer()
+                        && binding.port.eContainer().eContainer()
+                        && binding.port.eContainer().eContainer().name === node.name) {
+                        if (binding.hub) {
+                            binding.hub.started = false;
+                        }
+                    }
+                }
+
+                var comps = node.components.iterator();
+                while (comps.hasNext()) {
+                    comps.next().started = false;
+                }
+
+                var stopRuntime = function () {
                     clearInterval(this.intervalId);
-                    this.log.info(this.toString(), "Platform stopped: "+this.nodeName);
+                    this.log.info(this.toString(), "Platform stopped: "+this.nodeInstance.getName());
 
                     this.currentModel   = null;
                     this.deployModel    = null;
@@ -117,7 +144,23 @@ module.exports = Class({
                     this.intervalId     = null;
 
                     this.emitter.emit('stopped');
+                }.bind(this);
+
+                this.emitter.once('deployed', function () {
+                    this.nodeInstance.stop(function (err) {
+                        if (err) {
+                            this.emitter.emit('error', new Error(err.message));
+                        }
+
+                        stopRuntime();
+                    }.bind(this));
                 }.bind(this));
+
+                this.emitter.once('adaptationError', stopRuntime);
+                this.emitter.once('error', stopRuntime);
+
+                this.stopping = true;
+                this.deploy(stopModel);
             }
         }
     },
@@ -176,7 +219,17 @@ module.exports = Class({
                                 cmdStack.unshift(cmd);
 
                                 // execute cmd
-                                cmd.execute(iteratorCallback);
+                                cmd.execute(function (err) {
+                                    if (err) {
+                                        if (core.stopping) {
+                                            // log error
+                                            core.log.error(cmd.toString(), 'Fail adaptation skipped: '+err.message);
+                                            // but continue adaptation because we are stopping runtime anyway
+                                            err = null;
+                                        }
+                                    }
+                                    iteratorCallback(err);
+                                });
                             }
 
                             // rollbackCommand: function that calls undo() on cmds in the stack
@@ -202,9 +255,7 @@ module.exports = Class({
                                             er.message = "Something went wrong while rollbacking. Process will exit.\n"+er.message;
                                             core.emitter.emit('rollbackError', er);
                                             // stop everything :/
-                                            // TODO clean stop() => shouldnt process.exit()
-                                            process.exit(1); // TODO this wont work if platform runs in browser
-//                                            core.stop();
+                                            core.stop();
                                         } else {
                                             // rollback succeed
                                             core.emitter.emit('rollbackSucceed');
