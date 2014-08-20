@@ -125,7 +125,7 @@ var AdaptationEngine = Class({
      * @param modelElement
      */
     processTrace: function (trace, modelElement) {
-        var cmds = [], currentModel;
+        var cmds = [], currentModel, instance;
 
         switch (trace.refName) {
             case 'groups':
@@ -262,7 +262,7 @@ var AdaptationEngine = Class({
                 if (trace.traceType.name() === 'SET' && Kotlin.isType(modelElement, kevoree.Instance)) {
                     if (this.isRelatedToPlatform(modelElement)) {
                         if (Kotlin.isType(modelElement, kevoree.ContainerNode) && modelElement.name === this.node.getName()) {
-                            // do not restart this platform: makes no sense
+                            // do not start/stop this platform: this is the core's job
                         } else {
                             if (trace.content === 'true') {
                                 cmds.push(this.createCommand(StartInstance, modelElement));
@@ -284,7 +284,7 @@ var AdaptationEngine = Class({
                                     cmds.push(this.createCommand(StopInstance, modelElement));
 
                                 } else {
-                                    var instance = this.modelObjMapper.getObject(modelElement.path());
+                                    instance = this.modelObjMapper.getObject(modelElement.path());
                                     if (instance && instance.isStarted()) {
                                         cmds.push(this.createCommand(StopInstance, modelElement));
                                     }
@@ -298,7 +298,7 @@ var AdaptationEngine = Class({
             case 'value':
                 if (trace.traceType.name() === 'SET' && Kotlin.isType(modelElement, kevoree.DictionaryValue)) {
                     if (this.isRelatedToPlatform(modelElement)) {
-                        var instance = modelElement.eContainer().eContainer();
+                        instance = modelElement.eContainer().eContainer();
                         if (instance.started && !instance.host) {
                             cmds.push(this.createCommand(UpdateDictionary, modelElement));
                             cmds.push(this.createCommand(UpdateInstance, modelElement.eContainer().eContainer()));
