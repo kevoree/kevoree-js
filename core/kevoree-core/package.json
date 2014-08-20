@@ -1,6 +1,6 @@
 {
   "name": "kevoree-core",
-  "version": "2.0.0-SNAPSHOT.5",
+  "version": "2.0.0-SNAPSHOT.6",
   "description": "Kevoree Core",
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "main": "./kevoree-core.js",

@@ -101,19 +101,24 @@ module.exports = Class({
     stop: function () {
         if (this.intervalId !== undefined && this.intervalId !== null) {
             if (this.nodeInstance !== null) {
-                this.nodeInstance.stop();
+                this.nodeInstance.stop(function (err) {
+                    if (err) {
+                        this.emitter.emit('error', err);
+                    }
+
+                    clearInterval(this.intervalId);
+                    this.log.info(this.toString(), "Platform stopped: "+this.nodeName);
+
+                    this.currentModel   = null;
+                    this.deployModel    = null;
+                    this.models         = [];
+                    this.nodeName       = null;
+                    this.nodeInstance   = null;
+                    this.intervalId     = null;
+
+                    this.emitter.emit('stopped');
+                }.bind(this));
             }
-            clearInterval(this.intervalId);
-
-            this.currentModel   = null;
-            this.deployModel    = null;
-            this.models         = [];
-            this.nodeName       = null;
-            this.nodeInstance   = null;
-            this.intervalId     = null;
-
-            this.log.info(this.toString(), "Platform stopped: "+this.nodeName);
-            this.emitter.emit('stopped');
         }
     },
 
