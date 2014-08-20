@@ -11,7 +11,7 @@ var StopInstance = AdaptationPrimitive.extend({
             // this element is a subNode to this.node
             this.node.stopSubNode(this.modelElement, timeout(this.node.getName() + '.stopSubNode(...)', function (err) {
                 if (!err) {
-                    this.log.debug(this.toString(), this.node.getName()+' has to stop '+this.modelElement.name);
+                    this.log.debug(this.toString(), this.node.getName()+' stopped '+this.modelElement.name);
                 }
                 callback(err);
             }.bind(this)));

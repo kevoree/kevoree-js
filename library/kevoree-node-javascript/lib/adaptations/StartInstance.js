@@ -11,7 +11,7 @@ var StartInstance = AdaptationPrimitive.extend({
             // this element is a subNode to this.node
             this.node.startSubNode(this.modelElement, timeout(this.node.getName() + '.startSubNode(...)', function (err) {
                 if (!err) {
-                    this.log.debug(this.toString(), this.node.getName()+' has to start '+this.modelElement.name);
+                    this.log.debug(this.toString(), this.node.getName()+' started '+this.modelElement.name);
                 }
                 callback(err);
             }.bind(this)));

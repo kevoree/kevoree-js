@@ -89,7 +89,7 @@ var JavascriptNode = AbstractNode.extend({
      * @param done
      */
     startSubNode: function (node, done) {
-        this._super(function () {
+        this._super(node, function () {
             this.log.warn(this.toString(), 'startSubNode(): not implemented yet');
             done();
         }.bind(this));
@@ -123,7 +123,7 @@ var JavascriptNode = AbstractNode.extend({
      * @param done
      */
     stopSubNode: function (node, done) {
-        this._super(function () {
+        this._super(node, function () {
             this.log.warn(this.toString(), 'stopSubNode(): not implemented yet');
             done();
         }.bind(this));
@@ -135,7 +135,7 @@ var JavascriptNode = AbstractNode.extend({
      * @param done
      */
     removeSubNode: function (node, done) {
-        this._super(function () {
+        this._super(node, function () {
             this.log.warn(this.toString(), 'removeSubNode(): not implemented yet');
             done();
         }.bind(this));
