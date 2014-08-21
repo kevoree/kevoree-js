@@ -10,9 +10,14 @@ module.exports = AdaptationPrimitive.extend({
     execute: function (callback) {
         this._super(callback);
 
-        var instance = this.mapper.getObject(this.modelElement.path());
+        var instance;
+        if (this.modelElement.name === this.node.getName()) {
+            instance = this.node;
+        } else {
+            instance = this.mapper.getObject(this.modelElement.path());
+        }
 
-        if (instance !== undefined && instance !== null) {
+        if (instance) {
             if (instance.isStarted()) {
                 instance.update(timeout(instance.getPath() + ' update(...)', function (err) {
                     if (!err) {
