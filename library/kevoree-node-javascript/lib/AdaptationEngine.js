@@ -336,7 +336,7 @@ var AdaptationEngine = Class({
         } else if (Kotlin.isType(element, kevoree.Group)) {
             var subNodes = element.subNodes.iterator();
             while (subNodes.hasNext()) {
-                if (this.isRelatedToPlatform(subNodes.next())) {
+                if (subNodes.next().name === this.node.getName()) {
                     return true;
                 }
             }
