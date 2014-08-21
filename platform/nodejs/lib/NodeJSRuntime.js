@@ -6,6 +6,11 @@ var Class         = require('pseudoclass'),
     path            = require('path'),
     EventEmitter    = require('events').EventEmitter;
 
+var firstSIGINT = true,
+    coreStarted = false,
+    coreDeployed = false,
+    wannaStop = false;
+
 var NodeJSRuntime = Class({
     toString: 'NodeJSRuntime',
 
@@ -26,12 +31,17 @@ var NodeJSRuntime = Class({
 
         // kevoree core started event listener
         this.kCore.on('started', function () {
+            coreStarted = true;
             self.emitter.emit('started');
         });
 
         // kevoree core deployed event listener
         this.kCore.on('deployed', function (model) {
+            coreDeployed = true;
             self.emitter.emit('deployed', model);
+            if (wannaStop) {
+                self.kCore.stop();
+            }
         });
 
         // kevoree core error event listener
@@ -52,10 +62,15 @@ var NodeJSRuntime = Class({
 
         this.kCore.on('adaptationError', function (err) {
             self.log.error(err.stack);
+            coreDeployed = true;
             self.emitter.emit('adaptationError', err);
+            if (wannaStop) {
+                self.kCore.stop();
+            }
         });
 
         this.kCore.on('stopped', function () {
+            coreStarted = false;
             process.exit(0);
         });
     },
@@ -67,8 +82,24 @@ var NodeJSRuntime = Class({
 
         process.on('SIGINT', function() {
             process.stdout.write('\033[0G'); // http://stackoverflow.com/a/9628935/906441
-            this.log.warn(this.toString(), 'Got SIGINT.  Shutting down Kevoree gracefully...');
-            this.kCore.stop();
+            if (!coreStarted) {
+                this.log.warn(this.toString(), 'Got SIGINT.  Shutting down Kevoree');
+                process.exit(0);
+            } else {
+                if (!firstSIGINT) {
+                    this.log.warn(this.toString(), 'Force quit.');
+                    process.exit(0);
+                } else {
+                    firstSIGINT = false;
+                    if (coreDeployed) {
+                        this.log.warn(this.toString(), 'Got SIGINT.  Shutting down Kevoree gracefully... (^C again to force quit)');
+                        this.kCore.stop();
+                    } else {
+                        this.log.warn(this.toString(), 'Got SIGINT.  Will shutdown Kevoree gracefully once deploy process finished. (^C again to force quit)');
+                        wannaStop = true;
+                    }
+                }
+            }
         }.bind(this));
 
         process.nextTick(function () {
