@@ -185,6 +185,7 @@ module.exports = Class({
      * @emit rollbackSucceed
      */
     deploy: function (model) {
+        this.emitter.emit('deploying', model);
         if (model && !model.findNodesByID(this.nodeName)) {
             this.emitter.emit('error', new Error('Deploy model failure: unable to find '+this.nodeName+' in given model'));
 
