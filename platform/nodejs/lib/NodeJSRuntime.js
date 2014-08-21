@@ -8,7 +8,7 @@ var Class         = require('pseudoclass'),
 
 var firstSIGINT = true,
     coreStarted = false,
-    coreDeployed = false,
+    deploying = false,
     wannaStop = false;
 
 var NodeJSRuntime = Class({
@@ -35,9 +35,13 @@ var NodeJSRuntime = Class({
             self.emitter.emit('started');
         });
 
+        this.kCore.on('deploying', function () {
+            deploying = true;
+        });
+
         // kevoree core deployed event listener
         this.kCore.on('deployed', function (model) {
-            coreDeployed = true;
+            deploying = false;
             self.emitter.emit('deployed', model);
             if (wannaStop) {
                 self.kCore.stop();
@@ -62,7 +66,7 @@ var NodeJSRuntime = Class({
 
         this.kCore.on('adaptationError', function (err) {
             self.log.error(err.stack);
-            coreDeployed = true;
+            deploying = false;
             self.emitter.emit('adaptationError', err);
             if (wannaStop) {
                 self.kCore.stop();
@@ -87,11 +91,15 @@ var NodeJSRuntime = Class({
                 process.exit(0);
             } else {
                 if (!firstSIGINT) {
-                    this.log.warn(this.toString(), 'Force quit.');
+                    if (!deploying) {
+                        this.log.warn(this.toString(), 'Force quit.');
+                    } else {
+                        this.log.warn(this.toString(), 'Force quit while deploying. '+this.modulesPath+' might be corrupted.');
+                    }
                     process.exit(0);
                 } else {
                     firstSIGINT = false;
-                    if (coreDeployed) {
+                    if (!deploying) {
                         this.log.warn(this.toString(), 'Got SIGINT.  Shutting down Kevoree gracefully... (^C again to force quit)');
                         this.kCore.stop();
                     } else {
