@@ -58,7 +58,7 @@ var WebSocketChannel = AbstractChannel.extend({
     stop: function (done) {
         this._super(function () {
             if (this.server) {
-                this.server.close();
+                try { this.server.close(); } catch (ignore) { /* prevent not running server to throw err */ }
                 this.connectedClients = {};
             }
 
