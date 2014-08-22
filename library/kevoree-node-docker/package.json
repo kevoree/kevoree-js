@@ -1,0 +1,39 @@
+{
+  "name": "kevoree-node-docker",
+  "version": "1.0.0",
+  "main": "./lib/DockerNode.js",
+  "scripts": {
+    "prepublish": "grunt"
+  },
+  "description": "Kevoree node that starts children into Docker containers",
+  "keywords": [
+    "kevoree-std-lib",
+    "kevoree",
+    "library",
+    "node"
+  ],
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "contributors": [],
+  "bugs": {
+    "url": "https://github.com/kevoree/kevoree-js/issues"
+  },
+  "license": "LGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kevoree/kevoree-js"
+  },
+  "dependencies": {
+    "dockerode": "^2.0.1",
+    "kevoree-entities": "^2.2.0",
+    "kevoree-library": "^1.0.0",
+    "kevoree-node-javascript": "^2.2.0",
+    "pseudoclass": "^1.0.2",
+    "tmp": "0.0.24"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "grunt": "^0.4.1",
+    "grunt-kevoree": "^2.0.0",
+    "grunt-kevoree-genmodel": "^1.0.0"
+  }
+}

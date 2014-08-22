@@ -1,0 +1,12 @@
+include npm:kevoree-group-websocket
+include npm:kevoree-node-docker
+include npm:kevoree-node-javascript
+
+add node0 : DockerNode
+add sync : WebSocketGroup
+
+attach node0 sync
+
+set sync.port/node0 = "9000"
+
+network node0.lan.ip 131.254.16.78

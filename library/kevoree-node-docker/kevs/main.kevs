@@ -1,0 +1,15 @@
+include npm:kevoree-group-websocket
+include npm:kevoree-node-docker
+include npm:kevoree-node-javascript
+include npm:kevoree-comp-helloworld
+
+add node0 : DockerNode
+add node0.container0 : JavascriptNode
+add container0.hello : HelloWorldComponent
+add sync : WebSocketGroup
+
+attach node0, container0 sync
+
+set sync.port/node0 = "9000"
+
+network node0.lan.ip 131.254.16.78
