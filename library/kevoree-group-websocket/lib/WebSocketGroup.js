@@ -92,7 +92,7 @@ var WebSocketGroup = AbstractGroup.extend({
             if (err) { done(err); return; }
 
             if (this.server) {
-                try { this.server.close(); } catch (ignore) {}
+                try { this.server.close(); } catch (ignore) { /* prevent not running server to throw err */ }
                 this.connectedNodes = {};
             }
 
