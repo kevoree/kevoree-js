@@ -16,6 +16,7 @@ var NodeJSRuntime = require('./lib/NodeJSRuntime'),
                         .alias('p', 'modulesPath')
                         .alias('d', 'debugLevel')
                         .alias('h', 'help')
+                        .alias('v', 'version')
                         .default('n', 'node0')
                         .default('g', 'sync')
                         .default('p', os.tmpdir())
@@ -26,10 +27,13 @@ var NodeJSRuntime = require('./lib/NodeJSRuntime'),
                         .describe('kevscript', 'A KevScript model to bootstrap on')
                         .describe('modulesPath', 'Where to install resolved deploy units')
                         .describe('debugLevel', 'Level of the logger before node platform starts (all|debug|info|warn|error|quiet)')
-                        .describe('help', 'Displays this help');
+                        .describe('help', 'Displays this help')
+                        .describe('version', 'Displays Kevoree Node.js Runtime version');
 
 if (argv.argv.help) {
     console.log(argv.help());
+} else if (argv.argv.version) {
+    console.log(require('./package.json').version);
 } else {
     argv = argv.argv;
     var log = new KevoreeLogger('NodeJSRuntime');
