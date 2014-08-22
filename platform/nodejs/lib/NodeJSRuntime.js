@@ -42,8 +42,10 @@ var NodeJSRuntime = Class({
         // kevoree core deployed event listener
         this.kCore.on('deployed', function (model) {
             deploying = false;
+            firstSIGINT = true;
             self.emitter.emit('deployed', model);
             if (wannaStop) {
+                wannaStop = false;
                 self.kCore.stop();
             }
         });
@@ -69,6 +71,7 @@ var NodeJSRuntime = Class({
             deploying = false;
             self.emitter.emit('adaptationError', err);
             if (wannaStop) {
+                wannaStop = false;
                 self.kCore.stop();
             }
         });
@@ -94,7 +97,7 @@ var NodeJSRuntime = Class({
                     if (!deploying) {
                         this.log.warn(this.toString(), 'Force quit.');
                     } else {
-                        this.log.warn(this.toString(), 'Force quit while deploying. '+this.modulesPath+' might be corrupted.');
+                        this.log.warn(this.toString(), 'Force quit while deploying. '+path.resolve(this.modulesPath, 'node_modules')+' might be corrupted.');
                     }
                     process.exit(0);
                 } else {
@@ -116,6 +119,7 @@ var NodeJSRuntime = Class({
     },
 
     deploy: function (model) {
+        deploying = true;
         // deploy default bootstrap model
         var options = {
             model: model,
