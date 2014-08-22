@@ -9,9 +9,9 @@ var NAME_PATTERN = /^[\w-]+$/;
 /**
  * Kevoree Core
  *
- * @type {*}
+ * @type {Object}
  */
-module.exports = Class({
+var Core = Class({
     toString: 'KevoreeCore',
 
     /**
@@ -100,68 +100,80 @@ module.exports = Class({
      * Stops Kevoree Core
      */
     stop: function () {
-        if (this.intervalId !== undefined && this.intervalId !== null) {
-            if (this.nodeInstance !== null) {
+        var stopRuntime = function () {
+            // prevent event emitter leaks by unregister them
+            this.off('deployed', deployHandler);
+            this.off('adaptationError', stopRuntime);
+            this.off('error', stopRuntime);
 
-                var stopModel = this.cloner.clone(this.currentModel, false);
-                var node = stopModel.findNodesByID(this.nodeInstance.getName());
-                var subNodes = node.hosts.iterator();
-                while (subNodes.hasNext()) {
-                    subNodes.next().started = false;
+            clearInterval(this.intervalId);
+            if (this.nodeInstance === null) {
+                this.log.info(this.toString(), 'Platform stopped before bootstrapped');
+            } else {
+                this.log.info(this.toString(), "Platform stopped: "+this.nodeInstance.getName());
+            }
+
+            this.currentModel   = null;
+            this.deployModel    = null;
+            this.models         = [];
+            this.nodeName       = null;
+            this.nodeInstance   = null;
+            this.intervalId     = null;
+
+            this.emitter.emit('stopped');
+        }.bind(this);
+
+        var deployHandler = function () {
+            // prevent event emitter leaks by unregister them
+            this.off('adaptationError', stopRuntime);
+            this.off('error', stopRuntime);
+
+            // stop node
+            this.nodeInstance.stop(function (err) {
+                if (err) {
+                    this.emitter.emit('error', new Error(err.message));
                 }
 
-                var groups = node.groups.iterator();
-                while (groups.hasNext()) {
-                    groups.next().started = false;
-                }
+                stopRuntime();
+            }.bind(this));
+        }.bind(this);
 
-                var bindings = stopModel.mBindings.iterator();
-                while (bindings.hasNext()) {
-                    var binding = bindings.next();
-                    if (binding.port.eContainer()
-                        && binding.port.eContainer().eContainer()
-                        && binding.port.eContainer().eContainer().name === node.name) {
-                        if (binding.hub) {
-                            binding.hub.started = false;
-                        }
+        if (typeof (this.intervalId) !== 'undefined' && this.intervalId !== null && this.nodeInstance !== null) {
+            var stopModel = this.cloner.clone(this.currentModel, false);
+            var node = stopModel.findNodesByID(this.nodeInstance.getName());
+            var subNodes = node.hosts.iterator();
+            while (subNodes.hasNext()) {
+                subNodes.next().started = false;
+            }
+
+            var groups = node.groups.iterator();
+            while (groups.hasNext()) {
+                groups.next().started = false;
+            }
+
+            var bindings = stopModel.mBindings.iterator();
+            while (bindings.hasNext()) {
+                var binding = bindings.next();
+                if (binding.port.eContainer()
+                    && binding.port.eContainer().eContainer()
+                    && binding.port.eContainer().eContainer().name === node.name) {
+                    if (binding.hub) {
+                        binding.hub.started = false;
                     }
                 }
-
-                var comps = node.components.iterator();
-                while (comps.hasNext()) {
-                    comps.next().started = false;
-                }
-
-                var stopRuntime = function () {
-                    clearInterval(this.intervalId);
-                    this.log.info(this.toString(), "Platform stopped: "+this.nodeInstance.getName());
-
-                    this.currentModel   = null;
-                    this.deployModel    = null;
-                    this.models         = [];
-                    this.nodeName       = null;
-                    this.nodeInstance   = null;
-                    this.intervalId     = null;
-
-                    this.emitter.emit('stopped');
-                }.bind(this);
-
-                this.emitter.once('deployed', function () {
-                    this.nodeInstance.stop(function (err) {
-                        if (err) {
-                            this.emitter.emit('error', new Error(err.message));
-                        }
-
-                        stopRuntime();
-                    }.bind(this));
-                }.bind(this));
-
-                this.emitter.once('adaptationError', stopRuntime);
-                this.emitter.once('error', stopRuntime);
-
-                this.stopping = true;
-                this.deploy(stopModel);
             }
+
+            var comps = node.components.iterator();
+            while (comps.hasNext()) {
+                comps.next().started = false;
+            }
+
+            this.once('deployed', deployHandler);
+            this.once('adaptationError', stopRuntime);
+            this.once('error', stopRuntime);
+
+            this.stopping = true;
+            this.deploy(stopModel);
         }
     },
 
@@ -179,6 +191,7 @@ module.exports = Class({
      *
      * @param model ContainerRoot model
      * @emit error
+     * @emit deploying
      * @emit deployed
      * @emit adaptationError
      * @emit rollbackError
@@ -398,3 +411,6 @@ var pushInArray = function pushInArray(array, model) {
     }
     array.push(model);
 };
+
+// Exports
+module.exports = Core;
