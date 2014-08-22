@@ -27,15 +27,6 @@ module.exports = KevoreeEntity.extend({
     },
 
     /**
-     * Called when the host node has to destroy an hosted subNode instance
-     * @param node the hosted subNode
-     * @param done
-     */
-    destroySubNode: function (node, done) {
-        done();
-    },
-
-    /**
      * Called when the host node has to remove an hosted subNode instance
      * @param node the hosted subNode
      * @param done

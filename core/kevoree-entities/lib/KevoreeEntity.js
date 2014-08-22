@@ -74,14 +74,6 @@ var KevoreeEntity = Class({
         done();
     },
 
-    /**
-     * Called before entity is removed from node host
-     * @param done
-     */
-    destroy: function (done) {
-        done();
-    },
-
     setKevoreeCore: function (kCore) {
         this.kCore = kCore;
     },
