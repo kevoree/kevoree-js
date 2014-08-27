@@ -2,17 +2,32 @@ var expect = require('chai').expect;
 var path = require('path');
 
 var DockerHandler = require('../lib/DockerHandler');
+var handler = new DockerHandler();
+var kevoreejs_cont = 'kevoreejs_test';
+var otherimg_cont = 'otherimg_test';
 
 describe('DockerHandler tests', function () {
-    var handler = new DockerHandler();
-    var kevoreejs_cont = 'kevoreejs_test';
-    var otherimg_cont = 'otherimg_test';
-
     describe('#listImages(callback)', function () {
         it('should list Docker images', function (done) {
-            this.timeout(5000);
-
             handler.listImages(function (err, imgs) {
+                expect(err).to.be.a('null');
+                expect(imgs).to.be.an('array');
+                done();
+            });
+        });
+    });
+
+    describe('#getImage(name, callback)', function () {
+        it('should retrieve Docker image', function () {
+            var image = handler.getImage('kevoree/js');
+            expect(image).not.to.be.a('null');
+            expect(image.name).to.equal('kevoree/js');
+        });
+    });
+
+    describe('#searchImages({term: "maxleiko/nodejs"}, callback)', function () {
+        it('should find Docker image maxleiko/nodejs on remote Docker registry', function (done) {
+            handler.searchImages({term: 'maxleiko/nodejs'}, function (err, imgs) {
                 expect(err).to.be.a('null');
                 expect(imgs).to.be.an('array');
                 done();
@@ -25,7 +40,7 @@ describe('DockerHandler tests', function () {
             this.timeout(10000);
 
             var containerConf = {
-                Image:      'kevoree/js:test_img',
+                Image:      'kevoree/js',
                 name:       kevoreejs_cont,
                 Memory:     1042*1024*1024,
                 CpuShares:  1,
@@ -154,6 +169,21 @@ describe('DockerHandler tests', function () {
         it('should start "otherimg_cont" container', function (done) {
             this.timeout(10000);
             handler.removeContainer(otherimg_cont, {force: true}, function (err) {
+                expect(err).to.be.a('null');
+                done();
+            });
+        });
+    });
+});
+
+// clean
+describe('DockerHandler clean', function () {
+    describe('#getImage("kevoree/js:test_img", callback) then remove it', function () {
+        it('should remove "kevoreejs_test:test_img" image', function (done) {
+            var image = handler.getImage('kevoree/js:test_img');
+            expect(image).not.to.be.a('null');
+            expect(image.name).to.equal('kevoree/js:test_img');
+            image.remove(function (err) {
                 expect(err).to.be.a('null');
                 done();
             });

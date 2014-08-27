@@ -192,12 +192,41 @@ var DockerHandler = Class({
     },
 
     /**
+     * Pull remote image
+     * @param conf
+     * @param callback
+     */
+    pull: function (conf, callback) {
+        // simple proxy
+        this.docker.pull(conf, callback);
+    },
+
+    /**
      * List current Docker host images
      * @param callback
      */
     listImages: function (callback) {
         // simple proxy
         this.docker.listImages(callback);
+    },
+
+    /**
+     * Get local image
+     * @param name
+     */
+    getImage: function (name) {
+        // simple proxy
+        return this.docker.getImage(name);
+    },
+
+    /**
+     * Search for images remotely (on Docker registry)
+     * @param conf
+     * @param callback
+     */
+    searchImages: function (conf, callback) {
+        // simple proxy
+        this.docker.searchImages(conf, callback);
     }
 });
 

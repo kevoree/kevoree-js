@@ -13,12 +13,17 @@ var DEFAULT_IMAGE = 'kevoree/js';
 var DockerNode = JavascriptNode.extend({
     toString: 'DockerNode',
 
-    dic_image:          { optional: true },
+    dic_image:          { },
+    dic_commitTag:      { },
+    dic_commitMsg:      { },
+    dic_commitAuthor:   { },
+    dic_cmd:            { },
+    dic_authUsername:   { },
+    dic_authPassword:   { },
+    dic_authEmail:      { },
     dic_commitRepo:     { optional: false },
-    dic_commitTag:      { optional: true },
-    dic_commitMsg:      { optional: true },
-    dic_commitAuthor:   { optional: true },
-    dic_command:        { optional: true },
+    dic_pushOnDestroy:  { defaultValue: false, datatype: 'boolean' },
+    dic_pushRegistry:   { defaultValue: 'https://index.docker.io/v1/' },
     dic_cpuShares:      { optional: false, defaultValue: 0, datatype: 'number' },
     dic_memory:         { optional: false, defaultValue: 512, datatype: 'number' },
 
@@ -32,8 +37,14 @@ var DockerNode = JavascriptNode.extend({
      * @param done
      */
     startSubNode: function (node, done) {
-        var startKevoreeContainer = function (conf, hostConf) {
-            this.handler.createContainer(conf, function (err, container) {
+        var containerConf = {}, hostConf = {};
+
+        /**
+         *
+         * @type {function(this:DockerNode)}
+         */
+        var startKevoreeContainer = function () {
+            this.handler.createContainer(containerConf, function (err, container) {
                 if (err)      { done(err); return; }
                 if (hostConf) { container.defaultOptions = hostConf; }
 
@@ -69,14 +80,13 @@ var DockerNode = JavascriptNode.extend({
                     this.handler.startContainer(container, function (err) {
                         if (err) { done(err); return; }
 
-                        this.log.info(this.toString(), 'Container '+conf.name+' successfully started.');
-
                         // prepare a script to update container's IP asap
                         this.handler.inspectContainer(container, function (err, infos) {
                             if (err) {
                                 throw err;
                             } else {
                                 this.submitScript('network '+node.name+'.lan.ip '+infos.NetworkSettings.IPAddress);
+                                this.log.info(this.toString(), 'Container '+containerConf.name+' successfully started at '+infos.NetworkSettings.IPAddress);
                             }
                         }.bind(this));
 
@@ -86,13 +96,42 @@ var DockerNode = JavascriptNode.extend({
             }.bind(this));
         }.bind(this);
 
+        /**
+         *
+         * @type {function(this:DockerNode)}
+         */
+        var configureDockerNode = function () {
+            var command = node.dictionary ? node.dictionary.findValuesByID('cmd') : null;
+            if (command && command.value && command.value.length > 0) {
+                containerConf.Cmd = command.value.split(' ');
+            }
+
+            startKevoreeContainer();
+        }.bind(this);
+
+        /**
+         *
+         * @type {function(this:DockerNode)}
+         */
+        var configureJavascriptNode = function () {
+            tmpModel(this.getKevoreeCore().getDeployModel(), function (err, dirPath, modelPath) {
+                if (err) { done(err); return; }
+
+                containerConf.Cmd = [ '-n', node.name, '-m', modelPath ];
+                containerConf.Volumes = {};
+                containerConf.Volumes[dirPath] = {};
+                hostConf.start = hostConf.start || {};
+                hostConf.start.Binds = [dirPath+':'+dirPath+':rw'];
+                startKevoreeContainer();
+            }.bind(this));
+        }.bind(this);
+
 
         var repo = this.dictionary.getString('commitRepo'),
             tag  = this.dictionary.getString('commitTag', 'latest');
-        var containerConf = {
-            Image:  repo+'/'+node.name+':'+tag,
-            name:   node.name
-        };
+
+        containerConf.Image = repo+'/'+node.name+':'+tag;
+        containerConf.name = node.name;
 
         var memory    = node.dictionary ? node.dictionary.findValuesByID('memory') : null,
             cpuShares = node.dictionary ? node.dictionary.findValuesByID('cpuShares') : null;
@@ -120,7 +159,7 @@ var DockerNode = JavascriptNode.extend({
         this.handler.listImages(function (err, imgs) {
             if (err) { done(err); return; }
 
-            var found = (function contains(target, images) {
+            var foundLocally = (function contains(target, images) {
                 for (var i=0; i < images.length; i++) {
                     for (var j=0; j < images[i].RepoTags.length; j++) {
                         if (images[i].RepoTags[j].indexOf(target) !== -1) {
@@ -131,46 +170,73 @@ var DockerNode = JavascriptNode.extend({
                 return false;
             })(containerConf.Image, imgs);
 
-            if (!found) { containerConf.Image = DEFAULT_IMAGE; }
+            if (foundLocally) {
+                // image is available locally: use it
+                switch (node.typeDefinition.name) {
+                    case this.toString():
+                        configureDockerNode();
+                        break;
 
-            switch (node.typeDefinition.name) {
-                case this.toString():
-                    // Child node is a DockerNode type
-                    var image = node.dictionary ? node.dictionary.findValuesByID('image'): null;
-                    if (!found && image && image.value && image.value.length > 0) {
-                        containerConf.Image = image.value;
-                    }
+                    case JavascriptNode.prototype.toString():
+                        configureJavascriptNode();
+                        break;
 
-                    var command = node.dictionary ? node.dictionary.findValuesByID('command') : null;
-                    if (command && command.value && command.value.length > 0) {
-                        containerConf.Cmd = command.value.split(' ');
-                    }
+                    default:
+                        done(new Error('DockerNode: Child node type "'+node.typeDefinition.name+'" is not handled. (only '+this.toString()+' and '+JavascriptNode.prototype.toString()+' handled)'));
+                        return;
+                }
 
-                    startKevoreeContainer(containerConf);
-                    break;
+            } else {
+                // image is not available locally
+                this.log.info(this.toString(), 'Looking for '+repo+'/'+node.name+' on remote Docker registry...');
+                this.handler.searchImages({ term: repo+'/'+node.name }, function (err, images) {
+                    if (err) { done(err); return; }
 
-                case JavascriptNode.prototype.toString():
-                    // JavascriptNode
-                    tmpModel(this.getKevoreeCore().getDeployModel(), function (err, dirPath, modelPath) {
-                        if (err) { done(err); return; }
+                    if (images.length > 0) {
+                        // available remotely
+                        this.handler.pull(containerConf.Image, function (err) {
+                            if (err) { done(err); return; }
 
-                        containerConf.Cmd = [ '-n', node.name, '-m', modelPath ];
-                        containerConf.Volumes = {};
-                        containerConf.Volumes[dirPath] = {};
-                        startKevoreeContainer(containerConf, {
-                            start: {
-                                Binds: [dirPath+':'+dirPath+':rw']
+                            switch (node.typeDefinition.name) {
+                                case this.toString():
+                                    configureDockerNode();
+                                    break;
+
+                                case JavascriptNode.prototype.toString():
+                                    configureJavascriptNode();
+                                    break;
+
+                                default:
+                                    done(new Error('DockerNode: Child node type "'+node.typeDefinition.name+'" is not handled. (only '+this.toString()+' and '+JavascriptNode.prototype.toString()+' handled)'));
+                                    return;
                             }
-                        });
-                    }.bind(this));
-                    break;
+                        }.bind(this));
 
-                default:
-                    //this.log.warn(this.toString(), );
-                    done(new Error('Child node type "'+node.typeDefinition.name+'" is not handled. (only '+this.toString()+' and '+JavascriptNode.prototype.toString()+' handled)'));
-                    return;
+                    } else {
+                        // unavailable remotely
+                        switch (node.typeDefinition.name) {
+                            case this.toString():
+                                var image = node.dictionary ? node.dictionary.findValuesByID('image') : null;
+                                if (image && image.value && image.value.length > 0) {
+                                    containerConf.Image = image.value;
+                                    configureDockerNode();
+                                } else {
+                                    done(new Error('DockerNode: unable to start a DockerNode if no image is set AND no commitRepo/childNode.name:commitTag image exists'));
+                                }
+                                break;
+
+                            case JavascriptNode.prototype.toString():
+                                containerConf.Image = DEFAULT_IMAGE;
+                                configureJavascriptNode();
+                                break;
+
+                            default:
+                                done(new Error('DockerNode: Child node type "'+node.typeDefinition.name+'" is not handled. (only '+this.toString()+' and '+JavascriptNode.prototype.toString()+' handled)'));
+                                return;
+                        }
+                    }
+                }.bind(this));
             }
-
         }.bind(this));
     },
 
@@ -202,6 +268,32 @@ var DockerNode = JavascriptNode.extend({
                     this.log.warn(this.toString(), 'Unable to commit container "'+node.name+'"');
                 } else {
                     this.log.info(this.toString(), 'Successfully commit container "'+node.name+'" to "'+conf.repo+':'+conf.tag+'"');
+                    var pushOnDestroy = this.dictionary.getBoolean('pushOnDestroy', false);
+                    if (pushOnDestroy) {
+                        var auth = {
+                            username: this.dictionary.getString('authUsername'),
+                            password: this.dictionary.getString('authPassword'), // FIXME protect password in kevoree model...
+                            email: this.dictionary.getString('authEmail'),
+                            serveraddress: this.dictionary.getString('pushRegistry', "https://index.docker.io/v1/")
+                        };
+
+                        var image = this.handler.getImage(conf.repo);
+                        if (image && image.name === conf.repo) {
+                            console.log('repo: '+conf.repo);
+                            console.log('image: '+image.name);
+                            image.push(function (err, stream) {
+                                if (err) {
+                                    done(err);
+                                } else {
+                                    stream.on('end', function () {
+                                        this.log.info(this.toString(), 'Image '+conf.repo+' successfully pushed to '+auth.serveraddress);
+                                    }.bind(this));
+                                }
+                            }.bind(this), auth);
+                        } else {
+                            done(new Error('DockerNode: unable to push unknown image '+conf.repo));
+                        }
+                    }
                 }
                 done(err);
             }.bind(this));
