@@ -130,7 +130,11 @@ var KevoreeEntity = Class({
             this.kCore.getCurrentModel();
         }
         var node = model.findNodesByID(nodeName);
-        return node.networkInformation.iterator();
+        if (node) {
+            return node.networkInformation.iterator();
+        } else {
+            return null;
+        }
     },
 
     isStarted: function () {
