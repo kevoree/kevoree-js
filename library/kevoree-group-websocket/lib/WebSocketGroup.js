@@ -233,16 +233,20 @@ var WebSocketGroup = AbstractGroup.extend({
 
         if (port) {
             var nets = this.getNetworkInfos(masterServerNodeName);
-            while (nets.hasNext()) {
-                var net = nets.next();
-                var props = net.values.iterator();
-                while (props.hasNext()) {
-                    var prop = props.next();
-                    if (net.name.toLowerCase().indexOf('ip') != -1 ||
-                        prop.name.toLowerCase().indexOf('ip') != -1) {
-                        addresses.push(prop.value+':'+port+path);
+            if (nets) {
+                while (nets.hasNext()) {
+                    var net = nets.next();
+                    var props = net.values.iterator();
+                    while (props.hasNext()) {
+                        var prop = props.next();
+                        if (net.name.toLowerCase().indexOf('ip') != -1 ||
+                            prop.name.toLowerCase().indexOf('ip') != -1) {
+                            addresses.push(prop.value+':'+port+path);
+                        }
                     }
                 }
+            } else {
+                throw new Error('WebSocketGroup error: unable to find NetworkInfos for master node '+masterServerNodeName);
             }
         } else {
             throw new Error("WebSocketGroup error: no master server defined. You should specify a node to be the master server (in order to do that, give to a node a value to its 'port' attribute)");
