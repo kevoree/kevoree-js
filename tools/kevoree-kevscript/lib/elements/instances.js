@@ -52,17 +52,18 @@ module.exports = function (model) {
             var elem = elems.next();
 
             if (elem.host) {
+                // elem is a subNode
                 list = subnodesMap[elem.typeDefinition.name] || [];
                 list.push(elem.host.name+'.'+elem.name);
                 subnodesMap[elem.typeDefinition.name] = list;
-            } else {
-                var comps = elem.components.iterator();
-                while (comps.hasNext()) {
-                    var comp = comps.next();
-                    list = compsMap[comp.typeDefinition.name] || [];
-                    list.push(elem.name+'.'+comp.name);
-                    compsMap[comp.typeDefinition.name] = list;
-                }
+            }
+
+            var comps = elem.components.iterator();
+            while (comps.hasNext()) {
+                var comp = comps.next();
+                list = compsMap[comp.typeDefinition.name] || [];
+                list.push(elem.name+'.'+comp.name);
+                compsMap[comp.typeDefinition.name] = list;
             }
         }
 

@@ -1,0 +1,374 @@
+{
+    "eClass": "org.kevoree.ContainerRoot",
+    "generated_KMF_ID": "0.93158616824075581408457290521",
+    "nodes": [
+        {
+            "eClass": "org.kevoree.ContainerNode",
+            "name": "A",
+            "started": "true",
+            "metaData": "{\"x\":588,\"y\":100}",
+            "typeDefinition": [
+                "typeDefinitions[name=JavascriptNode,version=2.2.0]"
+            ],
+            "hosts": [
+                "nodes[B]"
+            ],
+            "host": [],
+            "groups": [],
+            "dictionary": [],
+            "fragmentDictionary": [],
+            "components": [
+                {
+                    "eClass": "org.kevoree.ComponentInstance",
+                    "name": "comp842",
+                    "started": "true",
+                    "metaData": "{\"x\":686,\"y\":172}",
+                    "typeDefinition": [
+                        "typeDefinitions[name=GhostBlog,version=2.0.0-SNAPSHOT]"
+                    ],
+                    "namespace": [],
+                    "dictionary": [],
+                    "fragmentDictionary": [],
+                    "provided": [],
+                    "required": []
+                },
+                {
+                    "eClass": "org.kevoree.ComponentInstance",
+                    "name": "blog0",
+                    "started": "true",
+                    "metaData": "{\"x\":608,\"y\":170}",
+                    "typeDefinition": [
+                        "typeDefinitions[name=GhostBlog,version=2.0.0-SNAPSHOT]"
+                    ],
+                    "namespace": [],
+                    "dictionary": [
+                        {
+                            "eClass": "org.kevoree.Dictionary",
+                            "generated_KMF_ID": "0.17978232912719251409235773851",
+                            "values": [
+                                {
+                                    "eClass": "org.kevoree.DictionaryValue",
+                                    "name": "env",
+                                    "value": "development"
+                                },
+                                {
+                                    "eClass": "org.kevoree.DictionaryValue",
+                                    "name": "url",
+                                    "value": "http://YOUR-DOMAIN-NAME-HERE"
+                                },
+                                {
+                                    "eClass": "org.kevoree.DictionaryValue",
+                                    "name": "host",
+                                    "value": "127.0.0.1"
+                                },
+                                {
+                                    "eClass": "org.kevoree.DictionaryValue",
+                                    "name": "port",
+                                    "value": "2368"
+                                }
+                            ]
+                        }
+                    ],
+                    "fragmentDictionary": [],
+                    "provided": [],
+                    "required": []
+                }
+            ],
+            "networkInformation": []
+        },
+        {
+            "eClass": "org.kevoree.ContainerNode",
+            "name": "B",
+            "started": "true",
+            "metaData": "",
+            "typeDefinition": [
+                "typeDefinitions[name=JavascriptNode,version=2.2.0]"
+            ],
+            "hosts": [
+                "nodes[C]"
+            ],
+            "host": [
+                "nodes[A]"
+            ],
+            "groups": [],
+            "dictionary": [],
+            "fragmentDictionary": [],
+            "components": [
+                {
+                    "eClass": "org.kevoree.ComponentInstance",
+                    "name": "comp332",
+                    "started": "true",
+                    "metaData": "{\"x\":651,\"y\":263}",
+                    "typeDefinition": [
+                        "typeDefinitions[name=GhostBlog,version=2.0.0-SNAPSHOT]"
+                    ],
+                    "namespace": [],
+                    "dictionary": [],
+                    "fragmentDictionary": [],
+                    "provided": [],
+                    "required": []
+                }
+            ],
+            "networkInformation": []
+        },
+        {
+            "eClass": "org.kevoree.ContainerNode",
+            "name": "C",
+            "started": "true",
+            "metaData": "",
+            "typeDefinition": [
+                "typeDefinitions[name=JavascriptNode,version=2.2.0]"
+            ],
+            "hosts": [
+                "nodes[D0]",
+                "nodes[D1]"
+            ],
+            "host": [
+                "nodes[B]"
+            ],
+            "groups": [],
+            "dictionary": [],
+            "fragmentDictionary": [],
+            "components": [
+                {
+                    "eClass": "org.kevoree.ComponentInstance",
+                    "name": "comp766",
+                    "started": "true",
+                    "metaData": "{\"x\":676,\"y\":353}",
+                    "typeDefinition": [
+                        "typeDefinitions[name=GhostBlog,version=2.0.0-SNAPSHOT]"
+                    ],
+                    "namespace": [],
+                    "dictionary": [],
+                    "fragmentDictionary": [],
+                    "provided": [],
+                    "required": []
+                }
+            ],
+            "networkInformation": []
+        },
+        {
+            "eClass": "org.kevoree.ContainerNode",
+            "name": "D0",
+            "started": "true",
+            "metaData": "",
+            "typeDefinition": [
+                "typeDefinitions[name=JavascriptNode,version=2.2.0]"
+            ],
+            "hosts": [],
+            "host": [
+                "nodes[C]"
+            ],
+            "groups": [],
+            "dictionary": [],
+            "fragmentDictionary": [],
+            "components": [
+                {
+                    "eClass": "org.kevoree.ComponentInstance",
+                    "name": "comp83",
+                    "started": "true",
+                    "metaData": "{\"x\":741,\"y\":552}",
+                    "typeDefinition": [
+                        "typeDefinitions[name=GhostBlog,version=2.0.0-SNAPSHOT]"
+                    ],
+                    "namespace": [],
+                    "dictionary": [],
+                    "fragmentDictionary": [],
+                    "provided": [],
+                    "required": []
+                }
+            ],
+            "networkInformation": []
+        },
+        {
+            "eClass": "org.kevoree.ContainerNode",
+            "name": "D1",
+            "started": "true",
+            "metaData": "",
+            "typeDefinition": [
+                "typeDefinitions[name=JavascriptNode,version=2.2.0]"
+            ],
+            "hosts": [],
+            "host": [
+                "nodes[C]"
+            ],
+            "groups": [],
+            "dictionary": [],
+            "fragmentDictionary": [],
+            "components": [
+                {
+                    "eClass": "org.kevoree.ComponentInstance",
+                    "name": "comp108",
+                    "started": "true",
+                    "metaData": "{\"x\":666,\"y\":443}",
+                    "typeDefinition": [
+                        "typeDefinitions[name=GhostBlog,version=2.0.0-SNAPSHOT]"
+                    ],
+                    "namespace": [],
+                    "dictionary": [],
+                    "fragmentDictionary": [],
+                    "provided": [],
+                    "required": []
+                }
+            ],
+            "networkInformation": []
+        }
+    ],
+    "typeDefinitions": [
+        {
+            "eClass": "org.kevoree.NodeType",
+            "abstract": "false",
+            "bean": "",
+            "name": "JavascriptNode",
+            "factoryBean": "",
+            "version": "2.2.0",
+            "deployUnit": [
+                "deployUnits[groupName=,hashcode=,name=kevoree-node-javascript,version=2.2.0]"
+            ],
+            "superTypes": [],
+            "dictionaryType": [
+                {
+                    "eClass": "org.kevoree.DictionaryType",
+                    "generated_KMF_ID": "0.93760375748388471408708374265",
+                    "attributes": [
+                        {
+                            "eClass": "org.kevoree.DictionaryAttribute",
+                            "fragmentDependant": "false",
+                            "optional": "false",
+                            "name": "logLevel",
+                            "state": "false",
+                            "datatype": "string",
+                            "defaultValue": "DEBUG",
+                            "genericTypes": []
+                        },
+                        {
+                            "eClass": "org.kevoree.DictionaryAttribute",
+                            "fragmentDependant": "false",
+                            "optional": "true",
+                            "name": "logFilter",
+                            "state": "false",
+                            "datatype": "string",
+                            "defaultValue": "",
+                            "genericTypes": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "eClass": "org.kevoree.ComponentType",
+            "abstract": "false",
+            "bean": "",
+            "name": "GhostBlog",
+            "factoryBean": "",
+            "version": "2.0.0-SNAPSHOT",
+            "deployUnit": [
+                "deployUnits[groupName=,hashcode=,name=kevoree-comp-ghostblog,version=2.0.0-SNAPSHOT]"
+            ],
+            "superTypes": [],
+            "dictionaryType": [
+                {
+                    "eClass": "org.kevoree.DictionaryType",
+                    "generated_KMF_ID": "0.86284562642686071408457290602",
+                    "attributes": [
+                        {
+                            "eClass": "org.kevoree.DictionaryAttribute",
+                            "fragmentDependant": "false",
+                            "optional": "false",
+                            "name": "root",
+                            "state": "false",
+                            "datatype": "string",
+                            "defaultValue": "",
+                            "genericTypes": []
+                        },
+                        {
+                            "eClass": "org.kevoree.DictionaryAttribute",
+                            "fragmentDependant": "false",
+                            "optional": "true",
+                            "name": "env",
+                            "state": "false",
+                            "datatype": "string",
+                            "defaultValue": "development",
+                            "genericTypes": []
+                        },
+                        {
+                            "eClass": "org.kevoree.DictionaryAttribute",
+                            "fragmentDependant": "false",
+                            "optional": "false",
+                            "name": "url",
+                            "state": "false",
+                            "datatype": "string",
+                            "defaultValue": "http://YOUR-DOMAIN-NAME-HERE",
+                            "genericTypes": []
+                        },
+                        {
+                            "eClass": "org.kevoree.DictionaryAttribute",
+                            "fragmentDependant": "false",
+                            "optional": "true",
+                            "name": "host",
+                            "state": "false",
+                            "datatype": "string",
+                            "defaultValue": "127.0.0.1",
+                            "genericTypes": []
+                        },
+                        {
+                            "eClass": "org.kevoree.DictionaryAttribute",
+                            "fragmentDependant": "false",
+                            "optional": "true",
+                            "name": "port",
+                            "state": "false",
+                            "datatype": "number",
+                            "defaultValue": "2368",
+                            "genericTypes": []
+                        }
+                    ]
+                }
+            ],
+            "required": [],
+            "provided": []
+        }
+    ],
+    "repositories": [],
+    "dataTypes": [],
+    "libraries": [
+        {
+            "eClass": "org.kevoree.TypeLibrary",
+            "name": "Javascript",
+            "subTypes": [
+                "typeDefinitions[name=JavascriptNode,version=2.2.0]",
+                "typeDefinitions[name=GhostBlog,version=2.0.0-SNAPSHOT]"
+            ]
+        },
+        {
+            "eClass": "org.kevoree.TypeLibrary",
+            "name": "Default",
+            "subTypes": []
+        }
+    ],
+    "hubs": [],
+    "mBindings": [],
+    "deployUnits": [
+        {
+            "eClass": "org.kevoree.DeployUnit",
+            "groupName": "",
+            "name": "kevoree-node-javascript",
+            "hashcode": "",
+            "type": "npm",
+            "url": "",
+            "version": "2.2.0",
+            "requiredLibs": []
+        },
+        {
+            "eClass": "org.kevoree.DeployUnit",
+            "groupName": "",
+            "name": "kevoree-comp-ghostblog",
+            "hashcode": "",
+            "type": "npm",
+            "url": "",
+            "version": "2.0.0-SNAPSHOT",
+            "requiredLibs": []
+        }
+    ],
+    "nodeNetworks": [],
+    "groups": []
+}
