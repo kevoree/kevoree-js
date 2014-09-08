@@ -1,6 +1,6 @@
 {
   "name": "kevoree-library",
-  "version": "1.0.0",
+  "version": "5.0.1-SNAPSHOT.0",
   "description": "Kevoree Library - Generated with KMF and Kotlin JS Compiler",
   "author": "François Fouquet <fouquet.f@gmail.com>",
   "main": "./kevoree-library.js",
@@ -16,7 +16,10 @@
     "type": "git",
     "url": "https://github.com/kevoree/kevoree-js"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "tmp": "0.0.24"
+  },
   "optionalDependencies": {},
   "dependencies": {
     "kevoree-kotlin": "^1.0.0"
