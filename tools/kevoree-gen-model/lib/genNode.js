@@ -5,28 +5,29 @@ var genDictionary = require('./genDictionary');
  * Generates channel
  * @param deployUnit
  * @param obj
- * @param model
+ * @param pkg
  */
-module.exports = function (deployUnit, obj, model) {
-  var factory = new kevoree.factory.DefaultKevoreeFactory();
+module.exports = function (deployUnit, obj, pkg) {
+    var factory = new kevoree.factory.DefaultKevoreeFactory();
 
-  // create a new group type
-  var nodeType = factory.createNodeType();
-  nodeType.name = obj.toString();
+    // create a new group type
+    var nodeType = factory.createNodeType();
+    nodeType.name = obj.toString();
+    nodeType.version = deployUnit.version;
 
-  // add super type if not AbstractGroup
-  var superType = obj.constructor.prototype.superPrototype.toString();
-  if (superType != 'AbstractNode') {
-    // TODO
-  }
+    // add super type if not AbstractGroup
+    var superType = obj.constructor.prototype.superPrototype.toString();
+    if (superType !== 'AbstractNode') {
+        // FIXME once registry.kevoree.org is done
+    }
 
-  // set deployUnit
-  nodeType.deployUnit = deployUnit;
+    // set deployUnit
+    nodeType.deployUnit = deployUnit;
 
-  // add dictionary
-  genDictionary(nodeType, obj);
+    // add dictionary
+    genDictionary(nodeType, obj);
 
-  model.addTypeDefinitions(nodeType);
+    pkg.addTypeDefinitions(nodeType);
 
-  return nodeType;
+    return nodeType;
 };

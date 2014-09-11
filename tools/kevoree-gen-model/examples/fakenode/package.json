@@ -1,0 +1,12 @@
+{
+    "name": "fakenode",
+    "version": "1.0.0",
+    "main": "./FakeNode.js",
+    "kevoree": {
+        "package": "org.kevoree.library.js"
+    },
+    "private": true,
+    "dependencies": {
+        "kevoree-entities": "^2.2.1"
+    }
+}

@@ -6,19 +6,20 @@ var genDictionary = require('./genDictionary');
  * Generates component
  * @param deployUnit
  * @param obj
- * @param model
+ * @param pkg
  */
-module.exports = function (deployUnit, obj, model) {
+module.exports = function (deployUnit, obj, pkg) {
     var factory = new kevoree.factory.DefaultKevoreeFactory();
 
     // create a new component type
     var compType = factory.createComponentType();
     compType.name = obj.toString();
+    compType.version = deployUnit.version;
 
     // add super type if not AbstractComponent
     var superType = obj.constructor.prototype.superPrototype.toString();
-    if (superType != 'AbstractComponent') {
-        // TODO
+    if (superType !== 'AbstractComponent') {
+        // FIXME once registry.kevoree.org is done
     }
 
     // set deployUnit
@@ -37,7 +38,7 @@ module.exports = function (deployUnit, obj, model) {
     genDictionary(compType, obj);
 
     // add component type to model
-    model.addTypeDefinitions(compType);
+    pkg.addTypeDefinitions(compType);
 
     return compType;
 };

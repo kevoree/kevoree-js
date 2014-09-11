@@ -8,23 +8,81 @@ var fs               = require('fs'),
     genNode          = require('./genNode'),
     kevoree          = require('kevoree-library').org.kevoree;
 
-// init Kevoree entities types
-var KevoreeEntity, AbstractComponent, AbstractGroup, AbstractChannel, AbstractNode;
+// constants
+var PKG_PATTERN = /^[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*$/;
+
 // init Kevoree factory
 var factory = new kevoree.factory.DefaultKevoreeFactory();
 
 /**
  *
- * @param dirPath {string}
- * @param verbose {boolean}
- * @param callback {function}
- * @returns {*}
+ * @param {String} dirPath
+ * @param {Boolean} quiet
+ * @param {Function} callback
  */
-var generator = function generator(dirPath, verbose, callback) {
-    if (dirPath == undefined) throw new Error("dirPath undefined");
+var generator = function generator(dirPath, quiet, callback) {
+    if (dirPath === undefined) throw new Error("dirPath undefined");
 
-    function processFile(file, deployUnit, model) {
-        try {
+    // get module package.json
+    var pkgJson = require(path.resolve(dirPath, 'package.json')),
+        file    = path.resolve(dirPath, pkgJson.main);
+
+
+    // retrieve kevoree-entities types from the project path
+    var kePath            = path.resolve(dirPath, 'node_modules', 'kevoree-entities'),
+        KevoreeEntity     = require(kePath).KevoreeEntity,
+        AbstractComponent = require(kePath).AbstractComponent,
+        AbstractGroup     = require(kePath).AbstractGroup,
+        AbstractChannel   = require(kePath).AbstractChannel,
+        AbstractNode      = require(kePath).AbstractNode;
+
+    // create a new ContainerRoot
+    var model = factory.createContainerRoot();
+
+    // create packages according to "kevoree.package" specified in package.json
+    if (pkgJson.kevoree && typeof (pkgJson.kevoree.package) === 'string') {
+        if (PKG_PATTERN.test(pkgJson.kevoree.package)) {
+            var pkgs = pkgJson.kevoree.package.split('.');
+
+            function createPackagesTree(packages, index, model, parent) {
+                // create a new package using packages[index] name
+                var p = factory.createPackage();
+                p.name = packages[index];
+
+                // check recursivity condition
+                if (index === packages.length - 1) {
+                    // this is the last package in packages (eg. in 'org.kevoree.library.js' => this is 'js')
+                    parent.addPackages(p);
+                    // end recursion by sending the last package back
+                    return p;
+                } else {
+                    // this is not the last package
+                    if (parent) {
+                        // this package will have a parent and a child
+                        parent.addPackages(p);
+
+                    } else {
+                        // this package is the first one (eg. in 'org.kevoree.library.js' => this is 'org')
+                        model.addPackages(p);
+                    }
+
+                    // recursion
+                    return createPackagesTree(packages, index+1, model, p);
+                }
+            }
+
+            // create packages tree and return the leaf (eg. 'org.kevoree.library.js' => leaf is 'js')
+            // so that we can then add the TypeDefinition and DeployUnit to it
+            var modelPkg = createPackagesTree(pkgs, 0, model, null);
+
+            // create the project deployUnit
+            var deployUnit = factory.createDeployUnit();
+            deployUnit.name = pkgJson.name;
+            deployUnit.version = pkgJson.version;
+            deployUnit.type = 'npm';
+            modelPkg.addDeployUnits(deployUnit);
+
+            // process main file
             var Class = require(file);
 
             if (typeof Class == 'function') {
@@ -32,72 +90,32 @@ var generator = function generator(dirPath, verbose, callback) {
                 if (obj instanceof KevoreeEntity) {
                     // this Class is a KevoreeEntity
                     if (obj instanceof AbstractComponent) {
-                        if (verbose) console.log("Processing component:\n\tFile: '%s'", file);
-                        return genComponent(deployUnit, obj, model);
+                        genComponent(deployUnit, obj, modelPkg);
 
                     } else if (obj instanceof AbstractChannel) {
-                        if (verbose) console.log("Processing channel:\n\tFile: '%s'", file);
-                        return genChannel(deployUnit, obj, model);
+                        genChannel(deployUnit, obj, modelPkg);
 
                     } else if (obj instanceof AbstractGroup) {
-                        if (verbose) console.log("Processing group:\n\tFile: '%s'", file);
-                        return genGroup(deployUnit, obj, model);
+                        genGroup(deployUnit, obj, modelPkg);
 
                     } else if (obj instanceof AbstractNode) {
-                        if (verbose) console.log("Processing node:\n\tFile: '%s'", file);
-                        return genNode(deployUnit, obj, model);
+                        genNode(deployUnit, obj, modelPkg);
                     }
 
                 } else {
                     // this is not the Class you are looking for
-                    if (verbose) console.log(chalk.yellow('Ignored:')+"\n\tFile: '%s'\n\tReason: Not a KevoreeEntity (check that you have only one version of kevoree-entities in your dependency tree)", file);
+                    if (!quiet) {
+                        console.log(chalk.yellow('Ignored:')+"\n\tFile: '%s'\n\tReason: Not a KevoreeEntity (check that you have only one version of kevoree-entities in your dependency tree)", file);
+                    }
                 }
             }
-        } catch (e) {
-            if (e.code == 'PARSE_FAIL') throw e;
-            if (verbose) console.log(chalk.yellow('Ignored:')+"\n\tFile: '%s'\n\tReason: Unable to create a new object\n\tError: %s", file, e.message);
+
+            callback(null, model, pkgJson.kevoree.package, modelPkg.typeDefinitions.get(0));
+        } else {
+            callback(new Error('The given package "'+pkgJson.kevoree.package+'" in package.json is not valid (expected: '+PKG_PATTERN.toString()+')'));
         }
-    }
-
-    try {
-        // retrieve kevoree-entities types from the project path
-        var kePath = path.resolve(dirPath, 'node_modules', 'kevoree-entities'); // TODO add this path in command-line argument ?
-        KevoreeEntity     = require(kePath).KevoreeEntity;
-        AbstractComponent = require(kePath).AbstractComponent;
-        AbstractGroup     = require(kePath).AbstractGroup;
-        AbstractChannel   = require(kePath).AbstractChannel;
-        AbstractNode      = require(kePath).AbstractNode;
-
-        // get module package.json
-        var modulePkg = require(path.resolve(dirPath, 'package.json'));
-
-        // create a new ContainerRoot
-        var model = factory.createContainerRoot();
-
-        // create a javascript library for the model
-        var library = factory.createTypeLibrary();
-        library.name = 'Javascript';
-        model.addLibraries(library);
-
-        // create the project deployUnit
-        var deployUnit = factory.createDeployUnit();
-        deployUnit.name = modulePkg.name;
-        deployUnit.version = modulePkg.version;
-        deployUnit.type = 'npm';
-        model.addDeployUnits(deployUnit);
-
-        // process main file
-        var typeDef = processFile(path.resolve(dirPath, modulePkg.main), deployUnit, model);
-        if (typeof(typeDef) !== 'undefined' && typeDef != null) {
-            // add typedefinition to Javascript library
-            typeDef.version = modulePkg.version;
-            library.addSubTypes(typeDef);
-        }
-
-        return callback(null, model);
-
-    } catch (err) {
-        return callback(err);
+    } else {
+        callback(new Error('Unable to find package name in "'+pkgJson.name+'" package.json'));
     }
 };
 

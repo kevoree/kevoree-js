@@ -1,0 +1,13 @@
+{
+    "name": "fakesubnode",
+    "version": "1.0.0",
+    "main": "./FakeSubNode.js",
+    "kevoree": {
+        "package": "some.fake.package.foo"
+    },
+    "private": true,
+    "dependencies": {
+        "kevoree-entities": "^2.2.1",
+        "kevoree-node-javascript": "^2.2.0"
+    }
+}

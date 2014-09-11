@@ -1,0 +1,12 @@
+{
+  "name": "fakecomp",
+  "version": "1.0.0",
+  "main": "./FakeComp.js",
+  "kevoree": {
+    "package": "org.kevoree.library.js"
+  },
+  "private": true,
+  "dependencies": {
+    "kevoree-entities": "^2.2.1"
+  }
+}

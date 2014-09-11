@@ -1,119 +1,145 @@
-var path    = require('path'),
-    fs      = require('fs'),
-    chalk   = require('chalk'),
-    gen     = require('./lib/generator'),
-    kevoree = require('kevoree-library').org.kevoree;
+var path        = require('path'),
+    fs          = require('fs'),
+    chalk       = require('chalk'),
+    generator   = require('./lib/generator'),
+    kevoree     = require('kevoree-library').org.kevoree;
 
-module.exports = function (dirPath, logLevel, callback) {
-    var quiet    = logLevel.quiet    || false,
-        verbose  = logLevel.verbose  || false,
-        callback = callback || function () {};
-
-    if (quiet) {
-        var noop = function () {};
-        for (var method in console) {
-            console[method] = noop;
-        }
+module.exports = function (dirPath, quiet, callback) {
+    if (typeof (quiet) === 'function') {
+        callback = quiet;
+        quiet = false;
     }
 
-    function genCallback(err, model) {
-        if (err) {
-            console.error(chalk.red('Model generation failed!')+'\nError: '+err.message);
-            return process.nextTick(function () {
-                callback(err);
-            });
+    if (typeof (quiet) === 'undefined') { quiet = false; }
+
+    /**
+     * Handles Error object
+     * @param err
+     */
+    function errHandler(err) {
+        process.stderr.write(chalk.red('Model generation failed!')+'\n');
+
+        switch (err.code) {
+            default:
+            case 'PARSE_FAIL':
+                if (!quiet) {
+                    process.stderr.write('\n'+err.stack+'\n');
+                }
+                break;
+
+            case 'ENOENT':
+                if (!quiet) {
+                    process.stderr.write('\n'+err.stack.replace('ENOENT, lstat ', 'unable to find ')+'\n');
+                }
+                break;
         }
+        callback(err);
+    }
 
-        if (model.typeDefinitions.size() > 0) {
-            if (verbose) {
-                var tdef = model.typeDefinitions.get(0);
-                console.log('\nTypeDefinition: %s', tdef.name);
-                console.log('Version: \t%s', tdef.version);
-                console.log('DeployUnit: \t%s:%s', tdef.deployUnit.type, tdef.deployUnit.name);
-                if (tdef.dictionaryType) {
-                    // dictionary logging
-                    var dic = [];
-                    var attrs = tdef.dictionaryType.attributes.iterator();
-                    while (attrs.hasNext()) {
-                        var attr = attrs.next();
-                        var value = attr.name + ':' + attr.datatype;
-                        if (typeof (attr.defaultValue) === 'string' && attr.defaultValue.length > 0) {
-                            value += ' ("'+attr.defaultValue+'")';
-                        } else {
-                            value += ' ('+attr.defaultValue+')';
-                        }
-                        if (!attr.optional) {
-                            value = chalk.underline(value);
-                        }
-                        if (attr.fragmentDependant) {
-                            value = chalk.inverse(value);
-                        }
-                        dic.push(value);
+    /**
+     * Handles generation logs & file
+     * @param model
+     */
+    function genLogsAndFile(model, pkg, tdef) {
+        if (!quiet) {
+            process.stdout.write('Package:         ' + pkg+'\n');
+            process.stdout.write('TypeDefinition:  ' + tdef.name+'\n');
+            process.stdout.write('Version:         ' + tdef.version+'\n');
+            process.stdout.write('DeployUnit:      '+tdef.deployUnit.type+':' + tdef.deployUnit.name+'\n');
+            if (tdef.dictionaryType) {
+                // dictionary logging
+                var dic = [];
+                var attrs = tdef.dictionaryType.attributes.iterator();
+                while (attrs.hasNext()) {
+                    var attr = attrs.next();
+                    var value = attr.name + ':' + attr.datatype;
+                    if (typeof (attr.defaultValue) === 'string' && attr.defaultValue.length > 0) {
+                        value += ' ("'+attr.defaultValue+'")';
+                    } else {
+                        value += ' ('+attr.defaultValue+')';
                     }
-                    if (dic.length > 0) {
-                        console.log('Dictionary: \t[ %s ]', dic.join(', '));
+                    if (!attr.optional) {
+                        value = chalk.underline(value);
                     }
+                    if (attr.fragmentDependant) {
+                        value = chalk.inverse(value);
+                    }
+                    dic.push(value);
+                }
+                if (dic.length > 0) {
+                    process.stdout.write('Dictionary:      [ ' + dic.join(', ') + ' ]\n');
+                }
 
+            }
+            if (tdef.provided) {
+                // provided port logging
+                var provided = [];
+                var providedIt = tdef.provided.iterator();
+                while (providedIt.hasNext()) {
+                    provided.push(providedIt.next().name);
                 }
-                if (tdef.provided) {
-                    // provided port logging
-                    var provided = [];
-                    var providedIt = tdef.provided.iterator();
-                    while (providedIt.hasNext()) {
-                        provided.push(providedIt.next().name);
-                    }
-                    if (provided.length > 0) {
-                        console.log('Input port(s): \t[ %s ]', provided.join(', '));
-                    }
-                }
-                if (tdef.required) {
-                    // required port logging
-                    var required = []
-                    var requiredIt = tdef.required.iterator();
-                    while (requiredIt.hasNext()) {
-                        required.push(requiredIt.next().name);
-                    }
-                    if (required.length > 0) {
-                        console.log('Output port(s): [ %s ]', required.join(', '));
-                    }
+                if (provided.length > 0) {
+                    process.stdout.write('Input port(s):   [ ' + provided.join(', ') + ' ]\n');
                 }
             }
-            console.log((verbose ? '\n' : '')+chalk.green('Model generation done'));
-        } else {
-            return genCallback(new Error('No TypeDefinition found in project'));
+            if (tdef.required) {
+                // required port logging
+                var required = [];
+                var requiredIt = tdef.required.iterator();
+                while (requiredIt.hasNext()) {
+                    required.push(requiredIt.next().name);
+                }
+                if (required.length > 0) {
+                    process.stdout.write('Output port(s):  [ ' + required.join(', ') + ' ]\n');
+                }
+            }
         }
 
-        var factory = new kevoree.factory.DefaultKevoreeFactory(),
-            jsonSerializer = factory.createJSONSerializer(),
-            filepath = path.resolve(dirPath, 'kevlib.json'),
-            // hack to indent output string properly
-            beautifulModel = JSON.stringify(JSON.parse(jsonSerializer.serialize(model)), null, 4);
+        if (!quiet) {
+            process.stdout.write((!quiet ? '\n' : '')+chalk.green('Model generation done'));
+        }
 
-        fs.writeFile(filepath, beautifulModel, function(err) {
+        var factory         = new kevoree.factory.DefaultKevoreeFactory(),
+            jsonSerializer  = factory.createJSONSerializer(),
+            filepath        = path.resolve(dirPath, 'kevlib.json'),
+            prettyModel     = JSON.stringify(JSON.parse(jsonSerializer.serialize(model)), null, 4);
+
+        fs.writeFile(filepath, prettyModel, function(err) {
             if(err) {
-                return genCallback(err);
+                errHandler(err);
             } else {
-                console.log("\nModel 'kevlib.json' saved at %s", path.relative(process.cwd(), filepath));
-                return process.nextTick(callback);
+                if (!quiet) {
+                    console.log("\nModel 'kevlib.json' saved at %s", path.relative(process.cwd(), filepath));
+                }
+                callback();
             }
         });
     }
 
     fs.lstat(dirPath, function (err, stats) {
         if (err) {
-            return genCallback(err);
-        }
-
-        if (stats.isFile()) {
-            // it is a file
-            dirPath = path.resolve(dirPath, '..'); // use this file's folder as root folder
-            gen(dirPath, verbose, genCallback);
-
-        } else if (stats.isDirectory()) {
-            gen(dirPath, verbose, genCallback);
-
+            errHandler(err);
         } else {
-            return genCallback(new Error("You should give the path to a folder in argument."));
+            if (stats.isFile() || stats.isDirectory()) {
+                if (stats.isFile()) {
+                    dirPath = path.resolve(dirPath, '..'); // use this file's folder as root folder
+                }
+
+                // execute model generator
+                try {
+                    generator(dirPath, quiet, function (err, model, pkg, tdef) {
+                        if (err) {
+                            errHandler(err);
+                        } else {
+                            genLogsAndFile(model, pkg, tdef);
+                        }
+                    });
+                } catch (err) {
+                    errHandler(err);
+                }
+            } else {
+                errHandler(new Error("You should give the path to a folder in argument."));
+            }
         }
     });
 };

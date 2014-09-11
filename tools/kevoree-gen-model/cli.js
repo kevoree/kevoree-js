@@ -12,11 +12,7 @@ var optimist = require('optimist')
         .options('h', {
             default: false,
             describe: 'Display this help'
-        })
-        .options('v', {
-            default: false,
-            describe: 'Verbose logs'
-        }),
+        });
     kevoreeGen = require('./kevoree-gen-model');
 
 if (optimist.argv.h) {
@@ -24,7 +20,7 @@ if (optimist.argv.h) {
     process.exit(0);
 }
 
-kevoreeGen(optimist.argv.p, {quiet: optimist.argv.q, verbose: optimist.argv.v}, function (err) {
+kevoreeGen(optimist.argv.p, optimist.argv.q, function (err) {
     if (err) {
         process.exit(1);
     }

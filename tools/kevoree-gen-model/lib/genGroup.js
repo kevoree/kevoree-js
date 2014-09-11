@@ -5,19 +5,20 @@ var genDictionary = require('./genDictionary');
  * Generates group
  * @param deployUnit
  * @param obj
- * @param model
+ * @param pkg
  */
-module.exports = function (deployUnit, obj, model) {
+module.exports = function (deployUnit, obj, pkg) {
     var factory = new kevoree.factory.DefaultKevoreeFactory();
 
     // create a new group type
     var groupType = factory.createGroupType();
     groupType.name = obj.toString();
+    groupType.version = deployUnit.version;
 
     // add super type if not AbstractGroup
     var superType = obj.constructor.prototype.superPrototype.toString();
-    if (superType != 'AbstractGroup') {
-        // TODO
+    if (superType !== 'AbstractGroup') {
+        // FIXME once registry.kevoree.org is done
     }
 
     // add deployUnit
@@ -26,7 +27,7 @@ module.exports = function (deployUnit, obj, model) {
     // add dictionary
     genDictionary(groupType, obj);
 
-    model.addTypeDefinitions(groupType);
+    pkg.addTypeDefinitions(groupType);
 
     return groupType;
 };
