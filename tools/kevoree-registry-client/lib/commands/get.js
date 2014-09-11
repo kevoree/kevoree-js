@@ -21,11 +21,11 @@ function get_(argv, callback) {
                 get_.help();
                 callback(null);
             } else {
-                getModel({fqn: fqn, version: version, type: type}, function (err, model) {
+                getModel({fqn: fqn, version: version, type: type, parse: !argv.p}, function (err, model) {
                     if (err) {
                         callback(err);
                     } else {
-                        if (type === 'json' && argv.p) {
+                        if (type === 'json' && argv.pretty) {
                             model = JSON.stringify(JSON.parse(model), null, 4);
                         }
 
@@ -66,7 +66,19 @@ get_.help = function () {
     process.stdout.write('\n');
     process.stdout.write('    -t, --type=TYPE       Model type TYPE = [json (default), xmi, trace]');
     process.stdout.write('\n');
-    process.stdout.write('    -p, --pretty          Pretty print (only works for JSON type)');
+    process.stdout.write('    -p                    If set, it will not parse fqn to get TypeDefinition');
+    process.stdout.write('\n');
+    process.stdout.write('    --pretty              Pretty print (only works for JSON type)');
+    process.stdout.write('\n\n');
+    process.stdout.write('Description:');
+    process.stdout.write('\n\n');
+    process.stdout.write('    <FQN> is a fully qualified name of the form:');
+    process.stdout.write('\n');
+    process.stdout.write('        org.kevoree.library.js.JavascriptNode');
+    process.stdout.write('\n');
+    process.stdout.write('    If the -p option is set, then it will not parse the fqn to extract JavascriptNode');
+    process.stdout.write('\n');
+    process.stdout.write('    from it and use it as a TypeDefinition name. By default, fqn are always parsed.');
     process.stdout.write('\n');
 };
 

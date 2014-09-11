@@ -8,9 +8,9 @@ var argv = minimist(process.argv.slice(2), {
         help:    'h',
         version: 'v',
         output:  'o',
-        pretty:  'p'
+        parse:   'p'
     },
-    boolean: ['h', 'v', 'p', 'verbose'],
+    boolean: ['h', 'v', 'p', 'verbose', 'pretty'],
     string:  ['o']
 });
 

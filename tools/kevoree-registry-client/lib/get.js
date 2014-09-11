@@ -8,17 +8,30 @@ var http = require('http');
  *                              - [version]: TypeDefinition version (if version is not given, then '*' will be used)
  *                              - [type]:    Retrieved model type (default to 'json', but you can ask for 'xmi'
  *                                           or 'trace')
- * @param {String}   [version]
+ *                              - [parse]:   If set to true, it will parse the last part of the fqn to get the
+ *                                           TypeDefinition name from it (default: true)
  * @param {Function} callback
  */
 function fromFQN(options, callback) {
     options.version = options.version || '*';
     options.type    = options.type    || 'json';
+    options.parse   = (function () {
+        if (typeof(options.parse) === 'boolean') {
+            return options.parse;
+        } else {
+            return true;
+        }
+    })();
 
-    var fqn = options.fqn.split('.');
-    var tdef = fqn.pop();
-    fqn = fqn.join('/');
-    fqn += '/name=' + tdef + ',version=' + options.version;
+    var fqn;
+    if (options.parse) {
+        fqn = options.fqn.split('.');
+        var tdef = fqn.pop();
+        fqn = fqn.join('/');
+        fqn += '/name=' + tdef + ',version=' + options.version;
+    } else {
+        fqn = options.fqn.replace(/\./g, '/');
+    }
 
     var reqOpts = {
         hostname: 'registry.kevoree.org',
@@ -67,7 +80,7 @@ function fromFQN(options, callback) {
                 break;
 
             case 404:
-                callback(new Error('Unable to find "'+options.fqn+'" on registry'));
+                callback(new Error('Unable to find "'+options.fqn+'" on Kevoree registry'));
                 break;
 
             default:
