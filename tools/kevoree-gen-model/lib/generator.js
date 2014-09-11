@@ -89,28 +89,36 @@ var generator = function generator(dirPath, quiet, callback) {
                 var obj = new Class();
                 if (obj instanceof KevoreeEntity) {
                     // this Class is a KevoreeEntity
+                    var tdef;
+
                     if (obj instanceof AbstractComponent) {
-                        genComponent(deployUnit, obj, modelPkg);
+                        tdef = genComponent(deployUnit, obj);
 
                     } else if (obj instanceof AbstractChannel) {
-                        genChannel(deployUnit, obj, modelPkg);
+                        tdef = genChannel(deployUnit, obj);
 
                     } else if (obj instanceof AbstractGroup) {
-                        genGroup(deployUnit, obj, modelPkg);
+                        tdef = genGroup(deployUnit, obj);
 
                     } else if (obj instanceof AbstractNode) {
-                        genNode(deployUnit, obj, modelPkg);
+                        tdef = genNode(deployUnit, obj);
                     }
+
+                    // add KevoreeJS deployUnit to the TypeDefinition
+                    tdef.addDeployUnits(deployUnit);
+
+                    // add TypeDefinition to the specified kevoree package
+                    modelPkg.addTypeDefinitions(tdef);
 
                 } else {
                     // this is not the Class you are looking for
                     if (!quiet) {
-                        console.log(chalk.yellow('Ignored:')+"\n\tFile: '%s'\n\tReason: Not a KevoreeEntity (check that you have only one version of kevoree-entities in your dependency tree)", file);
+                        process.stdout.write(chalk.yellow('Ignored:')+'\n\tFile: '+file+'\n\tReason: Not a KevoreeEntity (check that you have only one version of kevoree-entities in your dependency tree)');
                     }
                 }
             }
 
-            callback(null, model, pkgJson.kevoree.package, modelPkg.typeDefinitions.get(0));
+            callback(null, model, pkgJson.kevoree.package, modelPkg.typeDefinitions.get(0), deployUnit);
         } else {
             callback(new Error('The given package "'+pkgJson.kevoree.package+'" in package.json is not valid (expected: '+PKG_PATTERN.toString()+')'));
         }

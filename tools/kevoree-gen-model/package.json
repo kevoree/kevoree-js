@@ -1,6 +1,6 @@
 {
   "name": "kevoree-gen-model",
-  "version": "2.0.0-SNAPSHOT",
+  "version": "2.0.0-SNAPSHOT.0",
   "description": "Kevoree Generate Model Tool - Generates a Kevoree model from a kevoree-entity like module",
   "main": "kevoree-gen-model.js",
   "bin": {

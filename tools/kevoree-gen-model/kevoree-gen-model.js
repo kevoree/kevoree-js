@@ -39,13 +39,16 @@ module.exports = function (dirPath, quiet, callback) {
     /**
      * Handles generation logs & file
      * @param model
+     * @param pkg
+     * @param tdef
+     * @param deployUnit
      */
-    function genLogsAndFile(model, pkg, tdef) {
+    function genLogsAndFile(model, pkg, tdef, deployUnit) {
         if (!quiet) {
             process.stdout.write('Package:         ' + pkg+'\n');
             process.stdout.write('TypeDefinition:  ' + tdef.name+'\n');
             process.stdout.write('Version:         ' + tdef.version+'\n');
-            process.stdout.write('DeployUnit:      '+tdef.deployUnit.type+':' + tdef.deployUnit.name+'\n');
+            process.stdout.write('DeployUnit:      ' + deployUnit.type+':' + deployUnit.name+'\n');
             if (tdef.dictionaryType) {
                 // dictionary logging
                 var dic = [];
@@ -127,11 +130,11 @@ module.exports = function (dirPath, quiet, callback) {
 
                 // execute model generator
                 try {
-                    generator(dirPath, quiet, function (err, model, pkg, tdef) {
+                    generator(dirPath, quiet, function (err, model, pkg, tdef, deployUnit) {
                         if (err) {
                             errHandler(err);
                         } else {
-                            genLogsAndFile(model, pkg, tdef);
+                            genLogsAndFile(model, pkg, tdef, deployUnit);
                         }
                     });
                 } catch (err) {
