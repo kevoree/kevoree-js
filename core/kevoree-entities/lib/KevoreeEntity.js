@@ -202,9 +202,7 @@ var KevoreeEntity = Class({
     onModelDeployed: function () {
         if (this.queue.length > 0) {
             // create a KevScript engine
-            var kevs = new KevScript({
-                resolvers: { npm: this.kCore.getBootstrapper().resolver } // refactor according to #26
-            });
+            var kevs = new KevScript();
 
             // retrieve first queued script
             var item = this.queue[0];
