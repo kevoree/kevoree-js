@@ -17,16 +17,12 @@ module.exports = function(grunt) {
         // Merge task-specific and/or target-specific options with these defaults.
         var options = this.options({
             quiet: false,
-            verbose: false,
             path: process.cwd()
         });
 
-        var path = options.path;
-        delete options.path;
-        kevoreeGen(path, options, function (err) {
+        kevoreeGen(options.path, options.quiet, function (err) {
             if (err) {
                 grunt.fail.fatal(err.message);
-                return done();
             }
             done();
         });

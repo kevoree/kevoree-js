@@ -22,7 +22,6 @@ module.exports = function(grunt) {
             main: {
                 options: {
                     quiet: false,
-                    verbose: true,
                     path: 'test/fixtures'
                 }
             }
