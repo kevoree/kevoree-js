@@ -1425,6 +1425,9 @@ if (!Kotlin.modules['kevoree']) {
                 this.$key_cache_vns4l3$ = tmp$0;
               }
             },
+            isRoot: function () {
+              return this.is_root;
+            },
             is_root: {
               get: function () {
                 return this.$is_root_v4yqtw$;
@@ -26650,26 +26653,27 @@ if (!Kotlin.modules['kevoree']) {
                   if (!inter) {
                     if (!merge) {
                       {
-                        var tmp$0 = objectsMap.values().iterator();
+                        var tmp$0 = objectsMap.keySet().iterator();
                         while (tmp$0.hasNext()) {
-                          var diffChild = tmp$0.next();
-                          var tmp$2, tmp$4;
+                          var diffChildKey = tmp$0.next();
+                          var tmp$1, tmp$3, tmp$5;
+                          var diffChild = (tmp$1 = objectsMap.get_za3rmp$(diffChildKey)) != null ? tmp$1 : Kotlin.throwNPE();
                           if (diffChild.eContainer() != null) {
-                            var tmp$1;
-                            tmp$2 = ((tmp$1 = diffChild.eContainer()) != null ? tmp$1 : Kotlin.throwNPE()).path();
+                            var tmp$2;
+                            tmp$3 = ((tmp$2 = diffChild.eContainer()) != null ? tmp$2 : Kotlin.throwNPE()).path();
                           }
                            else {
-                            tmp$2 = 'null';
+                            tmp$3 = 'null';
                           }
-                          var src = tmp$2;
+                          var src = tmp$3;
                           if (diffChild.getRefInParent() != null) {
-                            var tmp$3;
-                            tmp$4 = (tmp$3 = diffChild.getRefInParent()) != null ? tmp$3 : Kotlin.throwNPE();
+                            var tmp$4;
+                            tmp$5 = (tmp$4 = diffChild.getRefInParent()) != null ? tmp$4 : Kotlin.throwNPE();
                           }
                            else {
-                            tmp$4 = 'null';
+                            tmp$5 = 'null';
                           }
-                          var refNameInParent = tmp$4;
+                          var refNameInParent = tmp$5;
                           traces.add_za3rmp$(new _.org.kevoree.modeling.api.trace.ModelRemoveTrace(src, refNameInParent, diffChild.path()));
                         }
                       }
@@ -26761,9 +26765,11 @@ if (!Kotlin.modules['kevoree']) {
                   }
                 }
                 {
-                  var tmp$1 = tempMap.values().iterator();
+                  var tmp$1 = tempMap.keySet().iterator();
                   while (tmp$1.hasNext()) {
-                    var toLink = tmp$1.next();
+                    var toLinkKey = tmp$1.next();
+                    var tmp$2;
+                    var toLink = (tmp$2 = tempMap.get_za3rmp$(toLinkKey)) != null ? tmp$2 : Kotlin.throwNPE();
                     traces.addAll_xeylzf$(toLink.toTraces(false, true));
                   }
                 }
@@ -26863,6 +26869,9 @@ if (!Kotlin.modules['kevoree']) {
                 o.visit(resolveGraphVisitor, true, true, false);
                 if (readOnly) {
                   clonedObject.setInternalReadOnly();
+                }
+                if (o.isRoot()) {
+                  this.factory.root(clonedObject);
                 }
                 return clonedObject;
               }
@@ -27114,27 +27123,30 @@ if (!Kotlin.modules['kevoree']) {
                 select: function (root, query) {
                   var extractedQuery = this.extractFirstQuery(query);
                   var result = new Kotlin.ArrayList();
-                  var tempResult = {v: new Kotlin.ArrayList()};
-                  tempResult.v.add_za3rmp$(root);
+                  var tempResult = {v: new Kotlin.PrimitiveHashMap()};
+                  tempResult.v.put_wn2jw4$(root.path(), root);
                   while (extractedQuery != null) {
                     var staticExtractedQuery = extractedQuery != null ? extractedQuery : Kotlin.throwNPE();
                     var clonedRound = tempResult.v;
-                    tempResult.v = new Kotlin.ArrayList();
+                    tempResult.v = new Kotlin.PrimitiveHashMap();
                     {
-                      var tmp$0 = clonedRound.iterator();
+                      var tmp$0 = clonedRound.keySet().iterator();
                       while (tmp$0.hasNext()) {
-                        var currentRoot = tmp$0.next();
+                        var currentRootKey = tmp$0.next();
+                        var tmp$1;
+                        var currentRoot = (tmp$1 = clonedRound.get_za3rmp$(currentRootKey)) != null ? tmp$1 : Kotlin.throwNPE();
                         var resolved = null;
                         if (!staticExtractedQuery.oldString.contains('*')) {
                           resolved = currentRoot.findByPath(staticExtractedQuery.oldString);
                         }
                         if (resolved != null) {
-                          tempResult.v.add_za3rmp$(resolved != null ? resolved : Kotlin.throwNPE());
+                          tempResult.v.put_wn2jw4$((resolved != null ? resolved : Kotlin.throwNPE()).path(), resolved != null ? resolved : Kotlin.throwNPE());
                         }
                          else {
-                          var visitor = _.org.kevoree.modeling.api.util.select$f(staticExtractedQuery, tempResult);
+                          var alreadyVisited = {v: new Kotlin.PrimitiveHashMap()};
+                          var visitor = _.org.kevoree.modeling.api.util.select$f(staticExtractedQuery, alreadyVisited, tempResult);
                           if (staticExtractedQuery.previousIsDeep) {
-                            currentRoot.visit(visitor, true, true, true);
+                            currentRoot.visit(visitor, false, true, staticExtractedQuery.previousIsRefDeep);
                           }
                            else {
                             currentRoot.visit(visitor, false, true, true);
@@ -27149,7 +27161,14 @@ if (!Kotlin.modules['kevoree']) {
                       extractedQuery = this.extractFirstQuery(staticExtractedQuery.subQuery);
                     }
                   }
-                  result.addAll_xeylzf$(tempResult.v);
+                  {
+                    var tmp$2 = tempResult.v.keySet().iterator();
+                    while (tmp$2.hasNext()) {
+                      var v = tmp$2.next();
+                      var tmp$3;
+                      result.add_za3rmp$((tmp$3 = tempResult.v.get_za3rmp$(v)) != null ? tmp$3 : Kotlin.throwNPE());
+                    }
+                  }
                   return result;
                 },
                 extractFirstQuery: function (query) {
@@ -27159,15 +27178,29 @@ if (!Kotlin.modules['kevoree']) {
                       subQuery = query.substring(1);
                     }
                     var params = new Kotlin.PrimitiveHashMap();
-                    return new _.org.kevoree.modeling.api.util.KmfQuery('', params, subQuery, '/', false);
+                    return new _.org.kevoree.modeling.api.util.KmfQuery('', params, subQuery, '/', false, false);
                   }
                   if (query.startsWith('**/')) {
                     if (query.length > 3) {
                       var next = this.extractFirstQuery(query.substring(3));
                       if (next != null) {
                         next.previousIsDeep = true;
+                        next.previousIsRefDeep = false;
                       }
                       return next;
+                    }
+                     else {
+                      return null;
+                    }
+                  }
+                  if (query.startsWith('***/')) {
+                    if (query.length > 4) {
+                      var next_0 = this.extractFirstQuery(query.substring(4));
+                      if (next_0 != null) {
+                        next_0.previousIsDeep = true;
+                        next_0.previousIsRefDeep = true;
+                      }
+                      return next_0;
                     }
                      else {
                       return null;
@@ -27263,7 +27296,7 @@ if (!Kotlin.modules['kevoree']) {
                         }
                       }
                     }
-                    return new _.org.kevoree.modeling.api.util.KmfQuery(relName, params_0, subQuery_0, oldString, false);
+                    return new _.org.kevoree.modeling.api.util.KmfQuery(relName, params_0, subQuery_0, oldString, false, false);
                   }
                   return null;
                 }
@@ -27466,65 +27499,107 @@ if (!Kotlin.modules['kevoree']) {
                   }
                 });
               },
-              select$f: function (staticExtractedQuery, tempResult) {
+              select$f: function (staticExtractedQuery, alreadyVisited, tempResult) {
                 return Kotlin.createObject(function () {
                   return [_.org.kevoree.modeling.api.util.ModelVisitor];
                 }, function $fun() {
                   $fun.baseInitializer.call(this);
                 }, {
                   beginVisitRef: function (refName, refType) {
-                    if (Kotlin.equals(refName, staticExtractedQuery.relationName)) {
+                    if (staticExtractedQuery.previousIsDeep) {
                       return true;
                     }
                      else {
-                      if (staticExtractedQuery.relationName.contains('*')) {
-                        if (_.js.matches_94jgcu$(refName, staticExtractedQuery.relationName.replace('*', '.*'))) {
-                          return true;
-                        }
+                      if (Kotlin.equals(refName, staticExtractedQuery.relationName)) {
+                        return true;
                       }
-                    }
-                    return false;
-                  },
-                  visit: function (elem, refNameInParent, parent) {
-                    var tmp$0;
-                    if (_.kotlin.get_size(staticExtractedQuery.params) === 1 && staticExtractedQuery.params.get_za3rmp$('@id') != null && ((tmp$0 = staticExtractedQuery.params.get_za3rmp$('@id')) != null ? tmp$0 : Kotlin.throwNPE()).name == null) {
-                      var tmp$1;
-                      if (Kotlin.equals(elem.internalGetKey(), (tmp$1 = staticExtractedQuery.params.get_za3rmp$('@id')) != null ? tmp$1.value : null)) {
-                        tempResult.v.add_za3rmp$(elem);
-                      }
-                    }
-                     else {
-                      if (_.kotlin.get_size(staticExtractedQuery.params) > 0) {
-                        var subResult = Kotlin.arrayFromFun(_.kotlin.get_size(staticExtractedQuery.params), _.org.kevoree.modeling.api.util.visit$f);
-                        elem.visitAttributes(_.org.kevoree.modeling.api.util.visit$f_0(staticExtractedQuery, subResult));
-                        var finalRes = true;
-                        var tmp$2, tmp$3, tmp$4;
-                        {
-                          tmp$2 = subResult, tmp$3 = tmp$2.length;
-                          for (var tmp$4 = 0; tmp$4 !== tmp$3; ++tmp$4) {
-                            var sub = tmp$2[tmp$4];
-                            if (!sub) {
-                              finalRes = false;
-                            }
+                       else {
+                        if (staticExtractedQuery.relationName.contains('*')) {
+                          if (_.js.matches_94jgcu$(refName, staticExtractedQuery.relationName.replace('*', '.*'))) {
+                            return true;
                           }
                         }
-                        if (finalRes) {
-                          tempResult.v.add_za3rmp$(elem);
+                      }
+                      return false;
+                    }
+                  },
+                  visit: function (elem, refNameInParent, parent) {
+                    if (staticExtractedQuery.previousIsRefDeep) {
+                      if (alreadyVisited.v.containsKey_za3rmp$(parent.path() + '/' + refNameInParent + '[' + elem.internalGetKey() + ']')) {
+                        return;
+                      }
+                    }
+                    if (staticExtractedQuery.previousIsDeep && !staticExtractedQuery.previousIsRefDeep) {
+                      if (alreadyVisited.v.containsKey_za3rmp$(elem.path())) {
+                        return;
+                      }
+                    }
+                    var selected = true;
+                    if (staticExtractedQuery.previousIsDeep) {
+                      selected = false;
+                      if (Kotlin.equals(refNameInParent, staticExtractedQuery.relationName)) {
+                        selected = true;
+                      }
+                       else {
+                        if (staticExtractedQuery.relationName.contains('*')) {
+                          if (_.js.matches_94jgcu$(refNameInParent, staticExtractedQuery.relationName.replace('*', '.*'))) {
+                            selected = true;
+                          }
+                        }
+                      }
+                    }
+                    if (selected) {
+                      var tmp$0;
+                      if (_.kotlin.get_size(staticExtractedQuery.params) === 1 && staticExtractedQuery.params.get_za3rmp$('@id') != null && ((tmp$0 = staticExtractedQuery.params.get_za3rmp$('@id')) != null ? tmp$0 : Kotlin.throwNPE()).name == null) {
+                        var tmp$1;
+                        if (Kotlin.equals(elem.internalGetKey(), (tmp$1 = staticExtractedQuery.params.get_za3rmp$('@id')) != null ? tmp$1.value : null)) {
+                          tempResult.v.put_wn2jw4$(elem.path(), elem);
                         }
                       }
                        else {
-                        tempResult.v.add_za3rmp$(elem);
+                        if (_.kotlin.get_size(staticExtractedQuery.params) > 0) {
+                          var subResult = Kotlin.arrayFromFun(_.kotlin.get_size(staticExtractedQuery.params), _.org.kevoree.modeling.api.util.visit$f);
+                          elem.visitAttributes(_.org.kevoree.modeling.api.util.visit$f_0(staticExtractedQuery, subResult));
+                          var finalRes = true;
+                          var tmp$2, tmp$3, tmp$4;
+                          {
+                            tmp$2 = subResult, tmp$3 = tmp$2.length;
+                            for (var tmp$4 = 0; tmp$4 !== tmp$3; ++tmp$4) {
+                              var sub = tmp$2[tmp$4];
+                              if (!sub) {
+                                finalRes = false;
+                              }
+                            }
+                          }
+                          if (finalRes) {
+                            tempResult.v.put_wn2jw4$(elem.path(), elem);
+                          }
+                        }
+                         else {
+                          tempResult.v.put_wn2jw4$(elem.path(), elem);
+                        }
+                      }
+                    }
+                    if (staticExtractedQuery.previousIsDeep) {
+                      if (staticExtractedQuery.previousIsRefDeep) {
+                        alreadyVisited.v.put_wn2jw4$(parent.path() + '/' + refNameInParent + '[' + elem.internalGetKey() + ']', true);
+                        elem.visit(this, false, true, true);
+                      }
+                       else {
+                        alreadyVisited.v.put_wn2jw4$(elem.path(), true);
+                        elem.visit(this, false, true, false);
                       }
                     }
                   }
                 });
               },
-              KmfQuery: Kotlin.createClass(null, function (relationName, params, subQuery, oldString, previousIsDeep) {
+              KmfQuery: Kotlin.createClass(null, function (relationName, params, subQuery, oldString, previousIsDeep, previousIsRefDeep) {
                 this.relationName = relationName;
                 this.params = params;
                 this.subQuery = subQuery;
                 this.oldString = oldString;
                 this.previousIsDeep = previousIsDeep;
+                this.previousIsRefDeep = previousIsRefDeep;
               }, /** @lends _.org.kevoree.modeling.api.util.KmfQuery.prototype */ {
                 component1: function () {
                   return this.relationName;
@@ -27541,11 +27616,14 @@ if (!Kotlin.modules['kevoree']) {
                 component5: function () {
                   return this.previousIsDeep;
                 },
-                copy: function (relationName, params, subQuery, oldString, previousIsDeep) {
-                  return new _.org.kevoree.modeling.api.util.KmfQuery(relationName === void 0 ? this.relationName : relationName, params === void 0 ? this.params : params, subQuery === void 0 ? this.subQuery : subQuery, oldString === void 0 ? this.oldString : oldString, previousIsDeep === void 0 ? this.previousIsDeep : previousIsDeep);
+                component6: function () {
+                  return this.previousIsRefDeep;
+                },
+                copy: function (relationName, params, subQuery, oldString, previousIsDeep, previousIsRefDeep) {
+                  return new _.org.kevoree.modeling.api.util.KmfQuery(relationName === void 0 ? this.relationName : relationName, params === void 0 ? this.params : params, subQuery === void 0 ? this.subQuery : subQuery, oldString === void 0 ? this.oldString : oldString, previousIsDeep === void 0 ? this.previousIsDeep : previousIsDeep, previousIsRefDeep === void 0 ? this.previousIsRefDeep : previousIsRefDeep);
                 },
                 toString: function () {
-                  return 'KmfQuery(relationName=' + Kotlin.toString(this.relationName) + (', params=' + Kotlin.toString(this.params)) + (', subQuery=' + Kotlin.toString(this.subQuery)) + (', oldString=' + Kotlin.toString(this.oldString)) + (', previousIsDeep=' + Kotlin.toString(this.previousIsDeep)) + ')';
+                  return 'KmfQuery(relationName=' + Kotlin.toString(this.relationName) + (', params=' + Kotlin.toString(this.params)) + (', subQuery=' + Kotlin.toString(this.subQuery)) + (', oldString=' + Kotlin.toString(this.oldString)) + (', previousIsDeep=' + Kotlin.toString(this.previousIsDeep)) + (', previousIsRefDeep=' + Kotlin.toString(this.previousIsRefDeep)) + ')';
                 },
                 hashCode: function () {
                   var result = -1987101201;
@@ -27554,10 +27632,11 @@ if (!Kotlin.modules['kevoree']) {
                   result = result * 31 + Kotlin.hashCode(this.subQuery) | 0;
                   result = result * 31 + Kotlin.hashCode(this.oldString) | 0;
                   result = result * 31 + Kotlin.hashCode(this.previousIsDeep) | 0;
+                  result = result * 31 + Kotlin.hashCode(this.previousIsRefDeep) | 0;
                   return result;
                 },
                 equals_za3rmp$: function (other) {
-                  return this === other || (other !== null && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.relationName, other.relationName) && Kotlin.equals(this.params, other.params) && Kotlin.equals(this.subQuery, other.subQuery) && Kotlin.equals(this.oldString, other.oldString) && Kotlin.equals(this.previousIsDeep, other.previousIsDeep))));
+                  return this === other || (other !== null && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.relationName, other.relationName) && Kotlin.equals(this.params, other.params) && Kotlin.equals(this.subQuery, other.subQuery) && Kotlin.equals(this.oldString, other.oldString) && Kotlin.equals(this.previousIsDeep, other.previousIsDeep) && Kotlin.equals(this.previousIsRefDeep, other.previousIsRefDeep))));
                 }
               }),
               KmfQueryParam: Kotlin.createClass(null, function (name, value, idParam, negative) {
@@ -27706,26 +27785,30 @@ if (!Kotlin.modules['kevoree']) {
                     }
                   }
                   {
-                    var tmp$1 = this.modified_elements.values().iterator();
+                    var tmp$1 = this.modified_elements.keySet().iterator();
                     while (tmp$1.hasNext()) {
-                      var elem_0 = tmp$1.next();
+                      var elemKey = tmp$1.next();
+                      var tmp$2;
+                      var elem_0 = (tmp$2 = this.modified_elements.get_za3rmp$(elemKey)) != null ? tmp$2 : Kotlin.throwNPE();
                       this.persist(elem_0);
                       this.elementsToBeRemoved.remove_za3rmp$(elem_0.path());
                     }
                   }
                   {
-                    var tmp$2 = this.elementsToBeRemoved.iterator();
-                    while (tmp$2.hasNext()) {
-                      var e = tmp$2.next();
+                    var tmp$3 = this.elementsToBeRemoved.iterator();
+                    while (tmp$3.hasNext()) {
+                      var e = tmp$3.next();
                       this.cleanUnusedPaths(e);
                     }
                   }
                 },
                 clear: function () {
                   {
-                    var tmp$0 = this.elem_cache.values().iterator();
+                    var tmp$0 = this.elem_cache.keySet().iterator();
                     while (tmp$0.hasNext()) {
-                      var elem = tmp$0.next();
+                      var elemKey = tmp$0.next();
+                      var tmp$1;
+                      var elem = (tmp$1 = this.elem_cache.get_za3rmp$(elemKey)) != null ? tmp$1 : Kotlin.throwNPE();
                       elem.removeModelElementListener(this);
                     }
                   }

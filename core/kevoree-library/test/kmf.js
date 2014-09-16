@@ -20,12 +20,11 @@ describe('KMF selectors: tests suite', function () {
 
     it('should return an array of 2 DeployUnits using "model.select(\'**/deployUnits[name=*]\')"', function () {
         var res = model.select('**/deployUnits[name=*]');
-        
         expect(res.size()).to.equal(2);
     });
 
     it('should get TypeDefinition org.kev.MyTDef using model.findByPath()', function () {
-        var tdef = model.findByPath('packages[org]/packages[kev]/typeDefinitions[name='+TDEF+']');
+        var tdef = model.findByPath('packages[org]/packages[kev]/typeDefinitions[name='+TDEF+',version='+TDEF_VERS+']');
         expect(tdef.name).to.equal(TDEF);
         expect(tdef.version).to.equal(TDEF_VERS);
     });
@@ -106,8 +105,8 @@ function createModel() {
     // add a repository
     model.addRepositories(repo);
 
-    //var saver = factory.createJSONSerializer();
-    //require('fs').writeFileSync('/tmp/myModel.json', JSON.stringify(JSON.parse(saver.serialize(model)), null, 4), 'utf-8');
+    var saver = factory.createJSONSerializer();
+    require('fs').writeFileSync('/tmp/myModel.json', JSON.stringify(JSON.parse(saver.serialize(model)), null, 4), 'utf-8');
 
     return model;
 }
