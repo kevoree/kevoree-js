@@ -1,3 +1,5 @@
-add foo0 : org.kevoree.Bar
-add foofoo : Bar/0.42.0
-add foo1 : _.42.UPPER.A/1.2.3-POTATO
+add node0 : org.kevoree.library.js.JavascriptNode
+add node1 : org.kevoree.library.js.JavascriptNode/3.0.0-SNAPSHOT
+
+add node0.child : org.kevoree.library.js.JavascriptNode
+//add sync : org.kevoree.library.js.WebSocketGroup

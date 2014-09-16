@@ -1,3 +1,5 @@
+var getFQN = require('../getFQN');
+
 /**
  * Created by leiko on 10/04/14.
  */
@@ -8,16 +10,19 @@ module.exports = function (model) {
         var map = {};
         while (elems.hasNext()) {
             var elem = elems.next();
-            var list = map[elem.typeDefinition.name] || [];
+            var fqn = getFQN(elem.typeDefinition);
+            var list = map[fqn] || [];
             list.push(elem.name);
-            map[elem.typeDefinition.name] = list;
+            map[fqn] = list;
         }
 
         for (var tdef in map) {
-            if (str.length !== 0) {
-                str += '\n';
+            if (map.hasOwnProperty(tdef)) {
+                if (str.length !== 0) {
+                    str += '\n';
+                }
+                str += 'add '+map[tdef].join(', ')+' : '+tdef;
             }
-            str += 'add '+map[tdef].join(', ')+' : '+tdef;
         }
     }
 
@@ -25,21 +30,24 @@ module.exports = function (model) {
         var map = {};
         while (elems.hasNext()) {
             var elem = elems.next();
-            var list = map[elem.typeDefinition.name] || [];
+            var fqn = getFQN(elem.typeDefinition);
+            var list = map[fqn] || [];
 
             if (!elem.host) {
                 list.push(elem.name);
             }
 
-            map[elem.typeDefinition.name] = list;
+            map[fqn] = list;
         }
 
         for (var tdef in map) {
-            if (map[tdef].length > 0) {
-                if (str.length !== 0) {
-                    str += '\n';
+            if (map.hasOwnProperty(tdef)) {
+                if (map[tdef].length > 0) {
+                    if (str.length !== 0) {
+                        str += '\n';
+                    }
+                    str += 'add '+map[tdef].join(', ')+' : '+tdef;
                 }
-                str += 'add '+map[tdef].join(', ')+' : '+tdef;
             }
         }
     }
@@ -49,40 +57,46 @@ module.exports = function (model) {
         var subnodesMap = {};
         var list;
         while (elems.hasNext()) {
-            var elem = elems.next();
+            var elem = elems.next(), fqn;
 
             if (elem.host) {
                 // elem is a subNode
-                list = subnodesMap[elem.typeDefinition.name] || [];
+                fqn = getFQN(elem.typeDefinition);
+                list = subnodesMap[fqn] || [];
                 list.push(elem.host.name+'.'+elem.name);
-                subnodesMap[elem.typeDefinition.name] = list;
+                subnodesMap[fqn] = list;
             }
 
             var comps = elem.components.iterator();
             while (comps.hasNext()) {
                 var comp = comps.next();
-                list = compsMap[comp.typeDefinition.name] || [];
+                fqn = getFQN(comp.typeDefinition);
+                list = compsMap[fqn] || [];
                 list.push(elem.name+'.'+comp.name);
-                compsMap[comp.typeDefinition.name] = list;
+                compsMap[fqn] = list;
             }
         }
 
         var tdef;
         for (tdef in compsMap) {
-            if (compsMap[tdef].length > 0) {
-                if (str.length !== 0) {
-                    str += '\n';
+            if (compsMap.hasOwnProperty(tdef)) {
+                if (compsMap[tdef].length > 0) {
+                    if (str.length !== 0) {
+                        str += '\n';
+                    }
+                    str += 'add '+compsMap[tdef].join(', ')+' : '+tdef;
                 }
-                str += 'add '+compsMap[tdef].join(', ')+' : '+tdef;
             }
         }
 
         for (tdef in subnodesMap) {
-            if (subnodesMap[tdef].length > 0) {
-                if (str.length !== 0) {
-                    str += '\n';
+            if (subnodesMap.hasOwnProperty(tdef)) {
+                if (subnodesMap[tdef].length > 0) {
+                    if (str.length !== 0) {
+                        str += '\n';
+                    }
+                    str += 'add '+subnodesMap[tdef].join(', ')+' : '+tdef;
                 }
-                str += 'add '+subnodesMap[tdef].join(', ')+' : '+tdef;
             }
         }
     }

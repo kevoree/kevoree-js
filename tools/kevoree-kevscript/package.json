@@ -1,6 +1,6 @@
 {
   "name": "kevoree-kevscript",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "description": "Kevoree KevScript module - contains parser, interpreter and grammar",
   "main": "./kevoree-kevscript.js",
   "scripts": {
@@ -25,12 +25,14 @@
   "homepage": "https://github.com/kevoree/kevoree-js",
   "dependencies": {
     "async": "~0.2.9",
+    "chalk": "^0.5.1",
     "kevoree-commons": "^1.0.0",
     "kevoree-kotlin": "^1.0.0",
-    "kevoree-library": "^1.0.0",
-    "kevoree-resolvers": "^1.0.0",
+    "kevoree-library": "^5.0.1-SNAPSHOT.0",
+    "kevoree-registry-client": "^1.0.1",
     "optimist": "~0.6.0",
     "pseudoclass": "^1.0.1",
+    "semver": "^3.0.1",
     "waxeye": "^0.8.1"
   },
   "devDependencies": {

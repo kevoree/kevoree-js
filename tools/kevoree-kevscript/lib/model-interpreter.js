@@ -14,7 +14,7 @@ module.exports = function (model) {
     var blocks = [
         // order matters !
         repos(model),
-        includes(model),
+//        includes(model),
         instances(model),
         lifecycles(model),
         attaches(model),
@@ -25,11 +25,13 @@ module.exports = function (model) {
 
     var kevscript = '';
     for (var i in blocks) {
-        kevscript += blocks[i];
-        if (blocks[i].length > 0) {
-            kevscript += '\n\n';
+        if (blocks.hasOwnProperty(i)) {
+            kevscript += blocks[i];
+            if (blocks[i].length > 0) {
+                kevscript += '\n\n';
+            }
         }
     }
 
-    return kevscript.replace(/^([\n\t\r])+/, '').replace(/([\n\t\r])+$/, '');
+    return kevscript.replace(/^([\n\t\r])+/, '').replace(/([\n\t\r])+$/, '\n');
 };

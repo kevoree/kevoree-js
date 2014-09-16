@@ -6,10 +6,6 @@ var Class       = require('pseudoclass'),
 var KevScript = Class({
     toString: 'KevScript',
 
-    construct: function (options) {
-        this.options = options || {};
-    },
-
     /**
      * Parses given KevScript source-code in parameter 'data' and returns a ContainerRoot.
      * @param data string
@@ -18,22 +14,17 @@ var KevScript = Class({
      * @throws Error on SyntaxError and on source code validity and such
      */
     parse: function (data, ctxModel, callback) {
-        if (typeof(callback) == 'undefined') {
+        if (typeof(callback) === 'undefined') {
             callback = ctxModel;
             ctxModel = null;
-
         }
 
         var parser = new kevs.Parser();
         var ast = parser.parse(data);
         if (ast.type != 'kevScript') {
-            return callback(new Error(ast.toString()));
+            callback(new Error(ast.toString()));
         } else {
-            interpreter(ast, ctxModel, this.options.resolvers, function (err, model) {
-                if (err) return callback(err);
-
-                return callback(null, model);
-            });
+            interpreter(ast, ctxModel, callback);
         }
     },
 
