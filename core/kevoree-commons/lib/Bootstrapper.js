@@ -1,4 +1,5 @@
-var Class = require('pseudoclass');
+var Class = require('pseudoclass'),
+    async = require('async');
 
 /**
  * Bootstrapper API
@@ -16,15 +17,13 @@ var Bootstrapper = Class({
     bootstrapNodeType: function (nodeName, model, callback) {
         callback = callback || function () {};
 
-        var nodeInstance = model.findNodesByID(nodeName);
-        if (nodeInstance) {
-            var deployUnit = nodeInstance.typeDefinition.deployUnit;
-            if (deployUnit) {
-                // bootstrap node deploy unit
-                this.bootstrap(deployUnit, false, callback);
-
+        var node = model.findNodesByID(nodeName);
+        if (node) {
+            var meta = node.typeDefinition.select('deployUnits[name=*]/filters[name=platform,value=javascript]');
+            if (meta.size() > 0) {
+                this.bootstrap(meta.get(0).eContainer(), false, callback);
             } else {
-                return callback(new Error("'"+nodeName+"' NodeType deploy units not found. Have you forgotten to merge nodetype library ?"));
+                callback(new Error("No DeployUnit found for '"+nodeName+"' that matches the 'javascript' platform"));
             }
         } else {
             return callback(new Error("Unable to find '"+nodeName+"' in the given model."));
@@ -35,7 +34,7 @@ var Bootstrapper = Class({
      *
      * @param deployUnit
      * @param forceInstall [optional] boolean to indicate whether or not we should force re-installation
-     * @param callback(Error, Clazz, ContainerRoot)
+     * @param callback                function(Error, Clazz, ContainerRoot)
      */
     bootstrap: function (deployUnit, forceInstall, callback) {},
 
