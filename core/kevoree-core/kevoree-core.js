@@ -67,6 +67,7 @@ var Core = Class({
         if (nodeName.match(NAME_PATTERN)) {
             this.nodeName = nodeName;
             this.currentModel = this.factory.createContainerRoot();
+            this.factory.root(this.currentModel);
 
             var node = this.factory.createContainerNode();
             node.name = this.nodeName;
