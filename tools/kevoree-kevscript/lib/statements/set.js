@@ -16,10 +16,10 @@ module.exports = function (model, statements, stmt, opts, cb) {
             // dictionary value for attribute named attrName does not exist yet: create it and add it if possible
             var attrs = dic.eContainer().typeDefinition.dictionaryType.attributes.iterator();
             while (attrs.hasNext()) {
-                // by doing this, we will kinda fail silently if you are trying to set an inexisting
+                // by doing this, we will kinda fail silently if you are trying to set an inexistent
                 // attribute value in one of the instances
                 if (attrs.next().name === attrName) {
-                    dicValue = factory.createDictionaryValue();
+                    dicValue = factory.createValue();
                     dicValue.name = attrName;
                     dicValue.value = value;
                     dic.addValues(dicValue);
