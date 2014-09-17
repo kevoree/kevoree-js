@@ -23,7 +23,7 @@ module.exports = function (model, statements, stmt, opts, cb) {
                 if (prop) {
                     prop.value = value;
                 } else {
-                    prop = factory.createNetworkProperty();
+                    prop = factory.createValue();
                     prop.name = propName;
                     prop.value = value;
                     net.addValues(prop);
