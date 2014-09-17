@@ -13,6 +13,7 @@ var statements = {
     attach:                 require('./statements/attach'),
     addBinding:             require('./statements/addBinding'),
     delBinding:             require('./statements/delBinding'),
+    include:                require('./statements/include'),
     set:                    require('./statements/set'),
     network:                require('./statements/network'),
     remove:                 require('./statements/remove'),
@@ -68,7 +69,11 @@ var interpreter = function (ast, ctxModel, callback) {
     ast.children.forEach(function (child0) {
         child0.children.forEach(function (stmt) {
             tasks.push(function (done) {
-                statements[stmt.type](model, statements, stmt, options, done);
+                if (typeof (statements[stmt.type]) === 'function') {
+                    statements[stmt.type](model, statements, stmt, options, done);
+                } else {
+                    done(new Error('Unknown statement "'+stmt.type+'"'));
+                }
             });
         });
     });
