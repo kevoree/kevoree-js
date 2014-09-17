@@ -79,7 +79,10 @@ var generator = function generator(dirPath, quiet, callback) {
             var deployUnit = factory.createDeployUnit();
             deployUnit.name = pkgJson.name;
             deployUnit.version = pkgJson.version;
-            deployUnit.type = 'npm';
+            var type = factory.createValue();
+            type.name = 'platform';
+            type.value = 'javascript';
+            deployUnit.addFilters(type);
             modelPkg.addDeployUnits(deployUnit);
 
             // process main file
