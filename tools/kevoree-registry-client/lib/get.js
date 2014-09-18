@@ -41,30 +41,30 @@ function fromFQN(options, callback) {
     };
 
     var fqn, fqns = [];
-    if (options.fqns.length === 1) {
-        // using GET method
-        if (options.kevPath) {
-            fqn = options.fqns[0]
-        } else {
-            fqn = getUrlPath(options.fqns[0]);
-        }
-
-        reqOpts.method = 'GET';
-        reqOpts.path = '/v5/' + fqn;
-    } else {
-        // multiple FQN => need to use POST method
-        if (options.kevPath) {
-            fqns = JSON.stringify(options.fqns);
-        } else {
-            fqns = JSON.stringify(options.fqns.map(function (fqn) {
-                return getModelPath(fqn);
-            }));
-        }
-
+    if (options.kevPath) {
+        fqns = JSON.stringify(options.fqns);
         reqOpts.method = 'POST';
         reqOpts.path = '/';
         reqOpts.headers['Content-Type'] = 'application/json';
         reqOpts.headers['Content-Length'] = fqns.length;
+    } else {
+        if (options.fqns.length === 1) {
+            // using GET method
+            fqn = getUrlPath(options.fqns[0]);
+
+            reqOpts.method = 'GET';
+            reqOpts.path = '/v5/' + fqn;
+        } else {
+            // multiple FQN => need to use POST method
+            fqns = JSON.stringify(options.fqns.map(function (fqn) {
+                return getModelPath(fqn);
+            }));
+
+            reqOpts.method = 'POST';
+            reqOpts.path = '/';
+            reqOpts.headers['Content-Type'] = 'application/json';
+            reqOpts.headers['Content-Length'] = fqns.length;
+        }
     }
 
     var req = http.request(reqOpts, function (res) {
