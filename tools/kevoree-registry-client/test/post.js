@@ -7,7 +7,7 @@ describe('POST a model to Kevoree Registry', function () {
     this.timeout(5000);
 
     it('should post a model to registry', function (done) {
-        getModel({fqn: 'org.kevoree.library.defaultNodeTypes.JavaNode', version: '5.0.1'}, function (err, model) {
+        getModel({fqns: ['org.kevoree.library.defaultNodeTypes.JavaNode/5.0.1']}, function (err, model) {
             expect(err).to.be.a('null');
             expect(model).to.be.a('string');
 

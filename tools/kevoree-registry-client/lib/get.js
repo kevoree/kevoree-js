@@ -3,7 +3,7 @@ var http = require('http');
 
 /**
  *
- * @param {Object}   options    - fqn:       Fully Qualified Name of a TypeDefinition
+ * @param {Object}   options    - fqns:      Fully Qualified Names of Packages/DeployUnits/TypeDefinitions
  *                                           (e.g 'org.kevoree.library.js.JavascriptNode')
  *                              - [version]: TypeDefinition version (if version is not given, then '*' will be used)
  *                              - [type]:    Retrieved model type (default to 'json', but you can ask for 'xmi'
@@ -13,29 +13,10 @@ var http = require('http');
  * @param {Function} callback
  */
 function fromFQN(options, callback) {
-    options.version = options.version || '*';
     options.type    = options.type    || 'json';
-    options.parse   = (function () {
-        if (typeof(options.parse) === 'boolean') {
-            return options.parse;
-        } else {
-            return true;
-        }
-    })();
-
-    var fqn;
-    if (options.parse) {
-        fqn = options.fqn.split('.');
-        var tdef = fqn.pop();
-        fqn = fqn.join('/');
-        fqn += '/name=' + tdef + ',version=' + options.version;
-    } else {
-        fqn = options.fqn.replace(/\./g, '/');
-    }
 
     var reqOpts = {
         hostname: 'registry.kevoree.org',
-        path: '/v5/' + fqn,
         port: 80,
         headers: {
             Accept: (function () {
@@ -55,6 +36,25 @@ function fromFQN(options, callback) {
         withCredentials: false
     };
 
+    var fqn, fqns = [];
+    if (options.fqns.length === 1) {
+        // using GET method
+        fqn = getUrlPath(options.fqns[0]);
+
+        reqOpts.method = 'GET';
+        reqOpts.path = '/v5/' + fqn;
+    } else {
+        // multiple FQN => need to use POST method
+        fqns = JSON.stringify(options.fqns.map(function (fqn) {
+            return getModelPath(fqn);
+        }));
+
+        reqOpts.method = 'POST';
+        reqOpts.path = '/';
+        reqOpts.headers['Content-Type'] = 'application/json';
+        reqOpts.headers['Content-Length'] = fqns.length;
+    }
+
     var req = http.request(reqOpts, function (res) {
         switch (res.statusCode) {
             case 200:
@@ -63,7 +63,7 @@ function fromFQN(options, callback) {
                 res.on('end', function () {
                     switch (res.headers['content-type']) {
                         case 'application/json':
-                            callback(null, JSON.stringify(JSON.parse(data, null, 4)));
+                            callback(null, JSON.stringify(JSON.parse(data), null, 4));
                             break;
 
                         case 'application/vnd.xmi+xml':
@@ -80,7 +80,7 @@ function fromFQN(options, callback) {
                 break;
 
             case 404:
-                callback(new Error('Unable to find "'+options.fqn+'" on Kevoree registry'));
+                callback(new Error('Unable to find "'+options.fqns+'" on Kevoree registry'));
                 break;
 
             default:
@@ -92,7 +92,50 @@ function fromFQN(options, callback) {
         callback(err);
     });
 
+    if (fqns.length > 1) {
+        req.write(fqns);
+    }
+
     req.end();
+}
+
+function getModelPath(fqn) {
+    // check for version
+    fqn = fqn.split('/');
+    var vers;
+    if (fqn.length === 2) {
+        vers = fqn.pop();
+    }
+
+    fqn = fqn[0].split('.');
+    var last = fqn.pop();
+    fqn = 'packages[' + fqn.join(']/packages[') + ']/name=' + last;
+
+    if (vers) {
+        fqn += ',version=' + vers;
+    }
+
+    return fqn;
+}
+
+function getUrlPath(fqn) {
+    // check for version
+    fqn = fqn.split('/');
+    var vers;
+    if (fqn.length === 2) {
+        vers = fqn.pop();
+    }
+
+    fqn = fqn[0].split('.');
+    var last = fqn.pop();
+    fqn = fqn.join('/');
+    fqn += '/name=' + last;
+
+    if (vers) {
+        fqn += ',version=' + vers;
+    }
+
+    return fqn;
 }
 
 module.exports = fromFQN;
