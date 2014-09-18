@@ -49,9 +49,10 @@ describe('GET from Kevoree Registry', function () {
     it('should retrieve a merge between JavaNode/5.0.1 & WebEditor models from registry', function (done) {
         var opts = {
             fqns: [
-                'org.kevoree.library.defaultNodeTypes.JavaNode/5.0.1',
-                'org.kevoree.library.java.editor.WebEditor'
-            ]
+                'packages[org]/packages[kevoree]/packages[library]/packages[defaultNodeTypes]/typeDefinitions[name=JavaNode,version=5.0.1]',
+                '**/typeDefinitions[name=WebEditor]'
+            ],
+            kevPath: true
         };
         getModel(opts, function (err, modelStr) {
             expect(err).to.be.a('null');

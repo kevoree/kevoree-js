@@ -10,6 +10,10 @@ var http = require('http');
  *                                           or 'trace')
  *                              - [parse]:   If set to true, it will parse the last part of the fqn to get the
  *                                           TypeDefinition name from it (default: true)
+ *                              - [kevPath]: Boolean to tell whether or not the fqns should be parsed or if they are
+ *                                           already Kevoree model paths (default: false).
+ *                                           e.g  options.kevPath = true
+ *                                                => fqns array is supposed to contain real Kevoree model paths
  * @param {Function} callback
  */
 function fromFQN(options, callback) {
@@ -39,15 +43,23 @@ function fromFQN(options, callback) {
     var fqn, fqns = [];
     if (options.fqns.length === 1) {
         // using GET method
-        fqn = getUrlPath(options.fqns[0]);
+        if (options.kevPath) {
+            fqn = options.fqns[0]
+        } else {
+            fqn = getUrlPath(options.fqns[0]);
+        }
 
         reqOpts.method = 'GET';
         reqOpts.path = '/v5/' + fqn;
     } else {
         // multiple FQN => need to use POST method
-        fqns = JSON.stringify(options.fqns.map(function (fqn) {
-            return getModelPath(fqn);
-        }));
+        if (options.kevPath) {
+            fqns = JSON.stringify(options.fqns);
+        } else {
+            fqns = JSON.stringify(options.fqns.map(function (fqn) {
+                return getModelPath(fqn);
+            }));
+        }
 
         reqOpts.method = 'POST';
         reqOpts.path = '/';
