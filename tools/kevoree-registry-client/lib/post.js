@@ -12,9 +12,9 @@ function pushModel(options, callback) {
     options.type = options.type || 'json';
 
     var reqOpts = {
-        hostname: 'registry.kevoree.org',
+        hostname: 'localhost',
         path: '/deploy',
-        port: 80,
+        port: 8080,
         method: 'POST',
         headers: {
             'Content-Type': (function () {

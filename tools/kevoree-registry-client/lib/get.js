@@ -20,10 +20,27 @@ function fromFQN(options, callback) {
     options.type    = options.type    || 'json';
 
     var reqOpts = {
-        hostname: 'registry.kevoree.org',
-        port: 80,
-        headers: {
-            Accept: (function () {
+        hostname: 'localhost',
+        port: 8080,
+        headers: {},
+        withCredentials: false
+    };
+
+    var fqn, fqns = [];
+    if (options.kevPath) {
+        fqns = JSON.stringify(options.fqns);
+        reqOpts.method = 'POST';
+        reqOpts.path = '/';
+        reqOpts.headers['Content-Type'] = 'text/plain';
+        reqOpts.headers['Content-Length'] = fqns.length;
+    } else {
+        if (options.fqns.length === 1) {
+            // using GET method
+            fqn = getUrlPath(options.fqns[0]);
+
+            reqOpts.method = 'GET';
+            reqOpts.path = '/' + fqn;
+            reqOpts.Accept = (function () {
                 switch (options.type) {
                     default:
                     case 'json':
@@ -35,25 +52,7 @@ function fromFQN(options, callback) {
                     case 'trace':
                         return 'text/plain';
                 }
-            })()
-        },
-        withCredentials: false
-    };
-
-    var fqn, fqns = [];
-    if (options.kevPath) {
-        fqns = JSON.stringify(options.fqns);
-        reqOpts.method = 'POST';
-        reqOpts.path = '/';
-        reqOpts.headers['Content-Type'] = 'application/json';
-        reqOpts.headers['Content-Length'] = fqns.length;
-    } else {
-        if (options.fqns.length === 1) {
-            // using GET method
-            fqn = getUrlPath(options.fqns[0]);
-
-            reqOpts.method = 'GET';
-            reqOpts.path = '/v5/' + fqn;
+            })();
         } else {
             // multiple FQN => need to use POST method
             fqns = JSON.stringify(options.fqns.map(function (fqn) {
@@ -62,7 +61,7 @@ function fromFQN(options, callback) {
 
             reqOpts.method = 'POST';
             reqOpts.path = '/';
-            reqOpts.headers['Content-Type'] = 'application/json';
+            reqOpts.headers['Content-Type'] = 'text/plain';
             reqOpts.headers['Content-Length'] = fqns.length;
         }
     }
