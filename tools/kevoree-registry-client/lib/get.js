@@ -40,7 +40,7 @@ function fromFQN(options, callback) {
 
             reqOpts.method = 'GET';
             reqOpts.path = '/' + fqn;
-            reqOpts.Accept = (function () {
+            reqOpts.headers.Accept = (function () {
                 switch (options.type) {
                     default:
                     case 'json':
