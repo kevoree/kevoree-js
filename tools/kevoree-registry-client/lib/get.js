@@ -20,8 +20,8 @@ function fromFQN(options, callback) {
     options.type    = options.type    || 'json';
 
     var reqOpts = {
-        hostname: 'localhost',
-        port: 8080,
+        hostname: 'registry.kevoree.org',
+        port: 80,
         headers: {},
         withCredentials: false
     };
