@@ -54,6 +54,26 @@ module.exports = function (typeDef, obj) {
                 }
             }
 
+            switch (attr.datatype) {
+                default:
+                case 'string':
+                case kevoree.DataType.STRING:
+                    attr.datatype = kevoree.DataType.STRING;
+                    break;
+                case 'number':
+                case kevoree.DataType.INT:
+                case kevoree.DataType.FLOAT:
+                case kevoree.DataType.DOUBLE:
+                case kevoree.DataType.SHORT:
+                case kevoree.DataType.LONG:
+                    attr.datatype = kevoree.DataType.INT; // Who cares about what type it really is ?
+                    break;
+                case 'boolean':
+                case kevoree.DataType.BOOLEAN:
+                    attr.datatype = kevoree.DataType.BOOLEAN;
+                    break;
+            }
+
             // add attribute to dictionary
             dictionary.addAttributes(attr);
         }
