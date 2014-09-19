@@ -1,5 +1,4 @@
-add node0 : org.kevoree.library.js.JavascriptNode
-add node1 : org.kevoree.library.js.JavascriptNode/3.0.0-SNAPSHOT
+add node : org.kevoree.library.js.JavascriptNode
 
-add node0.child : org.kevoree.library.js.JavascriptNode
+//add node0.child : org.kevoree.library.js.JavascriptNode
 //add sync : org.kevoree.library.js.WebSocketGroup

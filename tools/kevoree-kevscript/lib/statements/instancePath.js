@@ -24,7 +24,11 @@ module.exports = function (model, statements, stmt, opts) {
          */
         expect: function (min, max, callback) {
             if (instancePath.length > max || instancePath.length < min) {
-                return callback(new Error('InstancePath does not match requirements (path: '+instancePath.join('.')+', length: '+instancePath.length+', min: '+min+', max: '+max+')'));
+                var err = new Error('InstancePath does not match requirements (path: '+instancePath.join('.')+', length: '+instancePath.length+', min: '+min+', max: '+max+')');
+                err.pathLength = instancePath.length;
+                err.expectedMin = min;
+                err.expectedMax = max;
+                return callback(err);
             }
 
             instancePath.unshift(null); // prepend null error value to params array

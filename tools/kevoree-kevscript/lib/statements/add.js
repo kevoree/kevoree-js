@@ -126,8 +126,8 @@ module.exports = function (model, statements, stmt, opts, done) {
                 for (var i in nameList) {
                     nameList[i].expect(2, 3, function (err, namespace, nodeName, compName) {
                         if (err) {
-                            err.message += ' (add '+nameList[i].toString()+' : '+getFQN(tDef)+')';
-                            return done(err);
+                            done(new Error('Component instances must be added to Node instances (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
+                            return;
                         }
 
                         if (namespace) {
