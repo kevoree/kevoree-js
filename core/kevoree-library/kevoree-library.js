@@ -12870,7 +12870,14 @@ if (!Kotlin.modules['kevoree']) {
                   this.internal_state(Kotlin.equals('true', value) || Kotlin.equals(true, value), fireEvents);
                 }
                  else if (refName === _.org.kevoree.util.Constants.Att_datatype) {
-                  this.internal_datatype(value, fireEvents);
+                  var convValue;
+                  if (Kotlin.isType(value, _.org.kevoree.DataType) || value == null) {
+                    convValue = value;
+                  }
+                   else {
+                    convValue = _.org.kevoree.DataType.object.valueOf(value.toString());
+                  }
+                  this.internal_datatype(convValue, fireEvents);
                 }
                  else if (refName === _.org.kevoree.util.Constants.Att_fragmentDependant) {
                   this.internal_fragmentDependant(Kotlin.equals('true', value) || Kotlin.equals(true, value), fireEvents);

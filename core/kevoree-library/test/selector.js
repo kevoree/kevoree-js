@@ -28,6 +28,8 @@ describe('KMF selectors: tests suite', function () {
         expect(tdef.name).to.equal(TDEF);
         expect(tdef.version).to.equal(TDEF_VERS);
     });
+
+    // TODO add more tests
 });
 
 function createModel() {

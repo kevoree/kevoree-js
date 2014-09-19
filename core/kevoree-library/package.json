@@ -1,6 +1,6 @@
 {
   "name": "kevoree-library",
-  "version": "5.0.3",
+  "version": "5.0.4",
   "description": "Kevoree Library - Generated with KMF and Kotlin JS Compiler",
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "main": "./kevoree-library.js",
