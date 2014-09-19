@@ -6,15 +6,20 @@ var http = require('http');
  * @param {Object}   options    - model   String representation of the model to push (JSON, xmi or trace)
  *                              - [type]  String for the Content-Type of your model (default: json)
  *                                        This "type" can be [json, xmi, trace]
+ *                              - [host]  Hostname of the request (default: 'registry.kevoree.org')
+ *                              - [port]  Port of the request (default: 80)
  * @param {Function} callback
  */
 function pushModel(options, callback) {
     options.type = options.type || 'json';
+    options.host = options.host || 'registry.kevoree.org';
+    options.port = options.port || 80;
+
 
     var reqOpts = {
-        hostname: 'registry.kevoree.org',
+        hostname: options.host,
+        port: options.port,
         path: '/deploy',
-        port: 80,
         method: 'POST',
         headers: {
             'Content-Type': (function () {

@@ -14,14 +14,18 @@ var http = require('http');
  *                                           already Kevoree model paths (default: false).
  *                                           e.g  options.kevPath = true
  *                                                => fqns array is supposed to contain real Kevoree model paths
+ *                              - [host]:    Hostname of the request (default: 'registry.kevoree.org')
+ *                              - [port]:    Port of the request (default: 80)
  * @param {Function} callback
  */
 function fromFQN(options, callback) {
-    options.type    = options.type    || 'json';
+    options.type    = options.type  || 'json';
+    options.host    = options.host  || 'registry.kevoree.org';
+    options.port    = options.port  || 80;
 
     var reqOpts = {
-        hostname: 'registry.kevoree.org',
-        port: 80,
+        hostname: options.host,
+        port: options.port,
         headers: {},
         withCredentials: false
     };
@@ -74,7 +78,7 @@ function fromFQN(options, callback) {
                 res.on('end', function () {
                     switch (res.headers['content-type']) {
                         case 'application/json':
-                            callback(null, JSON.stringify(JSON.parse(data), null, 4));
+                            callback(null, data);
                             break;
 
                         case 'application/vnd.xmi+xml':
@@ -120,11 +124,13 @@ function getModelPath(fqn) {
 
     fqn = fqn[0].split('.');
     var last = fqn.pop();
-    fqn = 'packages[' + fqn.join(']/packages[') + ']/name=' + last;
+    fqn = 'packages[' + fqn.join(']/packages[') + ']/*[name=' + last;
 
     if (vers) {
         fqn += ',version=' + vers;
     }
+
+    fqn += ']';
 
     return fqn;
 }
