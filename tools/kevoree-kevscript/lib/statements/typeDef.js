@@ -11,19 +11,6 @@ module.exports = function (model, statements, stmt, opts, cb) {
         version = statements[stmt.children[1].type](model, statements, stmt.children[1], opts, cb);
     }
 
-//    fqn = fqn.split('.');
-//    var name = fqn.pop();
-//
-//    var path = 'packages[';
-//    for (var i=0; i < fqn.length; i++) {
-//        if (i === fqn.length -1) {
-//            path += fqn[i] + ']/typeDefinitions[';
-//        } else {
-//            path += fqn[i] + ']/packages[';
-//        }
-//    }
-//    path += 'name=' + name + ',version=' + version + ']';
-
     if (fqn.split('.').length === 1) {
         // prevent users from specifying 'org.kevoree.library' on TypeDefinition
         fqn = 'org.kevoree.library.'+fqn;
@@ -36,7 +23,7 @@ module.exports = function (model, statements, stmt, opts, cb) {
     var path = getModelPath(fqn);
     var tdefs = model.select(path).array;
     if (tdefs.length === 0) {
-        // retrieve model from registry.kevoree.org
+        // retrieve model from registry.kevoree.org because it is not in the current model
         var options = {fqns: [fqn]};
         getModel(options, function (err, tdefModel) {
             if (err) {
@@ -73,10 +60,10 @@ module.exports = function (model, statements, stmt, opts, cb) {
         });
 
     } else if (tdefs.length === 1) {
-        // this version is already in the model
+        // there is 1 availability for that TDef
         cb(null, tdefs[0]);
     } else {
-        // take the greater version
+        // there are multiple version of this TDef: take the greater version
         tdef = tdefs[0];
         for (var j=0; j < tdefs.length; j++) {
             if (semver.gt(tdefs[j].version, tdef.version)) {

@@ -14,20 +14,22 @@ module.exports = function (model, statements, stmt, opts, done) {
                 if (nodeName !== '*') {
                     var node = factory.createContainerNode();
                     node.name = nodeName;
-                    node.typeDefinition = tDef;
+                    node.typeDefinition = model.findByPath(tDef.path());
                     node.started = true;
                     model.addNodes(node);
-                    if (parentNode) parentNode.addHosts(node);
+                    if (parentNode) {
+                        parentNode.addHosts(node);
+                    }
 
                     if (namespace) {
                         if (opts.namespaces[namespace]) {
                             opts.namespaces[namespace][nodeName] = node;
                         } else {
-                            return done(new Error('Unable to find "'+namespace+'" namespace. Did you create it? (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
+                            done(new Error('Unable to find "'+namespace+'" namespace. Did you create it? (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
                         }
                     }
                 } else {
-                    return done(new Error('You cannot name a node instance "*" (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
+                    done(new Error('You cannot name a node instance "*" (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
                 }
             }
 
@@ -37,25 +39,26 @@ module.exports = function (model, statements, stmt, opts, done) {
                     nameList[i].expect(1, 3, function (err, namespace, parentName, childName) {
                         if (err) {
                             err.message += ' (add '+nameList[i].toString()+' : '+getFQN(tDef)+')';
-                            return done(err);
+                            done(err);
+                            return;
                         }
 
                         if (namespace) {
                             // TODO handle namespaces
-                            return done(new Error());
+                            done(new Error());
                         } else {
                             if (parentName) {
                                 if (parentName === '*') {
                                     // parentName can't be '*' because each node name must be unique within a model so you can't
                                     // duplicate the same childName on each parentNode
-                                    return done(new Error('You can not refer to all node instances with \'*\' when adding child node instances. (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
+                                    done(new Error('You can not refer to all node instances with \'*\' when adding child node instances. (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
                                 } else {
                                     var parentNode = model.findNodesByID(parentName);
                                     if (parentNode) {
                                         addNodeInstance(namespace, childName, parentNode);
 
                                     } else {
-                                        return done(new Error('Unable to find parent node instance "'+parentName+'" in model. Did you create it? (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
+                                        done(new Error('Unable to find parent node instance "'+parentName+'" in model. Did you create it? (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
                                     }
                                 }
 
@@ -71,13 +74,14 @@ module.exports = function (model, statements, stmt, opts, done) {
                     nameList[i].expect(1, 2, function (err, namespace, instanceName) {
                         if (err) {
                             err.message += ' (add '+nameList[i].toString()+' : '+getFQN(tDef)+')';
-                            return done(err);
+                            done(err);
+                            return;
                         }
 
                         if (instanceName !== '*') {
                             var group = factory.createGroup();
                             group.name = instanceName;
-                            group.typeDefinition = tDef;
+                            group.typeDefinition = model.findByPath(tDef.path());
                             group.started = true;
                             model.addGroups(group);
 
@@ -85,11 +89,11 @@ module.exports = function (model, statements, stmt, opts, done) {
                                 if (opts.namespaces[namespace]) {
                                     opts.namespaces[namespace][instanceName] = group;
                                 } else {
-                                    return done(new Error('Unable to find "'+namespace+'" namespace. Did you create it? (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
+                                    done(new Error('Unable to find "'+namespace+'" namespace. Did you create it? (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
                                 }
                             }
                         } else {
-                            return done(new Error('You cannot name a node instance "*" (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
+                            done(new Error('You cannot name a node instance "*" (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
                         }
                     });
                 }
@@ -99,13 +103,14 @@ module.exports = function (model, statements, stmt, opts, done) {
                     nameList[i].expect(1, 2, function (err, namespace, instanceName) {
                         if (err) {
                             err.message += ' (add '+nameList[i].toString()+' : '+getFQN(tDef)+')';
-                            return done(err);
+                            done(err);
+                            return;
                         }
 
                         if (instanceName !== '*') {
                             var chan = factory.createChannel();
                             chan.name = instanceName;
-                            chan.typeDefinition = tDef;
+                            chan.typeDefinition = model.findByPath(tDef.path());
                             chan.started = true;
                             model.addHubs(chan);
 
@@ -113,11 +118,11 @@ module.exports = function (model, statements, stmt, opts, done) {
                                 if (opts.namespaces[namespace]) {
                                     opts.namespaces[namespace][instanceName] = chan;
                                 } else {
-                                    return done(new Error('Unable to find "'+namespace+'" namespace. Did you create it? (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
+                                    done(new Error('Unable to find "'+namespace+'" namespace. Did you create it? (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
                                 }
                             }
                         } else {
-                            return done(new Error('You cannot name a node instance "*" (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
+                            done(new Error('You cannot name a node instance "*" (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
                         }
                     });
                 }
@@ -132,10 +137,10 @@ module.exports = function (model, statements, stmt, opts, done) {
 
                         if (namespace) {
                             // TODO handle namespace
-                            return done(new Error('Namespaces are not handled yet :/ Sorry'));
+                            done(new Error('Namespaces are not handled yet :/ Sorry'));
 
                         } else if (compName === '*') {
-                            return done(new Error('You cannot name a component instance "*" (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
+                            done(new Error('You cannot name a component instance "*" (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
 
                         } else {
                             var comp;
@@ -145,7 +150,7 @@ module.exports = function (model, statements, stmt, opts, done) {
                                 while (nodes.hasNext()) {
                                     comp = factory.createComponentInstance();
                                     comp.name = compName;
-                                    comp.typeDefinition = tDef;
+                                    comp.typeDefinition = model.findByPath(tDef.path());;
                                     comp.started = true;
                                     nodes.next().addComponents(comp);
                                 }
@@ -155,12 +160,12 @@ module.exports = function (model, statements, stmt, opts, done) {
                                 if (node) {
                                     comp = factory.createComponentInstance();
                                     comp.name = compName;
-                                    comp.typeDefinition = tDef;
+                                    comp.typeDefinition = model.findByPath(tDef.path());;
                                     comp.started = true;
                                     node.addComponents(comp);
 
                                 } else {
-                                    return done(new Error('Unable to find container node "'+nodeName+'" in current model (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
+                                    done(new Error('Unable to find container node "'+nodeName+'" in current model (add '+nameList[i].toString()+' : '+getFQN(tDef)+')'));
                                 }
                             }
                         }
@@ -168,7 +173,8 @@ module.exports = function (model, statements, stmt, opts, done) {
                 }
 
             } else {
-                return done(new Error('TypeDefinition "'+tDef.name+'/'+tDef.version+'" doesn\'t exist in current model. (Maybe you should add an "include" for it?)'));
+                done(new Error('TypeDefinition "'+tDef.name+'/'+tDef.version+'" doesn\'t exist in current model. (Maybe you should add an "include" for it?)'));
+                return;
             }
             done();
         }
