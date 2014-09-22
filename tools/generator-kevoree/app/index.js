@@ -48,13 +48,23 @@ KevoreeGenerator.prototype.askFor = function askFor() {
                 if (matcher(answer, pattern)) return true;
                 else return 'Allowed pattern for name is '+pattern.toString();
             }
+        },
+        {
+            name: 'kevoreePackage',
+            message: 'Choose a package name for your module? (i.e my.package.name)',
+            validate: function (answer) {
+                var pattern = /[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*/;
+                if (matcher(answer, pattern)) return true;
+                else return 'Allowed pattern for package is '+pattern.toString();
+            }
         }
     ];
 
     this.prompt(prompts, function (props) {
-        this.rawEntityType = props.entityType;
-        this.entityType    = ENTITY_REAL_TYPES[this.rawEntityType];
-        this.entityName    = props.entityName;
+        this.rawEntityType  = props.entityType;
+        this.entityType     = ENTITY_REAL_TYPES[this.rawEntityType];
+        this.entityName     = props.entityName;
+        this.kevoreePackage = props.kevoreePackage;
 
         this.prompt([
             {

@@ -2,6 +2,9 @@
     "name": "<%= packageName %>",
     "version": "0.1.0",
     "main": "./lib/<%= entityName %>.js",
+    "kevoree": {
+        "package": "<%= kevoreePackage %>"
+    },
     "scripts": {
         "prepublish": "grunt"
     },
@@ -11,11 +14,12 @@
         "comp"
     ],
     "dependencies": {
-        "kevoree-entities": "^1.0.0"
+        "kevoree-entities": "^3.0.0"
     },
     "devDependencies": {
         "grunt": "^0.4.1",
-        "grunt-kevoree": "^1.0.0",
-        "grunt-kevoree-genmodel" : "^1.0.0"
+        "grunt-kevoree": "^3.0.0",
+        "grunt-kevoree-genmodel" : "^2.0.0",
+        "grunt-kevoree-registry" : "^2.0.0"
     }
 }

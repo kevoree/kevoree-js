@@ -15,6 +15,11 @@ module.exports = function (grunt) {
             }
         },
 
+        // pushes your model on http://registry.kevoree.org
+        kevoree_registry: {
+            src: 'kevlib.json'
+        },
+
         kevoree: {
             run: {
                 kevscript: 'kevs/main.kevs'
@@ -24,7 +29,8 @@ module.exports = function (grunt) {
 
     grunt.loadNpmTasks('grunt-kevoree');
     grunt.loadNpmTasks('grunt-kevoree-genmodel');
+    grunt.loadNpmTasks('grunt-kevoree-registry');
 
-    grunt.registerTask('default', ['kevoree_genmodel']);
+    grunt.registerTask('default', ['kevoree_genmodel', 'kevoree_registry']);
     grunt.registerTask('kev', ['kevoree']);
 };
