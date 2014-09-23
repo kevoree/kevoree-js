@@ -294,8 +294,7 @@ var Core = Class({
                                 }
                             });
                         } catch (err) {
-                            err.message = 'Something went wrong while deploying model.\n'+err.message;
-                            core.emitter.emit('error', err);
+                            core.emitter.emit('deployError', err);
                         }
 
                     } else {
