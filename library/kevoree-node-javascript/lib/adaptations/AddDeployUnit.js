@@ -10,7 +10,6 @@ module.exports = AdaptationPrimitive.extend({
 
     /**
      *
-     * @param _super AdaptationPrimitive parent
      * @param callback function: if this function first parameter != null it means that there is an error
      */
     execute: function (callback) {

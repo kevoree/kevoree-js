@@ -109,7 +109,7 @@ var AdaptationEngine = Class({
             }
         }
 
-        // return sorted command list (sort by COMMAND_RANK in order to process adaptations properly)
+//        return sorted command list (sort by COMMAND_RANK in order to process adaptations properly)
 //        cmds = this.sortCommands(cmdList);
 //        for (var j=0; j < cmds.length; j++) {
 //            console.log('CMD >>><<< ', cmds[j].toString(), cmds[j].modelElement.path());
@@ -123,7 +123,7 @@ var AdaptationEngine = Class({
      * @param modelElement
      */
     processTrace: function (trace, modelElement) {
-        var cmds = [], currentModel, instance;
+        var cmds = [], currentModel, instance, du, meta;
 
         switch (trace.refName) {
             case 'groups':
@@ -132,8 +132,16 @@ var AdaptationEngine = Class({
                 switch (trace.traceType.name()) {
                     case 'ADD':
                         if (this.isRelatedToPlatform(modelElement)) {
-                            if (!this.modelObjMapper.getObject(modelElement.typeDefinition.deployUnit.path())) {
-                                cmds.push(this.createCommand(AddDeployUnit, modelElement.typeDefinition.deployUnit));
+                            meta = modelElement.typeDefinition.select('deployUnits[name=*]/filters[name=platform,value=javascript]');
+                            if (meta.size() > 0) {
+                                du = meta.get(0).eContainer();
+                                if (!this.modelObjMapper.getObject(du.path())) {
+                                    cmds.push(this.createCommand(AddDeployUnit, du));
+                                }
+                            } else {
+                                var err = new Error("no DeployUnit found for '"+modelElement.name+"' that matches the 'javascript' platform");
+                                err.className = this.toString();
+                                throw err;
                             }
 
                             if (!this.modelObjMapper.getObject(modelElement.path())) {
@@ -172,7 +180,7 @@ var AdaptationEngine = Class({
 
                     case 'REMOVE':
                         currentModel = this.node.getKevoreeCore().getCurrentModel();
-                        var du = currentModel.findByPath(trace.objPath);
+                        du = currentModel.findByPath(trace.objPath);
                         if (du) {
                             cmds.push(this.createCommand(RemoveDeployUnit, du));
                         }
@@ -188,8 +196,16 @@ var AdaptationEngine = Class({
 
                             if (modelElement.hub && this.isRelatedToPlatform(modelElement.hub)) {
                                 if (!this.modelObjMapper.getObject(modelElement.hub.path())) {
-                                    if (!this.modelObjMapper.getObject(modelElement.hub.typeDefinition.deployUnit.path())) {
-                                        cmds.push(this.createCommand(AddDeployUnit, modelElement.hub.typeDefinition.deployUnit));
+                                    meta = modelElement.hub.typeDefinition.select('deployUnits[name=*]/filters[name=platform,value=javascript]');
+                                    if (meta.size() > 0) {
+                                        du = meta.get(0).eContainer();
+                                        if (!this.modelObjMapper.getObject(du.path())) {
+                                            cmds.push(this.createCommand(AddDeployUnit, du));
+                                        }
+                                    } else {
+                                        var e = new Error("no DeployUnit found for '"+modelElement.hub.name+"' that matches the 'javascript' platform");
+                                        e.className = this.toString();
+                                        throw e;
                                     }
 
                                     if (modelElement.hub.dictionary) {
@@ -291,8 +307,10 @@ var AdaptationEngine = Class({
                 }
                 break;
 
-            case 'value':
-                if (trace.traceType.name() === 'SET' && Kotlin.isType(modelElement, kevoree.DictionaryValue)) {
+            case 'name':
+                if (trace.traceType.name() === 'SET' &&
+                    Kotlin.isType(modelElement, kevoree.Value) &&
+                    Kotlin.isType(modelElement.eContainer(), kevoree.Dictionary)) {
                     if (this.isRelatedToPlatform(modelElement)) {
                         instance = modelElement.eContainer().eContainer();
                         if (instance.started && !instance.host) {
@@ -345,7 +363,7 @@ var AdaptationEngine = Class({
                 return this.isRelatedToPlatform(element.port.eContainer());
             }
 
-        } else if (Kotlin.isType(element, kevoree.DictionaryValue)) {
+        } else if (Kotlin.isType(element, kevoree.Value)) {
             return this.isRelatedToPlatform(element.eContainer().eContainer());
 
         } else if (Kotlin.isType(element, kevoree.Port)) {

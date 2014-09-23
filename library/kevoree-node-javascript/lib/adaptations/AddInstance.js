@@ -20,7 +20,7 @@ module.exports = AdaptationPrimitive.extend({
             // platform related check
             // already added check
             if (!this.mapper.hasObject(this.modelElement.path())) {
-                var moduleName = this.mapper.getObject(this.modelElement.typeDefinition.deployUnit.path());
+                var moduleName = this.mapper.getObject(this.modelElement.typeDefinition.select('deployUnits[name=*]/filters[name=platform,value=javascript]').get(0).eContainer().path());
                 if ((moduleName !== undefined) && (moduleName !== null)) {
                     try {
                         var InstanceClass = require(moduleName);
