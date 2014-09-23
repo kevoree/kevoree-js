@@ -39,6 +39,13 @@ var NodeJSRuntime = Class({
             deploying = true;
         });
 
+        this.kCore.on('deployError', function (err) {
+            self.log.error(err.className, err.stack);
+            self.log.error(self.toString(), 'Deploy failed. Adaptation stopped.');
+            deploying = false;
+            self.emitter.emit('deployError', err);
+        });
+
         // kevoree core deployed event listener
         this.kCore.on('deployed', function (model) {
             deploying = false;
@@ -52,12 +59,10 @@ var NodeJSRuntime = Class({
 
         // kevoree core error event listener
         this.kCore.on('error', function (err) {
-            self.log.error(err.stack);
             self.emitter.emit('error', err);
         });
 
         this.kCore.on('rollbackError', function (err) {
-            self.log.error(err.stack);
             self.emitter.emit('rollbackError', err);
         });
 
@@ -67,7 +72,6 @@ var NodeJSRuntime = Class({
         });
 
         this.kCore.on('adaptationError', function (err) {
-            self.log.error(err.stack);
             deploying = false;
             self.emitter.emit('adaptationError', err);
             if (wannaStop) {
@@ -137,6 +141,10 @@ var NodeJSRuntime = Class({
             }.bind(this));
 
         }.bind(this));
+    },
+
+    once: function (event, callback) {
+        this.emitter.once(event, callback);
     },
 
     on: function (event, callback) {
