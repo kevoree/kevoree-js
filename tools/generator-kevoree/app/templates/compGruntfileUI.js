@@ -15,6 +15,10 @@ module.exports = function (grunt) {
             }
         },
 
+        kevoree_registry: {
+            src: 'kevlib.json'
+        },
+
         // generates compiled version of your views in Javascript
         // in order to use them within your code
         // You can, then, do something like this:

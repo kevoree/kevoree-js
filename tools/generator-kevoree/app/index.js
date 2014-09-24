@@ -53,7 +53,7 @@ KevoreeGenerator.prototype.askFor = function askFor() {
             name: 'kevoreePackage',
             message: 'Choose a package name for your module? (i.e my.package.name)',
             validate: function (answer) {
-                var pattern = /[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*/;
+                var pattern = /[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*/g;
                 if (matcher(answer, pattern)) return true;
                 else return 'Allowed pattern for package is '+pattern.toString();
             }
