@@ -7,6 +7,7 @@
   },
   "private": true,
   "dependencies": {
-    "kevoree-entities": "^2.2.1"
+    "kevoree-entities": "^3.0.1",
+    "kevoree-library": "^5.0.4"
   }
 }

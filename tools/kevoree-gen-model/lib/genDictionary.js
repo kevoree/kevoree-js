@@ -1,5 +1,6 @@
 var KevoreeEntity = require('kevoree-entities').KevoreeEntity;
 var kevoree = require('kevoree-library').org.kevoree;
+var Kotlin = require('kevoree-kotlin');
 
 /**
  * Generates dictionary and adds it to given typeDef
@@ -28,23 +29,7 @@ module.exports = function (typeDef, obj) {
                 attr.defaultValue = objAttr.defaultValue;
             }
 
-            if (typeof(objAttr.datatype) !== 'undefined') {
-                // datatype is defined
-                if (attr.defaultValue) {
-                    // double-check with type of given defaultValue
-                    if (objAttr.datatype === typeof (attr.defaultValue)) {
-                        attr.datatype = objAttr.datatype;
-                    } else {
-                        // and take defaultValue type if not equal
-                        attr.datatype = typeof (attr.defaultValue);
-                    }
-
-                } else {
-                    attr.datatype = objAttr.datatype;
-                }
-
-            } else {
-                // datatype is not defined
+            if (typeof (objAttr.datatype) === 'undefined') {
                 // try to guess with given defaultValue
                 if (typeof (attr.defaultValue) !== 'undefined') {
                     attr.datatype = typeof (attr.defaultValue);
@@ -52,26 +37,28 @@ module.exports = function (typeDef, obj) {
                     // if no datatype specified AND no given defaultValue => use string as datatype
                     attr.datatype = 'string';
                 }
+            } else {
+                if (Kotlin.isType(objAttr.datatype, kevoree.DataType)) {
+                    attr.datatype = objAttr.datatype.name();
+                }
             }
 
-            switch (attr.datatype) {
-                default:
-                case 'string':
-                case kevoree.DataType.object.STRING:
-                    attr.datatype = kevoree.DataType.object.STRING;
-                    break;
-                case 'number':
-                case kevoree.DataType.object.INT:
-                case kevoree.DataType.object.FLOAT:
-                case kevoree.DataType.object.DOUBLE:
-                case kevoree.DataType.object.SHORT:
-                case kevoree.DataType.object.LONG:
-                    attr.datatype = kevoree.DataType.object.INT; // Who cares about what type it really is ?
-                    break;
-                case 'boolean':
-                case kevoree.DataType.object.BOOLEAN:
-                    attr.datatype = kevoree.DataType.object.BOOLEAN;
-                    break;
+            if (attr.datatype) {
+                // datatype is defined
+                switch (attr.datatype) {
+                    case 'number':
+                        attr.datatype = kevoree.DataType.object.INT.name();
+                        break;
+
+                    case 'boolean':
+                        attr.datatype = kevoree.DataType.object.BOOLEAN.name();
+                        break;
+
+                    case 'string':
+                        attr.datatype = kevoree.DataType.object.STRING.name();
+                        break;
+                }
+
             }
 
             // add attribute to dictionary
