@@ -9,6 +9,7 @@
 'use strict';
 
 var Kevoree         = require('kevoree-nodejs-runtime'),
+    kevoree         = require('kevoree-library').org.kevoree,
     KevoreeLogger   = require('kevoree-commons').KevoreeLogger,
     NPMResolver     = require('kevoree-resolvers').NPMResolver,
     KevScript       = require('kevoree-kevscript'),
