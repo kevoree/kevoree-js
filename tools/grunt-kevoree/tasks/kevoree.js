@@ -68,7 +68,10 @@ module.exports = function(grunt) {
 
         runtime.on('started', function () {
             var kevs = grunt.file.read(kevscriptPath);
-            kevsEngine.parse(kevs, function (err, model) {
+            var model = grunt.file.read('kevlib.json');
+            var factory = new kevoree.factory.DefaultKevoreeFactory();
+            var loader = factory.createJSONLoader();
+            kevsEngine.parse(kevs, loader.loadModelFromString(model).get(0), function (err, model) {
                 if (err) {
                     grunt.fail.fatal('"grunt-kevoree" unable to parse KevScript\n'+err.message);
                     done();
