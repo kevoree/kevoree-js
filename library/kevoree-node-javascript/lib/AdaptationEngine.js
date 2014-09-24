@@ -308,6 +308,7 @@ var AdaptationEngine = Class({
                 break;
 
             case 'name':
+            case 'value':
                 if (trace.traceType.name() === 'SET' &&
                     Kotlin.isType(modelElement, kevoree.Value) &&
                     Kotlin.isType(modelElement.eContainer(), kevoree.Dictionary)) {
