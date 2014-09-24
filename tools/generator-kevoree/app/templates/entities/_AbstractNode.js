@@ -16,20 +16,26 @@ var <%= entityName %> = JavascriptNode.extend({
 
     /**
      * this method will be called by the Kevoree platform when your group has to start
+     * @param {Function} done
      */
-    start: function () {
-        this._super();
-        // TODO
-        this.log.debug(this.toString(), 'START');
+    start: function (done) {
+        this._super(function () {
+            // TODO
+            this.log.debug(this.toString(), 'START');
+            done();
+        }.bind(this));
     },
 
     /**
      * this method will be called by the Kevoree platform when your group has to stop
+     * @param {Function} done
      */
-    stop: function () {
-        this._super();
-        // TODO
-        this.log.debug(this.toString(), 'STOP');
+    stop: function (done) {
+        this._super(function () {
+            // TODO
+            this.log.debug(this.toString(), 'STOP');
+            done();
+        }.bind(this));
     }
 });
 

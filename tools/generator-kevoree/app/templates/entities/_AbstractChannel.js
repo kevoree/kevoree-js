@@ -18,21 +18,25 @@ var <%= entityName %> = <%= entityType %>.extend({
     //},
 
     /**
-    * this method will be called by the Kevoree platform when your channel has to start
-    */
-    start: function () {
-        this._super();
-        // TODO
-        this.log.debug(this.toString(), 'START');
+     * this method will be called by the Kevoree platform when your channel has to start
+     * @param {Function} done
+     */
+    start: function (done) {
+        this._super(function () {
+            // TODO
+            this.log.debug(this.toString(), 'START');
+        }.bind(this));
     },
 
     /**
-    * this method will be called by the Kevoree platform when your channel has to stop
-    */
-    stop: function () {
-        this._super();
-        // TODO
-        this.log.debug(this.toString(), 'STOP');
+     * this method will be called by the Kevoree platform when your channel has to stop
+     * @param {Function} done
+     */
+    stop: function (done) {
+        this._super(function () {
+            // TODO
+            this.log.debug(this.toString(), 'STOP');
+        }.bind(this));
     },
 
     /**
