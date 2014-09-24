@@ -40,7 +40,7 @@ var NodeJSRuntime = Class({
         });
 
         this.kCore.on('deployError', function (err) {
-            self.log.error(err.className, err.stack);
+            self.log.error(err.className || self.toString(), err.stack);
             self.log.error(self.toString(), 'Deploy failed. Adaptation stopped.');
             deploying = false;
             self.emitter.emit('deployError', err);
