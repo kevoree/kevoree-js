@@ -1,5 +1,4 @@
-var Class = require('pseudoclass'),
-    async = require('async');
+var Class = require('pseudoclass');
 
 /**
  * Bootstrapper API
