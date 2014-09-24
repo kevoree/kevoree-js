@@ -36,7 +36,7 @@ var NPMResolver = Resolver.extend({
         var npmiLoad = function () {
             npmi(options, function (err) {
                 if (err) {
-                    this.log.error(this.toString(), err.message+'@'+options.version);
+                    this.log.error(this.toString(), err.message);
                     callback(new Error("Resolve failed"));
                     return;
                 }
