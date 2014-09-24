@@ -1,7 +1,3 @@
-include npm:kevoree-node-javascript:latest
-include npm:kevoree-group-websocket:latest
-include npm:kevoree-comp-fakeconsole:latest
-
 add node0 : JavascriptNode
 add sync : WebSocketGroup
 add node0.comp : FakeConsole
