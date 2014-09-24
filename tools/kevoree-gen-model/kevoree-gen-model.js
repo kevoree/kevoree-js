@@ -48,7 +48,7 @@ module.exports = function (dirPath, quiet, callback) {
             process.stdout.write('Package:         ' + pkg+'\n');
             process.stdout.write('TypeDefinition:  ' + tdef.name+'\n');
             process.stdout.write('Version:         ' + tdef.version+'\n');
-            process.stdout.write('DeployUnit:      ' + deployUnit.type+':' + deployUnit.name+'\n');
+            process.stdout.write('DeployUnit:      ' + deployUnit.name+'\n');
             if (tdef.dictionaryType) {
                 // dictionary logging
                 var dic = [];

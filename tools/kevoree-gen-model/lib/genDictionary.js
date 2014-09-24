@@ -57,20 +57,20 @@ module.exports = function (typeDef, obj) {
             switch (attr.datatype) {
                 default:
                 case 'string':
-                case kevoree.DataType.STRING:
-                    attr.datatype = kevoree.DataType.STRING;
+                case kevoree.DataType.object.STRING:
+                    attr.datatype = kevoree.DataType.object.STRING;
                     break;
                 case 'number':
-                case kevoree.DataType.INT:
-                case kevoree.DataType.FLOAT:
-                case kevoree.DataType.DOUBLE:
-                case kevoree.DataType.SHORT:
-                case kevoree.DataType.LONG:
-                    attr.datatype = kevoree.DataType.INT; // Who cares about what type it really is ?
+                case kevoree.DataType.object.INT:
+                case kevoree.DataType.object.FLOAT:
+                case kevoree.DataType.object.DOUBLE:
+                case kevoree.DataType.object.SHORT:
+                case kevoree.DataType.object.LONG:
+                    attr.datatype = kevoree.DataType.object.INT; // Who cares about what type it really is ?
                     break;
                 case 'boolean':
-                case kevoree.DataType.BOOLEAN:
-                    attr.datatype = kevoree.DataType.BOOLEAN;
+                case kevoree.DataType.object.BOOLEAN:
+                    attr.datatype = kevoree.DataType.object.BOOLEAN;
                     break;
             }
 
