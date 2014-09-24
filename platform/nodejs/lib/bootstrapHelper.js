@@ -25,7 +25,7 @@ var bootstrapModel = function bootstrapModel(options, callback) {
             var nodeInstance = factory.createContainerNode();
             nodeInstance.name = options.nodeName;
             nodeInstance.started = true;
-            var nodeTDef = options.model.findTypeDefinitionsByID('name=JavascriptNode,version='+jsNodePackage.version);
+            var nodeTDef = options.model.findByPath('packages[org]/packages[kevoree]/packages[library]/typeDefinitions[name=JavascriptNode,version='+jsNodePackage.version+']');
             if (!nodeTDef) {
                 callback(new Error('Unable to find name=JavascriptNode,version='+jsNodePackage.version+' TypeDefinition :/'));
                 return;
@@ -34,7 +34,7 @@ var bootstrapModel = function bootstrapModel(options, callback) {
             // create a default network information
             var net = factory.createNetworkInfo();
             net.name = 'lan';
-            var prop = factory.createNetworkProperty();
+            var prop = factory.createValue();
             prop.name = 'ip';
             prop.value = '127.0.0.1';
             net.addValues(prop);
@@ -45,7 +45,7 @@ var bootstrapModel = function bootstrapModel(options, callback) {
             var grpInstance = factory.createGroup();
             grpInstance.name = options.groupName;
             grpInstance.started = true;
-            var grpTDef = options.model.findTypeDefinitionsByID('name=WebSocketGroup,version='+wsGrpPackage.version);
+            var grpTDef = options.model.findByPath('packages[org]/packages[kevoree]/packages[library]/typeDefinitions[name=WebSocketGroup,version='+wsGrpPackage.version+']');
             if (!grpTDef) {
                 callback(new Error('Unable to find name=WebSocketGroup,version='+wsGrpPackage.version+' TypeDefinition :/'));
                 return;
@@ -57,7 +57,7 @@ var bootstrapModel = function bootstrapModel(options, callback) {
             // to explose like crazy. You have been warned.
             var fragDic = factory.createFragmentDictionary();
             fragDic.name = options.nodeName;
-            var portVal = factory.createDictionaryValue();
+            var portVal = factory.createValue();
             portVal.name = 'port';
             portVal.value = '9000';
             fragDic.addValues(portVal);
