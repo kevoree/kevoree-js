@@ -261,6 +261,7 @@ var Core = Class({
                                 if (err) {
                                     err.message = "Something went wrong while processing adaptations.\n"+err.message;
                                     core.emitter.emit('adaptationError', err);
+                                    core.log.error(core.toString(), err.stack);
                                     core.log.info(core.toString(), 'Rollbacking to previous model...');
 
                                     // rollback process
@@ -268,6 +269,7 @@ var Core = Class({
                                         if (er) {
                                             // something went wrong while rollbacking
                                             er.message = "Something went wrong while rollbacking. Process will exit.\n"+er.message;
+                                            core.log.error(core.toString(), er.stack);
                                             core.emitter.emit('rollbackError', er);
                                             // stop everything :/
                                             core.stop();
