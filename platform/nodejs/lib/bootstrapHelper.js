@@ -1,4 +1,5 @@
 var path    = require('path'),
+    os      = require('os'),
     kevoree = require('kevoree-library').org.kevoree;
 
 var factory = new kevoree.factory.DefaultKevoreeFactory();
@@ -33,11 +34,16 @@ var bootstrapModel = function bootstrapModel(options, callback) {
             nodeInstance.typeDefinition = nodeTDef;
             // create a default network information
             var net = factory.createNetworkInfo();
-            net.name = 'lan';
-            var prop = factory.createValue();
-            prop.name = 'ip';
-            prop.value = '127.0.0.1';
-            net.addValues(prop);
+            net.name = 'ip';
+            var nets = os.networkInterfaces();
+            for (var iface in nets) {
+                if (nets.hasOwnProperty(iface)) {
+                    var prop = factory.createValue();
+                    prop.name = iface+'_'+nets[iface][0].family;
+                    prop.value = nets[iface][0].address;
+                    net.addValues(prop);
+                }
+            }
             nodeInstance.addNetworkInformation(net);
             options.model.addNodes(nodeInstance);
 
