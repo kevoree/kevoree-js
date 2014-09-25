@@ -14,12 +14,14 @@ function get_(argv, callback) {
         } else {
             argv._.shift(); // get rid of 'get' param
             var type = argv.t ? argv.t : 'json';
+            var host = argv.host ? argv.host : 'registry.kevoree.org';
+            var port = argv.port ? argv.port : 80;
 
             if (argv._.length === 0) {
                 get_.help();
                 callback(null);
             } else {
-                getModel({fqns: argv._, type: type}, function (err, model) {
+                getModel({fqns: argv._, type: type, host: host, port: port}, function (err, model) {
                     if (err) {
                         callback(err);
                     } else {
@@ -63,6 +65,10 @@ get_.help = function () {
     process.stdout.write('    -o, --output=FILE     Output retrieved model to given FILE');
     process.stdout.write('\n');
     process.stdout.write('    -t, --type=TYPE       Model type TYPE = [json (default), xmi, trace]');
+    process.stdout.write('\n');
+    process.stdout.write('    --host                Kevoree registry host (default: registry.kevoree.org)');
+    process.stdout.write('\n');
+    process.stdout.write('    --port                Kevoree registry port (default: 80)');
     process.stdout.write('\n');
     process.stdout.write('    --pretty              Pretty print (only works for JSON type)');
     process.stdout.write('\n\n');

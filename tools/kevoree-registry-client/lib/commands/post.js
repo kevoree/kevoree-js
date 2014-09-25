@@ -13,12 +13,14 @@ function post(argv, callback) {
             callback(null);
         } else {
             var type = argv.t ? argv.t : 'json';
+            var host = argv.host ? argv.host : 'registry.kevoree.org';
+            var port = argv.port ? argv.port : 80;
 
             fs.readFile(argv._[1], 'utf8', function (err, modelData) {
                 if (err) {
                     callback(err);
                 } else {
-                    pushModel({model: modelData, type: type}, function (err) {
+                    pushModel({model: modelData, type: type, host: host, port: port}, function (err) {
                         if (err) {
                             callback(err);
                         } else {
@@ -41,6 +43,10 @@ post.help = function () {
     process.stdout.write('Options:');
     process.stdout.write('\n\n');
     process.stdout.write('    -t, --type=TYPE       Model type TYPE = [json (default), xmi, trace]');
+    process.stdout.write('\n');
+    process.stdout.write('    --host                Kevoree registry host (default: registry.kevoree.org)');
+    process.stdout.write('\n');
+    process.stdout.write('    --port                Kevoree registry port (default: 80)');
     process.stdout.write('\n');
 };
 

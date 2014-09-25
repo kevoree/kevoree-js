@@ -10,7 +10,7 @@ var argv = minimist(process.argv.slice(2), {
         output:  'o'
     },
     boolean: ['h', 'v', 'verbose', 'pretty'],
-    string:  ['o']
+    string:  ['o', 'host', 'port']
 });
 
 function cmdHandler(err) {
