@@ -2,6 +2,7 @@ var Class         = require('pseudoclass'),
     kevoree       = require('kevoree-library').org.kevoree,
     KevoreeLogger = require('kevoree-commons').KevoreeLogger,
     async         = require('async'),
+    os            = require('os'),
     EventEmitter  = require('events').EventEmitter;
 
 var NAME_PATTERN = /^[\w-]+$/;
@@ -69,9 +70,29 @@ var Core = Class({
             this.currentModel = this.factory.createContainerRoot();
             this.factory.root(this.currentModel);
 
+            // create platform node
             var node = this.factory.createContainerNode();
             node.name = this.nodeName;
             node.started = false;
+
+            // create node network interfaces
+            var net = this.factory.createNetworkInfo();
+            net.name = 'ip';
+            var ifaces = os.networkInterfaces();
+            for (var iface in ifaces) {
+                if (ifaces.hasOwnProperty(iface)) {
+                    var val = this.factory.createValue();
+                    val.name = iface+'_'+ifaces[iface][0].family;
+                    val.value = ifaces[iface][0].address;
+                    net.addValues(val);
+                }
+            }
+            // add net ifaces to node if any
+            if (net.values.size() > 0) {
+                node.addNetworkInformation(net);
+            }
+
+            // add platform node
             this.currentModel.addNodes(node);
 
             // starting loop function
