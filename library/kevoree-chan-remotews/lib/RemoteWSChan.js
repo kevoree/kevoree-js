@@ -1,6 +1,5 @@
 var AbstractChannel = require('kevoree-entities').AbstractChannel,
-    SmartSocket     = require('smart-socket'),
-    async           = require('async');
+    SmartSocket     = require('smart-socket');
 
 /**
  * Kevoree channel
@@ -46,17 +45,21 @@ var RemoteWSChan = AbstractChannel.extend({
                             this.conn = ws;
                             var pattern = 'nodes['+this.getNodeName()+']';
                             for (var p in this.inputs) {
-                                if (p.substr(0, pattern.length) === pattern) {
-                                    this.conn.send(JSON.stringify({
-                                        action: 'register',
-                                        id: p
-                                    }));
+                                if (this.inputs.hasOwnProperty(p)) {
+                                    if (p.substr(0, pattern.length) === pattern) {
+                                        this.conn.send(JSON.stringify({
+                                            action: 'register',
+                                            id: p
+                                        }));
+                                    }
                                 }
                             }
                         }.bind(this),
 
                         onmessage: function (ws, msg) {
-                            if (msg.type) msg = msg.data;
+                            if (msg.type) {
+                                msg = msg.data;
+                            }
 
                             this.localDispatch(msg);
                         }.bind(this),
@@ -95,10 +98,9 @@ var RemoteWSChan = AbstractChannel.extend({
      */
     update: function (done) {
         this._super(function () {
-            async.series([
-                function (cb) { this.stop(cb);  }.bind(this),
-                function (cb) { this.start(cb); }.bind(this)
-            ], done);
+            this.stop(function () {
+                this.start(done);
+            }.bind(this));
         }.bind(this));
     },
 
@@ -121,7 +123,7 @@ var RemoteWSChan = AbstractChannel.extend({
             }));
         } else {
             if (!this.logDisplayed) {
-                this.log.debug(this.toString(), 'Connection is not active yet. Dropping messages for '+destPortPaths);
+                this.log.info(this.toString(), 'Connection is not active yet. Dropping messages for '+destPortPaths);
                 this.logDisplayed = true;
             }
         }
