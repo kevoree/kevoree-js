@@ -1,6 +1,6 @@
 {
   "name": "kevoree-registry-client",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "API to GET/POST Kevoree model from http://registry.kevoree.org",
   "main": "index.js",
   "scripts": {

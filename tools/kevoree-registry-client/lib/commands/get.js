@@ -21,6 +21,16 @@ function get_(argv, callback) {
                 get_.help();
                 callback(null);
             } else {
+                // process FQN so that user can only ask for TypeDefinition without package
+                // and it will prepend Kevoree's standard package (org.kevoree.library)
+                argv._ = argv._.map(function (fqn) {
+                    if (fqn.split('/')[0].split('.').length === 1) {
+                        return 'org.kevoree.library.'+fqn;
+                    } else {
+                        return fqn;
+                    }
+                });
+
                 getModel({fqns: argv._, type: type, host: host, port: port}, function (err, model) {
                     if (err) {
                         callback(err);

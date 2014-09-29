@@ -43,15 +43,12 @@ var RemoteWSChan = AbstractChannel.extend({
                         onopen: function (ws) {
                             this.log.info(this.toString(), '"'+this.getName()+'" connected to remote WebSocket server ws://'+host + ':' + port + path);
                             this.conn = ws;
-                            var pattern = 'nodes['+this.getNodeName()+']';
                             for (var p in this.inputs) {
                                 if (this.inputs.hasOwnProperty(p)) {
-                                    if (p.substr(0, pattern.length) === pattern) {
-                                        this.conn.send(JSON.stringify({
-                                            action: 'register',
-                                            id: p
-                                        }));
-                                    }
+                                    this.conn.send(JSON.stringify({
+                                        action: 'register',
+                                        id: p
+                                    }));
                                 }
                             }
                         }.bind(this),
@@ -60,7 +57,7 @@ var RemoteWSChan = AbstractChannel.extend({
                             if (msg.type) {
                                 msg = msg.data;
                             }
-
+                            console.log("RECEIVED", msg);
                             this.localDispatch(msg);
                         }.bind(this),
 

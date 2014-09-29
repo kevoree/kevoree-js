@@ -1,0 +1,22 @@
+// node0 : Java platform
+add node0 : JavaNode
+add node0.ticker : Ticker
+
+// node1 : Javascript platform
+add node1 : JavascriptNode
+add node1.printer : FakeConsole
+
+add sync : WSGroup
+add sync2 : WebSocketGroup
+add chan : RemoteWSChan
+
+set sync2.port/node1 = "9001"
+set chan.host = "localhost"
+set chan.port = "9002"
+set node0.ticker.period = "5000"
+
+bind node0.ticker.tick chan
+bind node1.printer.inMsg chan
+
+attach node0 sync
+attach node1 sync2

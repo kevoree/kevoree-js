@@ -22,9 +22,8 @@ module.exports = function (grunt) {
         // and use it like this:
         // var htmlString = myView({foo: 'bar'});
         kevoree: {
-            run: {
-                kevscript: 'kevs/main.kevs'
-            }
+            run: { kevscript: 'kevs/main.kevs' },
+            multiplatform: { kevscript: 'kevs/multiplatform.kevs' }
         },
 
 
