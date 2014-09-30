@@ -7,7 +7,7 @@ var Class   = require('pseudoclass');
  * @param mapper ModelObjectMapper that handles mapping between model objects and 'real-life' object
  * @type {AdaptationPrimitive}
  */
-module.exports = Class({
+var AdaptationPrimitive = Class({
     toString: 'AdaptationPrimitive',
 
     /**
@@ -45,3 +45,5 @@ module.exports = Class({
         }
     }
 });
+
+module.exports = AdaptationPrimitive;

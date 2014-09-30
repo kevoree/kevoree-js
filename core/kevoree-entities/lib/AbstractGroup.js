@@ -5,7 +5,7 @@ var KevoreeEntity = require('./KevoreeEntity');
  *
  * @type {AbstractGroup} extends KevoreeEntity
  */
-module.exports = KevoreeEntity.extend({
+var AbstractGroup = KevoreeEntity.extend({
   toString: 'AbstractGroup',
 
   /**
@@ -16,3 +16,5 @@ module.exports = KevoreeEntity.extend({
     this.kCore.deploy(model);
   }
 });
+
+module.exports = AbstractGroup;

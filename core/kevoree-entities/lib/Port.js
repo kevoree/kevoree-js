@@ -2,9 +2,9 @@ var Class = require('pseudoclass');
 
 /**
  * You are not supposed to create Port object (unless you are an AdaptationPrimitive)
- * @type {*}
+ * @type {Port}
  */
-module.exports = Class({
+var Port = Class({
     toString: 'Port',
 
     construct: function (name, path) {
@@ -47,3 +47,5 @@ module.exports = Class({
         this.channel = chan;
     }
 });
+
+module.exports = Port;

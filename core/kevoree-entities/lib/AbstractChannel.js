@@ -5,7 +5,7 @@ var KevoreeEntity = require('./KevoreeEntity');
  *
  * @type {AbstractChannel} extends KevoreeEntity
  */
-module.exports = KevoreeEntity.extend({
+var AbstractChannel = KevoreeEntity.extend({
     toString: 'AbstractChannel',
 
     construct: function () {
@@ -65,3 +65,5 @@ module.exports = KevoreeEntity.extend({
         delete this.inputs[port.getPath()];
     }
 });
+
+module.exports = AbstractChannel;

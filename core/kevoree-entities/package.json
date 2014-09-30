@@ -1,6 +1,6 @@
 {
   "name": "kevoree-entities",
-  "version": "3.0.0",
+  "version": "3.0.2",
   "description": "Kevoree Entities - Set of abstract Kevoree entities (group, node, channel, component)",
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "main": "./kevoree-entities.js",
@@ -19,7 +19,7 @@
   "devDependencies": {},
   "optionalDependencies": {},
   "dependencies": {
-    "kevoree-commons": "^1.0.0",
+    "kevoree-commons": "^2.0.0",
     "kevoree-kevscript": "^2.0.0",
     "kevoree-library": "^5.0.1-SNAPSHOT.0",
     "pseudoclass": "^1.0.2"

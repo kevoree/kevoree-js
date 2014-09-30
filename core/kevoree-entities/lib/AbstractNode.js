@@ -5,7 +5,7 @@ var KevoreeEntity = require('./KevoreeEntity');
  *
  * @type {AbstractNode} extends KevoreeEntity
  */
-module.exports = KevoreeEntity.extend({
+var AbstractNode = KevoreeEntity.extend({
     toString: 'AbstractNode',
 
     /**
@@ -35,3 +35,5 @@ module.exports = KevoreeEntity.extend({
         done();
     }
 });
+
+module.exports = AbstractNode;
