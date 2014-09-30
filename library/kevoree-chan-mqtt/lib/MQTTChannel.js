@@ -1,6 +1,5 @@
 var AbstractChannel = require('kevoree-entities').AbstractChannel;
 var mqtt = require('mqtt');
-var async = require('async');
 
 /**
  * Kevoree channel
@@ -9,8 +8,8 @@ var async = require('async');
 var MQTTChannel = AbstractChannel.extend({
     toString: 'MQTTChannel',
 
-    dic_host: { optional: false, defaultValue: 'mqtt.kevoree.org' },
-    dic_port: { optional: false, datatype: 'number', defaultValue: 81 },
+    dic_host:  { optional: false, defaultValue: 'mqtt.kevoree.org' },
+    dic_port:  { optional: false, defaultValue: 81 },
     dic_topic: { optional: false, defaultValue: 'kevoree' },
 
     /**
@@ -19,11 +18,11 @@ var MQTTChannel = AbstractChannel.extend({
      */
     start: function (done) {
         this._super(function () {
-            var host = this.dictionary.getValue('host'),
-                port = this.dictionary.getValue('port');
+            var host = this.dictionary.getString('host'),
+                port = this.dictionary.getNumber('port');
 
             if (host && host.length > 0 && port && port.length > 0) {
-                var topic = this.dictionary.getValue('topic');
+                var topic = this.dictionary.getString('topic');
                 if (topic && topic.length > 0) {
                     this.client = mqtt.createClient(port, host);
 
@@ -41,6 +40,7 @@ var MQTTChannel = AbstractChannel.extend({
                     }.bind(this));
 
                     this.client.on('message', this.onMessage.bind(this));
+
                     this.client.on('error', function (err) {
                         this.log.error(this.toString(), this.getName()+' MQTT client error: '+err.message);
                         this.update();
@@ -74,10 +74,9 @@ var MQTTChannel = AbstractChannel.extend({
 
     update: function (done) {
         this._super(function () {
-            async.series([
-                function (cb) { this.stop(cb);  }.bind(this),
-                function (cb) { this.start(cb); }.bind(this)
-            ], done);
+            this.stop(function () {
+                this.start(done);
+            }.bind(this));
         }.bind(this));
     },
 
@@ -89,7 +88,7 @@ var MQTTChannel = AbstractChannel.extend({
             }
 
         } catch (err) {
-            this.log.warn(this.toString(), this.getName()+' unable to parse incoming message into a JSON object (drop message)');
+            this.log.warn(this.toString(), '"'+this.getName()+'" unable to parse incoming message into a JSON object (drop message)');
         }
     },
 
@@ -102,7 +101,9 @@ var MQTTChannel = AbstractChannel.extend({
     */
     onSend: function (fromPortPath, destPortPaths, msg) {
         this._super();
-        var model = this.getKevoreeCore().getCurrentModel();
+
+        var model = this.getKevoreeCore().getDeployModel() || this.getKevoreeCore().getCurrentModel();
+
         destPortPaths.forEach(function (path) {
             var port = model.findByPath(path);
             if (port.eContainer().eContainer().name === this.getNodeName()) {
@@ -110,11 +111,15 @@ var MQTTChannel = AbstractChannel.extend({
                 this.localDispatch(msg);
             } else {
                 // remote message
-                var msgObj = {
-                    node: port.eContainer().eContainer().name,
-                    msg: msg
-                };
-                this.client.publish(this.dictionary.getValue('topic'), JSON.stringify(msgObj));
+                var topic = this.dictionary.getString('topic');
+                if (topic && topic.length > 0) {
+                    this.client.publish(topic, JSON.stringify({
+                        node: port.eContainer().eContainer().name,
+                        msg: msg
+                    }));
+                } else {
+                    this.log.error(this.toString(), 'Unable to send message. "'+this.getName()+'.topic" value is null or empty.');
+                }
             }
         }.bind(this));
     }

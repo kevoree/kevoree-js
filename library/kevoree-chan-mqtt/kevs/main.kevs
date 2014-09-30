@@ -1,9 +1,3 @@
-include npm:kevoree-node-javascript
-include npm:kevoree-group-websocket
-include npm:kevoree-comp-fakeconsole
-include npm:kevoree-comp-helloworld
-include npm:kevoree-chan-mqtt
-
 add node0 : JavascriptNode
 add sync : WebSocketGroup
 add node0.console : FakeConsole
@@ -13,7 +7,6 @@ add myChan : MQTTChannel
 attach node0 sync
 
 set sync.port/node0 = "9000"
-set myChan.host = 'wrong.org'
 
 bind node0.console.inMsg myChan
 bind node0.hello.sendText myChan

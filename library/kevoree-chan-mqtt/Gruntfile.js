@@ -15,19 +15,11 @@ module.exports = function (grunt) {
             }
         },
 
-        // generates compiled version of your views in Javascript
-        // in order to use them within your code
-        // You can, then, do something like this:
-        // var myView = require('../generated-ui/my-view.js');
-        // and use it like this:
-        // var htmlString = myView({foo: 'bar'});
+        kevoree_registry: { src: 'kevlib.json' },
+
         kevoree: {
-            run: {
-                kevscript: 'kevs/main.kevs'
-            },
-            chat: {
-                kevscript: 'kevs/chat.kevs'
-            }
+            run:  { kevscript: 'kevs/main.kevs' },
+            chat: { kevscript: 'kevs/chat.kevs' }
         },
 
 
@@ -65,9 +57,10 @@ module.exports = function (grunt) {
 
     grunt.loadNpmTasks('grunt-kevoree');
     grunt.loadNpmTasks('grunt-kevoree-genmodel');
+    grunt.loadNpmTasks('grunt-kevoree-registry');
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-contrib-uglify');
 
-    grunt.registerTask('default', ['kevoree_genmodel', 'browserify', 'uglify']);
+    grunt.registerTask('default', ['kevoree_genmodel', 'browserify', 'uglify', 'kevoree_registry']);
     grunt.registerTask('kev', ['kevoree']);
 };
