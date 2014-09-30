@@ -1,41 +1,41 @@
 {
-    "name": "kevoree-chan-mqtt",
-    "version": "3.0.0-SNAPSHOT",
-    "main": "./lib/MQTTChannel.js",
-    "description": "Kevoree channel able to connect to a remote MQTT broker to broadcast messages",
-    "kevoree": {
-        "package": "org.kevoree.library"
-    },
-    "scripts": {
-        "prepublish": "grunt"
-    },
-    "keywords": [
-        "kevoree-std-lib",
-        "kevoree",
-        "library",
-        "channel",
-        "mqtt"
-    ],
-    "dependencies": {
-        "kevoree-entities": "^2.0.0",
-        "mqtt": "^0.3.10"
-    },
-    "devDependencies": {
-        "grunt": "^0.4.1",
-        "grunt-kevoree": "^3.0.2",
-        "grunt-browserify": "^2.0.7",
-        "grunt-contrib-uglify": "^0.6.0",
-        "grunt-kevoree-genmodel": "^2.0.0",
-        "grunt-kevoree-registry": "^2.0.0"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/kevoree/kevoree-js.git"
-    },
-    "author": "Maxime Tricoire <max.tricoire@gmail.com>",
-    "license": "LGPL-3.0",
-    "bugs": {
-        "url": "https://github.com/kevoree/kevoree-js/issues"
-    },
-    "homepage": "https://github.com/kevoree/kevoree-js"
+  "name": "kevoree-chan-mqtt",
+  "version": "3.0.0-SNAPSHOT.0",
+  "main": "./lib/MQTTChannel.js",
+  "description": "Kevoree channel able to connect to a remote MQTT broker to broadcast messages",
+  "kevoree": {
+    "package": "org.kevoree.library"
+  },
+  "scripts": {
+    "prepublish": "grunt"
+  },
+  "keywords": [
+    "kevoree-std-lib",
+    "kevoree",
+    "library",
+    "channel",
+    "mqtt"
+  ],
+  "dependencies": {
+    "kevoree-entities": "^3.0.1",
+    "mqtt": "^0.3.10"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.1",
+    "grunt-kevoree": "^3.0.2",
+    "grunt-browserify": "^2.0.7",
+    "grunt-contrib-uglify": "^0.6.0",
+    "grunt-kevoree-genmodel": "^2.0.0",
+    "grunt-kevoree-registry": "^2.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kevoree/kevoree-js.git"
+  },
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "license": "LGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/kevoree/kevoree-js/issues"
+  },
+  "homepage": "https://github.com/kevoree/kevoree-js"
 }

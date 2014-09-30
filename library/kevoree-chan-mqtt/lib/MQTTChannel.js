@@ -1,6 +1,8 @@
 var AbstractChannel = require('kevoree-entities').AbstractChannel;
 var mqtt = require('mqtt');
 
+var KEVOREE_PREFIX = 'kev/';
+
 /**
  * Kevoree channel
  * @type {MQTTChannel}
@@ -10,7 +12,6 @@ var MQTTChannel = AbstractChannel.extend({
 
     dic_host:  { optional: false, defaultValue: 'mqtt.kevoree.org' },
     dic_port:  { optional: false, defaultValue: 81 },
-    dic_topic: { optional: false, defaultValue: 'kevoree' },
 
     /**
      *
@@ -22,27 +23,34 @@ var MQTTChannel = AbstractChannel.extend({
                 port = this.dictionary.getNumber('port');
 
             if (host && host.length > 0 && port && port.length > 0) {
-                var topic = this.dictionary.getString('topic');
+                var topic = KEVOREE_PREFIX + this.getName() + '_' + this.getNodeName();
                 if (topic && topic.length > 0) {
+                    // create MQTT client
                     this.client = mqtt.createClient(port, host);
 
+                    // register "connect" event listener
                     this.client.on('connect', function () {
                         this.log.info(this.toString(), this.getName()+' connected to '+host+':'+port);
                         this.client.subscribe(topic, function (err) {
-                            if (!err) {
+                            if (err) {
+                                this.log.info(this.toString(), this.getName()+' unable to subcribe to topic '+topic+' (reason: '+err.message+')');
+                            } else {
                                 this.log.info(this.toString(), this.getName()+' subscribed to topic '+topic);
                             }
                         }.bind(this));
                     }.bind(this));
 
+                    // register "close" event listener
                     this.client.on('close', function () {
                         this.log.info(this.toString(), this.getName()+' closed connection with '+host+':'+port);
                     }.bind(this));
 
+                    // register "message" event listener
                     this.client.on('message', this.onMessage.bind(this));
 
+                    // register "error" event listener
                     this.client.on('error', function (err) {
-                        this.log.error(this.toString(), this.getName()+' MQTT client error: '+err.message);
+                        this.log.error(this.toString(), this.getName()+' error: '+err.message);
                         this.update();
                     }.bind(this));
 
@@ -81,15 +89,7 @@ var MQTTChannel = AbstractChannel.extend({
     },
 
     onMessage: function (topic, msg) {
-        try {
-            var msgObj = JSON.parse(msg);
-            if (msgObj.node === this.getNodeName()) {
-                this.localDispatch(msgObj.msg);
-            }
-
-        } catch (err) {
-            this.log.warn(this.toString(), '"'+this.getName()+'" unable to parse incoming message into a JSON object (drop message)');
-        }
+        this.localDispatch(msg);
     },
 
     /**
@@ -105,21 +105,13 @@ var MQTTChannel = AbstractChannel.extend({
         var model = this.getKevoreeCore().getDeployModel() || this.getKevoreeCore().getCurrentModel();
 
         destPortPaths.forEach(function (path) {
-            var port = model.findByPath(path);
-            if (port.eContainer().eContainer().name === this.getNodeName()) {
+            var targetNode = model.findByPath(path).eContainer().eContainer().name;
+            if (targetNode === this.getNodeName()) {
                 // local message
                 this.localDispatch(msg);
             } else {
                 // remote message
-                var topic = this.dictionary.getString('topic');
-                if (topic && topic.length > 0) {
-                    this.client.publish(topic, JSON.stringify({
-                        node: port.eContainer().eContainer().name,
-                        msg: msg
-                    }));
-                } else {
-                    this.log.error(this.toString(), 'Unable to send message. "'+this.getName()+'.topic" value is null or empty.');
-                }
+                this.client.publish(KEVOREE_PREFIX + this.getName() + '_' + targetNode, msg);
             }
         }.bind(this));
     }
