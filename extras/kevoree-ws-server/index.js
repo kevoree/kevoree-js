@@ -49,6 +49,7 @@ function noAction(msg) {
 
 wss.on('connection', function (ws) {
     ws.on('message', function (msg) {
+        console.log('recv', msg);
         if (msg.type) msg = msg.data;
 
         try {
