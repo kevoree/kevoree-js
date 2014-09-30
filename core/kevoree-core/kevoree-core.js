@@ -81,6 +81,7 @@ var Core = Class({
             var ifaces = os.networkInterfaces();
             for (var iface in ifaces) {
                 if (ifaces.hasOwnProperty(iface)) {
+                    console.log("ADD NET", iface, ifaces[iface][0].address);
                     var val = this.factory.createValue();
                     val.name = iface+'_'+ifaces[iface][0].family;
                     val.value = ifaces[iface][0].address;
@@ -90,6 +91,7 @@ var Core = Class({
             // add net ifaces to node if any
             if (net.values.size() > 0) {
                 node.addNetworkInformation(net);
+                console.log('FOO BAR');
             }
 
             // add platform node
@@ -301,14 +303,14 @@ var Core = Class({
                                     });
 
                                 } else {
-                                    // adaptations succeed : woot
-                                    core.log.debug(core.toString(), "Model deployed successfully: "+adaptations.length+" adaptations");
                                     // save old model
-                                    pushInArray(core.models, core.currentModel);
-                                    // set new model to be the current deployed one
-                                    core.currentModel = model; // do not give core.deployModel here because it is a readOnly model
+                                    pushInArray(core.models, core.cloner.clone(model, false));
+                                    // merge new model and current model
+                                    core.compare.merge(core.currentModel, model).applyOn(core.currentModel);
                                     // reset deployModel
                                     core.deployModel = null;
+                                    // adaptations succeed : woot
+                                    core.log.debug(core.toString(), "Model deployed successfully: "+adaptations.length+" adaptations");
                                     // all good :)
                                     if (typeof (core.nodeInstance.onModelDeployed) === 'function') { // backward compatibility with kevoree-entities < 2.1.0
                                         core.nodeInstance.onModelDeployed();
