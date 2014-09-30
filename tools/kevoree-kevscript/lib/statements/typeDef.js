@@ -24,8 +24,7 @@ module.exports = function (model, statements, stmt, opts, cb) {
     var tdefs = model.select(path).array;
     if (tdefs.length === 0) {
         // retrieve model from registry.kevoree.org because it is not in the current model
-        var options = {fqns: [fqn]};
-        getModel(options, function (err, tdefModel) {
+        getModel({ fqns: [fqn] }, function (err, tdefModel) {
             if (err) {
                 cb(new Error('Unable to find "'+fqn+'" in current model nor on Kevoree registry.'));
             } else {

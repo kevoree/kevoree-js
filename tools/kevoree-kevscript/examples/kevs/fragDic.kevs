@@ -1,5 +1,5 @@
-add node0 : org.kevoree.library.js.JavascriptNode
-add sync : org.kevoree.library.js.WebSocketGroup
+add node0 : JavascriptNode
+add sync : WebSocketGroup
 
 attach node0 sync
 
