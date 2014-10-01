@@ -108,7 +108,12 @@ var NodeJSRuntime = Class({
                     firstSIGINT = false;
                     if (!deploying) {
                         this.log.warn(this.toString(), 'Got SIGINT.  Shutting down Kevoree gracefully... (^C again to force quit)');
-                        this.kCore.stop();
+                        try {
+                            this.kCore.stop();
+                        } catch (err) {
+                            this.log.error(this.toString(), err.stack);
+                            process.exit(0);
+                        }
                     } else {
                         this.log.warn(this.toString(), 'Got SIGINT.  Will shutdown Kevoree gracefully once deploy process finished. (^C again to force quit)');
                         wannaStop = true;
