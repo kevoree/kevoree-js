@@ -41,29 +41,13 @@ var Core = Class({
     },
 
     /**
-     * Destruct core instance
-     */
-    destruct: function() {
-        this.log.debug(this.toString(), 'Destroying Kevoree platform "'+this.nodeInstance.getName()+'"...');
-        if (this.nodeInstance !== null) {
-            this.nodeInstance.destroy(function (err) {
-                if (err) {
-                    this.emitter.emit('error', err);
-                } else {
-                    this.emitter.emit('destroyed');
-                }
-            }.bind(this));
-        } else {
-            this.emitter.emit('error', new Error('Cannot destroy platform: node instance platform is undefined'));
-        }
-    },
-
-    /**
      * Starts Kevoree Core
      * @param nodeName
      */
     start: function (nodeName) {
-        if (!nodeName || nodeName.length === 0) nodeName = "node0";
+        if (!nodeName || nodeName.length === 0) {
+            nodeName = "node0";
+        }
 
         if (nodeName.match(NAME_PATTERN)) {
             this.nodeName = nodeName;
@@ -104,107 +88,6 @@ var Core = Class({
         } else {
             this.emitter.emit('error', new Error('Platform node name must match this regex '+NAME_PATTERN.toString()));
         }
-    },
-
-    setBootstrapper: function (bootstrapper) {
-        this.bootstrapper = bootstrapper;
-    },
-
-    setUICommand: function (uiCmd) {
-        this.uiCommand = uiCmd;
-    },
-
-    getBootstrapper: function () {
-        return this.bootstrapper;
-    },
-
-    /**
-     * Stops Kevoree Core
-     */
-    stop: function () {
-        var stopRuntime = function () {
-            // prevent event emitter leaks by unregister them
-            this.off('deployed', deployHandler);
-            this.off('adaptationError', stopRuntime);
-            this.off('error', stopRuntime);
-
-            clearInterval(this.intervalId);
-            if (this.nodeInstance === null) {
-                this.log.info(this.toString(), 'Platform stopped before bootstrapped');
-            } else {
-                this.log.info(this.toString(), "Platform stopped: "+this.nodeInstance.getName());
-            }
-
-            this.currentModel   = null;
-            this.deployModel    = null;
-            this.models         = [];
-            this.nodeName       = null;
-            this.nodeInstance   = null;
-            this.intervalId     = null;
-
-            this.emitter.emit('stopped');
-        }.bind(this);
-
-        var deployHandler = function () {
-            // prevent event emitter leaks by unregister them
-            this.off('adaptationError', stopRuntime);
-            this.off('error', stopRuntime);
-
-            // stop node
-            this.nodeInstance.stop(function (err) {
-                if (err) {
-                    this.emitter.emit('error', new Error(err.message));
-                }
-
-                stopRuntime();
-            }.bind(this));
-        }.bind(this);
-
-        if (typeof (this.intervalId) !== 'undefined' && this.intervalId !== null && this.nodeInstance !== null) {
-            var stopModel = this.cloner.clone(this.currentModel, false);
-            var node = stopModel.findNodesByID(this.nodeInstance.getName());
-            var subNodes = node.hosts.iterator();
-            while (subNodes.hasNext()) {
-                subNodes.next().started = false;
-            }
-
-            var groups = node.groups.iterator();
-            while (groups.hasNext()) {
-                groups.next().started = false;
-            }
-
-            var bindings = stopModel.mBindings.iterator();
-            while (bindings.hasNext()) {
-                var binding = bindings.next();
-                if (binding.port.eContainer()
-                    && binding.port.eContainer().eContainer()
-                    && binding.port.eContainer().eContainer().name === node.name) {
-                    if (binding.hub) {
-                        binding.hub.started = false;
-                    }
-                }
-            }
-
-            var comps = node.components.iterator();
-            while (comps.hasNext()) {
-                comps.next().started = false;
-            }
-
-            this.once('deployed', deployHandler);
-            this.once('adaptationError', stopRuntime);
-            this.once('error', stopRuntime);
-
-            this.stopping = true;
-            this.deploy(stopModel);
-        }
-    },
-
-    /**
-     * Save model to hdd
-     */
-    saveModel: function () {
-        // TODO
-        this.log.warn(this.toString(), 'saveModel(): not implemented yet');
     },
 
     /**
@@ -330,6 +213,91 @@ var Core = Class({
         }
     },
 
+    /**
+     * Stops Kevoree Core
+     */
+    stop: function () {
+        var stopRuntime = function () {
+            // prevent event emitter leaks by unregister them
+            this.off('deployed', deployHandler);
+            this.off('adaptationError', stopRuntime);
+            this.off('error', stopRuntime);
+
+            clearInterval(this.intervalId);
+            if (this.nodeInstance === null) {
+                this.log.info(this.toString(), 'Platform stopped before bootstrapped');
+            } else {
+                this.log.info(this.toString(), "Platform stopped: "+this.nodeInstance.getName());
+            }
+
+            this.currentModel   = null;
+            this.deployModel    = null;
+            this.models         = [];
+            this.nodeName       = null;
+            this.nodeInstance   = null;
+            this.intervalId     = null;
+
+            this.emitter.emit('stopped');
+        }.bind(this);
+
+        var deployHandler = function () {
+            // prevent event emitter leaks by unregister them
+            this.off('adaptationError', stopRuntime);
+            this.off('error', stopRuntime);
+
+            // stop node
+            this.nodeInstance.stop(function (err) {
+                if (err) {
+                    this.emitter.emit('error', new Error(err.message));
+                }
+
+                stopRuntime();
+            }.bind(this));
+        }.bind(this);
+
+        if (typeof (this.intervalId) !== 'undefined' && this.intervalId !== null && this.nodeInstance !== null) {
+            var stopModel = this.cloner.clone(this.currentModel, false);
+            var node = stopModel.findNodesByID(this.nodeInstance.getName());
+            var subNodes = node.hosts.iterator();
+            while (subNodes.hasNext()) {
+                subNodes.next().delete();
+                //subNodes.next().started = false;
+            }
+
+            var groups = node.groups.iterator();
+            while (groups.hasNext()) {
+                groups.next().delete();
+//                groups.next().started = false;
+            }
+
+            var bindings = stopModel.mBindings.iterator();
+            while (bindings.hasNext()) {
+                var binding = bindings.next();
+                if (binding.port.eContainer()
+                    && binding.port.eContainer().eContainer()
+                    && binding.port.eContainer().eContainer().name === node.name) {
+                    if (binding.hub) {
+                        binding.hub.delete();
+//                        binding.hub.started = false;
+                    }
+                }
+            }
+
+            var comps = node.components.iterator();
+            while (comps.hasNext()) {
+                comps.next().delete();
+//                comps.next().started = false;
+            }
+
+            this.once('deployed', deployHandler);
+            this.once('adaptationError', stopRuntime);
+            this.once('error', stopRuntime);
+
+            this.stopping = true;
+            this.deploy(stopModel);
+        }
+    },
+
     checkBootstrapNode: function (model, callback) {
         callback = callback || function () { console.warn('No callback defined for checkBootstrapNode(model, cb) in KevoreeCore'); };
 
@@ -362,6 +330,26 @@ var Core = Class({
         } else {
             callback();
         }
+    },
+
+    setBootstrapper: function (bootstrapper) {
+        this.bootstrapper = bootstrapper;
+    },
+
+    setUICommand: function (uiCmd) {
+        this.uiCommand = uiCmd;
+    },
+
+    getBootstrapper: function () {
+        return this.bootstrapper;
+    },
+
+    /**
+     * Save model to hdd
+     */
+    saveModel: function () {
+        // TODO
+        this.log.warn(this.toString(), 'saveModel(): not implemented yet');
     },
 
     /**
