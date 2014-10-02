@@ -1,6 +1,6 @@
 {
   "name": "kevoree-chan-mqtt",
-  "version": "3.0.0-SNAPSHOT.0",
+  "version": "5.1.1-SNAPSHOT",
   "main": "./lib/MQTTChannel.js",
   "description": "Kevoree channel able to connect to a remote MQTT broker to broadcast messages",
   "kevoree": {
