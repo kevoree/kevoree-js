@@ -1,5 +1,4 @@
 var AbstractComponent = require('kevoree-entities').AbstractComponent;
-var view = require('../generated-ui/view');
 
 /**
  * Kevoree component
