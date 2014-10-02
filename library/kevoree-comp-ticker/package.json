@@ -1,0 +1,25 @@
+{
+    "name": "kevoree-comp-ticker",
+    "version": "5.1.1-SNAPSHOT",
+    "main": "./lib/Ticker.js",
+    "kevoree": {
+        "package": "org.kevoree.library"
+    },
+    "scripts": {
+        "prepublish": "grunt"
+    },
+    "keywords": [
+        "kevoree",
+        "library",
+        "comp"
+    ],
+    "dependencies": {
+        "kevoree-entities": "^3.0.0"
+    },
+    "devDependencies": {
+        "grunt": "^0.4.1",
+        "grunt-kevoree": "^3.0.0",
+        "grunt-kevoree-genmodel" : "^2.0.0",
+        "grunt-kevoree-registry" : "^2.0.0"
+    }
+}
