@@ -31,7 +31,7 @@ module.exports = AdaptationPrimitive.extend({
             }
             callback();
         } else {
-            this.log.warn(this.toString(), 'Didnt update any dictionary mate because '+kDictionary.eContainer().path()+' isnt related to this platform obvsiouly');
+            this.log.warn(this.toString(), 'Didnt update any dictionary because '+kDictionary.eContainer().path()+' isnt related to this platform obvsiouly');
             callback();
         }
     },
