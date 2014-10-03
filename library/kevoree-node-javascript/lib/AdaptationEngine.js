@@ -139,7 +139,7 @@ var AdaptationEngine = Class({
                                     cmds.push(this.createCommand(AddDeployUnit, du));
                                 }
                             } else {
-                                var err = new Error("no DeployUnit found for '"+modelElement.name+"' that matches the 'javascript' platform");
+                                var err = new Error("no DeployUnit found for '"+modelElement.name+": "+modelElement.typeDefinition.name+"/"+modelElement.typeDefinition.version+"' that matches the 'javascript' platform");
                                 err.className = this.toString();
                                 throw err;
                             }
@@ -203,7 +203,7 @@ var AdaptationEngine = Class({
                                             cmds.push(this.createCommand(AddDeployUnit, du));
                                         }
                                     } else {
-                                        var e = new Error("no DeployUnit found for '"+modelElement.hub.name+"' that matches the 'javascript' platform");
+                                        var e = new Error("no DeployUnit found for '"+modelElement.hub.name+": "+modelElement.hub.typeDefinition.name+"/"+modelElement.hub.typeDefinition.version+"' that matches the 'javascript' platform");
                                         e.className = this.toString();
                                         throw e;
                                     }

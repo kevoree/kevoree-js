@@ -78,13 +78,6 @@ var JavascriptNode = AbstractNode.extend({
         }.bind(this));
     },
 
-    destroy: function (done) {
-        this._super(function () {
-            this.log.warn(this.toString(), 'destroy(): not implemented');
-            done();
-        }.bind(this));
-    },
-
     /**
      * Called when the host node has to start an hosted subNode
      * @param node the hosted subNode

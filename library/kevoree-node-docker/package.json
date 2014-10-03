@@ -1,7 +1,10 @@
 {
   "name": "kevoree-node-docker",
-  "version": "1.0.1",
+  "version": "2.0.0-SNAPSHOT",
   "main": "./lib/DockerNode.js",
+  "kevoree": {
+    "package": "org.kevoree.library"
+  },
   "scripts": {
     "prepublish": "grunt"
   },
@@ -23,17 +26,18 @@
     "url": "https://github.com/kevoree/kevoree-js"
   },
   "dependencies": {
-    "dockerode": "^2.0.1",
-    "kevoree-entities": "^2.2.0",
-    "kevoree-library": "^1.0.0",
-    "kevoree-node-javascript": "^2.2.0",
+    "dockerode": "^2.0.3",
+    "kevoree-entities": "^3.0.1",
+    "kevoree-library": "^5.0.4",
+    "kevoree-node-javascript": "^3.0.1",
     "pseudoclass": "^1.0.2",
     "tmp": "0.0.24"
   },
   "devDependencies": {
     "chai": "^1.9.1",
-    "grunt": "^0.4.1",
-    "grunt-kevoree": "^2.0.0",
-    "grunt-kevoree-genmodel": "^1.0.0"
+    "grunt": "^0.4.5",
+    "grunt-kevoree": "^3.0.2",
+    "grunt-kevoree-genmodel": "^2.0.0",
+    "grunt-kevoree-registry": "^2.0.0"
   }
 }

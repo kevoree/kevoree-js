@@ -13,16 +13,15 @@ module.exports = AdaptationPrimitive.extend({
     execute: function (callback) {
         this._super(callback);
 
-        var instance = this.findEntityInstance();
         var kDictionary = this.modelElement.eContainer();
-
-        var updateDictionary = function (instance) {
+        var instance = this.mapper.getObject(kDictionary.eContainer().path());
+        if (instance !== null) {
             var dictionary = instance.getDictionary();
 
             this.oldDictionaryMap = dictionary.cloneMap();
             this.instance = instance;
             if (Kotlin.isType(kDictionary, kevoree.FragmentDictionary)) {
-                if (kDictionary.name == this.node.getName()) {
+                if (kDictionary.name === this.node.getName()) {
                     this.log.debug(this.toString(), kDictionary.eContainer().name+'.'+this.modelElement.name+'/'+kDictionary.name+' = '+this.modelElement.value);
                     dictionary.setEntry(this.modelElement.name, this.modelElement.value);
                 }
@@ -30,23 +29,11 @@ module.exports = AdaptationPrimitive.extend({
                 this.log.debug(this.toString(), kDictionary.eContainer().name+'.'+this.modelElement.name+' = '+this.modelElement.value);
                 dictionary.setEntry(this.modelElement.name, this.modelElement.value);
             }
-
             callback();
-        }.bind(this);
-
-        if (instance != null) {
-            updateDictionary(instance);
-            return;
-
         } else {
-            if (kDictionary.eContainer().name === this.node.getName()) {
-                // this dictionary is for this platform node
-                updateDictionary(this.node);
-                return;
-            }
+            this.log.warn(this.toString(), 'Didnt update any dictionary mate because '+kDictionary.eContainer().path()+' isnt related to this platform obvsiouly');
+            callback();
         }
-
-        callback();
     },
 
     undo: function (callback) {
@@ -57,14 +44,5 @@ module.exports = AdaptationPrimitive.extend({
         }
 
         callback();
-    },
-
-    findEntityInstance: function () {
-        for (var path in this.mapper.getMap()) {
-            if (this.modelElement.path().startsWith(path)) {
-                return this.mapper.getObject(path);
-            }
-        }
-        return null;
     }
 });

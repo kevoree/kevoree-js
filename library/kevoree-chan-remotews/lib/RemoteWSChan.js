@@ -57,7 +57,6 @@ var RemoteWSChan = AbstractChannel.extend({
                             if (msg.type) {
                                 msg = msg.data;
                             }
-                            console.log("RECEIVED", msg);
                             this.localDispatch(msg);
                         }.bind(this),
 

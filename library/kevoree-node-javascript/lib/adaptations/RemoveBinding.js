@@ -10,10 +10,8 @@ module.exports = AdaptationPrimitive.extend({
             compInstance = this.mapper.getObject(this.modelElement.port.eContainer().path()),
             portInstance = this.mapper.getObject(this.modelElement.port.path());
 
-        if (chanInstance && compInstance) {
-            if (portInstance) {
-                this.mapper.removeEntry(this.modelElement.port.path());
-            }
+        if (chanInstance && compInstance && portInstance) {
+            this.mapper.removeEntry(this.modelElement.port.path());
 
             var provided = this.modelElement.port.eContainer().findProvidedByID(this.modelElement.port.name);
             if (provided) {

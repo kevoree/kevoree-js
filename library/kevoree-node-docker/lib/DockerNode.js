@@ -13,6 +13,7 @@ var DEFAULT_IMAGE = 'kevoree/js';
 var DockerNode = JavascriptNode.extend({
     toString: 'DockerNode',
 
+    dic_kevVersion:     { optional: true, defaultValue: 'latest' },
     dic_image:          { },
     dic_commitTag:      { },
     dic_commitMsg:      { },
@@ -86,7 +87,7 @@ var DockerNode = JavascriptNode.extend({
                                 throw err;
                             } else {
                                 this.submitScript('network '+node.name+'.lan.ip '+infos.NetworkSettings.IPAddress);
-                                this.log.info(this.toString(), 'Container '+containerConf.name+' successfully started at '+infos.NetworkSettings.IPAddress);
+                                this.log.info(this.toString(), 'Container "'+containerConf.name+'" successfully started using '+containerConf.Image+' at '+infos.NetworkSettings.IPAddress);
                             }
                         }.bind(this));
 
@@ -194,6 +195,7 @@ var DockerNode = JavascriptNode.extend({
 
                     if (images.length > 0) {
                         // available remotely
+                        this.log.info(this.toString(), repo+'/'+node.name+' found on remote Docker registry.');
                         this.handler.pull(containerConf.Image, function (err) {
                             if (err) { done(err); return; }
 
@@ -214,6 +216,7 @@ var DockerNode = JavascriptNode.extend({
 
                     } else {
                         // unavailable remotely
+                        this.log.info(this.toString(), repo+'/'+node.name+' not found on remote Docker registry.');
                         switch (node.typeDefinition.name) {
                             case this.toString():
                                 var image = node.dictionary ? node.dictionary.findValuesByID('image') : null;

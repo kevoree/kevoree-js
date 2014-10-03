@@ -1,6 +1,5 @@
 var Class         = require('pseudoclass'),
     KevoreeCore     = require('kevoree-core'),
-    KevoreeLogger   = require('kevoree-commons').KevoreeLogger,
     Bootstrapper    = require('kevoree-commons').Bootstrapper,
     bootstrapHelper = require('./bootstrapHelper'),
     path            = require('path'),

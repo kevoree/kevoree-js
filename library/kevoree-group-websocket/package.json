@@ -29,19 +29,19 @@
     "url": "https://github.com/kevoree/kevoree-js"
   },
   "dependencies": {
-    "async": "^0.2.10",
-    "kevoree-entities": "^3.0.0",
-    "kevoree-library": "^5.0.3",
-    "smart-socket": "^0.1.7",
-    "ws": "^0.4.31"
+    "async": "^0.9.0",
+    "kevoree-entities": "^3.0.2",
+    "kevoree-library": "^5.0.4",
+    "smart-socket": "^0.2.0",
+    "ws": "^0.4.32"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
-    "grunt-browserify": "^2.0.7",
-    "grunt-contrib-uglify": "^0.5.0",
-    "grunt-kevoree": "^3.0.0",
+    "grunt-browserify": "^3.0.1",
+    "grunt-contrib-uglify": "^0.6.0",
+    "grunt-kevoree": "^3.0.2",
     "grunt-kevoree-genmodel": "^2.0.0",
-    "grunt-kevoree-registry": "^2.0.0"
+    "grunt-kevoree-registry": "^2.0.1"
   },
   "optionalDependencies": {},
   "engines": {
