@@ -21,11 +21,6 @@ var Core = Class({
     construct: function(modulesPath, logger) {
         this.log = (logger != undefined) ? logger : new KevoreeLogger(this.toString());
 
-        this.factory = new kevoree.factory.DefaultKevoreeFactory();
-        this.loader  = this.factory.createJSONLoader();
-        this.compare = this.factory.createModelCompare();
-        this.cloner  = this.factory.createModelCloner();
-
         this.stopping       = false;
         this.currentModel   = null;
         this.deployModel    = null;
@@ -38,6 +33,17 @@ var Core = Class({
         this.uiCommand      = null;
 
         this.emitter = new EventEmitter();
+        var defaultEmit = this.emitter.emit;
+        this.emitter.emit = function () {
+            // emit event on process.nextTick to let a chance of catching it when registered after method call
+            // eg: var c = new KevoreeCore('/tmp');
+            // c.start('foo');
+            // c.on('started', function () { /* this wouldn't have been called without process.nextTick */ });
+            var args = arguments;
+            process.nextTick(function () {
+                defaultEmit.apply(this, args);
+            }.bind(this));
+        }.bind(this.emitter);
     },
 
     /**
@@ -51,21 +57,22 @@ var Core = Class({
 
         if (nodeName.match(NAME_PATTERN)) {
             this.nodeName = nodeName;
-            this.currentModel = this.factory.createContainerRoot();
-            this.factory.root(this.currentModel);
+            var factory = new kevoree.factory.DefaultKevoreeFactory();
+            this.currentModel = factory.createContainerRoot();
+            factory.root(this.currentModel);
 
             // create platform node
-            var node = this.factory.createContainerNode();
+            var node = factory.createContainerNode();
             node.name = this.nodeName;
             node.started = false;
 
             // create node network interfaces
-            var net = this.factory.createNetworkInfo();
+            var net = factory.createNetworkInfo();
             net.name = 'ip';
             var ifaces = os.networkInterfaces();
             for (var iface in ifaces) {
                 if (ifaces.hasOwnProperty(iface)) {
-                    var val = this.factory.createValue();
+                    var val = factory.createValue();
                     val.name = iface+'_'+ifaces[iface][0].family;
                     val.value = ifaces[iface][0].address;
                     net.addValues(val);
@@ -122,9 +129,11 @@ var Core = Class({
                     if (core.nodeInstance) {
                         try {
                             // given model is defined and not null
-                            core.deployModel = core.cloner.clone(model, true);
+                            var factory = new kevoree.factory.DefaultKevoreeFactory();
+                            var cloner = factory.createModelCloner();
+                            core.deployModel = cloner.clone(model, true);
                             core.deployModel.setRecursiveReadOnly();
-                            var diffSeq = core.compare.diff(core.currentModel, core.deployModel);
+                            var diffSeq = factory.createModelCompare().diff(core.currentModel, core.deployModel);
                             var adaptations = core.nodeInstance.processTraces(diffSeq, core.deployModel);
 
                             // list of adaptation commands retrieved
@@ -185,9 +194,9 @@ var Core = Class({
 
                                 } else {
                                     // save old model
-                                    pushInArray(core.models, core.cloner.clone(model, false));
+                                    pushInArray(core.models, core.currentModel);
                                     // set current model
-                                    core.currentModel = model;
+                                    core.currentModel = cloner.clone(model, false);
                                     // reset deployModel
                                     core.deployModel = null;
                                     // adaptations succeed : woot
