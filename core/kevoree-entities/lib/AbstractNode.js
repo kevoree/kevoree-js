@@ -15,7 +15,9 @@ var AbstractNode = KevoreeEntity.extend({
      * @param targetModel model that was used by KevoreeCore to generate the diffSeq traces against currentModel
      * @returns {Array}
      */
-    processTraces: function (diffSeq, targetModel) {},
+    processTraces: function (diffSeq, targetModel) {
+        return [];
+    },
 
     /**
      * Called when the host node has to start an hosted subNode
