@@ -62,7 +62,7 @@ module.exports = function(grunt) {
             runtime     = new Kevoree(options.modulesPath, logger, npmResolver),
             kevsEngine  = new KevScript({ resolvers: { npm: npmResolver } });
 
-        var deployErrorHandler = function () {
+        var errorHandler = function () {
             grunt.fail.fatal('"grunt-kevoree" unable to bootstrap platform. Shutting down.');
             runtime.stop();
         };
@@ -79,14 +79,15 @@ module.exports = function(grunt) {
                     return;
                 }
 
-                runtime.once('deployError', deployErrorHandler);
+                runtime.once('deployError', errorHandler);
+                runtime.once('adaptationError', errorHandler);
                 runtime.deploy(model);
             });
         });
 
         runtime.once('deployed', function deployHandler() {
             runtime.off('deployed', deployHandler);
-            runtime.off('deployError', deployErrorHandler);
+            runtime.off('deployError', errorHandler);
         });
 
         runtime.start(options.node, options.group);
