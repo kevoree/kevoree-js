@@ -7,15 +7,14 @@ var LocalChannel = AbstractChannel.extend({
 
     onSend: function (fromPortPath, destPortPaths, msg) {
         this._super();
-        if (this.started) {
-            // directly dispatching message locally
-            // without using client/server architecture because it is the purpose
-            // of this channel : only works locally (on the same node)
-            var delay = this.dictionary.getValue('delay') || 0;
-            setTimeout(function () {
+        // directly dispatching message locally
+        // without using client/server architecture because it is the purpose
+        // of this channel : only works locally (on the same node)
+        setTimeout(function () {
+            if (this.started) { // check again because a "stop" could have been requested during "delay" awaiting
                 this.localDispatch(msg);
-            }.bind(this), delay); // and applying some delay if requested
-        }
+            }
+        }.bind(this), this.dictionary.getNumber('delay', 0)); // and applying some delay if requested
     }
 });
 

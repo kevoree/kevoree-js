@@ -1,18 +1,12 @@
-include npm:kevoree-node-javascript
-include npm:kevoree-group-websocket
-include npm:kevoree-comp-fakeconsole
-include npm:kevoree-comp-helloworld
-include npm:kevoree-chan-local
-
 add node0 : JavascriptNode
 add sync : WebSocketGroup
-add node0.console : FakeConsole
-add node0.hello : HelloWorldComponent
+add node0.console : ConsolePrinter
+add node0.ticker : Ticker
 add myChan : LocalChannel
 
 attach node0 sync
 
 set sync.port/node0 = "9000"
 
-bind node0.console.inMsg myChan
-bind node0.hello.sendText myChan
+bind node0.console.input myChan
+bind node0.ticker.tick myChan
