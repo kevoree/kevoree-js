@@ -265,7 +265,9 @@ var Core = Class({
         }.bind(this);
 
         if (typeof (this.intervalId) !== 'undefined' && this.intervalId !== null && this.nodeInstance !== null) {
-            var stopModel = this.cloner.clone(this.currentModel, false);
+            var factory = new kevoree.factory.DefaultKevoreeFactory();
+            var cloner = factory.createModelCloner();
+            var stopModel = cloner.clone(this.currentModel, false);
             var node = stopModel.findNodesByID(this.nodeInstance.getName());
             var subNodes = node.hosts.iterator();
             while (subNodes.hasNext()) {
