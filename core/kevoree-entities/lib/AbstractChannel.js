@@ -27,7 +27,10 @@ var AbstractChannel = KevoreeEntity.extend({
                 }
             }
         }
-        this.onSend(outputPath, paths, msg);
+
+        if (this.started) {
+            this.onSend(outputPath, paths, msg);
+        }
     },
 
     /**
