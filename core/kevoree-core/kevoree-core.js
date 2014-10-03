@@ -186,8 +186,8 @@ var Core = Class({
                                 } else {
                                     // save old model
                                     pushInArray(core.models, core.cloner.clone(model, false));
-                                    // merge new model and current model
-                                    core.compare.merge(core.currentModel, model).applyOn(core.currentModel);
+                                    // set current model
+                                    core.currentModel = model;
                                     // reset deployModel
                                     core.deployModel = null;
                                     // adaptations succeed : woot
@@ -261,13 +261,11 @@ var Core = Class({
             var subNodes = node.hosts.iterator();
             while (subNodes.hasNext()) {
                 subNodes.next().delete();
-                //subNodes.next().started = false;
             }
 
             var groups = node.groups.iterator();
             while (groups.hasNext()) {
                 groups.next().delete();
-//                groups.next().started = false;
             }
 
             var bindings = stopModel.mBindings.iterator();
@@ -278,7 +276,6 @@ var Core = Class({
                     && binding.port.eContainer().eContainer().name === node.name) {
                     if (binding.hub) {
                         binding.hub.delete();
-//                        binding.hub.started = false;
                     }
                 }
             }
@@ -286,7 +283,6 @@ var Core = Class({
             var comps = node.components.iterator();
             while (comps.hasNext()) {
                 comps.next().delete();
-//                comps.next().started = false;
             }
 
             this.once('deployed', deployHandler);
