@@ -2,6 +2,9 @@
   "name": "kevoree-comp-ghostblog",
   "version": "2.0.0-SNAPSHOT",
   "main": "./lib/GhostBlog.js",
+    "kevoree": {
+        "package": "org.kevoree.library"
+    },
   "scripts": {
     "prepublish": "grunt"
   },

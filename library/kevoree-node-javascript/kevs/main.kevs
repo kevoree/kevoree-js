@@ -1,8 +1,14 @@
 add node0 : JavascriptNode
 add sync : WebSocketGroup
+add node0.tick : Ticker
+add node0.log : ConsolePrinter
+add chan : LocalChannel
 
 attach node0 sync
 
 set sync.port/node0 = '9000'
+
+bind node0.tick.tick chan
+bind node0.log.input chan
 
 network node0.lan.ip 127.0.0.1

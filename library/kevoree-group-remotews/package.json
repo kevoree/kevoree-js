@@ -2,6 +2,9 @@
     "name": "kevoree-group-remotews",
     "version": "2.0.0-SNAPSHOT",
     "main": "./lib/RemoteWSGroup.js",
+    "kevoree": {
+        "package": "org.kevoree.library"
+    },
     "scripts": {
         "prepublish": "grunt"
     },
