@@ -50,11 +50,11 @@ var NodeJSRuntime = Class({
         this.kCore.on('deployed', function (model) {
             deploying = false;
             firstSIGINT = true;
-            self.emitter.emit('deployed', model);
             if (wannaStop) {
                 wannaStop = false;
                 self.kCore.stop();
             }
+            self.emitter.emit('deployed', model);
         });
 
         // kevoree core error event listener
@@ -73,11 +73,11 @@ var NodeJSRuntime = Class({
 
         this.kCore.on('adaptationError', function (err) {
             deploying = false;
-            self.emitter.emit('adaptationError', err);
             if (wannaStop) {
                 wannaStop = false;
                 self.kCore.stop();
             }
+            self.emitter.emit('adaptationError', err);
         });
 
         this.kCore.on('stopped', function () {
