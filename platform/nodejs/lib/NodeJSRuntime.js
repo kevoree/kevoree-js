@@ -1,7 +1,7 @@
 var Class         = require('pseudoclass'),
     KevoreeCore     = require('kevoree-core'),
     KevoreeLogger   = require('kevoree-commons').KevoreeLogger,
-    Bootstrapper    = require('./NodeJSBootstrapper'),
+    Bootstrapper    = require('kevoree-commons').Bootstrapper,
     bootstrapHelper = require('./bootstrapHelper'),
     path            = require('path'),
     EventEmitter    = require('events').EventEmitter;
@@ -18,7 +18,7 @@ var NodeJSRuntime = Class({
         this.modulesPath = modulesPath || path.resolve(__dirname, '..');
         this.log = logger;
         this.kCore = new KevoreeCore(this.modulesPath, this.log);
-        this.bootstrapper = new Bootstrapper(this.modulesPath, this.log, resolver);
+        this.bootstrapper = new Bootstrapper(this.log, resolver);
         this.nodename = 'node0'; // default nodename
         this.groupname = 'sync'; // default groupname
         this.emitter = new EventEmitter();
