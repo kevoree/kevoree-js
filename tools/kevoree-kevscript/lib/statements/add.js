@@ -9,6 +9,26 @@ module.exports = function (model, statements, stmt, opts, done) {
         if (err) {
             done(err);
         } else {
+            function inflateDictionary(instance) {
+                var dicType = instance.typeDefinition.dictionaryType;
+                if (dicType) {
+                    var dic = factory.createDictionary();
+                    var attrs = dicType.attributes.iterator();
+                    while (attrs.hasNext()) {
+                        var attr = attrs.next();
+                        if (!attr.fragmentDependant && !attr.optional && typeof attr.defaultValue !== 'undefined') {
+                            var val = factory.createValue();
+                            val.name = attr.name;
+                            val.value = attr.defaultValue;
+                            dic.addValues(val);
+                        }
+                    }
+                    if (dic.values.size() > 0) {
+                        instance.dictionary = dic;
+                    }
+                }
+            }
+
             // add node instance function
             function addNodeInstance(namespace, nodeName, parentNode) {
                 if (nodeName !== '*') {
@@ -16,6 +36,7 @@ module.exports = function (model, statements, stmt, opts, done) {
                     node.name = nodeName;
                     node.typeDefinition = model.findByPath(tDef.path());
                     node.started = true;
+                    inflateDictionary(node);
                     model.addNodes(node);
                     if (parentNode) {
                         parentNode.addHosts(node);
@@ -45,7 +66,7 @@ module.exports = function (model, statements, stmt, opts, done) {
 
                         if (namespace) {
                             // TODO handle namespaces
-                            done(new Error());
+                            done(new Error('Namespaces are not handled yet'));
                         } else {
                             if (parentName) {
                                 if (parentName === '*') {
@@ -83,6 +104,7 @@ module.exports = function (model, statements, stmt, opts, done) {
                             group.name = instanceName;
                             group.typeDefinition = model.findByPath(tDef.path());
                             group.started = true;
+                            inflateDictionary(group);
                             model.addGroups(group);
 
                             if (namespace) {
@@ -112,6 +134,7 @@ module.exports = function (model, statements, stmt, opts, done) {
                             chan.name = instanceName;
                             chan.typeDefinition = model.findByPath(tDef.path());
                             chan.started = true;
+                            inflateDictionary(chan);
                             model.addHubs(chan);
 
                             if (namespace) {
@@ -152,6 +175,7 @@ module.exports = function (model, statements, stmt, opts, done) {
                                     comp.name = compName;
                                     comp.typeDefinition = model.findByPath(tDef.path());;
                                     comp.started = true;
+                                    inflateDictionary(comp);
                                     nodes.next().addComponents(comp);
                                 }
 
@@ -162,6 +186,7 @@ module.exports = function (model, statements, stmt, opts, done) {
                                     comp.name = compName;
                                     comp.typeDefinition = model.findByPath(tDef.path());;
                                     comp.started = true;
+                                    inflateDictionary(comp);
                                     node.addComponents(comp);
 
                                 } else {

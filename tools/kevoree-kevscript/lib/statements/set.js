@@ -14,17 +14,14 @@ module.exports = function (model, statements, stmt, opts, cb) {
             dicValue.value = value;
         } else {
             // dictionary value for attribute named attrName does not exist yet: create it and add it if possible
-            var attrs = dic.eContainer().typeDefinition.dictionaryType.attributes.iterator();
-            while (attrs.hasNext()) {
-                // by doing this, we will kinda fail silently if you are trying to set an inexistent
-                // attribute value in one of the instances
-                if (attrs.next().name === attrName) {
-                    dicValue = factory.createValue();
-                    dicValue.name = attrName;
-                    dicValue.value = value;
-                    dic.addValues(dicValue);
-                    break;
-                }
+            var kAttr = dic.eContainer().typeDefinition.dictionaryType.findAttributesByID(attrName);
+            if (kAttr) {
+                dicValue = factory.createValue();
+                dicValue.name = attrName;
+                dicValue.value = value;
+                dic.addValues(dicValue);
+            } else {
+                cb(new Error('Unknown attribute "'+attrName+'" in '+dic.eContainer().path()+' (set '+attr.toString()+' = "'+value+'")'));
             }
         }
     }

@@ -39,12 +39,8 @@ module.exports = function (model, statements, stmt, opts) {
         },
 
         toString: function () {
-            var str = instancePath.join('.');
-            if (str[0] === '.') {
-                return str.substr(1);
-            } else {
-                return str;
-            }
+            // remove useless dots
+            return instancePath.join('.').replace(/^\.*/g, '');
         }
     };
 };
