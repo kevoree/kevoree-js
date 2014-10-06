@@ -6,7 +6,8 @@
         "package": "<%= kevoreePackage %>"
     },
     "scripts": {
-        "prepublish": "grunt"
+        "prepublish": "grunt",
+        "postpublish": "grunt publish"
     },
     "keywords": [
         "kevoree",
