@@ -209,20 +209,14 @@ var AdaptationEngine = Class({
                                     }
 
                                     if (modelElement.hub.dictionary) {
-                                        var dicVals = modelElement.hub.dictionary.values.iterator();
-                                        while (dicVals.hasNext()) {
-                                            var val = dicVals.next();
-                                            cmds.push(this.createCommand(UpdateDictionary, val));
-                                        }
+                                        cmds = cmds.concat(this.createUpdateDictionaryCommands(modelElement.hub.dictionary));
                                     }
 
                                     var fragDics = modelElement.hub.fragmentDictionary.iterator();
                                     while (fragDics.hasNext()) {
                                         var fragDic = fragDics.next();
-                                        var fragDicVals = fragDic.values.iterator();
-                                        while (fragDicVals.hasNext()) {
-                                            var fragDicVal = fragDicVals.next();
-                                            cmds.push(this.createCommand(UpdateDictionary, fragDicVal));
+                                        if (fragDic.name === this.node.getName()) {
+                                            cmds = cmds.concat(this.createUpdateDictionaryCommands(fragDic));
                                         }
                                     }
 
@@ -280,13 +274,22 @@ var AdaptationEngine = Class({
                                 cmds.push(this.createCommand(StartInstance, modelElement));
                                 if (!modelElement.host) {
                                     if (modelElement.dictionary) {
-                                        if (modelElement.dictionary.values.size() > 0) {
+                                        var updateDicCmds = this.createUpdateDictionaryCommands(modelElement.dictionary);
+                                        if (updateDicCmds.length > 0) {
+                                            cmds = cmds.concat(updateDicCmds);
                                             cmds.push(this.createCommand(UpdateInstance, modelElement));
                                         }
+                                    }
 
-                                        var values = modelElement.dictionary.values.iterator();
-                                        while (values.hasNext()) {
-                                            cmds.push(this.createCommand(UpdateDictionary, values.next()));
+                                    var elemFragDics = modelElement.fragmentDictionary.iterator();
+                                    while (elemFragDics.hasNext()) {
+                                        var fDic = elemFragDics.next();
+                                        if (fDic.name === this.node.getName()) {
+                                            var updateFDicCmds = this.createUpdateDictionaryCommands(fDic);
+                                            if (updateFDicCmds.length > 0) {
+                                                cmds = cmds.concat(updateFDicCmds);
+                                                cmds.push(this.createCommand(UpdateInstance, modelElement));
+                                            }
                                         }
                                     }
                                 }
@@ -307,7 +310,6 @@ var AdaptationEngine = Class({
                 }
                 break;
 
-            case 'name':
             case 'value':
                 if (trace.traceType.name() === 'SET' &&
                     Kotlin.isType(modelElement, kevoree.Value) &&
@@ -365,7 +367,11 @@ var AdaptationEngine = Class({
             }
 
         } else if (Kotlin.isType(element, kevoree.Value)) {
-            return this.isRelatedToPlatform(element.eContainer().eContainer());
+            if (Kotlin.isType(element.eContainer(), kevoree.FragmentDictionary)) {
+                return (element.eContainer().name === this.node.getName());
+            } else {
+                return this.isRelatedToPlatform(element.eContainer().eContainer());
+            }
 
         } else if (Kotlin.isType(element, kevoree.Port)) {
             return this.isRelatedToPlatform(element.eContainer());
@@ -374,8 +380,43 @@ var AdaptationEngine = Class({
         return false;
     },
 
+    /**
+     *
+     * @param Cmd
+     * @param element
+     * @returns {Object}
+     */
     createCommand: function (Cmd, element) {
         return new Cmd(this.node, this.modelObjMapper, this.targetModel, element);
+    },
+
+    /**
+     *
+     * @param kDic
+     * @returns {Array}
+     */
+    createUpdateDictionaryCommands: function (kDic) {
+        var cmds = [],
+            dictionary = null;
+
+        var entityInstance = this.modelObjMapper.getObject(kDic.eContainer().path());
+        if (entityInstance) {
+            dictionary = entityInstance.getDictionary();
+        }
+        var values = kDic.values.iterator();
+        while (values.hasNext()) {
+            var val = values.next();
+            if (dictionary) {
+                var oldVal = dictionary.getValue(val.name);
+                if (oldVal !== val.value) {
+                    cmds.push(this.createCommand(UpdateDictionary, val));
+                }
+            } else {
+                cmds.push(this.createCommand(UpdateDictionary, val));
+            }
+        }
+
+        return cmds;
     },
 
     /**

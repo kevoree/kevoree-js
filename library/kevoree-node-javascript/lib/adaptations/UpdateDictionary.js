@@ -14,8 +14,15 @@ module.exports = AdaptationPrimitive.extend({
         this._super(callback);
 
         var kDictionary = this.modelElement.eContainer();
-        var instance = this.mapper.getObject(kDictionary.eContainer().path());
-        if (instance !== null) {
+        var instance;
+        if (kDictionary.eContainer().name === this.node.getName()) {
+            // instance is the current platform node
+            instance = this.node;
+        } else {
+            instance = this.mapper.getObject(kDictionary.eContainer().path());
+        }
+
+        if (instance) {
             var dictionary = instance.getDictionary();
 
             this.oldDictionaryMap = dictionary.cloneMap();
@@ -31,7 +38,7 @@ module.exports = AdaptationPrimitive.extend({
             }
             callback();
         } else {
-            this.log.warn(this.toString(), 'Didnt update any dictionary because '+kDictionary.eContainer().path()+' isnt related to this platform obvsiouly');
+            this.log.warn(this.toString(), 'Did not update any dictionary because '+kDictionary.eContainer().path()+' is not related to this platform obvsiouly');
             callback();
         }
     },
