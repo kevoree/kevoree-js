@@ -50,6 +50,7 @@ var AdaptationEngine = Class({
 
         this.node = node;
         this.modelObjMapper = new ModelObjectMapper();
+        this.modelObjMapper.addEntry(this.node.getPath(), this.node);
         var factory = new kevoree.factory.DefaultKevoreeFactory();
         this.compare = factory.createModelCompare();
         this.alreadyProcessedTraces = {};
@@ -317,8 +318,11 @@ var AdaptationEngine = Class({
                     if (this.isRelatedToPlatform(modelElement)) {
                         instance = modelElement.eContainer().eContainer();
                         if (instance.started && !instance.host) {
-                            cmds.push(this.createCommand(UpdateDictionary, modelElement));
-                            cmds.push(this.createCommand(UpdateInstance, modelElement.eContainer().eContainer()));
+                            var updateDicAttrs = this.createUpdateDictionaryCommands(modelElement.eContainer());
+                            if (updateDicAttrs.length > 0) {
+                                cmds = cmds.concat(updateDicAttrs);
+                                cmds.push(this.createCommand(UpdateInstance, modelElement.eContainer().eContainer()));
+                            }
                         }
                     }
                 }
@@ -399,7 +403,12 @@ var AdaptationEngine = Class({
         var cmds = [],
             dictionary = null;
 
-        var entityInstance = this.modelObjMapper.getObject(kDic.eContainer().path());
+        var entityInstance;
+        if (kDic.eContainer().path() === this.node.getPath()) {
+            entityInstance = this.node;
+        } else {
+            entityInstance = this.modelObjMapper.getObject(kDic.eContainer().path());
+        }
         if (entityInstance) {
             dictionary = entityInstance.getDictionary();
         }
