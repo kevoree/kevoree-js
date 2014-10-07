@@ -88,6 +88,7 @@ module.exports = function(grunt) {
         runtime.once('deployed', function deployHandler() {
             runtime.off('deployed', deployHandler);
             runtime.off('deployError', errorHandler);
+            runtime.off('adaptationError', errorHandler);
         });
 
         runtime.start(options.node, options.group);
