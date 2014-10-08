@@ -50,9 +50,9 @@ if (optimist.argv._.length === 1) {
     fs.readFile(input, 'utf8', function (err, data) {
         if (err) throw err;
 
-        if (optimist.c) {
+        if (optimist.argv.c) {
             var loader = factory.createJSONLoader();
-            fs.readFile(path.resolve(optimist.c), 'utf8', function (err, ctxModelSrc) {
+            fs.readFile(path.resolve(optimist.argv.c), 'utf8', function (err, ctxModelSrc) {
                 if (err) {
                     console.log(chalk.red("Unable to read context model file")+'\n'+err.stack);
                     process.exit(1);
