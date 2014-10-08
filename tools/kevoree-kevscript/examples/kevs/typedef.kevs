@@ -1,7 +1,6 @@
 add node0, node1, node2 : JavascriptNode
-add node0.log, node2.log : ConsolePrinter
-add node1.ticker : Ticker
-add chan : WebSocketChannel
 add sync : WSGroup
 
-set node0.logLevel = 'info'
+attach * sync
+
+remove node1

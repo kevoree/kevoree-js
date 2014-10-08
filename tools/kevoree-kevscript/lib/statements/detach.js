@@ -1,39 +1,41 @@
-var kevoree = require('kevoree-library').org.kevoree;
-var factory = kevoree.factory.DefaultKevoreeFactory();
-
 module.exports = function (model, statements, stmt, opts, cb) {
-    var names = [];
-    var group = null;
-    var target = stmt.children[1].children.join('');
+    var nameList = statements[stmt.children[0].type](model, statements, stmt.children[0], opts);
+    var groupName = statements[stmt.children[1].type](model, statements, stmt.children[1], opts);
 
-    if (stmt.children[0].type == 'nameList') {
-        var nodeList = stmt.children[0].children;
-        for (var i in nodeList) {
-            names.push(nodeList[i].children.join(''));
-        }
-
-    } else if (stmt.children[0] == '*') {
-        group = model.findGroupsByID(target);
-        if (typeof(group) != 'undefined') {
-            var nodes = group.subNodes.iterator();
-            while (nodes.hasNext()) names.push(nodes.next().name);
+    if (groupName.raw.length === 1) {
+        groupName = groupName.toString();
+        var group = model.findGroupsByID(groupName);
+        if (group) {
+            for (var i=0; i < nameList.length; i++) {
+                if (nameList[i].raw.length === 1) {
+                    var nodeName = nameList[i].toString();
+                    var node = model.findNodesByID(nodeName);
+                    if (node) {
+                        node.removeGroups(group);
+                        group.removeSubNodes(node);
+                    } else {
+                        cb(new Error('Unable to find node instance "'+nodeName+'" '+printLine(nameList, groupName)));
+                        break;
+                    }
+                } else {
+                    cb(new Error('Namespaces are not implemented yet '+printLine(nameList, groupName)));
+                }
+            }
+            cb();
         } else {
-            return cb(new Error('Unable to find group instance "'+target+'" in current model. (detach * '+target+')'));
+            cb(new Error('Unable to find group instance "'+groupName+'" '+printLine(nameList, groupName)));
         }
     } else {
-        names.push(stmt.children[0].children.join(''));
+        cb(new Error('Namespaces are not implemented yet '+printLine(nameList, groupName)));
     }
-
-    for (var i in names) {
-        group = model.findGroupsByID(target);
-        if (typeof(group) != 'undefined') {
-            var node = model.findNodesByID(names[i]);
-            if (typeof(node) != 'undefined') {
-                node.removeGroups(group);
-                group.removeSubNodes(node);
-            }
-        }
-    }
-
-    cb();
 };
+
+function printLine(nameList, groupName) {
+    return '(detach '+display(nameList)+' '+groupName.toString()+')';
+}
+
+function display(nameList) {
+    return nameList.map(function (instancePath) {
+        return instancePath.toString();
+    }).join(', ');
+}

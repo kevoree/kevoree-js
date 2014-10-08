@@ -5,6 +5,7 @@ module.exports = function (model, statements, stmt, opts) {
     }
 
     return {
+        raw: instancePath,
         /**
          * 'a.b.c' with expect(2, 4, function (err, one, two, three, four) {
          *   if (err) {
