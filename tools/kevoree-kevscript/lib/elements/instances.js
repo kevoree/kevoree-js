@@ -106,5 +106,5 @@ module.exports = function (model) {
     process(model.groups.iterator());
     process(model.hubs.iterator());
 
-    return str;
+    return str.replace(/org\.kevoree\.library\./g, '');
 };

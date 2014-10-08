@@ -24,17 +24,20 @@ function lexValue(value) {
 module.exports = function (model) {
     var str = '';
 
-    function processDictionary(instanceName, values, fragName) {
+    function processDictionary(instanceName, values, fragName, dicType) {
         while (values.hasNext()) {
             var val = values.next();
-            if (str.length !== 0) {
-                str += '\n';
-            }
+            var attr = dicType.findAttributesByID(val.name);
+            if (attr.defaultValue !== val.value) {
+                if (str.length !== 0) {
+                    str += '\n';
+                }
 
-            if (fragName) {
-                str += 'set '+instanceName+'.'+val.name+'/'+fragName+' = '+lexValue(val.value);
-            } else {
-                str += 'set '+instanceName+'.'+val.name+' = '+lexValue(val.value);
+                if (fragName) {
+                    str += 'set '+instanceName+'.'+val.name+'/'+fragName+' = '+lexValue(val.value);
+                } else {
+                    str += 'set '+instanceName+'.'+val.name+' = '+lexValue(val.value);
+                }
             }
         }
     }
@@ -43,14 +46,14 @@ module.exports = function (model) {
         var instanceName = (host) ? (host+'.'+instance.name) : (instance.name);
 
         if (instance.dictionary) {
-            processDictionary(instanceName, instance.dictionary.values.iterator());
+            processDictionary(instanceName, instance.dictionary.values.iterator(), null, instance.typeDefinition.dictionaryType);
         }
 
         var fDics = instance.fragmentDictionary.iterator();
         while (fDics.hasNext()) {
             var dic = fDics.next();
             if (dic) {
-                processDictionary(instanceName, dic.values.iterator(), dic.name);
+                processDictionary(instanceName, dic.values.iterator(), dic.name, instance.typeDefinition.dictionaryType);
             }
         }
     }
