@@ -6,7 +6,8 @@
     "package": "org.kevoree.library"
   },
   "scripts": {
-    "prepublish": "grunt"
+    "prepublish": "grunt",
+    "postpublish": "grunt publish"
   },
   "dependencies": {
     "kevoree-entities": "^3.0.1",

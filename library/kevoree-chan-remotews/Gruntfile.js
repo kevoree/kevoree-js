@@ -15,13 +15,11 @@ module.exports = function (grunt) {
             }
         },
 
-        kevoree_registry: {
-            src: 'kevlib.json'
-        },
+        kevoree_registry: { src: 'kevlib.json' },
 
         kevoree: {
-            run: { kevscript: 'kevs/main.kevs' },
-            multiplatform: { kevscript: 'kevs/multiplatform.kevs' }
+            run:   { kevscript: 'kevs/main.kevs' },
+            multi: { kevscript: 'kevs/multiplatform.kevs' }
         },
 
 
@@ -63,30 +61,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-contrib-uglify');
 
-//    grunt.registerTask('kev', function (action) {
-//        var args = Array.prototype.slice.call(arguments).splice(1).join(':');
-//        var appendix = (args.length > 0) ? ':'+args : '';
-//
-//        switch (action) {
-//            case 'run':
-//                grunt.task.run('kevoree'+appendix);
-//                break;
-//
-//            case 'deploy':
-//                grunt.task.run('kevoree_registry'+appendix);
-//                break;
-//
-//            case 'generate':
-//                grunt.task.run('kevoree_genmodel'+appendix);
-//                break;
-//
-//            default:
-//                grunt.log.subhead('Nothing done.');
-//                grunt.log.warn('Unknown given action "'+action+'" (available actions: kev:run, kev:deploy, kev:generate)');
-//                break;
-//        }
-//    });
-
-    grunt.registerTask('default', ['kevoree_genmodel', 'browserify', 'uglify', 'kevoree_registry']);
-//    grunt.registerTask('kev', ['kevoree']);
+    grunt.registerTask('default', ['kevoree_genmodel', 'browserify', 'uglify']);
+    grunt.registerTask('build', 'default');
+    grunt.registerTask('publish', 'kevoree_registry')
+    grunt.registerTask('kev', ['kevoree']);
 };
