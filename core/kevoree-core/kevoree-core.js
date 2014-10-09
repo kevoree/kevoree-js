@@ -312,7 +312,6 @@ var Core = Class({
             this.log.debug(this.toString(), "Start '"+this.nodeName+"' bootstrapping...");
             this.bootstrapper.bootstrapNodeType(this.nodeName, model, function (err, AbstractNode) {
                 if (err) {
-                    err.message = "Unable to bootstrap '"+this.nodeName+"'! Start process aborted.";
                     callback(err);
                     return;
                 }
