@@ -122,8 +122,12 @@ var NodeJSRuntime = Class({
         }.bind(this));
 
         process.nextTick(function () {
-            this.kCore.start(this.nodename, this.groupname);
+            this.kCore.start(this.nodename);
         }.bind(this));
+    },
+
+    stop: function () {
+        this.kCore.stop();
     },
 
     deploy: function (model) {
