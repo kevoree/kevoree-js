@@ -107,6 +107,10 @@ if (argv.argv.help) {
         }
     });
 
+    runtime.on('stopped', function () {
+        process.exit(0);
+    });
+
     // Kevore Runtime error event listener
     runtime.on('error', function (err) {
         log.error(err.stack);

@@ -81,7 +81,7 @@ var NodeJSRuntime = Class({
 
         this.kCore.on('stopped', function () {
             coreStarted = false;
-            process.exit(0);
+            self.emitter.emit('stopped');
         });
     },
 
