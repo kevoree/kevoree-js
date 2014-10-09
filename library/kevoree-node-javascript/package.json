@@ -1,6 +1,6 @@
 {
   "name": "kevoree-node-javascript",
-  "version": "3.0.2-SNAPSHOT.0",
+  "version": "3.0.3",
   "main": "./lib/JavascriptNode.js",
   "kevoree": {
     "package": "org.kevoree.library"
