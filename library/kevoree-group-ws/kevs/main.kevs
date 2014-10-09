@@ -1,0 +1,10 @@
+add node0, node1, node2 : JavascriptNode/3.0.2-SNAPSHOT.0
+add sync : WSGroup
+
+attach * sync
+
+set sync.master = "node0"
+
+network node0.ip.eth0 127.0.0.1
+network node1.ip.eth0 127.0.0.1
+network node2.ip.eth0 127.0.0.1

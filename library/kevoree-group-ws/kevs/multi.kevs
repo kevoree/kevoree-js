@@ -1,0 +1,23 @@
+add node0, node1:   JavascriptNode/3.0.2-SNAPSHOT.0
+add node2:          JavaNode/5.1.1-SNAPSHOT
+add node2.ticker:   Ticker/5.1.1-SNAPSHOT
+add node1.log:      ConsolePrinter/5.1.1-SNAPSHOT
+add sync:           WSGroup
+add chan:           RemoteWSChan/5.0.8-SNAPSHOT
+
+attach node2,
+       node1,
+       node0 sync
+
+bind node2.ticker.tick chan
+bind node1.log.input chan
+
+set sync.master = 'node0'
+set sync.port/node0 = '9000'
+
+set chan.host = 'localhost'
+set chan.port = '9001'
+
+network node0.ip.eth0 127.0.0.1
+network node1.ip.eth0 127.0.0.1
+network node2.ip.eth0 127.0.0.1
