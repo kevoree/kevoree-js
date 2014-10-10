@@ -1,14 +1,10 @@
-add node0, node1 : JavascriptNode
-add sync : WebSocketGroup
-//add node0.tick : Ticker
-//add node0.log : ConsolePrinter
-//add chan : LocalChannel
+add node0 : JavaNode/5.1.1-SNAPSHOT
+add node1 : JavascriptNode
+add sync : WSGroup/5.1.1-SNAPSHOT
+
+set sync.master = 'node0'
 
 attach node0, node1 sync
 
-set sync.port/node0 = '9000'
-
-//bind node0.tick.tick chan
-//bind node0.log.input chan
-
-network node0.lan.ip 127.0.0.1
+network node0.ip.eth0 127.0.0.1
+network node1.ip.eth0 127.0.0.1

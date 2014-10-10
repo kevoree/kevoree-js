@@ -1,8 +1,7 @@
 var Class               = require('pseudoclass'),
     kevoree             = require('kevoree-library').org.kevoree,
     Kotlin              = require('kevoree-kotlin'),
-    ModelObjectMapper   = require('./ModelObjectMapper'),
-    KevoreeLogger       = require('kevoree-commons').KevoreeLogger;
+    ModelObjectMapper   = require('./ModelObjectMapper');
 
 // Adaptation Primitives
 var AddInstance         = require('./adaptations/AddInstance'),
@@ -46,8 +45,6 @@ var AdaptationEngine = Class({
     toString: 'AdaptationEngine',
 
     construct: function (node) {
-        this.log = new KevoreeLogger(this.toString());
-
         this.node = node;
         this.modelObjMapper = new ModelObjectMapper();
         this.modelObjMapper.addEntry(this.node.getPath(), this.node);
