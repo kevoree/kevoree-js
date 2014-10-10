@@ -134,78 +134,82 @@ var Core = Class({
                             core.deployModel = cloner.clone(model, true);
                             core.deployModel.setRecursiveReadOnly();
                             var diffSeq = factory.createModelCompare().diff(core.currentModel, core.deployModel);
-                            var adaptations = core.nodeInstance.processTraces(diffSeq, core.deployModel);
+                            core.nodeInstance.processTraces(diffSeq, core.deployModel, function (err, adaptations) {
+                                if (err) {
+                                    core.emitter.emit('deployError', err);
+                                } else {
+                                    // list of adaptation commands retrieved
+                                    var cmdStack = [];
 
-                            // list of adaptation commands retrieved
-                            var cmdStack = [];
+                                    // executeCommand: function that save cmd to stack and executes it
+                                    function executeCommand(cmd, iteratorCallback) {
+                                        // save the cmd to be processed in a stack using unshift
+                                        // in order to add the last processed cmd at the beginning of the array
+                                        // => cmdStack[0] = more recently executed cmd
+                                        cmdStack.unshift(cmd);
 
-                            // executeCommand: function that save cmd to stack and executes it
-                            function executeCommand(cmd, iteratorCallback) {
-                                // save the cmd to be processed in a stack using unshift
-                                // in order to add the last processed cmd at the beginning of the array
-                                // => cmdStack[0] = more recently executed cmd
-                                cmdStack.unshift(cmd);
+                                        // execute cmd
+                                        cmd.execute(function (err) {
+                                            if (err) {
+                                                if (core.stopping) {
+                                                    // log error
+                                                    core.log.error(cmd.toString(), 'Fail adaptation skipped: '+err.message);
+                                                    // but continue adaptation because we are stopping runtime anyway
+                                                    err = null;
+                                                }
+                                            }
+                                            iteratorCallback(err);
+                                        });
+                                    }
 
-                                // execute cmd
-                                cmd.execute(function (err) {
-                                    if (err) {
-                                        if (core.stopping) {
-                                            // log error
-                                            core.log.error(cmd.toString(), 'Fail adaptation skipped: '+err.message);
-                                            // but continue adaptation because we are stopping runtime anyway
-                                            err = null;
+                                    // rollbackCommand: function that calls undo() on cmds in the stack
+                                    function rollbackCommand(cmd, iteratorCallback) {
+                                        try {
+                                            cmd.undo(iteratorCallback);
+                                        } catch (err) {
+                                            iteratorCallback(err);
                                         }
                                     }
-                                    iteratorCallback(err);
-                                });
-                            }
 
-                            // rollbackCommand: function that calls undo() on cmds in the stack
-                            function rollbackCommand(cmd, iteratorCallback) {
-                                try {
-                                    cmd.undo(iteratorCallback);
-                                } catch (err) {
-                                    iteratorCallback(err);
-                                }
-                            }
+                                    // execute each command synchronously
+                                    async.eachSeries(adaptations, executeCommand, function (err) {
+                                        if (err) {
+                                            err.message = "Something went wrong while processing adaptations.\n"+err.message;
+                                            core.log.error(core.toString(), err.stack);
+                                            core.emitter.emit('adaptationError', err);
+                                            core.log.info(core.toString(), 'Rollbacking to previous model...');
 
-                            // execute each command synchronously
-                            async.eachSeries(adaptations, executeCommand, function (err) {
-                                if (err) {
-                                    err.message = "Something went wrong while processing adaptations.\n"+err.message;
-                                    core.log.error(core.toString(), err.stack);
-                                    core.emitter.emit('adaptationError', err);
-                                    core.log.info(core.toString(), 'Rollbacking to previous model...');
+                                            // rollback process
+                                            async.eachSeries(cmdStack, rollbackCommand, function (er) {
+                                                if (er) {
+                                                    // something went wrong while rollbacking
+                                                    er.message = "Something went wrong while rollbacking. Process will exit.\n"+er.message;
+                                                    core.log.error(core.toString(), er.stack);
+                                                    // stop everything :/
+                                                    core.stop();
+                                                    core.emitter.emit('rollbackError', er);
+                                                } else {
+                                                    // rollback succeed
+                                                    core.emitter.emit('rollbackSucceed');
+                                                }
+                                            });
 
-                                    // rollback process
-                                    async.eachSeries(cmdStack, rollbackCommand, function (er) {
-                                        if (er) {
-                                            // something went wrong while rollbacking
-                                            er.message = "Something went wrong while rollbacking. Process will exit.\n"+er.message;
-                                            core.log.error(core.toString(), er.stack);
-                                            // stop everything :/
-                                            core.stop();
-                                            core.emitter.emit('rollbackError', er);
                                         } else {
-                                            // rollback succeed
-                                            core.emitter.emit('rollbackSucceed');
+                                            // save old model
+                                            pushInArray(core.models, core.currentModel);
+                                            // set current model
+                                            core.currentModel = cloner.clone(model, false);
+                                            // reset deployModel
+                                            core.deployModel = null;
+                                            // adaptations succeed : woot
+                                            core.log.debug(core.toString(), "Model deployed successfully: "+adaptations.length+" adaptations");
+                                            // all good :)
+                                            if (typeof (core.nodeInstance.onModelDeployed) === 'function') { // backward compatibility with kevoree-entities < 2.1.0
+                                                core.nodeInstance.onModelDeployed();
+                                            }
+                                            core.emitter.emit('deployed', core.currentModel);
                                         }
                                     });
-
-                                } else {
-                                    // save old model
-                                    pushInArray(core.models, core.currentModel);
-                                    // set current model
-                                    core.currentModel = cloner.clone(model, false);
-                                    // reset deployModel
-                                    core.deployModel = null;
-                                    // adaptations succeed : woot
-                                    core.log.debug(core.toString(), "Model deployed successfully: "+adaptations.length+" adaptations");
-                                    // all good :)
-                                    if (typeof (core.nodeInstance.onModelDeployed) === 'function') { // backward compatibility with kevoree-entities < 2.1.0
-                                        core.nodeInstance.onModelDeployed();
-                                    }
-                                    core.emitter.emit('deployed', core.currentModel);
                                 }
                             });
                         } catch (err) {
