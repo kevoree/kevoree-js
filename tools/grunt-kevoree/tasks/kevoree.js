@@ -17,7 +17,7 @@ var kevoree       = require('kevoree-library').org.kevoree,
 
 module.exports = function(grunt) {
 
-    var logger = new KevoreeLogger('KevoreeRuntime');
+    var logger = new KevoreeLogger('RuntimeGruntTask');
 
     grunt.registerTask('kevoree', 'Automatically runs kevoree runtime (works like mvn kev:run plugin)', function (nodeName) {
         var done = this.async();
