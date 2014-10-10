@@ -25,14 +25,9 @@ In your project's Gruntfile, add a section named `kevoree` to the data object pa
 ```js
 grunt.initConfig({
     kevoree: {
-        run: {
-            options: {
-                node: 'node0',                  // [optional] default "node0"
-                group: 'sync',                  // [optional] default "sync"
-                modulesPath: 'path/to/a/folder' // [optional] default "node_modules/grunt-kevoree"
-            },
-            kevscript: 'test/kevs/main.kevs'    // path to your KevScript file
-        }
+        node: 'node0',              // default
+        kevs: 'kevs/main.kevs',     // default
+        installDir: '.deploy_units' // default
     }
 });
 ```
@@ -45,13 +40,7 @@ Default value: `'node0'`
 
 A string value that is used to determine the node name of the launched Kevoree runtime platform
 
-#### options.group
-Type: `String`  
-Default value: `'sync'`
-
-A string value that is used to determine the name of the group that will be attached to the node
-
-#### options.modulesPath
+#### options.installDir
 Type: `String`  
 Default value: `'.deploy_units'`
 
@@ -61,6 +50,7 @@ A string value that is used to determine the modulesPath variable for Kevoree re
 Type: `Boolean`  
 Default value: `false`
 
+**NOT IMPLEMENTED YET**
 A boolean that indicates whether or not you want to use Kevoree GUI Runtime (default is false which means it uses the command-line kevoree-nodejs-runtime)
 
 ### Kevscript

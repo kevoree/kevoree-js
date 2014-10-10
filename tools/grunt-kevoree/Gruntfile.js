@@ -25,20 +25,6 @@ module.exports = function(grunt) {
         // Before generating any new files, remove any previously-created files.
         clean: {
             tests: ['tmp']
-        },
-
-        // Configuration to be run (and then tested).
-        kevoree: {
-            run: {
-                options: {
-                    node: 'node0',
-                    group: 'sync'
-                },
-                kevscript: 'test/kevs/main.kevs'
-            },
-            nooptions: {
-
-            }
         }
     });
 
