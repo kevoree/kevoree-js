@@ -75,7 +75,7 @@ var AbstractChannel = KevoreeEntity.extend({
                         outputs.push(binding.port.path());
                     }
                 }
-            });
+            }.bind(this));
         }
 
         return outputs;
