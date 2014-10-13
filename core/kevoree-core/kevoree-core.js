@@ -378,6 +378,18 @@ var Core = Class({
         return this.currentModel;
     },
 
+    /**
+     * Returns deployModel or currentModel if not deploying
+     * @returns {Object}
+     */
+    getLastModel: function () {
+        if (typeof this.deployModel !== 'undefined' && this.deployModel !== null) {
+            return this.deployModel;
+        } else {
+            return this.currentModel;
+        }
+    },
+
     getPreviousModel: function () {
         var model = null;
         if (this.models.length > 0) model = this.models[this.models.length-1];
