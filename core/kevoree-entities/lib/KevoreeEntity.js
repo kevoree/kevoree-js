@@ -78,6 +78,10 @@ var KevoreeEntity = Class({
         this.kCore = kCore;
     },
 
+    /**
+     *
+     * @returns {Object}
+     */
     getKevoreeCore: function () {
         return this.kCore;
     },
