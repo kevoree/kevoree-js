@@ -81,6 +81,23 @@ var AbstractChannel = KevoreeEntity.extend({
         return outputs;
     },
 
+    getInputs: function () {
+        var inputs = [];
+
+        var chan = this.getModelEntity();
+        if (chan) {
+            chan.bindings.array.forEach(function (binding) {
+                if (binding.port && binding.port.getRefInParent() === 'provided') {
+                    if (binding.port.eContainer().eContainer().name === this.getNodeName()) {
+                        inputs.push(binding.port.path());
+                    }
+                }
+            }.bind(this));
+        }
+
+        return inputs;
+    },
+
     addInternalInputPort: function (port) {
         this.inputs[port.getPath()] = port;
     },
