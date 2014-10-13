@@ -17,7 +17,9 @@ module.exports = function(grunt) {
 
         // Merge task-specific and/or target-specific options with these defaults.
         var options = this.options({
-            type: 'json'
+            type: 'json',
+            host: 'registry.kevoree.org',
+            port: 80
         });
 
         var factory = new kevoree.factory.DefaultKevoreeFactory();
@@ -29,6 +31,7 @@ module.exports = function(grunt) {
 
         // Iterate over all specified file groups.
         this.files.forEach(function(f) {
+            var merged = [];
             // Concat specified files.
             f.src.filter(function(filepath) {
                 // Warn on and remove invalid source files (if nonull was set).
@@ -41,19 +44,48 @@ module.exports = function(grunt) {
             }).map(function(filepath) {
                 // Read file source.
                 var modelData = grunt.file.read(filepath);
-                var mergeSeq = compare.merge(model, loader.loadModelFromString(modelData).get(0));
-                mergeSeq.applyOn(model);
-                grunt.log.writeln('Model ' + filepath['blue'] + ' merged before push.');
+                try {
+                    var fileModel = loader.loadModelFromString(modelData).get(0);
+                    var mergeSeq = compare.merge(model, fileModel);
+                    mergeSeq.applyOn(model);
+                    merged.push(filepath);
+                } catch (err) {
+                    done(new Error('Unable to load model from file "'+filepath+'"'));
+                }
             });
 
-            grunt.log.writeln('Pushing model to http://registry.kevoree.org ...');
-            registry.post({model: serializer.serialize(model), type: options.type}, function (err) {
-                if (err) {
-                    grunt.fail.fatal(err.message);
+            if (merged.length === 0) {
+                done(new Error('No model found'));
+            } else {
+                if (merged.length === 1) {
+                    grunt.log.writeln('Model: ' + merged[0]['blue']);
+                } else {
+                    grunt.log.writeln('Models: ' + merged.join(', ')['blue']);
                 }
-                grunt.log.writeln('Model(s) successfully published'['green']);
-                done();
-            });
+
+                var url = options.host + ((options.port !== 80) ? ':' + options.port : '');
+                grunt.log.writeln('Registry: '+'http://'['blue']+url['blue']);
+
+                try {
+                    var regOpts = {
+                        host: options.host,
+                        port: options.port,
+                        model: serializer.serialize(model),
+                        type: options.type
+                    };
+
+                    registry.post(regOpts, function (err) {
+                        if (err) {
+                            done(err);
+                        } else {
+                            grunt.log.ok('Model successfully published');
+                            done();
+                        }
+                    });
+                } catch (err) {
+                    done(new Error('Unable to serialize model'));
+                }
+            }
         });
     });
 

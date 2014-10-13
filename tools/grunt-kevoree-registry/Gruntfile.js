@@ -30,8 +30,11 @@ module.exports = function(grunt) {
 
         // Configuration to be run (and then tested).
         kevoree_registry: {
-            options: {},
-            src: 'test/fixtures/kevoree-node-javascript.json'
+            options: {
+                host: 'localhost',
+                port: 8080
+            },
+            src: 'test/fixtures/*'
         },
 
         // Unit tests.

@@ -1,7 +1,7 @@
 {
   "name": "grunt-kevoree-registry",
   "description": "Grunt plugin that handles GET and POST of Kevoree models using kevoree-registry-client",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "homepage": "https://github.com/kevoree/kevoree-js",
   "author": {
     "name": "Maxime Tricoire",
@@ -27,9 +27,9 @@
     "test": "grunt test"
   },
   "devDependencies": {
-    "grunt-contrib-jshint": "^0.9.2",
-    "grunt-contrib-clean": "^0.5.0",
-    "grunt-contrib-nodeunit": "^0.3.3",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-nodeunit": "^0.4.1",
     "grunt": "~0.4.5"
   },
   "peerDependencies": {
@@ -40,6 +40,6 @@
   ],
   "dependencies": {
     "kevoree-library": "^5.0.4",
-    "kevoree-registry-client": "^2.1.0"
+    "kevoree-registry-client": "^2.2.1"
   }
 }
