@@ -1,0 +1,29 @@
+{
+  "name": "kevoree-comp-wsmsgbroker",
+  "version": "0.1.0",
+  "main": "./lib/WSMsgBroker.js",
+  "kevoree": {
+    "package": "org.kevoree.library"
+  },
+  "scripts": {
+    "prepublish": "grunt",
+    "postpublish": "grunt publish"
+  },
+  "keywords": [
+    "kevoree",
+    "library",
+    "comp"
+  ],
+  "dependencies": {
+    "chalk": "^0.5.1",
+    "grunt-kevoree": "^4.0.1",
+    "kevoree-entities": "^3.0.0",
+    "ws": "^0.4.32"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.1",
+    "grunt-kevoree": "^3.0.0",
+    "grunt-kevoree-genmodel": "^2.0.0",
+    "grunt-kevoree-registry": "^2.0.0"
+  }
+}
