@@ -57,9 +57,9 @@ var WSMsgBroker = AbstractComponent.extend({
                             }
                         }
                     }.bind(this));
-                }.bind(this));
 
-                this.server.on('close', this.unregister.bind(this));
+                    ws.on('close', this.unregister.bind(this)(ws));
+                }.bind(this));
                 done();
 
             } else {
