@@ -58,7 +58,9 @@ var WSMsgBroker = AbstractComponent.extend({
                         }
                     }.bind(this));
 
-                    ws.on('close', this.unregister.bind(this)(ws));
+                    ws.on('close', function () {
+                        this.unregister(ws);
+                    }.bind(this));
                 }.bind(this));
                 done();
 
