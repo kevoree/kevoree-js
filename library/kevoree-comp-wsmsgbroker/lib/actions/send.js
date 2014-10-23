@@ -11,7 +11,7 @@ module.exports = function (server) {
 
             } else if (Object.prototype.toString.call(msg.dest) === '[object String]') {
                 // msg.dest is a String
-                server.send(id, msg.message);
+                server.send(msg.dest, msg.message);
 
             } else {
                 throw new Error('Unable to parse "send" message (msg.dest must be an array of string IDs or a string)');
