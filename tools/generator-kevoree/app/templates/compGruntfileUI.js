@@ -15,9 +15,7 @@ module.exports = function (grunt) {
             }
         },
 
-        kevoree_registry: {
-            src: 'kevlib.json'
-        },
+        kevoree_registry: { src: 'kevlib.json' },
 
         // generates compiled version of your views in Javascript
         // in order to use them within your code
@@ -33,13 +31,6 @@ module.exports = function (grunt) {
                 options: {
                     wrap: 'node'
                 }
-            }
-        },
-
-
-        kevoree: {
-            run: {
-                kevscript: 'kevs/main.kevs'
             }
         },
 

@@ -16,15 +16,7 @@ module.exports = function (grunt) {
         },
 
         // pushes your model on http://registry.kevoree.org
-        kevoree_registry: {
-            src: 'kevlib.json'
-        },
-
-        kevoree: {
-            run: {
-                kevscript: 'kevs/main.kevs'
-            }
-        },
+        kevoree_registry: { src: 'kevlib.json' },
 
         browserify: {
             main: {
