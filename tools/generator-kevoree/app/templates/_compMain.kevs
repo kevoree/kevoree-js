@@ -3,7 +3,7 @@
 // KevScript documentation http://kevoree.org/doc/#kevoree-script-aka-kevscript
 add node0 : JavascriptNode
 add sync : WebSocketGroup
-add node0.myComp : <%= entityName %>
+add node0.myComp : <%= fqn %>
 
 attach node0 sync
 

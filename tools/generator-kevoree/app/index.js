@@ -63,22 +63,26 @@ KevoreeGenerator.prototype.askFor = function askFor() {
     this.prompt(prompts, function (props) {
         this.rawEntityType  = props.entityType;
         this.entityType     = ENTITY_REAL_TYPES[this.rawEntityType];
-        this.entityName     = props.entityName;
         this.kevoreePackage = props.kevoreePackage;
+        this.entityName     = props.entityName;
+        this.fqn            = this.entityName;
+        if (this.kevoreePackage !== 'org.kevoree.library') {
+            this.fqn = this.kevoreePackage + '.' + props.entityName;
+        }
 
         this.prompt([
             {
-                name: 'packageName',
-                message: 'Choose a package name:',
+                name: 'moduleName',
+                message: 'Choose a module name:',
                 default: 'kevoree-' + this.rawEntityType + '-' + _.slugify(this.entityName),
                 validate: function (answer) {
                     var pattern = /[a-z0-9_-]+/;
                     if (matcher(answer, pattern)) return true;
-                    else return 'Allowed pattern for package name is ' + pattern.toString();
+                    else return 'Allowed pattern for module name is ' + pattern.toString();
                 }
             }
         ], function (props) {
-            this.packageName = props.packageName;
+            this.moduleName = props.moduleName;
 
             if (this.rawEntityType === 'comp') {
                 this.prompt([

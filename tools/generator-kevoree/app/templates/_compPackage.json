@@ -1,5 +1,5 @@
 {
-    "name": "<%= packageName %>",
+    "name": "<%= moduleName %>",
     "version": "0.1.0",
     "main": "./lib/<%= entityName %>.js",
     "kevoree": {

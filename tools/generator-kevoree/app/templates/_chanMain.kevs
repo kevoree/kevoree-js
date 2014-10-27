@@ -5,7 +5,7 @@ add node0 : JavascriptNode
 add sync : WebSocketGroup
 add node0.console : FakeConsole
 add node0.hello : HelloWorldComponent
-add myChan : <%= entityName %>
+add myChan : <%= fqn %>
 
 attach node0 sync
 
