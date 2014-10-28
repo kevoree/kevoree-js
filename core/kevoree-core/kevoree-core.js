@@ -116,6 +116,7 @@ var Core = Class({
 
         } else {
             this.log.debug(this.toString(), 'Deploy process started...');
+            var start = new Date().getTime();
             if (model) {
                 // check if there is an instance currently running
                 // if not, it will try to run it
@@ -199,7 +200,7 @@ var Core = Class({
                                     // reset deployModel
                                     core.deployModel = null;
                                     // adaptations succeed : woot
-                                    core.log.debug(core.toString(), "Model deployed successfully: "+adaptations.length+" adaptations");
+                                    core.log.debug(core.toString(), 'Model deployed successfully: '+adaptations.length+' adaptations ('+(new Date().getTime() - start)+'ms)');
                                     // all good :)
                                     if (typeof (core.nodeInstance.onModelDeployed) === 'function') { // backward compatibility with kevoree-entities < 2.1.0
                                         core.nodeInstance.onModelDeployed();
