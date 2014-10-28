@@ -50,7 +50,10 @@ var AbstractChannel = KevoreeEntity.extend({
      * @param {Function} [callback]
      */
     localDispatch: function (msg, callback) {
-        // if not callback given, then prevent exception to be thrown
+        // javascript trick to convert msg to an array if it isn't and do nothing if it is
+        msg = [].concat(msg);
+
+        // if no callback given, then prevent exception to be thrown
         callback = callback || function () {};
 
         for (var path in this.inputs) {
@@ -61,7 +64,7 @@ var AbstractChannel = KevoreeEntity.extend({
                     if (comp.getModelEntity().started) {
                         // call component's input port function with 'msg' parameter
                         try {
-                            var res = comp[port.getInputPortMethodName()](msg);
+                            var res = comp[port.getInputPortMethodName()].apply(comp, msg);
                             callback(null, res);
 
                         } catch (err) {
