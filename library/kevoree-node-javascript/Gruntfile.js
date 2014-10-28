@@ -12,25 +12,7 @@ module.exports = function (grunt) {
             }
         },
 
-        kevoree_registry: {
-            src: 'kevlib.json'
-        },
-
-        kevoree: {
-            run: {
-                kevscript: 'kevs/main.kevs'
-            },
-            comm: {
-                kevscript: 'kevs/comm.kevs'
-            },
-            cloud: {
-                options: {
-                    node: 'host'
-                },
-                kevscript: 'kevs/cloud.kevs'
-            }
-        },
-
+        kevoree_registry: { src: 'kevlib.json' },
 
         browserify: {
             main: {

@@ -1,13 +1,15 @@
 add node0, node1 : JavascriptNode
 add node0.log : FakeConsole
 add node1.blabla : HelloWorldComponent
-add sync : WebSocketGroup
+add sync : WSGroup
 add chan : WebSocketChannel
 
 attach node0, node1 sync
 
 bind node0.log.inMsg chan
 bind node1.blabla.sendText chan
+
+set sync.master = "node0"
 
 set sync.port/node0 = '9000'
 set chan.port/node0 = '9042'
