@@ -1,7 +1,7 @@
 add node0, node1 : JavascriptNode
 add sync : WebSocketGroup
-add node0.hello, node0.hello1, node0.hello2 : HelloWorldComponent
-add node1.console : FakeConsole
+add node0.tick0, node0.tick1, node0.tick2 : Ticker
+add node1.logger : ConsolePrinter
 add myChan : RemoteWSChan
 
 attach node0, node1 sync
@@ -11,9 +11,9 @@ set sync.port/node0 = "9000"
 set myChan.host = "localhost"
 set myChan.port = "9001"
 
-bind node0.hello.sendText myChan
-bind node0.hello1.sendText myChan
-bind node0.hello2.sendText myChan
-bind node1.console.inMsg myChan
+bind node0.tick0.tick myChan
+bind node0.tick1.tick myChan
+bind node0.tick2.tick myChan
+bind node1.logger.input myChan
 
 network node0.ip.local 127.0.0.1

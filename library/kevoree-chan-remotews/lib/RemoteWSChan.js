@@ -24,52 +24,46 @@ var RemoteWSChan = AbstractChannel.extend({
      */
     start: function (done) {
         this._super(function () {
-            var host = this.dictionary.getValue('host'),
-                port = this.dictionary.getValue('port'),
-                path = this.dictionary.getValue('path');
+            var host = this.dictionary.getString('host'),
+                port = this.dictionary.getNumber('port'),
+                path = this.dictionary.getString('path', '');
 
-            if (!isNaN(parseInt(port))) {
-                if (path) {
-                    if (path.substr(0, 1) !== '/') {
-                        path = '/' + path;
-                    }
-                } else {
-                    path = '';
+            if (host && port) {
+                if (path.substr(0, 1) !== '/') {
+                    path = '/' + path;
                 }
 
                 this.ss = new SmartSocket({
                     addresses:  [host + ':' + port + path],
-                    handlers: {
-                        onopen: function (ws) {
-                            this.log.info(this.toString(), '"'+this.getName()+'" connected to remote WebSocket server ws://'+host + ':' + port + path);
-                            this.conn = ws;
-                            for (var p in this.inputs) {
-                                if (this.inputs.hasOwnProperty(p)) {
-                                    this.conn.send(JSON.stringify({
-                                        action: 'register',
-                                        id: p
-                                    }));
-                                }
-                            }
-                        }.bind(this),
-
-                        onmessage: function (ws, msg) {
-                            if (msg.type) {
-                                msg = msg.data;
-                            }
-                            this.localDispatch(msg);
-                        }.bind(this),
-
-                        onclose: function () {
-                            this.log.info(this.toString(), '"'+this.getName()+'" lost connection with remote WebSocket server ws://'+host + ':' + port + path);
-                        }.bind(this)
-                    }
+                    loopBreak: 3000
                 });
+
+                this.ss.on('open', function (ws) {
+                    this.log.info(this.toString(), '"'+this.getName()+'" connected to remote WebSocket server '+ws.url);
+                    this.conn = ws;
+                    this.getInputs().forEach(function (input) {
+                        ws.send(JSON.stringify({
+                            action: 'register',
+                            id:     input
+                        }));
+                    });
+                }.bind(this));
+
+                this.ss.on('close', function (ws) {
+                    this.log.info(this.toString(), '"'+this.getName()+'" lost connection with remote WebSocket server '+ws.url);
+                }.bind(this));
+
+                this.ss.on('message', function (ws, msg) {
+                    if (msg.type) {
+                        msg = msg.data;
+                    }
+                    this.localDispatch(msg);
+                }.bind(this));
 
                 this.ss.start();
                 done();
             } else {
-                done(new Error(this.toString() + ' error: "'+this.getName()+'" port attribute is not a number ('+port+')'));
+                done(new Error(this.toString() + ' error: "'+this.getName()+'" has wrong attributes host:port ('+host+':'+port+')'));
             }
         }.bind(this));
     },
@@ -109,13 +103,12 @@ var RemoteWSChan = AbstractChannel.extend({
      * @param msg
      */
     onSend: function (fromPortPath, destPortPaths, msg) {
-        this._super();
         if (this.conn && this.conn.readyState === 1) {
             this.logDisplayed = false; // reset logDisplayed flag in order to re-show logs for the next disconnection
             this.conn.send(JSON.stringify({
                 action: 'send',
-                message: msg,
-                destIDs: destPortPaths
+                message: msg+'',
+                dest: destPortPaths
             }));
         } else {
             if (!this.logDisplayed) {
