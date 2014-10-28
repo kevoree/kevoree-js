@@ -2,7 +2,7 @@
 // Feel free to (and you really should) mess with this script =)
 // KevScript documentation http://kevoree.org/doc/#kevoree-script-aka-kevscript
 add node0 : JavascriptNode
-add sync : WebSocketGroup
+add sync : WSGroup
 add node0.console : FakeConsole
 add node0.hello : HelloWorldComponent
 add myChan : <%= fqn %>
