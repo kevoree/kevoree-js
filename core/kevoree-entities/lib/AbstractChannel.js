@@ -12,7 +12,7 @@ var AbstractChannel = KevoreeEntity.extend({
         this.inputs = {};
     },
 
-    internalSend: function (outputPath, msg) {
+    internalSend: function (outputPath, msg, callback) {
         var paths = [];
         for (var inputPath in this.inputs) {
             if (this.inputs.hasOwnProperty(inputPath)) {
@@ -31,7 +31,7 @@ var AbstractChannel = KevoreeEntity.extend({
         }
 
         if (this.started) {
-            this.onSend(outputPath, paths, msg);
+            this.onSend(outputPath, paths, msg, callback);
         }
     },
 
@@ -40,30 +40,47 @@ var AbstractChannel = KevoreeEntity.extend({
      * @param fromPortPath
      * @param destPortPaths Array
      * @param msg
+     * @param callback
      */
-    onSend: function (fromPortPath, destPortPaths, msg) {},
+    onSend: function (fromPortPath, destPortPaths, msg, callback) {},
 
     /**
      * Dispatch messages to all bound ports
      * @param msg
+     * @param callback
      */
-    localDispatch: function (msg) {
+    localDispatch: function (msg, callback) {
         for (var path in this.inputs) {
             if (this.inputs.hasOwnProperty(path)) {
                 var port = this.inputs[path];
                 var comp = port.getComponent();
-                if (comp != null && port.getInputPortMethodName() != null && typeof comp[port.getInputPortMethodName()] === 'function') {
+                if (comp !== null && port.getInputPortMethodName() !== null && typeof comp[port.getInputPortMethodName()] === 'function') {
                     if (comp.getModelEntity().started) {
                         // call component's input port function with 'msg' parameter
-                        comp[port.getInputPortMethodName()](msg);
+                        try {
+                            var res = comp[port.getInputPortMethodName()](msg);
+                            callback(null, res);
+
+                        } catch (err) {
+                            var error = new Error('Exception thrown when processing '+comp.getName()+'.'+port.getInputPortMethodName()+'(...) @'+this.getNodeName());
+                            error.message += ':\n\t' + err.message;
+                            callback(error);
+                            this.log.error(this.toString(), error.message);
+                        }
                     } else {
-                        this.log.debug(this.toString(), 'Component '+comp.getName()+'@'+this.getNodeName()+' is stopped. Drop message.');
+                        var errMsg = 'Component '+comp.getName()+'@'+this.getNodeName()+' is stopped. Drop message.';
+                        callback(new Error(errMsg));
+                        this.log.debug(this.toString(), errMsg);
                     }
                 }
             }
         }
     },
 
+    /**
+     * Returns this channel output port paths
+     * @returns {Array}
+     */
     getOutputs: function () {
         var outputs = [];
 
@@ -81,6 +98,10 @@ var AbstractChannel = KevoreeEntity.extend({
         return outputs;
     },
 
+    /**
+     * Returns this channel input port paths
+     * @returns {Array}
+     */
     getInputs: function () {
         var inputs = [];
 
@@ -98,6 +119,10 @@ var AbstractChannel = KevoreeEntity.extend({
         return inputs;
     },
 
+    /**
+     *
+     * @param port
+     */
     addInternalInputPort: function (port) {
         this.inputs[port.getPath()] = port;
     },

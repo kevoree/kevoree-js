@@ -15,8 +15,8 @@ var Port = Class({
         this.inputPortMethodName = null;
     },
 
-    processSend: function (msg) {
-        this.channel.internalSend(this.path, msg);
+    processSend: function (msg, callback) {
+        this.channel.internalSend(this.path, msg, callback);
     },
 
     setInputPortMethodName: function (name) {
