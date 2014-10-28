@@ -1,39 +1,40 @@
 {
-  "name": "kevoree-chan-local",
-  "version": "3.0.0",
-  "main": "./lib/LocalChannel.js",
-  "kevoree": {
-    "package": "org.kevoree.library"
-  },
-  "scripts": {
-    "prepublish": "grunt"
-  },
-  "dependencies": {
-    "kevoree-entities": "^3.0.3"
-  },
-  "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-browserify": "^3.0.1",
-    "grunt-contrib-uglify": "^0.6.0",
-    "grunt-kevoree": "^3.0.3",
-    "grunt-kevoree-genmodel": "^2.0.0",
-    "grunt-kevoree-registry": "^2.0.1"
-  },
-  "description": "Kevoree channel that only works for local platform (no client/server communication)",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kevoree/kevoree-js"
-  },
-  "keywords": [
-    "kevoree-std-lib",
-    "kevoree",
-    "library",
-    "channel"
-  ],
-  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
-  "license": "LGPL-3.0",
-  "bugs": {
-    "url": "https://github.com/kevoree/kevoree-js/issues"
-  },
-  "homepage": "https://github.com/kevoree/kevoree-js"
+    "name": "kevoree-chan-local",
+    "version": "4.0.0-SNAPSHOT",
+    "main": "./lib/LocalChannel.js",
+    "kevoree": {
+        "package": "org.kevoree.library"
+    },
+    "scripts": {
+        "prepublish": "grunt",
+        "postpublish": "grunt publish"
+    },
+    "dependencies": {
+        "kevoree-entities": "^6.0.0-alpha"
+    },
+    "devDependencies": {
+        "grunt": "^0.4.5",
+        "grunt-browserify": "^3.1.0",
+        "grunt-contrib-uglify": "^0.6.0",
+        "grunt-kevoree": "^4.0.1",
+        "grunt-kevoree-genmodel": "^2.0.0",
+        "grunt-kevoree-registry": "^2.0.2"
+    },
+    "description": "Kevoree channel that only works for local platform (no client/server communication)",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kevoree/kevoree-js"
+    },
+    "keywords": [
+        "kevoree-std-lib",
+        "kevoree",
+        "library",
+        "channel"
+    ],
+    "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+    "license": "LGPL-3.0",
+    "bugs": {
+        "url": "https://github.com/kevoree/kevoree-js/issues"
+    },
+    "homepage": "https://github.com/kevoree/kevoree-js"
 }

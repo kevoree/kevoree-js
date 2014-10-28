@@ -1,6 +1,6 @@
 add node0 : JavascriptNode
 add sync : WebSocketGroup
-add node0.console : ConsolePrinter
+add node0.calc : fr.braindead.Calculator
 add node0.ticker : Ticker
 add myChan : LocalChannel
 
@@ -8,5 +8,7 @@ attach node0 sync
 
 set sync.port/node0 = "9000"
 
-bind node0.console.input myChan
+bind node0.calc.sum myChan
+bind node0.calc.mul myChan
+bind node0.calc.toJson myChan
 bind node0.ticker.tick myChan

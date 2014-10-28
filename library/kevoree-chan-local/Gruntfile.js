@@ -17,13 +17,6 @@ module.exports = function (grunt) {
 
         kevoree_registry: { src: 'kevlib.json' },
 
-        kevoree: {
-            run: {
-                kevscript: 'kevs/main.kevs'
-            }
-        },
-
-
         browserify: {
             main: {
                 src: '<%= pkg.main %>',
@@ -62,6 +55,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-contrib-uglify');
 
-    grunt.registerTask('default', ['kevoree_genmodel', 'browserify', 'uglify', 'kevoree_registry']);
+    grunt.registerTask('default', ['kevoree_genmodel', 'browserify', 'uglify']);
+    grunt.registerTask('build', 'default');
+    grunt.registerTask('publish', 'kevoree_registry');
     grunt.registerTask('kev', ['kevoree']);
 };
