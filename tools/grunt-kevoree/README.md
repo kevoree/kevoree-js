@@ -24,13 +24,19 @@ In your project's Gruntfile, add a section named `kevoree` to the data object pa
 
 ```js
 grunt.initConfig({
+    // all those options are optional because they are the default behavior
     kevoree: {
-        node: 'node0',              // default
-        kevs: 'kevs/main.kevs',     // default
-        installDir: '.deploy_units' // default
+        options: {
+            runtime: 'latest',           // default
+            node: 'node0',               // default
+            kevscript: 'kevs/main.kevs', // default
+            modulesPath: '.deploy_units' // default
+        }
     }
 });
-```
+```  
+
+> You can just add a `grunt.loadNpmTasks('grunt-kevoree')` in your **Gruntfile.js**, and then do a `grunt kevoree` in a terminal
 
 ### Options
 
@@ -40,18 +46,23 @@ Default value: `'node0'`
 
 A string value that is used to determine the node name of the launched Kevoree runtime platform
 
-#### options.installDir
+#### options.runtime
+Type: `String`  
+Default value: `'latest'`
+
+A string value that is used to determine the runtime version (kevoree-nodejs-runtime version)
+
+#### options.kevscript
+Type: `String`  
+Default value: `'kevs/main.kevs'`
+
+A string value that is used to determine the KevScript model that will be used to bootstrap the platform
+
+#### options.modulesPath
 Type: `String`  
 Default value: `'.deploy_units'`
 
 A string value that is used to determine the modulesPath variable for Kevoree resolver (where resolved modules are going to be installed)
-
-#### options.gui
-Type: `Boolean`  
-Default value: `false`
-
-**NOT IMPLEMENTED YET**
-A boolean that indicates whether or not you want to use Kevoree GUI Runtime (default is false which means it uses the command-line kevoree-nodejs-runtime)
 
 ### Kevscript
 
@@ -67,15 +78,37 @@ grunt kevoree --kevs=/path/to/my/model.kevs
 ```
 
 ### Command-line arguments
+#### node
+Type: `String`  
+Default value: `node0`
+
+If set, `grunt-kevoree` will use the given node name to start the Kevoree platform.  
+This argument overrides the given `node` option in **Gruntfile.js**
+
+```sh
+grunt kevoree --node=node1
+```
+
 #### kevscript
 Type: `String`  
-Default value: `none` **this argument is mandatory, it has to be given whether from command-line or in Gruntfile.js**
+Default value: `kevs/main.kevs`
 
 If set, `grunt-kevoree` will use the given filepath to load the KevScript model.  
 This argument overrides the given `kevscript` option in **Gruntfile.js**
 
 ```sh
-grunt kevoree --kevs=/path/to/my/model.kevs
+grunt kevoree --kevscript=/path/to/my/model.kevs
+```
+
+#### runtime
+Type: `String`
+Default value: `latest`
+
+If set, `grunt-kevoree` will install the specified `kevoree-nodejs-runtime` version to run the Kevoree platform.
+  This argument overrides the given `runtime` option in **Gruntfile.js**
+
+```sh
+grunt kevoree --runtime=5.1.0
 ```
 
 #### no-reinstall
@@ -90,7 +123,3 @@ grunt kevoree --no-reinstall
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
-
-## Release History
-_(0.0.1)_ First commit
-_(0.0.2)_ Update README

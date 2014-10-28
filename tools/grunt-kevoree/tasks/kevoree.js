@@ -19,19 +19,19 @@ module.exports = function(grunt) {
 
     var logger = new KevoreeLogger('RuntimeGruntTask');
 
-    grunt.registerTask('kevoree', 'Automatically runs kevoree runtime (works like mvn kev:run plugin)', function (nodeName) {
+    grunt.registerTask('kevoree', 'Automatically runs kevoree runtime (works like mvn kev:run plugin)', function () {
         var done = this.async();
 
         // Merge task-specific and/or target-specific options with these defaults.
         var options = this.options({
-            version: 'latest',
+            runtime: 'latest',
             node: 'node0',
-            kevs: path.resolve('kevs/main.kevs'),
+            kevscript: path.resolve('kevs/main.kevs'),
             modulesPath: path.resolve('.deploy_units')
         });
 
+        var nodeName = grunt.option('node');
         if (nodeName) {
-            // if an argument is given to the task, then consider it is the node name to start the platform on (override)
             options.node = nodeName;
         }
         grunt.log.ok('Platform node name: ' + options.node['blue']);
@@ -41,21 +41,25 @@ module.exports = function(grunt) {
             options.version = runtimeVers;
         }
 
-        var kevs = grunt.option('kevs');
-        if (kevs) {
-            options.kevs = path.resolve('kevs', kevs+'.kevs')
+        var kevscript = grunt.option('kevscript');
+        if (kevscript) {
+            options.kevscript = path.resolve('kevs', kevscript);
         }
 
         options.modulesPath = path.resolve(options.modulesPath, options.node);
 
-        grunt.log.ok('Bootstrap script: ' + path.relative(process.cwd(), options.kevs)['blue']);
+        var bootstrapScriptPath = path.relative(process.cwd(), options.kevscript);
+        if (bootstrapScriptPath.startsWith(path.join('..', '..', '..'))) {
+            bootstrapScriptPath = path.resolve(options.kevscript);
+        }
+        grunt.log.ok('Bootstrap script: ' + bootstrapScriptPath['blue']);
         var factory = new kevoree.factory.DefaultKevoreeFactory();
         var loader = factory.createJSONLoader();
 
         var npmResolver = new NPMResolver(options.modulesPath, logger),
             kevsEngine  = new KevScript({ resolvers: { npm: npmResolver } });
 
-        var kevscriptContent = grunt.file.read(options.kevs);
+        var kevscriptContent = grunt.file.read(options.kevscript);
 
         try {
             var model = grunt.file.read('kevlib.json');
