@@ -47,9 +47,12 @@ var AbstractChannel = KevoreeEntity.extend({
     /**
      * Dispatch messages to all bound ports
      * @param msg
-     * @param callback
+     * @param {Function} [callback]
      */
     localDispatch: function (msg, callback) {
+        // if not callback given, then prevent exception to be thrown
+        callback = callback || function () {};
+
         for (var path in this.inputs) {
             if (this.inputs.hasOwnProperty(path)) {
                 var port = this.inputs[path];
