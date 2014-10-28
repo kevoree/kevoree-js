@@ -1,6 +1,7 @@
-var semver = require('semver');
-var getModel = require('kevoree-registry-client').get;
+var SemVer = require('semver');
+var registry = require('kevoree-registry-client');
 var kevoree = require('kevoree-library').org.kevoree;
+var getFqn = require('../getFQN');
 
 module.exports = function (model, statements, stmt, opts, cb) {
     var tdef;
@@ -12,7 +13,7 @@ module.exports = function (model, statements, stmt, opts, cb) {
     }
 
     if (fqn.split('.').length === 1) {
-        // prevent users from specifying 'org.kevoree.library' on TypeDefinition
+        // default package to 'org.kevoree.library' for  package-name-less TypeDefinition (ie: add node: JavascriptNode)
         fqn = 'org.kevoree.library.'+fqn;
     }
 
@@ -24,7 +25,7 @@ module.exports = function (model, statements, stmt, opts, cb) {
     var tdefs = model.select(path).array;
     if (tdefs.length === 0) {
         // retrieve model from registry.kevoree.org because it is not in the current model
-        getModel({ fqns: [fqn] }, function (err, tdefModel) {
+        registry.get({ fqns: [fqn] }, function (err, tdefModel) {
             if (err) {
                 cb(new Error('Unable to find "'+fqn+'" in current model nor on Kevoree registry.'));
             } else {
@@ -37,22 +38,30 @@ module.exports = function (model, statements, stmt, opts, cb) {
                     cb(new Error('Unable to find "'+fqn+'" on Kevoree registry.'));
 
                 } else {
-                    var compare = factory.createModelCompare();
-                    var mergeSeq = compare.merge(model, tdefModel);
-                    mergeSeq.applyOn(model);
-
                     if (tdefs.length === 1) {
-                        // this version is already in the model
+                        // there is only one TypeDefinition found, we can merge
+                        var compare = factory.createModelCompare();
+                        var mergeSeq = compare.merge(model, tdefModel);
+                        mergeSeq.applyOn(model);
+                        // ...and answer with the newly added TypeDefinition from the registry
                         cb(null, tdefs[0]);
                     } else {
-                        // take the greater version
-                        tdef = tdefs[0];
-                        for (var j=0; j < tdefs.length; j++) {
-                            if (semver.gt(tdefs[j].version, tdef.version)) {
-                                tdef = tdefs[j];
+                        // there are more than one TypeDefinition that matches the given fqn on the registry
+                        // so lets take the greater version
+                        tdef = getBestVersion(tdefs);
+                        // ask registry again for a model with this specific TypeDefinition only
+                        fqn = getFqn(tdef);
+                        registry.get({ fqns : [fqn] }, function (err, tdefModel) {
+                            if (err) {
+                                cb(new Error('Unable to find "'+fqn+'" on Kevoree registry.'));
+                            } else {
+                                tdefModel = loader.loadModelFromString(tdefModel).get(0);
+                                var compare = factory.createModelCompare();
+                                var mergeSeq = compare.merge(model, tdefModel);
+                                mergeSeq.applyOn(model);
+                                cb(null, tdef);
                             }
-                        }
-                        cb(null, tdef);
+                        });
                     }
                 }
             }
@@ -62,14 +71,8 @@ module.exports = function (model, statements, stmt, opts, cb) {
         // there is 1 availability for that TDef
         cb(null, tdefs[0]);
     } else {
-        // there are multiple version of this TDef: take the greater version
-        tdef = tdefs[0];
-        for (var j=0; j < tdefs.length; j++) {
-            if (semver.gt(tdefs[j].version, tdef.version)) {
-                tdef = tdefs[j];
-            }
-        }
-        cb(null, tdef);
+        // there are multiple versions of this TDef: take the greater version
+        cb(null, getBestVersion(tdefs));
     }
 };
 
@@ -92,4 +95,31 @@ function getModelPath(fqn) {
     fqn += ']';
 
     return fqn;
+}
+
+/**
+ * Tries to find the greater version (snapshot excluded), if none found, tries to find the greater version
+ * snapshots included
+ * @param tdefs
+ * @returns {*}
+ */
+function getBestVersion(tdefs) {
+    var onlyReleases = tdefs.filter(function (tdef) {
+        var v = new SemVer(tdef.version);
+        if (v.prerelease.length === 0) {
+            return tdef;
+        }
+    });
+
+    function getGreater(tdefs) {
+        var tdef = tdefs[0];
+        for (var i=0; i < tdefs.length; i++) {
+            if (SemVer.gt(tdefs[i].version, tdef.version)) {
+                tdef = tdefs[i];
+            }
+        }
+        return tdef;
+    }
+
+    return getGreater((onlyReleases.length === 0) ? tdefs : onlyReleases);
 }

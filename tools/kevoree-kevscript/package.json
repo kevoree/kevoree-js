@@ -1,6 +1,6 @@
 {
   "name": "kevoree-kevscript",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "Kevoree KevScript module - contains parser, interpreter and grammar",
   "main": "./lib/KevScript.js",
   "bin": {
@@ -28,21 +28,20 @@
   },
   "homepage": "https://github.com/kevoree/kevoree-js",
   "dependencies": {
-    "async": "~0.2.9",
+    "async": "~0.9.0",
     "chalk": "^0.5.1",
-    "kevoree-commons": "^2.0.0",
-    "kevoree-kotlin": "^1.0.0",
-    "kevoree-library": "^5.0.1-SNAPSHOT.0",
-    "kevoree-registry-client": "^2.1.0",
-    "optimist": "~0.6.0",
-    "pseudoclass": "^1.0.1",
-    "semver": "^3.0.1",
+    "kevoree-commons": "^2.1.0",
+    "kevoree-kotlin": "^1.0.2",
+    "kevoree-library": "^5.0.4",
+    "kevoree-registry-client": "^2.2.1",
+    "optimist": "~0.6.1",
+    "pseudoclass": "^1.0.2",
+    "semver": "^4.1.0",
     "waxeye": "^0.8.1"
   },
   "devDependencies": {
-    "browserify": "~2.35.2",
-    "grunt": "~0.4.1",
-    "grunt-browserify": "~1.2.11",
-    "grunt-contrib-uglify": "~0.2.7"
+    "grunt": "~0.4.5",
+    "grunt-browserify": "~3.1.0",
+    "grunt-contrib-uglify": "~0.6.0"
   }
 }
