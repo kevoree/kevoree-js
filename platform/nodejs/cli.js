@@ -8,9 +8,10 @@ var NodeJSRuntime = require('./lib/NodeJSRuntime'),
     NPMResolver   = require('kevoree-resolvers').NPMResolver,
     KevScript     = require('kevoree-kevscript'),
     argv          = require('optimist')
-        .usage('Usage: $0 [--nodeName node0 --groupName sync (--model path/to/your/model.json | --kevscript path/to/your/model.kevs) --modulesPath . --debugLevel info]')
+        .usage('Usage: $0 [--nodeName node0 --groupName sync (--groupPort 9000) (--model path/to/your/model.json | --kevscript path/to/your/model.kevs) --modulesPath . --debugLevel info]')
         .alias('n', 'nodeName')
         .alias('g', 'groupName')
+        .alias('gp', 'groupPort')
         .alias('m', 'model')
         .alias('k', 'kevscript')
         .alias('p', 'modulesPath')
@@ -19,10 +20,12 @@ var NodeJSRuntime = require('./lib/NodeJSRuntime'),
         .alias('v', 'version')
         .default('n', 'node0')
         .default('g', 'sync')
+        .default('gp', 9000)
         .default('p', os.tmpdir())
         .default('d', 'info')
         .describe('nodeName', 'Name of this runtime node platform')
         .describe('groupName', 'Name of the group your node platform is related to')
+        .describe('groupPort', 'Port number to bind node to group')
         .describe('model', 'A JSON model to bootstrap on')
         .describe('kevscript', 'A KevScript model to bootstrap on')
         .describe('modulesPath', 'Where to install resolved deploy units')
@@ -71,7 +74,7 @@ if (argv.argv.help) {
 
     // runtime error handler
     var errorHandler = function () {
-        log.error('Unable to bootstrap platform. Shutting down.');
+        log.error('Platform shut down.');
         runtime.stop();
         process.exit(1);
     };
@@ -89,13 +92,14 @@ if (argv.argv.help) {
                     log.error(err.message);
                     errorHandler();
                 } else {
-                    var options = {
-                        resolvers: { npm: resolver }
-                    };
-                    var kevs = new KevScript(options);
+                    var kevs = new KevScript();
                     kevs.parse(text, function (err, model) {
-                        if (err) throw err;
-                        runtime.deploy(model);
+                        if (err) {
+                            log.error('Unable to load Kevoree KevScript: '+err.message);
+                            errorHandler();
+                        } else {
+                            runtime.deploy(model);
+                        }
                     });
                 }
             });
@@ -121,9 +125,10 @@ if (argv.argv.help) {
         if (argv.model && argv.model.length > 0) {
             var modelPath = path.resolve(argv.model);
             try {
-                return loader.loadModelFromString(JSON.stringify(require(modelPath))).get(0);
-            } catch (ignore) {
-                log.warn('Unable to load model from \''+ argv.model+'\'');
+                return loader.loadModelFromString(JSON.stringify(fs.readFileSync(modelPath, 'utf8'))).get(0);
+            } catch (err) {
+                log.error('Unable to load Kevoree JSON model: '+err.message);
+                errorHandler();
             }
         }
     };
@@ -134,5 +139,5 @@ if (argv.argv.help) {
         runtime.off('adaptationError', errorHandler);
     });
 
-    runtime.start(argv.nodeName, argv.groupName);
+    runtime.start(argv.nodeName, argv.groupName, argv.groupPort);
 }

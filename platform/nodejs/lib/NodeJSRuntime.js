@@ -20,6 +20,7 @@ var NodeJSRuntime = Class({
         this.bootstrapper = new Bootstrapper(this.log, resolver);
         this.nodename = 'node0'; // default nodename
         this.groupname = 'sync'; // default groupname
+        this.groupport = 9000; // default grouport
         this.emitter = new EventEmitter();
         this.model = null;
     },
@@ -83,10 +84,11 @@ var NodeJSRuntime = Class({
         });
     },
 
-    start: function (nodename, groupname) {
+    start: function (nodename, groupname, groupport) {
         // TODO add some verification over given names (no spaces & stuff like that)
         this.nodename = nodename || this.nodename;
         this.groupname = groupname || this.groupname;
+        this.groupport = groupport || this.groupport;
 
         process.on('SIGINT', function() {
             process.stdout.write('\033[0G'); // http://stackoverflow.com/a/9628935/906441
@@ -119,9 +121,7 @@ var NodeJSRuntime = Class({
             }
         }.bind(this));
 
-        process.nextTick(function () {
-            this.kCore.start(this.nodename);
-        }.bind(this));
+        this.kCore.start(this.nodename);
     },
 
     stop: function () {
@@ -136,16 +136,18 @@ var NodeJSRuntime = Class({
             bootstrapper: this.bootstrapper,
             nodeName: this.nodename,
             groupName: this.groupname,
+            groupPort: this.groupport,
             modulesPath: this.modulesPath,
             logger: this.log
         };
+
         bootstrapHelper(options, function (err, bootstrapModel) {
-            if (err) throw err;
-
-            process.nextTick(function () {
+            if (err) {
+                this.log.error(err.message);
+                process.exit(1);
+            } else {
                 this.kCore.deploy(bootstrapModel);
-            }.bind(this));
-
+            }
         }.bind(this));
     },
 
