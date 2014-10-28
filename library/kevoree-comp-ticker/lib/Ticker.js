@@ -7,20 +7,18 @@ var AbstractComponent = require('kevoree-entities').AbstractComponent;
 var Ticker = AbstractComponent.extend({
     toString: 'Ticker',
 
-    dic_random: {
-      optional: true,
-      defaultValue: false
-    },
-
-    dic_period: {
-        optional: true,
-        defaultValue: 3000,
-        datatype: 'long'
-    },
+    dic_random: { optional: true, defaultValue: false },
+    dic_period: { optional: true, defaultValue: 3000, datatype: 'long' },
 
     start: function (done) {
         this._super(function () {
-            this.tick();
+            this.tickId = setInterval(function () {
+                var value = new Date().getTime();
+                if (this.dictionary.getBoolean('random', false)) {
+                    value = parseInt(Math.random()*100);
+                }
+                this.out_tick(value);
+            }.bind(this), this.dictionary.getNumber('period', 3000));
             done();
         }.bind(this));
     },
@@ -40,17 +38,10 @@ var Ticker = AbstractComponent.extend({
         }.bind(this));
     },
 
-    out_tick: function () {},
-
-    tick: function () {
-        this.tickId = setInterval(function () {
-            var value = new Date().getTime();
-            if (this.dictionary.getBoolean('random', false)) {
-                value = parseInt(Math.random()*100);
-            }
-            this.out_tick(value);
-        }.bind(this), this.dictionary.getNumber('period', 3000));
-    }
+    /**
+     * Output port "tick"
+     */
+    out_tick: function () {}
 });
 
 module.exports = Ticker;
