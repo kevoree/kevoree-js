@@ -50,7 +50,7 @@ var AbstractChannel = KevoreeEntity.extend({
      * @param {Function} [callback]
      */
     localDispatch: function (msg, callback) {
-        // javascript trick to convert msg to an array if it isn't and do nothing if it is
+        // javascript trick to convert msg to an array if it isn't already one
         msg = [].concat(msg);
 
         // if no callback given, then prevent exception to be thrown
@@ -133,6 +133,10 @@ var AbstractChannel = KevoreeEntity.extend({
         this.inputs[port.getPath()] = port;
     },
 
+    /**
+     *
+     * @param port
+     */
     removeInternalInputPort: function (port) {
         delete this.inputs[port.getPath()];
     }
