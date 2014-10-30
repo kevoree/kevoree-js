@@ -1,0 +1,4 @@
+add brokerNode : JavascriptNode
+add brokerNode.broker : WSMsgBroker
+
+set brokerNode.broker.port = '9050'
