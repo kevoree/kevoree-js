@@ -1,19 +1,27 @@
-add node0, node1 : JavascriptNode
-add sync : WebSocketGroup
-add node0.tick0, node0.tick1, node0.tick2 : Ticker
-add node1.logger : ConsolePrinter
-add myChan : RemoteWSChan
+add node0, node1 : JavascriptNode/4.0.0-SNAPSHOT
+add sync : WSGroup
+
+add node0.broker : WSMsgBroker
+add node1.calc : fr.braindead.Calculator
+add node0.invoker : fr.braindead.CalculatorInvoker
+
+add myChan, myChan1 : RemoteWSChan
 
 attach node0, node1 sync
 
+set sync.master = "node0"
 set sync.port/node0 = "9000"
 
-set myChan.host = "localhost"
-set myChan.port = "9001"
+set node0.broker.port = "9050"
 
-bind node0.tick0.tick myChan
-bind node0.tick1.tick myChan
-bind node0.tick2.tick myChan
-bind node1.logger.input myChan
+set myChan.host = "localhost"
+set myChan.port = "9050"
+set myChan1.host = "localhost"
+set myChan1.port = "9050"
+
+bind node0.invoker.twoParams myChan
+bind node1.calc.sum myChan
+bind node0.invoker.twoParams myChan1
+bind node1.calc.mul myChan1
 
 network node0.ip.local 127.0.0.1

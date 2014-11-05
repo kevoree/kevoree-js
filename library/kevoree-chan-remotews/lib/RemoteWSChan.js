@@ -1,5 +1,5 @@
 var AbstractChannel = require('kevoree-entities').AbstractChannel,
-    SmartSocket     = require('smart-socket');
+    WSBroker        = require('wsmsgbroker');
 
 /**
  * Kevoree channel
@@ -13,9 +13,7 @@ var RemoteWSChan = AbstractChannel.extend({
     dic_path: { optional: false },
 
     construct: function () {
-        this.ss = null;
-        this.conn = null;
-        this.logDisplayed = false;
+        this.clients = {};
     },
 
     /**
@@ -33,34 +31,66 @@ var RemoteWSChan = AbstractChannel.extend({
                     path = '/' + path;
                 }
 
-                this.ss = new SmartSocket({
-                    addresses:  [host + ':' + port + path],
-                    loopBreak: 3000
-                });
+                var createInputClient = function (id) {
+                    this.clients[id] = new WSBroker(id, host, port, path);
+                    this.clients[id].on('message', function (msg, response) {
+                        if (response) {
+                            this.localDispatch(msg, function (err, res) {
+                                if (err) {
+                                    response.send(err.message);
+                                } else {
+                                    response.send(res);
+                                }
+                            });
 
-                this.ss.on('open', function (ws) {
-                    this.log.info(this.toString(), '"'+this.getName()+'" connected to remote WebSocket server '+ws.url);
-                    this.conn = ws;
-                    this.getInputs().forEach(function (input) {
-                        ws.send(JSON.stringify({
-                            action: 'register',
-                            id:     input
-                        }));
-                    });
+                        } else {
+                            this.localDispatch(msg);
+
+                        }
+                    }.bind(this));
+                    this.clients[id].on('error', function (err) {
+                        this.log.warn('Something went wrong with the connection of '+id+' (reason: '+err.message+')');
+                        setTimeout(function () {
+                            createInputClient(id);
+                        }, 3000);
+                    }.bind(this));
+                    this.clients[id].on('close', function () {
+                        this.log.warn('Connection closed by remote server for '+id);
+                        setTimeout(function () {
+                            createInputClient(id);
+                        }, 3000);
+                    }.bind(this));
+                    this.clients[id].on('registered', function () {
+                        this.log.info(id+' registered on remote server');
+                    }.bind(this));
+                }.bind(this);
+
+                var createOutputClient = function (id) {
+                    this.clients[id] = new WSBroker(id, host, port, path);
+                    this.clients[id].on('error', function (err) {
+                        this.log.warn('Something went wrong with the connection of '+id+' (reason: '+err.message+')');
+                        setTimeout(function () {
+                            createOutputClient(id);
+                        }, 3000);
+                    }.bind(this));
+                    this.clients[id].on('close', function () {
+                        this.log.warn('Connection closed by remote server for '+id);
+                        setTimeout(function () {
+                            createOutputClient(id);
+                        }, 3000);
+                    }.bind(this));
+                    this.clients[id].on('registered', function () {
+                        this.log.info(id+' registered on remote server');
+                    }.bind(this));
+                }.bind(this);
+
+                this.getInputs().forEach(function (path) {
+                    createInputClient(path+'_'+this.getName());
+                }.bind(this));
+                this.getOutputs().forEach(function (path) {
+                    createOutputClient(path+'_'+this.getName());
                 }.bind(this));
 
-                this.ss.on('close', function (ws) {
-                    this.log.info(this.toString(), '"'+this.getName()+'" lost connection with remote WebSocket server '+ws.url);
-                }.bind(this));
-
-                this.ss.on('message', function (ws, msg) {
-                    if (msg.type) {
-                        msg = msg.data;
-                    }
-                    this.localDispatch(msg);
-                }.bind(this));
-
-                this.ss.start();
                 done();
             } else {
                 done(new Error(this.toString() + ' error: "'+this.getName()+'" has wrong attributes host:port ('+host+':'+port+')'));
@@ -74,10 +104,15 @@ var RemoteWSChan = AbstractChannel.extend({
      */
     stop: function (done) {
         this._super(function () {
-            if (this.ss) {
-                this.ss.stop();
+            for (var key in this.clients) {
+                if (this.clients.hasOwnProperty(key)) {
+                    var conn = this.clients[key];
+                    if (conn && conn.readyState === 1) {
+                        conn.close();
+                    }
+                }
             }
-            this.conn = null;
+            this.clients = {};
             done();
         }.bind(this));
     },
@@ -101,20 +136,23 @@ var RemoteWSChan = AbstractChannel.extend({
      * @param fromPortPath
      * @param destPortPaths
      * @param msg
+     * @param callback
      */
-    onSend: function (fromPortPath, destPortPaths, msg) {
-        if (this.conn && this.conn.readyState === 1) {
-            this.logDisplayed = false; // reset logDisplayed flag in order to re-show logs for the next disconnection
-            this.conn.send(JSON.stringify({
-                action: 'send',
-                message: msg+'',
-                dest: destPortPaths
-            }));
-        } else {
-            if (!this.logDisplayed) {
-                this.log.info(this.toString(), 'Connection is not active yet. Dropping messages for '+destPortPaths);
-                this.logDisplayed = true;
-            }
+    onSend: function (fromPortPath, destPortPaths, msg, callback) {
+        // TODO issue #39
+        destPortPaths = destPortPaths.map(function (path) {
+            return path + '_' + this.getName();
+        }.bind(this));
+
+        var conn = this.clients[fromPortPath+'_'+this.getName()];
+        if (callback instanceof Function) {
+            conn.send(msg, destPortPaths, function (from, answer) {
+                var split = from.split('_');
+                callback(split[0], split[1], answer);
+            });
+
+        } else {
+            conn.send(msg, destPortPaths);
         }
     }
 });
