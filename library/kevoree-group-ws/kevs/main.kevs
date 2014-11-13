@@ -1,6 +1,6 @@
-add node0 : JavaNode/5.1.1-SNAPSHOT
-add node1 : JavascriptNode
-add sync : WSGroup/5.1.1-SNAPSHOT
+add node0 : JavaNode
+add node1 : JavascriptNode/4.0.0-SNAPSHOT
+add sync : WSGroup/5.1.4-SNAPSHOT
 
 set sync.master = 'node0'
 

@@ -49,7 +49,7 @@ function parse(msg) {
         return new RegisterMessage(buffer, model);
     }
 
-    if (startsWith(msg, PUSH)) {
+    if (startsWith(msg, PUSH+SEP)) {
         model = msg.substring(PUSH.length + SEP.length);
         return new PushMessage(model);
     }
@@ -63,7 +63,7 @@ function parse(msg) {
         return new PullMessage();
     }
 
-    return new PushMessage(msg);
+    return null;
 }
 
 /**

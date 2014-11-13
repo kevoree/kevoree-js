@@ -139,7 +139,7 @@ var WSGroup = AbstractGroup.extend({
                         this.smartSocket.on('message', function (ws, msg) {
                             var parsedMsg = Protocol.parse(msg);
                             if (!parsedMsg) {
-                                this.log.error(this.toString(), '"'+this.getName()+'" unknown Kevoree message ' + message);
+                                this.log.error(this.toString(), '"'+this.getName()+'" unknown Kevoree message ' + msg);
                             } else {
                                 switch (parsedMsg.getType()) {
                                     case Protocol.PUSH_TYPE:
@@ -149,7 +149,7 @@ var WSGroup = AbstractGroup.extend({
                                         break;
 
                                     default:
-                                        this.log.error(this.toString(), '"'+this.getName()+'" unhandled Kevoree message ' + message);
+                                        this.log.error(this.toString(), '"'+this.getName()+'" unhandled Kevoree message ' + msg);
                                         break;
                                 }
                             }
