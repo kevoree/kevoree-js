@@ -49,8 +49,13 @@ var AbstractComponent = KevoreeEntity.extend({
     },
 
     addInternalOutputPort: function (port) {
-        this[AbstractComponent.OUT_PORT+port.getName()] = function (msg, callback) {
-            port.processSend(msg, callback);
+        this[AbstractComponent.OUT_PORT+port.getName()] = function () {
+            var args = Array.prototype.slice.call(arguments);
+            if (!(args[args.length-1] instanceof Function)) {
+                // no callback specified: add one
+                args.push(function () {});
+            }
+            port.processSend(args.slice(0, args.length-1), args[args.length-1]);
         };
     },
 

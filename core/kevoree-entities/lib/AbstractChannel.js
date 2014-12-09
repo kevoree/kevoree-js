@@ -12,7 +12,7 @@ var AbstractChannel = KevoreeEntity.extend({
         this.inputs = {};
     },
 
-    internalSend: function (outputPath, msg, callback) {
+    internalSend: function (outputPath, params, callback) {
         var paths = [];
         for (var inputPath in this.inputs) {
             if (this.inputs.hasOwnProperty(inputPath)) {
@@ -31,7 +31,7 @@ var AbstractChannel = KevoreeEntity.extend({
         }
 
         if (this.started) {
-            this.onSend(outputPath, paths, msg, callback);
+            this.onSend(outputPath, paths, params, callback);
         }
     },
 
@@ -39,10 +39,10 @@ var AbstractChannel = KevoreeEntity.extend({
      *
      * @param fromPortPath
      * @param destPortPaths Array
-     * @param msg
+     * @param params
      * @param callback
      */
-    onSend: function (fromPortPath, destPortPaths, msg, callback) {},
+    onSend: function (fromPortPath, destPortPaths, params, callback) {},
 
     /**
      * Dispatch messages to all bound ports
