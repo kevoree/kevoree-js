@@ -44,7 +44,7 @@ var generator = function generator(dirPath, quiet, callback) {
         if (PKG_PATTERN.test(pkgJson.kevoree.package)) {
             var pkgs = pkgJson.kevoree.package.split('.');
 
-            function createPackagesTree(packages, index, model, parent) {
+            function createPackagesTree(packages, index, parent) {
                 // create a new package using packages[index] name
                 var p = factory.createPackage();
                 p.name = packages[index];
@@ -57,23 +57,16 @@ var generator = function generator(dirPath, quiet, callback) {
                     return p;
                 } else {
                     // this is not the last package
-                    if (parent) {
-                        // this package will have a parent and a child
-                        parent.addPackages(p);
-
-                    } else {
-                        // this package is the first one (eg. in 'org.kevoree.library.js' => this is 'org')
-                        model.addPackages(p);
-                    }
+                    parent.addPackages(p);
 
                     // recursion
-                    return createPackagesTree(packages, index+1, model, p);
+                    return createPackagesTree(packages, index+1, p);
                 }
             }
 
             // create packages tree and return the leaf (eg. 'org.kevoree.library.js' => leaf is 'js')
             // so that we can then add the TypeDefinition and DeployUnit to it
-            var modelPkg = createPackagesTree(pkgs, 0, model, null);
+            var modelPkg = createPackagesTree(pkgs, 0, model);
 
             // create the project deployUnit
             var deployUnit = factory.createDeployUnit();
