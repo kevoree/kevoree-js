@@ -4,9 +4,44 @@ var Class           = require('pseudoclass'),
 
 var factory = new kevoree.factory.DefaultKevoreeFactory();
 
+/**
+ * Dictionary class use to handle KevoreeEntities dictionary attributes
+ * <br/>
+ * Each KevoreeEntity can create a dictionary attribute by adding a new <strong>dic_field</strong> to their class:
+ * <br/>
+ * <pre>
+ * dic_myAttr: {
+ *   optional: true,
+ *   defaultValue: 'foo',
+ *   fragmentDependant: false
+ * }
+ * </pre>
+ * Dictionary attribute API follows those guidelines:
+ * <ul>
+ *   <li>"defaultValue" attribute is <b>optional</b>, type is <b>string|boolean</b></li>
+ *   <li>"optional" attribute is <b>optional</b>, type is <b>boolean</b> (default: true)</li>
+ *   <li>"fragmentDependant" attribute is <b>optional</b>, type is <b>boolean</b> (default: false)</li>
+ *   <li>"datatype" attribute is <b>optional</b>, type is <b>string|org.kevoree.Datatype</b></li>
+ * </ul>
+ *
+ * Once your entity is started, you will be able to retrieve your attribute value by calling one of those methods:
+ * <ul>
+ *     <li>this.dictionary.getValue('myAttr')</li>
+ *     <li>this.dictionary.getString('myAttr')</li>
+ *     <li>this.dictionary.getNumber('myAttr')</li>
+ *     <li>this.dictionary.getBoolean('myAttr')</li>
+ * </ul>
+ *
+ * @class
+ */
 var Dictionary = Class({
     toString: 'Dictionary',
 
+    /**
+     * @param entity
+     *
+     * @constructs
+     */
     construct: function (entity) {
         this.entity = entity;
         this.emitter = new EventEmitter();
@@ -24,10 +59,20 @@ var Dictionary = Class({
         this.emitter.addListener(attrName, callback.bind(this.entity));
     },
 
+    /**
+     * Removes a listener
+     * @param event
+     * @param callback
+     */
     off: function (event, callback) {
         this.emitter.removeListener(event, callback);
     },
 
+    /**
+     * Retrieve a value mapped by the key "name"
+     * @param {String} name the key
+     * @returns {*}
+     */
     getValue: function (name) {
         return this.map[name];
     },
@@ -88,7 +133,7 @@ var Dictionary = Class({
     getNumber: function (name, defaultVal) {
         var val = this.map[name];
 
-        if (!isNaN(parseInt(val))) {
+        if (!isNaN(Number(val))) {
             return val;
         }
 
@@ -99,6 +144,11 @@ var Dictionary = Class({
         return defaultVal;
     },
 
+    /**
+     *
+     * @param name
+     * @param value
+     */
     setValue: function (name, value) {
         var entity = this.entity.getModelEntity();
         if (!entity.dictionary) {
@@ -132,6 +182,10 @@ var Dictionary = Class({
         }
     },
 
+    /**
+     *
+     * @param map
+     */
     setMap: function (map) {
         var name;
         if (Object.keys(this.map).length > 0) {
@@ -164,6 +218,10 @@ var Dictionary = Class({
         }
     },
 
+    /**
+     *
+     * @returns {{}|*}
+     */
     getMap: function () {
         return this.map;
     },

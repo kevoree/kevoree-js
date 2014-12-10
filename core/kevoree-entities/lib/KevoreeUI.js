@@ -1,12 +1,19 @@
 var Class         = require('pseudoclass'),
     KevoreeLogger = require('kevoree-commons').KevoreeLogger,
-    fs            = require('fs'),
-    path          = require('path'),
     EventEmitter  = require('events').EventEmitter;
 
+/**
+ * KevoreeUI
+ *
+ * @class
+ */
 var KevoreeUI = Class({
     toString: 'KevoreeUI',
 
+    /**
+     * @param comp
+     * @constructs
+     */
     construct: function (comp) {
         this.comp = comp;
         this.root = null;

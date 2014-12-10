@@ -3,15 +3,23 @@ var KevoreeEntity = require('./KevoreeEntity');
 /**
  * AbstractChannel entity
  *
- * @type {AbstractChannel} extends KevoreeEntity
+ * @class
  */
 var AbstractChannel = KevoreeEntity.extend({
     toString: 'AbstractChannel',
 
+    /**
+     * @constructs
+     */
     construct: function () {
         this.inputs = {};
     },
 
+    /**
+     * @param {String} outputPath
+     * @param {Array} params
+     * @param {Function} callback
+     */
     internalSend: function (outputPath, params, callback) {
         var paths = [];
         for (var inputPath in this.inputs) {
@@ -37,10 +45,12 @@ var AbstractChannel = KevoreeEntity.extend({
 
     /**
      *
-     * @param fromPortPath
-     * @param destPortPaths Array
-     * @param params
-     * @param callback
+     * @param {String} fromPortPath
+     * @param {Array} destPortPaths Array
+     * @param {Array} params
+     * @param {Function} callback
+     *
+     * @abstract
      */
     onSend: function (fromPortPath, destPortPaths, params, callback) {},
 

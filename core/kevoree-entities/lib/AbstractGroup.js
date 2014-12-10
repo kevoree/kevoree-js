@@ -3,7 +3,7 @@ var KevoreeEntity = require('./KevoreeEntity');
 /**
  * AbstractGroup entity
  *
- * @type {AbstractGroup} extends KevoreeEntity
+ * @class
  */
 var AbstractGroup = KevoreeEntity.extend({
   toString: 'AbstractGroup',

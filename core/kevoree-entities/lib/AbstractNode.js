@@ -3,7 +3,7 @@ var KevoreeEntity = require('./KevoreeEntity');
 /**
  * AbstractNode entity
  *
- * @type {AbstractNode}
+ * @class
  */
 var AbstractNode = KevoreeEntity.extend({
     toString: 'AbstractNode',

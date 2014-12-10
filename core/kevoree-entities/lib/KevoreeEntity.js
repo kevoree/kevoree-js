@@ -4,7 +4,9 @@ var Class       = require('pseudoclass'),
 
 /**
  * Abstract class: KevoreeEntity
+ * <br/>
  * You are not supposed to instantiate this class manually. It makes no sense
+ * <br/>
  * You should create your own Kevoree entity that extend one of the defined abstraction type:
  * <ul>
  *     <li>AbstractNode</li>
@@ -13,30 +15,15 @@ var Class       = require('pseudoclass'),
  *     <li>AbstractComponent</li>
  * </ul>
  * All this sub-classes extend KevoreeEntity in order to have the same basic prototype
- * Each KevoreeEntity can declare a KevoreeDictionary by adding new properties to their class:
- * dic_myAttr: {
- *   optional: true,
- *   defaultValue: 'foo',
- *   fragmentDependant: false,
- *   update: function (oldValue) {
- *     // do something when attribute is updated
- *   }
- * }
- * KevoreeDictionary API follows those guidelines:
- * <ul>
- *   <li>"optional" attribute is <b>optional</b>, <b>boolean</b> (default: true)</li>
- *   <li>"defaultValue" attribute is <b>optional</b>, <b>string|boolean</b></li>
- *   <li>"fragmentDependant" attribute is <b>optional</b>, <b>boolean</b> (default: false)</li>
- *   <li>"update" attribute is <b>optional</b>, <b>function</b>(oldAttributeValue)</li>
- * </ul>
  *
- * Once your entity is started, you will be able to retrieve your attribute value by calling dic_myAttr.value
- *
- * @type {KevoreeEntity}
+ * @class
  */
 var KevoreeEntity = Class({
     toString: 'KevoreeEntity',
 
+    /**
+     * @constructs
+     */
     construct: function () {
         this.kCore = null;
         this.dictionary = new Dictionary(this);

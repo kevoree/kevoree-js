@@ -3,9 +3,7 @@ var Class   = require('pseudoclass');
 /**
  * Abstract AdaptationPrimitive command
  *
- * @param node AbstractNode context
- * @param mapper ModelObjectMapper that handles mapping between model objects and 'real-life' object
- * @type {AdaptationPrimitive}
+ * @class
  */
 var AdaptationPrimitive = Class({
     toString: 'AdaptationPrimitive',
@@ -17,6 +15,8 @@ var AdaptationPrimitive = Class({
      * @param mapper ModelObjectMapper
      * @param model model to deploy (that triggers adaptations)
      * @param modelElement model element linked with this primitive
+     *
+     * @constructs
      */
     construct: function (node, mapper, model, modelElement) {
         this.node = node;

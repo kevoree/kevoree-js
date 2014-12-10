@@ -1,12 +1,21 @@
 var Class = require('pseudoclass');
 
 /**
+ * Port
  * You are not supposed to create Port object (unless you are an AdaptationPrimitive)
- * @type {Port}
+ *
+ * @class
  */
 var Port = Class({
     toString: 'Port',
 
+    /**
+     *
+     * @param name
+     * @param path
+     *
+     * @constructs
+     */
     construct: function (name, path) {
         this.name                = name;
         this.path                = path;

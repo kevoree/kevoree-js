@@ -5,11 +5,14 @@ var KevoreeEntity = require('./KevoreeEntity'),
 /**
  * AbstractComponent entity
  *
- * @type {AbstractComponent} extends KevoreeEntity
+ * @class
  */
 var AbstractComponent = KevoreeEntity.extend({
     toString: 'AbstractComponent',
 
+    /**
+     * @constructs
+     */
     construct: function () {
         this.inputs = {};
         this.ui = new KevoreeUI(this);
