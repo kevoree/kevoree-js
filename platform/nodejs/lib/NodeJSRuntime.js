@@ -143,7 +143,7 @@ var NodeJSRuntime = Class({
 
         bootstrapHelper(options, function (err, bootstrapModel) {
             if (err) {
-                this.log.error(err.message);
+                this.log.error(this.toString(), err.message);
                 process.exit(1);
             } else {
                 this.kCore.deploy(bootstrapModel);

@@ -1,9 +1,6 @@
 var path        = require('path'),
-    kevoree     = require('kevoree-library').org.kevoree,
     KevScript   = require('kevoree-kevscript'),
     fs          = require('fs');
-
-var factory = new kevoree.factory.DefaultKevoreeFactory();
 
 /**
  * Generates a default model using lib/defaultModel.kevs.mustache
@@ -25,15 +22,6 @@ function defaultModel(options, callback) {
             kevs.parse(data, callback);
         }
     });
-}
-
-/**
- * Generates a node instance
- * @param options
- * @param callback
- */
-function incompleteModel(options, callback) {
-
 }
 
 module.exports = function (options, callback) {
