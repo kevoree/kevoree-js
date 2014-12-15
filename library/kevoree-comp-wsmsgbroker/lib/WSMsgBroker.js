@@ -53,7 +53,9 @@ var WSMsgBroker = AbstractComponent.extend({
      */
     stop: function (done) {
         this._super(function () {
-            this.server.close();
+            if (this.server != null) {
+                this.server.close();
+            }
             done();
         }.bind(this));
     },
