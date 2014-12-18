@@ -1,7 +1,10 @@
 # Kevoree JS ![Kevoree](http://editor.kevoree.org/images/logo.png)
 
 > **DISCLAIMER: This documentation might be a little outdated as the API of KevoreeJS entities is still evolving**  
-> If you want to know about the latest API you can have a look at [kevoree-entities](https://github.com/kevoree/kevoree-js/tree/master/core/kevoree-entities/lib)
+> If you want to know about the latest API you can have a look at [kevoree-entities](https://github.com/kevoree/kevoree-js/tree/master/core/kevoree-entities/lib)  
+
+:warning:
+> **Updated tutorials**: new updated tutorials have been made for the HEADS-project [here](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics)
 
 ## Project description
 __kevoree-js__ provides several tools in order to use **[Kevoree](http://kevoree.org)** in **Javascript**.  
