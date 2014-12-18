@@ -105,7 +105,7 @@ var ClientHandler = Class({
                                         if (this.name2Ws.hasOwnProperty(clientName)) {
                                             count++;
                                             if (this.name2Ws[clientName].readyState === WebSocket.OPEN) {
-                                                this.name2Ws[clientName].send(parsedMsg.getModel());
+                                                this.name2Ws[clientName].send(parsedMsg.toRaw());
                                             }
                                         }
                                     }

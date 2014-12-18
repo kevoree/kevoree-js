@@ -116,11 +116,7 @@ var WSGroup = AbstractGroup.extend({
                         var loader = factory.createJSONLoader();
                         var saver = factory.createJSONSerializer();
 
-                        this.smartSocket = new SmartSocket({
-                            addresses: addresses,
-                            loopBreak: 3000
-                        });
-
+                        this.smartSocket = new SmartSocket({ addresses: addresses, loopBreak: 3000 });
                         this.smartSocket.start();
 
                         this.smartSocket.on('open', function (ws) {
