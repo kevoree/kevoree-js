@@ -28,7 +28,11 @@ var WSMsgBroker = AbstractComponent.extend({
 
                 // register some event listeners on it
                 this.server.on('error', function (err) {
-                    this.log.warn(this.toString(), '"'+this.getName()+'" broker error: '+err.message);
+                    this.log.error(this.toString(), '"'+this.getName()+'" broker error: '+err.message);
+                }.bind(this));
+
+                this.server.on('warn', function (err) {
+                    this.log.warn(this.toString(), '"'+this.getName()+'" broker warning: '+err.message);
                 }.bind(this));
 
                 this.server.on('registered', function (id) {

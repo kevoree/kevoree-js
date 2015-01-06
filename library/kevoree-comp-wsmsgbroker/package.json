@@ -1,6 +1,6 @@
 {
   "name": "kevoree-comp-wsmsgbroker",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "./lib/WSMsgBroker.js",
   "kevoree": {
     "package": "org.kevoree.library"
