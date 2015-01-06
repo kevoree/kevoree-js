@@ -1,0 +1,28 @@
+add node1, node0 : JavascriptNode/4.0.0-SNAPSHOT
+add node1.calc : fr.braindead.Calculator/0.1.0
+add node1.logger : ConsolePrinter/5.1.1
+add node0.invoker : fr.braindead.CalculatorInvoker/0.1.0
+add node0.broker : WSMsgBroker/1.0.0
+add node0.ticker : Ticker/5.1.1
+add sync : WSGroup/5.1.3
+add chan852, chan869, myChan : WSChan/5.1.1
+
+attach node1, node0 sync
+
+bind node1.calc.toJson chan869
+bind node0.invoker.oneParam chan869
+bind node1.calc.sum myChan
+bind node0.invoker.twoParams myChan
+bind node0.ticker.tick chan852
+bind node1.logger.input chan852
+
+set node0.broker.port = '9050'
+set sync.master = 'node0'
+set chan852.port = '9050'
+set chan852.host = 'localhost'
+set chan869.port = '9050'
+set chan869.host = 'localhost'
+set myChan.port = '9050'
+set myChan.host = 'localhost'
+
+network node0.ip.local 127.0.0.1
