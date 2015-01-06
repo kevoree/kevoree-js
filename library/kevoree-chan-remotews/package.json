@@ -1,6 +1,6 @@
 {
   "name": "kevoree-chan-remotews",
-  "version": "5.2.1",
+  "version": "5.2.2",
   "main": "./lib/RemoteWSChan.js",
   "kevoree": {
     "package": "org.kevoree.library"
