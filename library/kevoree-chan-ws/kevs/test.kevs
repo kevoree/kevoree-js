@@ -23,7 +23,7 @@ add jsNode.broker : WSMsgBroker
 // define on which port the broker will start
 set jsNode.broker.port = '9050'
 
-// add a RemoteWSChan to transmit the messages between the Ticker and the ConsolePrinter
+// add a WSChan to transmit the messages between the Ticker and the ConsolePrinter
 add chan : WSChan
 
 // give the host:port of the broker to the chan

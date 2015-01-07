@@ -87,10 +87,10 @@ var WSChan = AbstractChannel.extend({
                 }.bind(this);
 
                 this.getInputs().forEach(function (path) {
-                    createInputClient(path+'_'+this.getName());
+                    createInputClient(path);
                 }.bind(this));
                 this.getOutputs().forEach(function (path) {
-                    createOutputClient(path+'_'+this.getName());
+                    createOutputClient(path);
                 }.bind(this));
 
                 done();
@@ -143,7 +143,7 @@ var WSChan = AbstractChannel.extend({
     onSend: function (fromPortPath, destPortPaths, msg, callback) {
         // TODO issue #39
         destPortPaths = destPortPaths.map(function (path) {
-            return path + '_' + this.getName();
+            return path;
         }.bind(this));
 
         var conn = this.clients[fromPortPath+'_'+this.getName()];
