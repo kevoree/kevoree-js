@@ -13,7 +13,7 @@ module.exports = function (model, statements, stmt, opts, cb) {
     }
 
     if (fqn.split('.').length === 1) {
-        // default package to 'org.kevoree.library' for  package-name-less TypeDefinition (ie: add node: JavascriptNode)
+        // default package to 'org.kevoree.library' for fqn-less TypeDefinitions (ie: add node: JavascriptNode)
         fqn = 'org.kevoree.library.'+fqn;
     }
 
@@ -27,7 +27,12 @@ module.exports = function (model, statements, stmt, opts, cb) {
         // retrieve model from registry.kevoree.org because it is not in the current model
         registry.get({ fqns: [fqn] }, function (err, tdefModel) {
             if (err) {
-                cb(new Error('Unable to find "'+fqn+'" in current model nor on Kevoree registry.'));
+                var errMsg = 'Unable to find "'+fqn+'" in current model nor on Kevoree registry.';
+                if (err.code === 'ENOTFOUND') {
+                    errMsg += ' (Might it be a connectivity issue?)';
+                }
+                cb(new Error(errMsg));
+                
             } else {
                 var factory = new kevoree.factory.DefaultKevoreeFactory();
                 var loader = factory.createJSONLoader();

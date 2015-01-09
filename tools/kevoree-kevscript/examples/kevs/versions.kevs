@@ -1,4 +1,1 @@
-include npm:kevoree-node-javascript
-include npm:kevoree-group-websocket:latest
-include npm:kevoree-comp-fakeconsole:0.7.0
-include npm:kevoree-chan-websocket:release
+add latestReleaseNode : JavascriptNode
