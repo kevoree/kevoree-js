@@ -13,7 +13,8 @@ var kevoree       = require('kevoree-library').org.kevoree,
     NPMResolver   = require('kevoree-resolvers').NPMResolver,
     KevScript     = require('kevoree-kevscript'),
     path          = require('path'),
-    npmi          = require('npmi');
+    npmi          = require('npmi'),
+    npm           = require('npm');
 
 module.exports = function(grunt) {
 
@@ -27,7 +28,8 @@ module.exports = function(grunt) {
             runtime: 'latest',
             node: 'node0',
             kevscript: path.resolve('kevs/main.kevs'),
-            modulesPath: path.resolve('.deploy_units')
+            modulesPath: path.resolve('.deploy_units'),
+            mergeLocalLibraries: []
         });
 
         var nodeName = grunt.option('node');
@@ -55,6 +57,7 @@ module.exports = function(grunt) {
         grunt.log.ok('Bootstrap script: ' + bootstrapScriptPath['blue']);
         var factory = new kevoree.factory.DefaultKevoreeFactory();
         var loader = factory.createJSONLoader();
+        var compare = factory.createModelCompare();
 
         var npmResolver = new NPMResolver(options.modulesPath, logger),
             kevsEngine  = new KevScript({ resolvers: { npm: npmResolver } });
@@ -64,6 +67,38 @@ module.exports = function(grunt) {
         try {
             var model = grunt.file.read('kevlib.json');
             var contextModel = loader.loadModelFromString(model).get(0);
+
+            options.mergeLocalLibraries.forEach(function (localLibPath) {
+                var localLibModel = grunt.file.read(path.resolve(localLibPath, 'kevlib.json'));
+                var model = loader.loadModelFromString(localLibModel).get(0);
+                compare.merge(contextModel, model).applyOn(contextModel);
+
+                npm.load({loglevel: 'silent'}, function (err) {
+                    if (err) {
+                        grunt.fail.fatal('"grunt-kevoree" unable to load "npm" when trying to link "'+localLibPath+'"');
+                        process.exit(1);
+                    } else {
+                        npm.prefix = localLibPath;
+                        npm.commands.link([], function (err) {
+                            if (err) {
+                                grunt.fail.fatal('"grunt-kevoree" unable to run "npm link" in "'+localLibPath+'"');
+                                process.exit(1);
+                            } else {
+                                npm.prefix = path.resolve(options.modulesPath);
+                                var localLibPkg = JSON.parse(grunt.file.read(path.resolve(localLibPath, 'package.json')));
+                                npm.commands.link([localLibPkg.name], function (err) {
+                                    if (err) {
+                                        grunt.fail.fatal('"grunt-kevoree" unable to run "npm link '+localLibPkg.name+'" in "'+npm.prefix+'"');
+                                        process.exit(1);
+                                    } else {
+                                        grunt.log.ok('Merged local library: ' + localLibPkg.name['blue']);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            });
 
             kevsEngine.parse(kevscriptContent, contextModel, function (err, model) {
                 if (err) {
@@ -93,7 +128,6 @@ module.exports = function(grunt) {
 
                             var Kevoree = require('kevoree-nodejs-runtime'),
                                 runtime = new Kevoree(options.modulesPath, logger, npmResolver);
-
 
                             var errorHandler = function () {
                                 grunt.log.writeln();

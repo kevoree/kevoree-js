@@ -31,6 +31,7 @@ grunt.initConfig({
             node: 'node0',               // default
             kevscript: 'kevs/main.kevs', // default
             modulesPath: '.deploy_units' // default
+            mergeLocalLibraries: []      // default
         }
     }
 });
@@ -63,6 +64,25 @@ Type: `String`
 Default value: `'.deploy_units'`
 
 A string value that is used to determine the modulesPath variable for Kevoree resolver (where resolved modules are going to be installed)
+
+#### options.mergeLocalLibraries
+Type: `String`
+Default value: `[]`
+
+An array containing the paths to your local Kevoree libraries that are not yet pushed on npm registry nor Kevoree registry
+Ex:
+
+```js
+kevoree: {
+    options: {
+        mergeLocalLibraries: [
+            '/path/to/kevoree-comp-ticker'
+        ]
+    }
+}
+```
+
+> NB: Merged local libraries has to be "installed" (i.e `npm install` must have been run)
 
 ### Kevscript
 
