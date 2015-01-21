@@ -89,7 +89,8 @@ KevoreeGenerator.prototype.askFor = function askFor() {
                     {
                         name: 'browserCompat',
                         message: 'Do you plan on using this component with a browser runtime?',
-                        type: 'confirm'
+                        type: 'confirm',
+                        default: false
                     }
                 ], function (props) {
                     this.browserCompat = props.browserCompat;
