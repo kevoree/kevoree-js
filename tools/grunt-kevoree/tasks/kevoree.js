@@ -119,7 +119,10 @@ module.exports = function(grunt) {
                                path: path.resolve(__dirname, '..')
                            };
 
-                           npm.prefix = path.resolve(process.cwd(), 'node_modules', require('../package.json').name);
+                           if (mergeTasks.length > 0) {
+                              // rebase npm prefix path when it has been modified by the merging local libs tasks
+                              npm.prefix = path.resolve(process.cwd(), 'node_modules', require('../package.json').name);
+                           }
                            npmi(runtimeOptions, function (err) {
                                if (err) {
                                    grunt.fail.fatal('"grunt-kevoree" unable to resolve kevoree-nodejs-runtime@'+options.runtime+'\n'+err.message);
