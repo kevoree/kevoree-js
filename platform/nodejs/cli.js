@@ -2,6 +2,7 @@
 var NodeJSRuntime = require('./lib/NodeJSRuntime'),
     KevoreeLogger = require('kevoree-commons').KevoreeLogger,
     path          = require('path'),
+    os            = require('os'),
     fs            = require('fs'),
     kevoree       = require('kevoree-library').org.kevoree,
     NPMResolver   = require('kevoree-resolvers').NPMResolver,
@@ -20,7 +21,7 @@ var NodeJSRuntime = require('./lib/NodeJSRuntime'),
         .default('n', 'node0')
         .default('g', 'sync')
         .default('gp', 9000)
-        .default('p', process.cwd()) // TODO change that; this is a hotfix due to the new impl of npm resulting in the impossibility to install packages outside of the current directory tree level or children (to investigate)
+        .default('p', os.tmpdir())
         .default('l', 'info')
         .describe('nodeName', 'Name of this runtime node platform')
         .describe('groupName', 'Name of the group your node platform is related to')
