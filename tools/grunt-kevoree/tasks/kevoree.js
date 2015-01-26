@@ -108,6 +108,7 @@ module.exports = function(grunt) {
                         if (err) {
                             cb(new Error('"grunt-kevoree" unable to load "npm" when trying to link "'+localLibPath+'"'));
                         } else {
+                            var savedPrefix = npm.prefix;
                             npm.prefix = localLibPath;
                             npm.commands.link([], function (err) {
                                 if (err) {
@@ -116,6 +117,7 @@ module.exports = function(grunt) {
                                     npm.prefix = path.resolve(options.modulesPath);
                                     var localLibPkg = JSON.parse(grunt.file.read(path.resolve(localLibPath, 'package.json')));
                                     npm.commands.link([localLibPkg.name], function (err) {
+                                        npm.prefix = savedPrefix;
                                         if (err) {
                                             cb(new Error('"grunt-kevoree" unable to run "npm link '+localLibPkg.name+'" in "'+npm.prefix+'"'));
                                         } else {
@@ -147,10 +149,6 @@ module.exports = function(grunt) {
                                path: path.resolve(__dirname, '..')
                            };
 
-                           if (mergeTasks.length > 0) {
-                              // rebase npm prefix path when it has been modified by the merging local libs tasks
-                              npm.prefix = path.resolve(process.cwd(), 'node_modules', require('../package.json').name);
-                           }
                            npmi(runtimeOptions, function (err) {
                                if (err) {
                                    grunt.fail.fatal('"grunt-kevoree" unable to resolve kevoree-nodejs-runtime@'+options.runtime+'\n'+err.message);
@@ -194,7 +192,6 @@ module.exports = function(grunt) {
                                    });
 
                                    var runtimePath = path.resolve(runtimeOptions.path, 'node_modules', 'kevoree-nodejs-runtime', 'package.json');
-                                   npm.prefix = process.cwd();
                                    grunt.log.ok('Starting runtime: ' + 'v'['blue'] + require(runtimePath).version['blue']);
                                    runtime.start(options.node);
                                }
