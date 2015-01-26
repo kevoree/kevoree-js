@@ -1,5 +1,5 @@
 var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive;
-var timeout = require('../timeout-handler');
+var timesUp = require('times-up');
 
 var StopInstance = AdaptationPrimitive.extend({
     toString: 'StopInstance',
@@ -9,7 +9,7 @@ var StopInstance = AdaptationPrimitive.extend({
 
         if (this.modelElement.host && this.modelElement.host.name === this.node.getName()) {
             // this element is a subNode to this.node
-            this.node.stopSubNode(this.modelElement, timeout(this.node.getName() + '.stopSubNode(...)', function (err) {
+            this.node.stopSubNode(this.modelElement, timesUp(this.node.getName() + '.stopSubNode(...)', 30000, function (err) {
                 if (!err) {
                     this.log.debug(this.toString(), this.node.getName()+' stopped '+this.modelElement.name);
                 }
@@ -25,7 +25,7 @@ var StopInstance = AdaptationPrimitive.extend({
                 instance = this.mapper.getObject(this.modelElement.path());
             }
             if (instance && instance.isStarted()) {
-                instance.stop(timeout(instance.getPath() + ' stop(...)', function (err) {
+                instance.stop(timesUp(instance.getPath() + ' stop(...)', 30000, function (err) {
                     if (!err) {
                         this.log.debug(this.toString(), instance.getName());
                     }

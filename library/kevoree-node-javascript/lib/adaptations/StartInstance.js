@@ -1,5 +1,5 @@
 var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive;
-var timeout             = require('../timeout-handler');
+var timesUp             = require('times-up');
 
 var StartInstance = AdaptationPrimitive.extend({
     toString: 'StartInstance',
@@ -9,7 +9,7 @@ var StartInstance = AdaptationPrimitive.extend({
 
         if (this.modelElement.host && this.modelElement.host.name === this.node.getName()) {
             // this element is a subNode to this.node
-            this.node.startSubNode(this.modelElement, timeout(this.node.getName() + '.startSubNode(...)', function (err) {
+            this.node.startSubNode(this.modelElement, timesUp(this.node.getName() + '.startSubNode(...)', 30000, function (err) {
                 if (!err) {
                     this.log.debug(this.toString(), this.node.getName()+' started '+this.modelElement.name);
                 }
@@ -49,7 +49,7 @@ var StartInstance = AdaptationPrimitive.extend({
 
                 // check if instance is already started
                 if (!instance.isStarted()) {
-                    instance.start(timeout(instance.getPath() + ' start(...)', function (err) {
+                    instance.start(timesUp(instance.getPath() + ' start(...)', 30000, function (err) {
                         if (!err) {
                             this.log.debug(this.toString(), instance.getPath());
                         }

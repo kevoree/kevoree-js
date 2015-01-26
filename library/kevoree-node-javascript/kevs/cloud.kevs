@@ -1,8 +1,4 @@
 add host, host.child : JavascriptNode
-add sync : WebSocketGroup
+add sync : WSGroup
 
 attach host sync
-
-set sync.port/host = '9000'
-
-network host.lan.ip 127.0.0.1

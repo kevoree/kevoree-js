@@ -13,7 +13,8 @@ var AddInstance         = require('./adaptations/AddInstance'),
     StartInstance       = require('./adaptations/StartInstance'),
     StopInstance        = require('./adaptations/StopInstance'),
     UpdateInstance      = require('./adaptations/UpdateInstance'),
-    UpdateDictionary    = require('./adaptations/UpdateDictionary');
+    UpdateDictionary    = require('./adaptations/UpdateDictionary'),
+    HaraKiri            = require('./adaptations/HaraKiri');
 
 
 // CONSTANTS
@@ -30,7 +31,8 @@ var COMMAND_RANK = {
     AddBinding:       8,
     UpdateDictionary: 9,
     UpdateInstance:   10,
-    StartInstance:    11
+    StartInstance:    11,
+    HaraKiri:         12
     // lowest priority
 };
 
@@ -107,11 +109,11 @@ var AdaptationEngine = Class({
             }
         }
 
-//        return sorted command list (sort by COMMAND_RANK in order to process adaptations properly)
-//        cmds = this.sortCommands(cmdList);
-//        for (var j=0; j < cmds.length; j++) {
-//            console.log('CMD >>><<< ', cmds[j].toString(), cmds[j].modelElement.path());
-//        }
+        ////return sorted command list (sort by COMMAND_RANK in order to process adaptations properly)
+        //cmds = this.sortCommands(cmdList);
+        //for (var j=0; j < cmds.length; j++) {
+        //    console.log('CMD >>><<< ', cmds[j].toString(), cmds[j].modelElement.path());
+        //}
         return this.sortCommands(cmdList);
     },
 
@@ -266,7 +268,13 @@ var AdaptationEngine = Class({
                 if (trace.traceType.name() === 'SET' && Kotlin.isType(modelElement, kevoree.Instance)) {
                     if (this.isRelatedToPlatform(modelElement)) {
                         if (Kotlin.isType(modelElement, kevoree.ContainerNode) && modelElement.name === this.node.getName()) {
-                            // do not start/stop this platform: this is the core's job
+                            if (trace.content === 'true') {
+                                // start this node platform
+                                cmds.push(this.createCommand(StartInstance, modelElement));
+                            } else {
+                                // stop this node platform
+                                cmds.push(this.createCommand(HaraKiri, modelElement));
+                            }
                         } else {
                             if (trace.content === 'true') {
                                 cmds.push(this.createCommand(StartInstance, modelElement));

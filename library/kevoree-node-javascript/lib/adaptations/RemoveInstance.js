@@ -1,5 +1,5 @@
 var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive,
-    timeout             = require('../timeout-handler');
+    timesUp             = require('times-up');
 
 /**
  * RemoveInstance Adaptation command
@@ -18,7 +18,7 @@ module.exports = AdaptationPrimitive.extend({
 
         if (this.modelElement.host && this.modelElement.host.name === this.node.getName()) {
             // this element is a subNode to this.node
-            this.node.removeSubNode(this.modelElement, timeout(this.node.getName() + '.removeSubNode(...)', function (err) {
+            this.node.removeSubNode(this.modelElement, timesUp(this.node.getName() + '.removeSubNode(...)', 30000, function (err) {
                 if (!err) {
                     this.log.debug(this.toString(), this.node.getName()+' removed '+this.modelElement.name);
                 }

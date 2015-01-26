@@ -7,41 +7,7 @@ var AbstractNode        = require('kevoree-entities').AbstractNode,
 var JavascriptNode = AbstractNode.extend({
     toString: 'JavascriptNode',
 
-    dic_logLevel: {
-        defaultValue: 'DEBUG',
-        optional: false,
-        update: function (value) {
-            switch (value.toLowerCase().trim()) {
-                case 'all':
-                    this.log.setLevel(KevoreeLogger.ALL);
-                    break;
-
-                default:
-                case 'debug':
-                    this.log.setLevel(KevoreeLogger.DEBUG);
-                    break;
-
-                case 'info':
-                    this.log.setLevel(KevoreeLogger.INFO);
-                    break;
-
-                case 'error':
-                    this.log.setLevel(KevoreeLogger.ERROR);
-                    break;
-
-                case 'warn':
-                    this.log.setLevel(KevoreeLogger.WARN);
-                    break;
-            }
-        }
-    },
-
-    dic_logFilter: {
-        optional: true,
-        update: function (value) {
-            this.log.setFilter(value);
-        }
-    },
+    dic_logLevel:   { defaultValue: 'DEBUG', optional: false },
 
     construct: function () {
         this.adaptationEngine = new AdaptationEngine(this);
@@ -49,31 +15,8 @@ var JavascriptNode = AbstractNode.extend({
 
     start: function (done) {
         this._super(function () {
-            this.adaptationEngine.setLogger(this.log);
-            var logLevel = this.dictionary.getValue('logLevel') || this.dic_logLevel.defaultValue;
-            switch (logLevel.toLowerCase().trim()) {
-                case 'all':
-                    this.log.setLevel(KevoreeLogger.ALL);
-                    break;
-
-                default:
-                case 'debug':
-                    this.log.setLevel(KevoreeLogger.DEBUG);
-                    break;
-
-                case 'info':
-                    this.log.setLevel(KevoreeLogger.INFO);
-                    break;
-
-                case 'error':
-                    this.log.setLevel(KevoreeLogger.ERROR);
-                    break;
-
-                case 'warn':
-                    this.log.setLevel(KevoreeLogger.WARN);
-                    break;
-            }
-
+            this.dictionary.on('logLevel', this.updateLogLevel);
+            this.updateLogLevel();
             done();
         }.bind(this));
     },
@@ -134,6 +77,32 @@ var JavascriptNode = AbstractNode.extend({
      */
     processTraces: function (diffSeq, targetModel) {
         return this.adaptationEngine.processTraces(diffSeq, targetModel);
+    },
+
+    updateLogLevel: function () {
+        var logLevel = this.dictionary.getString('logLevel', this.dic_logLevel.defaultValue);
+        switch (logLevel.toLowerCase().trim()) {
+            case 'all':
+                this.log.setLevel(KevoreeLogger.ALL);
+                break;
+
+            default:
+            case 'debug':
+                this.log.setLevel(KevoreeLogger.DEBUG);
+                break;
+
+            case 'info':
+                this.log.setLevel(KevoreeLogger.INFO);
+                break;
+
+            case 'error':
+                this.log.setLevel(KevoreeLogger.ERROR);
+                break;
+
+            case 'warn':
+                this.log.setLevel(KevoreeLogger.WARN);
+                break;
+        }
     }
 });
 

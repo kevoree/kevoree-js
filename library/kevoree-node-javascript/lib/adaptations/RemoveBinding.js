@@ -46,7 +46,7 @@ module.exports = AdaptationPrimitive.extend({
     undo: function (callback) {
         this._super(callback);
 
-        var AddBinding = require('./AddBinding')
+        var AddBinding = require('./AddBinding');
         var cmd = new AddBinding(this.node, this.mapper, this.adaptModel, this.modelElement);
         cmd.execute(callback);
     },

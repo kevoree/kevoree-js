@@ -1,5 +1,5 @@
 var AdaptationPrimitive = require('kevoree-entities').AdaptationPrimitive,
-    timeout             = require('../timeout-handler');
+    timesUp             = require('times-up');
 
 /**
  * Created by leiko on 07/05/14.
@@ -19,7 +19,7 @@ module.exports = AdaptationPrimitive.extend({
 
         if (instance) {
             if (instance.isStarted()) {
-                instance.update(timeout(instance.getPath() + ' update(...)', function (err) {
+                instance.update(timesUp(instance.getPath() + ' update(...)', 30000, function (err) {
                     if (!err) {
                         this.log.debug(this.toString(), instance.getName());
                     }
