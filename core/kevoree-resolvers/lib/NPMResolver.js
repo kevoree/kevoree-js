@@ -1,10 +1,8 @@
 var Resolver      = require('kevoree-commons').Resolver,
-    KevoreeLogger = require('kevoree-commons').KevoreeLogger,
     kevoree       = require('kevoree-library').org.kevoree,
     npm           = require('npm'),
     npmi          = require('npmi'),
     fs            = require('fs'),
-    async         = require('async'),
     path          = require('path'),
     npmVers       = require('npm-vers');
 
@@ -16,7 +14,6 @@ var NPMResolver = Resolver.extend({
     },
 
     resolve: function (deployUnit, forceInstall, callback) {
-        this._super();
         if (!callback) {
             // "forceInstall" parameter is not specified (optional)
             callback = forceInstall;
@@ -97,7 +94,6 @@ var NPMResolver = Resolver.extend({
     },
 
     uninstall: function (deployUnit, callback) {
-        this._super();
         npm.load({loglevel: 'silent', prefix: this.modulesPath}, function (err) {
             if (err) {
                 // npm load error

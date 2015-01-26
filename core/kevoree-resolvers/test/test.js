@@ -2,12 +2,12 @@
  * Created by leiko on 24/06/14.
  */
 var os = require('os');
-var path = require('path');
 var NPMResolver = require('../lib/NPMResolver');
 var kevoree = require('kevoree-library').org.kevoree;
 var factory = new kevoree.factory.DefaultKevoreeFactory();
 
 describe('NPMResolver', function () {
+    this.timeout(20000);
     describe('#resolve()', function () {
         it('should install kevoree-node-javascript:latest', function (done) {
             var resolver = new NPMResolver(os.tmpdir());
