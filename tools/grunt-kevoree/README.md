@@ -32,6 +32,7 @@ grunt.initConfig({
             kevscript: 'kevs/main.kevs', // default
             modulesPath: '.deploy_units' // default
             mergeLocalLibraries: []      // default
+            logLevel: 'debug'            // default
         }
     }
 });
@@ -83,6 +84,13 @@ kevoree: {
 ```
 
 > NB: Merged local libraries has to be "installed" (i.e `npm install` must have been run)
+
+#### options.logLevel
+Type: `String`
+Default value: `'debug'`
+
+A string value that is used to determine the runtime log level.
+Available values are `(all|debug|info|warn|error|quiet)`
 
 ### Kevscript
 

@@ -30,8 +30,36 @@ module.exports = function(grunt) {
             node: 'node0',
             kevscript: path.resolve('kevs/main.kevs'),
             modulesPath: path.resolve('.deploy_units'),
-            mergeLocalLibraries: []
+            mergeLocalLibraries: [],
+            logLevel: 'debug'
         });
+
+        switch (options.logLevel) {
+            case 'all':
+                logger.setLevel(KevoreeLogger.ALL);
+                break;
+
+            case 'debug':
+                logger.setLevel(KevoreeLogger.DEBUG);
+                break;
+
+            default:
+            case 'info':
+                logger.setLevel(KevoreeLogger.INFO);
+                break;
+
+            case 'warn':
+                logger.setLevel(KevoreeLogger.WARN);
+                break;
+
+            case 'error':
+                logger.setLevel(KevoreeLogger.ERROR);
+                break;
+
+            case 'quiet':
+                logger.setLevel(KevoreeLogger.QUIET);
+                break;
+        }
 
         var nodeName = grunt.option('node');
         if (nodeName) {
