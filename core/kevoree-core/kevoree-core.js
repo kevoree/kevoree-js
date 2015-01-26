@@ -131,12 +131,15 @@ var Core = Class({
                         try {
                             // given model is defined and not null
                             var factory = new kevoree.factory.DefaultKevoreeFactory();
+                            // clone model so that adaptations won't modify the current one
                             var cloner = factory.createModelCloner();
                             core.deployModel = cloner.clone(model, true);
+                            // set it read-only to ensure adaptations consistency
                             core.deployModel.setRecursiveReadOnly();
+                            // make a diff between the current model and the model to deploy
                             var diffSeq = factory.createModelCompare().diff(core.currentModel, core.deployModel);
+                            // ask the node platform to create the needed adaptation primitives
                             var adaptations = core.nodeInstance.processTraces(diffSeq, core.deployModel);
-                            // list of adaptation commands retrieved
                             var cmdStack = [];
 
                             // executeCommand: function that save cmd to stack and executes it
@@ -324,14 +327,7 @@ var Core = Class({
                 this.nodeInstance.setName(this.nodeName);
                 this.nodeInstance.setPath(node.path());
 
-                this.nodeInstance.start(function (err) {
-                    if (err) {
-                        callback(err);
-                    } else {
-                        this.log.info(this.toString(), this.nodeName+' : '+node.typeDefinition.name+'/'+node.typeDefinition.version+' successfully started');
-                        callback();
-                    }
-                }.bind(this));
+                callback();
             }.bind(this));
 
         } else {
