@@ -2,34 +2,33 @@
 var NodeJSRuntime = require('./lib/NodeJSRuntime'),
     KevoreeLogger = require('kevoree-commons').KevoreeLogger,
     path          = require('path'),
-    os            = require('os'),
     fs            = require('fs'),
     kevoree       = require('kevoree-library').org.kevoree,
     NPMResolver   = require('kevoree-resolvers').NPMResolver,
     KevScript     = require('kevoree-kevscript'),
     argv          = require('optimist')
-        .usage('Usage: $0 [--nodeName node0 --groupName sync (--groupPort 9000) (--model path/to/your/model.json | --kevscript path/to/your/model.kevs) --modulesPath . --debugLevel info]')
+        .usage('Usage: $0 [--nodeName node0 --groupName sync (--groupPort 9000) (--model path/to/your/model.json | --kevscript path/to/your/model.kevs) --modulesPath . --logLevel info]')
         .alias('n', 'nodeName')
         .alias('g', 'groupName')
         .alias('gp', 'groupPort')
         .alias('m', 'model')
         .alias('k', 'kevscript')
         .alias('p', 'modulesPath')
-        .alias('d', 'debugLevel')
+        .alias('l', 'logLevel')
         .alias('h', 'help')
         .alias('v', 'version')
         .default('n', 'node0')
         .default('g', 'sync')
         .default('gp', 9000)
         .default('p', process.cwd()) // TODO change that; this is a hotfix due to the new impl of npm resulting in the impossibility to install packages outside of the current directory tree level or children (to investigate)
-        .default('d', 'info')
+        .default('l', 'info')
         .describe('nodeName', 'Name of this runtime node platform')
         .describe('groupName', 'Name of the group your node platform is related to')
         .describe('groupPort', 'Port number to bind node to group')
         .describe('model', 'A JSON model to bootstrap on')
         .describe('kevscript', 'A KevScript model to bootstrap on')
         .describe('modulesPath', 'Where to install resolved deploy units')
-        .describe('debugLevel', 'Level of the logger before node platform starts (all|debug|info|warn|error|quiet)')
+        .describe('logLevel', 'Level of the logger before node platform starts (all|debug|info|warn|error|quiet)')
         .describe('help', 'Displays this help')
         .describe('version', 'Displays Kevoree Node.js Runtime version');
 
@@ -40,7 +39,7 @@ if (argv.argv.help) {
 } else {
     argv = argv.argv;
     var log = new KevoreeLogger('NodeJSRuntime');
-    switch (argv.debugLevel) {
+    switch (argv.logLevel) {
         case 'all':
             log.setLevel(KevoreeLogger.ALL);
             break;
