@@ -23,10 +23,7 @@ var AbstractComponent = KevoreeEntity.extend({
      * @param done
      */
     start: function (done) {
-        this._super(function () {
-            this.ui.name = this.name; // default ui name is component name
-            done();
-        }.bind(this));
+        done();
     },
 
     /**
@@ -34,13 +31,24 @@ var AbstractComponent = KevoreeEntity.extend({
      * @param done
      */
     stop: function (done) {
+        done();
+    },
+
+    __start__: function (done) {
+        this._super(function () {
+            this.ui.name = this.name;
+            this.start(done);
+        }.bind(this));
+    },
+
+    __stop__: function (done) {
         this._super(function () {
             if (this.ui.isReady()) {
                 // there is an UI running for this comp
                 // remove it
                 this.ui.destroy();
             }
-            done();
+            this.stop(done);
         }.bind(this));
     },
 

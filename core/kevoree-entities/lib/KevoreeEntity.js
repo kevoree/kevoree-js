@@ -39,8 +39,6 @@ var KevoreeEntity = Class({
      * @param done
      */
     start: function (done) {
-        this.log = this.kCore.getLogger();
-        this.started = true;
         done();
     },
 
@@ -49,7 +47,6 @@ var KevoreeEntity = Class({
      * @param done
      */
     stop: function (done) {
-        this.started = false;
         done();
     },
 
@@ -59,6 +56,21 @@ var KevoreeEntity = Class({
      */
     update: function (done) {
         done();
+    },
+
+    __start__: function (done) {
+        this.log = this.kCore.getLogger();
+        this.started = true;
+        this.start(done);
+    },
+
+    __stop__: function (done) {
+        this.started = false;
+        this.stop(done);
+    },
+
+    __update__: function (done) {
+        this.update(done);
     },
 
     setKevoreeCore: function (kCore) {
