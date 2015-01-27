@@ -19,7 +19,7 @@ module.exports = AdaptationPrimitive.extend({
 
         if (instance) {
             if (instance.isStarted()) {
-                instance.update(timesUp(instance.getPath() + ' update(...)', 30000, function (err) {
+                instance.__update__(timesUp(instance.getPath() + ' update(...)', 30000, function (err) {
                     if (!err) {
                         this.log.debug(this.toString(), instance.getName());
                     }

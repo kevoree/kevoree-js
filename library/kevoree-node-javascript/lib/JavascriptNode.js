@@ -1,24 +1,21 @@
-var AbstractNode        = require('kevoree-entities').AbstractNode,
-    KevoreeLogger       = require('kevoree-commons').KevoreeLogger,
-    AdaptationEngine    = require('./AdaptationEngine'),
-    kevoree             = require('kevoree-library').org.kevoree,
-    async               = require('async');
+var AbstractNode     = require('kevoree-entities').AbstractNode,
+    KevoreeLogger    = require('kevoree-commons').KevoreeLogger,
+    AdaptationEngine = require('./AdaptationEngine'),
+    kevoree          = require('kevoree-library').org.kevoree;
 
 var JavascriptNode = AbstractNode.extend({
     toString: 'JavascriptNode',
 
-    dic_logLevel:   { defaultValue: 'DEBUG', optional: false },
+    dic_logLevel:   { defaultValue: 'INFO', optional: false },
 
     construct: function () {
         this.adaptationEngine = new AdaptationEngine(this);
     },
 
     start: function (done) {
-        this._super(function () {
-            this.dictionary.on('logLevel', this.updateLogLevel);
-            this.updateLogLevel();
-            done();
-        }.bind(this));
+        this.dictionary.on('logLevel', this.updateLogLevel);
+        this.updateLogLevel();
+        done();
     },
 
     /**
@@ -27,10 +24,8 @@ var JavascriptNode = AbstractNode.extend({
      * @param done
      */
     startSubNode: function (node, done) {
-        this._super(node, function () {
-            this.log.warn(this.toString(), 'startSubNode(): not implemented yet');
-            done();
-        }.bind(this));
+        this.log.warn(this.toString(), 'startSubNode(): not implemented yet');
+        done();
     },
 
     /**
@@ -39,10 +34,8 @@ var JavascriptNode = AbstractNode.extend({
      * @param done
      */
     stopSubNode: function (node, done) {
-        this._super(node, function () {
-            this.log.warn(this.toString(), 'stopSubNode(): not implemented yet');
-            done();
-        }.bind(this));
+        this.log.warn(this.toString(), 'stopSubNode(): not implemented yet');
+        done();
     },
 
     /**
@@ -51,10 +44,8 @@ var JavascriptNode = AbstractNode.extend({
      * @param done
      */
     destroySubNode: function (node, done) {
-        this._super(node, function () {
-            this.log.warn(this.toString(), 'destroySubNode(): not implemented yet');
-            done();
-        }.bind(this));
+        this.log.warn(this.toString(), 'destroySubNode(): not implemented yet');
+        done();
     },
 
     /**
@@ -63,10 +54,8 @@ var JavascriptNode = AbstractNode.extend({
      * @param done
      */
     removeSubNode: function (node, done) {
-        this._super(node, function () {
-            this.log.warn(this.toString(), 'removeSubNode(): not implemented yet');
-            done();
-        }.bind(this));
+        this.log.warn(this.toString(), 'removeSubNode(): not implemented yet');
+        done();
     },
 
     /**
@@ -86,11 +75,11 @@ var JavascriptNode = AbstractNode.extend({
                 this.log.setLevel(KevoreeLogger.ALL);
                 break;
 
-            default:
             case 'debug':
                 this.log.setLevel(KevoreeLogger.DEBUG);
                 break;
 
+            default:
             case 'info':
                 this.log.setLevel(KevoreeLogger.INFO);
                 break;

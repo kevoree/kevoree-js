@@ -49,7 +49,7 @@ var StartInstance = AdaptationPrimitive.extend({
 
                 // check if instance is already started
                 if (!instance.isStarted()) {
-                    instance.start(timesUp(instance.getPath() + ' start(...)', 30000, function (err) {
+                    instance.__start__(timesUp(instance.getPath() + ' start(...)', 30000, function (err) {
                         if (!err) {
                             this.log.debug(this.toString(), instance.getPath());
                         }

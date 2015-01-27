@@ -15,12 +15,6 @@ module.exports = function (grunt) {
         // publish your kevlib.json model to the Kevoree Registry
         kevoree_registry: { src: 'kevlib.json' },
 
-        kevoree: {
-            options: {
-                logLevel: 'info'
-            }
-        },
-
         browserify: {
             main: {
                 src: '<%= pkg.main %>',

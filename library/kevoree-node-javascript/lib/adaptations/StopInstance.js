@@ -25,7 +25,7 @@ var StopInstance = AdaptationPrimitive.extend({
                 instance = this.mapper.getObject(this.modelElement.path());
             }
             if (instance && instance.isStarted()) {
-                instance.stop(timesUp(instance.getPath() + ' stop(...)', 30000, function (err) {
+                instance.__stop__(timesUp(instance.getPath() + ' stop(...)', 30000, function (err) {
                     if (!err) {
                         this.log.debug(this.toString(), instance.getName());
                     }
