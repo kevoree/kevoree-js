@@ -38,7 +38,9 @@ var KevoreeUI = Class({
     initialize: function (comp, initCmd, callback) {
         var self = this;
 
-        if (typeof(initCmd) == 'undefined' || initCmd == null) return callback(new Error('KevoreeUI init command unset in KevoreeCore.'));
+        if (typeof(initCmd) !== 'function' || !initCmd) {
+            return callback(new Error('KevoreeUI init command unset (or not a function) in KevoreeCore.'));
+        }
 
         initCmd(this, function (err) {
             if (err) {
