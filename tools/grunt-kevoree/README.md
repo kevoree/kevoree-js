@@ -27,18 +27,18 @@ grunt.initConfig({
     // all those options are optional because they are the default behavior
     kevoree: {
         options: {
-            runtime: 'latest',           // default
-            node: 'node0',               // default
-            kevscript: 'kevs/main.kevs', // default
-            modulesPath: '.deploy_units' // default
-            mergeLocalLibraries: []      // default
-            logLevel: 'debug'            // default
+            runtime: 'latest',            // default
+            node: 'node0',                // default
+            kevscript: 'kevs/main.kevs',  // default
+            modulesPath: '.deploy_units', // default
+            mergeLocalLibraries: [],      // default
+            logLevel: 'debug'             // default
         }
     }
 });
 ```  
 
-> You can just add a `grunt.loadNpmTasks('grunt-kevoree')` in your **Gruntfile.js**, and then do a `grunt kevoree` in a terminal
+> Because each options has a default value, you can just add a `grunt.loadNpmTasks('grunt-kevoree')` without any `kevoree` task configuration in your **Gruntfile.js**, and then do a `grunt kevoree` in a terminal
 
 ### Options
 
@@ -102,7 +102,7 @@ Path that leads to your KevScript file in order to create the Kevoree model to b
 KevScript file can be specified from the command-line (if provided, it will be used instead of the file given in the Gruntfile.js)  
 
 ```sh
-grunt kevoree --kevs=/path/to/my/model.kevs
+grunt kevoree --kevscript=/path/to/my/model.kevs
 ```
 
 ### Command-line arguments
@@ -141,7 +141,7 @@ grunt kevoree --runtime=5.1.0
 
 #### no-reinstall
 Type: `Boolean`
-Default value: `true`
+Default value: `false`
 
 If set, `grunt-kevoree` will not delete the old deploy unit for the current module.  
 
