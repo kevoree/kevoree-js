@@ -31,66 +31,11 @@ var WSChan = AbstractChannel.extend({
                     path = '/' + path;
                 }
 
-                var createInputClient = function (id) {
-                    // TODO protect this so that it wont be called if the channel is stopped (because of the setTimeout())
-                    this.clients[id] = new WSBroker(id, host, port, path);
-                    this.clients[id].on('message', function (msg, response) {
-                        if (response) {
-                            this.localDispatch(msg, function (err, res) {
-                                if (err) {
-                                    response.send(err.message);
-                                } else {
-                                    response.send(res);
-                                }
-                            });
-
-                        } else {
-                            this.localDispatch(msg);
-
-                        }
-                    }.bind(this));
-                    this.clients[id].on('error', function (err) {
-                        this.log.warn('Something went wrong with the connection of '+id+' (reason: '+err.message+')');
-                        setTimeout(function () {
-                            createInputClient(id);
-                        }, 3000);
-                    }.bind(this));
-                    this.clients[id].on('close', function () {
-                        this.log.warn('Connection closed by remote server for '+id);
-                        setTimeout(function () {
-                            createInputClient(id);
-                        }, 3000);
-                    }.bind(this));
-                    this.clients[id].on('registered', function () {
-                        this.log.info(id+' registered on remote server');
-                    }.bind(this));
-                }.bind(this);
-
-                var createOutputClient = function (id) {
-                    // TODO protect this so that it wont be called if the channel is stopped (because of the setTimeout())
-                    this.clients[id] = new WSBroker(id, host, port, path);
-                    this.clients[id].on('error', function (err) {
-                        this.log.warn('Something went wrong with the connection of '+id+' (reason: '+err.message+')');
-                        setTimeout(function () {
-                            createOutputClient(id);
-                        }, 3000);
-                    }.bind(this));
-                    this.clients[id].on('close', function () {
-                        this.log.warn('Connection closed by remote server for '+id);
-                        setTimeout(function () {
-                            createOutputClient(id);
-                        }, 3000);
-                    }.bind(this));
-                    this.clients[id].on('registered', function () {
-                        this.log.info(id+' registered on remote server');
-                    }.bind(this));
-                }.bind(this);
-
                 this.getInputs().forEach(function (path) {
-                    createInputClient(path);
+                    this.createInputClient(path + '_' + this.getName());
                 }.bind(this));
                 this.getOutputs().forEach(function (path) {
-                    createOutputClient(path);
+                    this.createOutputClient(path + '_' + this.getName());
                 }.bind(this));
 
                 done();
@@ -141,21 +86,116 @@ var WSChan = AbstractChannel.extend({
      * @param callback
      */
     onSend: function (fromPortPath, destPortPaths, msg, callback) {
-        // TODO issue #39
         destPortPaths = destPortPaths.map(function (path) {
-            return path;
+            return path + '_' + this.getName();
         }.bind(this));
 
-        var conn = this.clients[fromPortPath+'_'+this.getName()];
-        if (callback instanceof Function) {
-            conn.send(msg, destPortPaths, function (from, answer) {
-                var split = from.split('_');
-                callback(split[0], split[1], answer);
-            });
+        var internalSend = function () {
+            var conn = this.clients[fromPortPath+'_'+this.getName()];
+            if (typeof callback === 'function') {
+                conn.send(msg, destPortPaths, function (from, answer) {
+                    var split = from.split('_');
+                    callback(split[0], split[1], answer);
+                });
+            } else {
+                conn.send(msg, destPortPaths);
+            }
+        }.bind(this);
 
+        var conn = this.clients[fromPortPath+'_'+this.getName()];
+        if (!conn) {
+            this.createOutputClient(fromPortPath+'_'+this.getName(), internalSend);
         } else {
-            conn.send(msg, destPortPaths);
+            internalSend();
         }
+    },
+
+    /**
+     *
+     * @param id
+     * @param [openedCallback]
+     */
+    createInputClient: function (id, openedCallback) {
+        var address = this.processAddress();
+
+        // TODO protect this so that it wont be called if the channel is stopped (because of the setTimeout())
+        this.clients[id] = new WSBroker(id, address.host, address.port, address.path);
+        if (typeof openedCallback === 'function') {
+            this.clients[id].on('open', openedCallback);
+        }
+        this.clients[id].on('message', function (msg, response) {
+            if (response) {
+                this.localDispatch(msg, function (err, res) {
+                    if (err) {
+                        response.send(err.message);
+                    } else {
+                        response.send(res);
+                    }
+                });
+
+            } else {
+                this.localDispatch(msg);
+
+            }
+        }.bind(this));
+        this.clients[id].on('error', function (err) {
+            this.log.warn('Something went wrong with the connection of '+id+' (reason: '+err.message+')');
+            setTimeout(function () {
+                this.createInputClient(id);
+            }.bind(this), 3000);
+        }.bind(this));
+        this.clients[id].on('close', function () {
+            this.log.warn('Connection closed by remote server for '+id);
+            setTimeout(function () {
+                this.createInputClient(id);
+            }.bind(this), 3000);
+        }.bind(this));
+        this.clients[id].on('registered', function () {
+            this.log.info(id+' registered on remote server');
+        }.bind(this));
+    },
+
+    /**
+     *
+     * @param id
+     */
+    createOutputClient: function (id) {
+        var address = this.processAddress();
+
+        // TODO protect this so that it wont be called if the channel is stopped (because of the setTimeout())
+        this.clients[id] = new WSBroker(id, address.host, address.port, address.path);
+        this.clients[id].on('error', function (err) {
+            this.log.warn('Something went wrong with the connection of '+id+' (reason: '+err.message+')');
+            setTimeout(function () {
+                this.createOutputClient(id);
+            }.bind(this), 3000);
+        }.bind(this));
+        this.clients[id].on('close', function () {
+            this.log.warn('Connection closed by remote server for '+id);
+            setTimeout(function () {
+                this.createOutputClient(id);
+            }.bind(this), 3000);
+        }.bind(this));
+        this.clients[id].on('registered', function () {
+            this.log.info(id+' registered on remote server');
+        }.bind(this));
+    },
+
+    /**
+     *
+     * @returns {{host: (String|*), port: (Number|*), path: (String|*)}}
+     */
+    processAddress: function () {
+        var host = this.dictionary.getString('host'),
+            port = this.dictionary.getNumber('port'),
+            path = this.dictionary.getString('path', '');
+
+        if (host && port) {
+            if (path.substr(0, 1) !== '/') {
+                path = '/' + path;
+            }
+        }
+        return { host: host, port: port, path: path };
     }
 });
 

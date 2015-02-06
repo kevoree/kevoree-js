@@ -1,4 +1,4 @@
-add node0, node1 : JavascriptNode/4.0.0-SNAPSHOT
+add node0, node1 : JavascriptNode
 add sync : WSGroup
 
 add node0.broker : WSMsgBroker
