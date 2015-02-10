@@ -1,6 +1,6 @@
 {
   "name": "kevoree-chan-ws",
-  "version": "5.2.3",
+  "version": "5.2.4-SNAPSHOT",
   "main": "./lib/WSChan.js",
   "kevoree": {
     "package": "org.kevoree.library"

@@ -31,10 +31,10 @@ var WSChan = AbstractChannel.extend({
             }
 
             this.getInputs().forEach(function (path) {
-                this.createInputClient(path + '_' + this.getName());
+                this.createInputClient(path + '_' + this.getName(), null, true);
             }.bind(this));
             this.getOutputs().forEach(function (path) {
-                this.createOutputClient(path + '_' + this.getName());
+                this.createOutputClient(path + '_' + this.getName(), null, false);
             }.bind(this));
 
             done();
@@ -107,72 +107,94 @@ var WSChan = AbstractChannel.extend({
     /**
      *
      * @param id
-     * @param [openedCallback]
+     * @param [callback]
+     * @param [retry] boolean
      */
-    createInputClient: function (id, openedCallback) {
+    createInputClient: function (id, callback, retry) {
+        var errorTimeout, closeTimeout;
         var address = this.processAddress();
 
-        // TODO protect this so that it wont be called if the channel is stopped (because of the setTimeout())
-        this.clients[id] = new WSBroker(id, address.host, address.port, address.path);
-        if (typeof openedCallback === 'function') {
-            this.clients[id].on('open', openedCallback);
-        }
-        this.clients[id].on('message', function (msg, response) {
-            if (response) {
-                this.localDispatch(msg, function (err, res) {
-                    if (err) {
-                        response.send(err.message);
-                    } else {
-                        response.send(res);
-                    }
-                });
+        var createClient = function () {
+            var client = new WSBroker(id, address.host, address.port, address.path);
+            client.on('message', function (msg, response) {
+                if (response) {
+                    this.localDispatch(msg, function (err, res) {
+                        if (err) {
+                            response.send(err.message);
+                        } else {
+                            response.send(res);
+                        }
+                    });
 
-            } else {
-                this.localDispatch(msg);
+                } else {
+                    this.localDispatch(msg);
 
-            }
-        }.bind(this));
-        this.clients[id].on('error', function (err) {
-            this.log.warn('Something went wrong with the connection of '+id+' (reason: '+err.message+')');
-            setTimeout(function () {
-                this.createInputClient(id);
-            }.bind(this), 3000);
-        }.bind(this));
-        this.clients[id].on('close', function () {
-            this.log.warn('Connection closed by remote server for '+id);
-            setTimeout(function () {
-                this.createInputClient(id);
-            }.bind(this), 3000);
-        }.bind(this));
-        this.clients[id].on('registered', function () {
-            this.log.info(id+' registered on remote server');
-        }.bind(this));
+                }
+            }.bind(this));
+            client.on('error', function (err) {
+                this.log.warn('Something went wrong with the connection of '+id+' (reason: '+err.message+')');
+                if (retry === true) {
+                    clearTimeout(errorTimeout);
+                    errorTimeout = setTimeout(createClient, 3000);
+                }
+            }.bind(this));
+            client.on('close', function () {
+                delete this.clients[id];
+                this.log.warn('Connection closed by remote server for '+id);
+                if (retry === true) {
+                    clearTimeout(closeTimeout);
+                    closeTimeout = setTimeout(createClient, 3000);
+                }
+            }.bind(this));
+            client.on('registered', function () {
+                this.clients[id] = client;
+                this.log.info(id+' registered on remote server');
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            }.bind(this));
+        }.bind(this);
+
+        createClient();
     },
 
     /**
      *
      * @param id
+     * @param [callback]
+     * @param [retry] boolean
      */
-    createOutputClient: function (id) {
+    createOutputClient: function (id, callback, retry) {
+        var errorTimeout, closeTimeout;
         var address = this.processAddress();
 
-        // TODO protect this so that it wont be called if the channel is stopped (because of the setTimeout())
-        this.clients[id] = new WSBroker(id, address.host, address.port, address.path);
-        this.clients[id].on('error', function (err) {
-            this.log.warn('Something went wrong with the connection of '+id+' (reason: '+err.message+')');
-            setTimeout(function () {
-                this.createOutputClient(id);
-            }.bind(this), 3000);
-        }.bind(this));
-        this.clients[id].on('close', function () {
-            this.log.warn('Connection closed by remote server for '+id);
-            setTimeout(function () {
-                this.createOutputClient(id);
-            }.bind(this), 3000);
-        }.bind(this));
-        this.clients[id].on('registered', function () {
-            this.log.info(id+' registered on remote server');
-        }.bind(this));
+        var createClient = function () {
+            var client = new WSBroker(id, address.host, address.port, address.path);
+            client.on('error', function (err) {
+                this.log.warn('Something went wrong with the connection of '+id+' (reason: '+err.message+')');
+                if (retry === true) {
+                    clearTimeout(errorTimeout);
+                    errorTimeout = setTimeout(createClient, 3000);
+                }
+            }.bind(this));
+            client.on('close', function () {
+                this.log.warn('Connection closed by remote server for '+id);
+                delete this.clients[id];
+                if (retry === true) {
+                    clearTimeout(closeTimeout);
+                    closeTimeout = setTimeout(createClient, 3000);
+                }
+            }.bind(this));
+            client.on('registered', function () {
+                this.clients[id] = client;
+                this.log.info(id+' registered on remote server');
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            }.bind(this));
+        }.bind(this);
+
+        createClient();
     },
 
     /**
