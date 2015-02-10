@@ -1,5 +1,5 @@
 add node0 : JavascriptNode
-add sync : WebSocketGroup
+add sync : WSGroup
 add node0.calc : fr.braindead.Calculator
 add node0.ticker : Ticker
 add myChan : LocalChannel
