@@ -1,9 +1,0 @@
-add node0 : JavascriptNode
-add sync : WebSocketGroup
-add node0.comp : FakeConsole
-
-attach node0 sync
-
-set sync.port/node0 = '9000'
-
-network node0.lan.ip 127.0.0.1
