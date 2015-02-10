@@ -1,12 +1,12 @@
 {
   "name": "kevoree-group-ws",
-  "version": "5.2.2",
+  "version": "5.2.3",
   "main": "./lib/WSGroup.js",
   "kevoree": {
     "package": "org.kevoree.library"
   },
   "scripts": {
-    "prepublish": "grunt build",
+    "prepublish": "grunt",
     "postpublish": "grunt publish"
   },
   "keywords": [
@@ -15,7 +15,7 @@
     "group"
   ],
   "dependencies": {
-    "kevoree-entities": "^7.0.0",
+    "kevoree-entities": "^8.0.0",
     "kevoree-library": "^5.0.4",
     "pseudoclass": "^1.0.2",
     "smart-socket": "^0.2.1",

@@ -26,49 +26,43 @@ var WSGroup = AbstractGroup.extend({
     },
 
     start: function (done) {
-        this._super(function () {
-            if (this.hasMaster()) {
-                if (this.isMaster()) {
-                    this.createServer();
-                } else {
-                    this.createClient();
-                }
-            } else {
+        if (this.hasMaster()) {
+            if (this.isMaster()) {
                 this.createServer();
+            } else {
+                this.createClient();
             }
-            done();
-        }.bind(this));
+        } else {
+            this.createServer();
+        }
         this.count++;
+        done();
     },
 
     stop: function (done) {
-        this._super(function () {
-            // clear server
-            try {
-                this.server.close();
-            } catch (ignore) {
-                /* prevent not running server to throw err */
-            } finally {
-                this.server = null;
-            }
+        // clear server
+        try {
+            this.server.close();
+        } catch (ignore) {
+            /* prevent not running server to throw err */
+        } finally {
+            this.server = null;
+        }
 
-            // clear cache
-            this.clientHandler.clearCache();
+        // clear cache
+        this.clientHandler.clearCache();
 
-            // clear client
-            if (this.smartSocket) {
-                this.smartSocket.close(true);
-            }
-            this.client = null;
-            done();
-        }.bind(this));
+        // clear client
+        if (this.smartSocket) {
+            this.smartSocket.close(true);
+        }
+        this.client = null;
+        done();
     },
 
     update: function (done) {
-        this._super(function () {
-            this.stop(function () {
-                this.start(done);
-            }.bind(this));
+        this.stop(function () {
+            this.start(done);
         }.bind(this));
     },
 
@@ -172,9 +166,8 @@ var WSGroup = AbstractGroup.extend({
     },
 
     isMaster: function () {
-        var master = this.dictionary.getString('master');
         if (this.hasMaster()) {
-            return master === this.getNodeName();
+            return this.dictionary.getString('master') === this.getNodeName();
         } else {
             return false;
         }
