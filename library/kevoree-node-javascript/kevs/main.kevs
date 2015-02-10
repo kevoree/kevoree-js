@@ -4,3 +4,5 @@ add sync : WSGroup
 set sync.master = 'node0'
 
 attach node0 sync
+
+set node0.logLevel = 'debug'
