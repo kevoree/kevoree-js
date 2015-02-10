@@ -1,6 +1,6 @@
 {
   "name": "kevoree-chan-ws",
-  "version": "5.2.3-SNAPSHOT",
+  "version": "5.2.3",
   "main": "./lib/WSChan.js",
   "kevoree": {
     "package": "org.kevoree.library"
@@ -15,14 +15,14 @@
     "channel"
   ],
   "dependencies": {
-    "kevoree-entities": "^7.0.0",
+    "kevoree-entities": "^8.0.0",
     "wsmsgbroker": "^1.6.2"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
-    "grunt-kevoree": "^5.0.1",
     "grunt-browserify": "^3.1.0",
     "grunt-contrib-uglify": "^0.6.0",
+    "grunt-kevoree": "^5.2.2",
     "grunt-kevoree-genmodel": "^2.0.0",
     "grunt-kevoree-registry": "^2.0.2"
   }

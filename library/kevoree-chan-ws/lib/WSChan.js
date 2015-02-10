@@ -21,28 +21,26 @@ var WSChan = AbstractChannel.extend({
      * @param done
      */
     start: function (done) {
-        this._super(function () {
-            var host = this.dictionary.getString('host'),
-                port = this.dictionary.getNumber('port'),
-                path = this.dictionary.getString('path', '');
+        var host = this.dictionary.getString('host'),
+            port = this.dictionary.getNumber('port'),
+            path = this.dictionary.getString('path', '');
 
-            if (host && port) {
-                if (path.substr(0, 1) !== '/') {
-                    path = '/' + path;
-                }
-
-                this.getInputs().forEach(function (path) {
-                    this.createInputClient(path + '_' + this.getName());
-                }.bind(this));
-                this.getOutputs().forEach(function (path) {
-                    this.createOutputClient(path + '_' + this.getName());
-                }.bind(this));
-
-                done();
-            } else {
-                done(new Error(this.toString() + ' error: "'+this.getName()+'" has wrong attributes host:port ('+host+':'+port+')'));
+        if (host && port) {
+            if (path.substr(0, 1) !== '/') {
+                path = '/' + path;
             }
-        }.bind(this));
+
+            this.getInputs().forEach(function (path) {
+                this.createInputClient(path + '_' + this.getName());
+            }.bind(this));
+            this.getOutputs().forEach(function (path) {
+                this.createOutputClient(path + '_' + this.getName());
+            }.bind(this));
+
+            done();
+        } else {
+            done(new Error(this.toString() + ' error: "'+this.getName()+'" has wrong attributes host:port ('+host+':'+port+')'));
+        }
     },
 
     /**
@@ -50,18 +48,16 @@ var WSChan = AbstractChannel.extend({
      * @param done
      */
     stop: function (done) {
-        this._super(function () {
-            for (var key in this.clients) {
-                if (this.clients.hasOwnProperty(key)) {
-                    var conn = this.clients[key];
-                    if (conn && conn.readyState === 1) {
-                        conn.close();
-                    }
+        for (var key in this.clients) {
+            if (this.clients.hasOwnProperty(key)) {
+                var conn = this.clients[key];
+                if (conn && conn.readyState === 1) {
+                    conn.close();
                 }
             }
-            this.clients = {};
-            done();
-        }.bind(this));
+        }
+        this.clients = {};
+        done();
     },
 
     /**
@@ -69,10 +65,8 @@ var WSChan = AbstractChannel.extend({
      * @param done
      */
     update: function (done) {
-        this._super(function () {
-            this.stop(function () {
-                this.start(done);
-            }.bind(this));
+        this.stop(function () {
+            this.start(done);
         }.bind(this));
     },
 
