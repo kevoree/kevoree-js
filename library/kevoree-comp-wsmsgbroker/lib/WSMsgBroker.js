@@ -17,38 +17,36 @@ var WSMsgBroker = AbstractComponent.extend({
      * @param {Function} done
      */
     start: function (done) {
-        this._super(function () {
-            var port = this.dictionary.getNumber('port');
-            if (port) {
-                var path = this.dictionary.getString('path', '');
+        var port = this.dictionary.getNumber('port');
+        if (port) {
+            var path = this.dictionary.getString('path', '');
 
-                // create a new WSMsgBroker server
-                this.server = new WSBroker.Server(port, path);
-                this.log.info(this.toString(), '"'+this.getName()+'" listen on 0.0.0.0:'+port+path);
+            // create a new WSMsgBroker server
+            this.server = new WSBroker.Server(port, path);
+            this.log.info(this.toString(), '"'+this.getName()+'" listen on 0.0.0.0:'+port+path);
 
-                // register some event listeners on it
-                this.server.on('error', function (err) {
-                    this.log.error(this.toString(), '"'+this.getName()+'" broker error: '+err.message);
-                }.bind(this));
+            // register some event listeners on it
+            this.server.on('error', function (err) {
+                this.log.error(this.toString(), '"'+this.getName()+'" broker error: '+err.message);
+            }.bind(this));
 
-                this.server.on('warn', function (err) {
-                    this.log.warn(this.toString(), '"'+this.getName()+'" broker warning: '+err.message);
-                }.bind(this));
+            this.server.on('warn', function (err) {
+                this.log.warn(this.toString(), '"'+this.getName()+'" broker warning: '+err.message);
+            }.bind(this));
 
-                this.server.on('registered', function (id) {
-                    this.log.info(this.toString(), '"'+this.getName()+'" '+chalk.green('+')+' '+id);
-                }.bind(this));
+            this.server.on('registered', function (id) {
+                this.log.info(this.toString(), '"'+this.getName()+'" '+chalk.green('+')+' '+id);
+            }.bind(this));
 
-                this.server.on('unregistered', function (id) {
-                    this.log.info(this.toString(), '"'+this.getName()+'" '+chalk.yellow('-')+' '+id);
-                }.bind(this));
+            this.server.on('unregistered', function (id) {
+                this.log.info(this.toString(), '"'+this.getName()+'" '+chalk.yellow('-')+' '+id);
+            }.bind(this));
 
-                done();
+            done();
 
-            } else {
-                done(new Error('You must set a value to "'+this.getName()+'.port"'));
-            }
-        }.bind(this));
+        } else {
+            done(new Error('You must set a value to "'+this.getName()+'.port"'));
+        }
     },
 
     /**
@@ -56,19 +54,15 @@ var WSMsgBroker = AbstractComponent.extend({
      * @param {Function} done
      */
     stop: function (done) {
-        this._super(function () {
-            if (this.server != null) {
-                this.server.close();
-            }
-            done();
-        }.bind(this));
+        if (this.server != null) {
+            this.server.close();
+        }
+        done();
     },
 
     update: function (done) {
-        this._super(function () {
-            this.stop(function () {
-                this.start(done);
-            }.bind(this));
+        this.stop(function () {
+            this.start(done);
         }.bind(this));
     }
 });
