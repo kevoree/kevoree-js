@@ -1,6 +1,6 @@
 {
   "name": "generator-kevoree",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "A Kevoree project generator for Yeoman",
   "keywords": [
     "yeoman-generator"
