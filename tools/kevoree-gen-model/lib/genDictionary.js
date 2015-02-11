@@ -15,6 +15,7 @@ module.exports = function (typeDef, obj) {
     var dictionary = factory.createDictionaryType();
 
     for (var prop in obj) {
+        // XXX do not use obj.hasOwnProperty(prop), otherwise NO attribute will be added
         if (prop.startsWith(KevoreeEntity.DIC)) {
             // retrieve object's attribute
             var objAttr = obj[prop] || {};
