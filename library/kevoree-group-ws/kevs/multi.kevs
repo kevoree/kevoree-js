@@ -1,9 +1,9 @@
-add node0, node1:   JavascriptNode/3.0.2-SNAPSHOT.0
-add node2:          JavaNode/5.1.1-SNAPSHOT
-add node2.ticker:   Ticker/5.1.1-SNAPSHOT
-add node1.log:      ConsolePrinter/5.1.1-SNAPSHOT
+add node0, node1:   JavascriptNode
+add node2:          JavaNode
+add node2.ticker:   Ticker
+add node1.log:      ConsolePrinter
 add sync:           WSGroup
-add chan:           RemoteWSChan/5.0.8-SNAPSHOT
+add chan:           RemoteWSChan
 
 attach node2,
        node1,

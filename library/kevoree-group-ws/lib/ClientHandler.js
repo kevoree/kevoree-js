@@ -82,9 +82,12 @@ var ClientHandler = Class({
                                     } else {
                                         // ok i've to merge locally
                                         var recModel = loader.loadModelFromString(parsedMsg.getModel()).get(0);
-                                        compare.merge(this.group.getKevoreeCore().getCurrentModel(), recModel).applyOn(recModel);
+                                        var mergedModel = factory.createModelCloner().clone(this.group.getKevoreeCore().getCurrentModel());
+                                        compare.merge(this.group.getKevoreeCore().getCurrentModel(), recModel).applyOn(mergedModel);
                                         this.group.log.info(this.group.toString(), 'New client registered "'+parsedMsg.getNodeName()+'". Merging his model with mine');
-                                        this.group.getKevoreeCore().deploy(recModel);
+                                        this.group.log.info(this.group.toString(), 'Sending merged model back to "'+parsedMsg.getNodeName()+'"');
+                                        ws.send(new PushMessage(saver.serialize(mergedModel)).toRaw());
+                                        this.group.getKevoreeCore().deploy(mergedModel);
                                     }
                                 }
                             }

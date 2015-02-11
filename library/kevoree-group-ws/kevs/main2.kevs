@@ -9,8 +9,8 @@ attach node0, node1 sync
 network node0.ip.eth0 127.0.0.1
 network node1.ip.eth0 127.0.0.1
 
-add node0.printer : ConsolePrinter
+add node1.ticker : Ticker
 add chan : WSChan/5.2.4-SNAPSHOT
 set chan.host = '0.0.0.0'
 set chan.port = '9050'
-bind node0.printer.input chan
+bind node1.ticker.tick chan
