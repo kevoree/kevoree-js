@@ -1,4 +1,4 @@
-add node0 : JavascriptNode
+add node0 : JavascriptNode/5.0.0-SNAPSHOT
 add sync : WSGroup
 add node0.ticker : Ticker
 add node0.console : ConsolePrinter
