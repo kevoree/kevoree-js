@@ -85,7 +85,13 @@ var ClientHandler = Class({
                                         var mergedModel = factory.createModelCloner().clone(this.group.getKevoreeCore().getCurrentModel());
                                         compare.merge(this.group.getKevoreeCore().getCurrentModel(), recModel).applyOn(mergedModel);
                                         this.group.log.info(this.group.toString(), 'New client registered "'+parsedMsg.getNodeName()+'". Merging his model with mine');
-                                        this.group.log.info(this.group.toString(), 'Sending merged model back to "'+parsedMsg.getNodeName()+'"');
+                                        this.group.log.info(this.group.toString(), 'Broadcasting merged model to all connected clients');
+                                        var mergedModelStr = saver.serialize(mergedModel);
+                                        for (var name in this.name2Ws) {
+                                            if (this.name2Ws[name].readyState === WebSocket.OPEN) {
+                                                this.name2Ws[name].send(new PushMessage(mergedModelStr).toRaw());
+                                            }
+                                        }
                                         ws.send(new PushMessage(saver.serialize(mergedModel)).toRaw());
                                         this.group.getKevoreeCore().deploy(mergedModel);
                                     }

@@ -1,4 +1,6 @@
-add node0, node1, node2 : JavascriptNode
+add node0 : JavascriptNode
+add node1 : JavascriptNode
+add node2 : JavascriptNode
 add sync : WSGroup
 
 set sync.master = 'node0'
@@ -9,16 +11,10 @@ network node0.ip.eth0 127.0.0.1
 network node1.ip.eth0 127.0.0.1
 network node2.ip.eth0 127.0.0.1
 
-add node0.printer : ConsolePrinter
-add chan : WSChan/5.2.4-SNAPSHOT
-set chan.host = '0.0.0.0'
-set chan.port = '9050'
-bind node0.printer.input chan
-
 add node1.ticker : Ticker
 add chan : WSChan/5.2.4-SNAPSHOT
 set chan.host = '0.0.0.0'
 set chan.port = '9050'
 bind node1.ticker.tick chan
 
-set node0.logLevel = 'debug'
+set node1.logLevel = 'debug'
