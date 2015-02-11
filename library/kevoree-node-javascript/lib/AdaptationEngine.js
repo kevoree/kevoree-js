@@ -372,7 +372,12 @@ var AdaptationEngine = Class({
 
         } else if (Kotlin.isType(element, kevoree.MBinding)) {
             if (element.port && element.port.eContainer()) {
-                return this.isRelatedToPlatform(element.port.eContainer());
+                if (this.isRelatedToPlatform(element.port.eContainer())) {
+                    return true;
+                }
+            }
+            if (element.hub) {
+                return this.isRelatedToPlatform(element.hub);
             }
 
         } else if (Kotlin.isType(element, kevoree.Value)) {

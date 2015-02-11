@@ -57,7 +57,14 @@ module.exports = AdaptationPrimitive.extend({
                 callback();
 
             } else {
-                callback(new Error(this.toString()+" error: unable to find component "+this.modelElement.port.eContainer().name+" instance on platform."));
+                if (this.modelElement.port.eContainer().eContainer().path() === this.node.getPath()) {
+                    callback(new Error(this.toString()+" error: unable to find component "+this.modelElement.port.eContainer().name+" instance on platform."));
+                } else {
+                    // the component is not related to the current platform, just add the input the channel
+                    chanInstance.addInternalInputPort(new Port(this.modelElement.port.name, this.modelElement.port.path()));
+                    this.log.debug(this.toString(), 'input '+this.modelElement.port.path()+' <-> '+chanInstance.getPath());
+                    callback();
+                }
             }
         } else {
             callback(new Error(this.toString()+" error: unable to find channel "+this.modelElement.hub.name+" instance on platform."));
