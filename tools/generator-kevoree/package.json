@@ -1,6 +1,6 @@
 {
   "name": "generator-kevoree",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "description": "A Kevoree project generator for Yeoman",
   "keywords": [
     "yeoman-generator"
@@ -21,8 +21,9 @@
     "test": "mocha"
   },
   "dependencies": {
-    "yeoman-generator": "~0.13.0",
-    "underscore.string": "~2.3.1"
+    "chalk": "^0.5.1",
+    "underscore.string": "~2.3.1",
+    "yeoman-generator": "~0.13.0"
   },
   "devDependencies": {
     "mocha": "~1.12.0"

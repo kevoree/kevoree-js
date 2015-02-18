@@ -2,9 +2,16 @@
 var util = require('util');
 var path = require('path');
 var yeoman = require('yeoman-generator');
+var chalk = require('chalk');
 var _ = require('underscore.string');
 
-var ENTITY_TYPES = ['comp', 'chan', 'group', 'node'],
+var ENTITY_TYPES = ['Component', 'Channel', 'Group', 'Node'],
+    ENTITY_TYPE_TAGS = {
+        'Component': 'comp',
+        'Channel': 'chan',
+        'Group': 'group',
+        'Node': 'node'
+    },
     ENTITY_REAL_TYPES = {
         comp:  'AbstractComponent',
         chan:  'AbstractChannel',
@@ -28,17 +35,16 @@ KevoreeGenerator.prototype.askFor = function askFor() {
     var cb = this.async();
 
     // have Yeoman greet the user.
-    console.log(this.yeoman);
+    console.log();
+    console.log(chalk.yellow('Kevoree Project Generator:'));
+    console.log();
 
     var prompts = [
         {
             name: 'entityType',
-            message: 'What kind of entity would you like to create? ('+ENTITY_TYPES.join('|')+')',
-            choices: ENTITY_TYPES,
-            validate: function (answer) {
-                if (ENTITY_TYPES.indexOf(answer) != -1) return true;
-                else return 'Choose between ('+ENTITY_TYPES.join('|')+')';
-            }
+            message: 'What kind of entity would you like to create?',
+            type: 'list',
+            choices: ENTITY_TYPES
         },
         {
             name: 'entityName',
@@ -61,7 +67,7 @@ KevoreeGenerator.prototype.askFor = function askFor() {
     ];
 
     this.prompt(prompts, function (props) {
-        this.rawEntityType  = props.entityType;
+        this.rawEntityType  = ENTITY_TYPE_TAGS[props.entityType];
         this.entityType     = ENTITY_REAL_TYPES[this.rawEntityType];
         this.kevoreePackage = props.kevoreePackage;
         this.entityName     = props.entityName;
@@ -73,7 +79,7 @@ KevoreeGenerator.prototype.askFor = function askFor() {
         this.prompt([
             {
                 name: 'moduleName',
-                message: 'Choose a module name:',
+                message: 'Choose your NPM module name:',
                 default: 'kevoree-' + this.rawEntityType + '-' + _.slugify(this.entityName),
                 validate: function (answer) {
                     var pattern = /[a-z0-9_-]+/;
