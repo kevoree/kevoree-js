@@ -23,23 +23,21 @@ var <%= entityName %> = <%= entityType %>.extend({
      * @param {Function} done
      */
     start: function (done) {
-        this._super(function () {
-            this.setUIContent(view({date: new Date()}), function (err, root) {
-                if (err) {
-                    // if there is an error, it probably means that you are not running in the browser
-                    // but probably in the NodeJS runtime. So you don't have an UI. You can only "log" :)
-                    this.log.debug(this.toString(), '<%= entityName %> started');
+        this.setUIContent(view({date: new Date()}), function (err, root) {
+            if (err) {
+                // if there is an error, it probably means that you are not running in the browser
+                // but probably in the NodeJS runtime. So you don't have an UI. You can only "log" :)
+                this.log.debug(this.toString(), '<%= entityName %> started');
 
-                } else {
-                    var myBtn = root.querySelector('#myBtn');
-                    myBtn.onclick = function () {
-                        console.log('Button clicked!');
-                    };
-                }
+            } else {
+                var myBtn = root.querySelector('#myBtn');
+                myBtn.onclick = function () {
+                    console.log('Button clicked!');
+                };
+            }
 
-                done();
-            });
-        }.bind(this));
+            done();
+        });
     },
 
     /**
@@ -47,10 +45,8 @@ var <%= entityName %> = <%= entityType %>.extend({
      * @param {Function} done
      */
     stop: function (done) {
-        this._super(function () {
-            this.log.debug(this.toString(), 'STOP');
-            done();
-        }.bind(this));
+        this.log.debug(this.toString(), 'STOP');
+        done();
     }
 });
 

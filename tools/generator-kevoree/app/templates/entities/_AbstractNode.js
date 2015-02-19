@@ -19,11 +19,8 @@ var <%= entityName %> = JavascriptNode.extend({
      * @param {Function} done
      */
     start: function (done) {
-        this._super(function () {
-            // TODO
-            this.log.debug(this.toString(), 'START');
-            done();
-        }.bind(this));
+        this.log.debug(this.toString(), 'START');
+        done();
     },
 
     /**
@@ -31,11 +28,8 @@ var <%= entityName %> = JavascriptNode.extend({
      * @param {Function} done
      */
     stop: function (done) {
-        this._super(function () {
-            // TODO
-            this.log.debug(this.toString(), 'STOP');
-            done();
-        }.bind(this));
+        this.log.debug(this.toString(), 'STOP');
+        done();
     }
 });
 
