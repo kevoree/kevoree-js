@@ -3,6 +3,5 @@
 Restructuration of the whole repository in order to separate each Node.js module into its own Git repository
 
 :warning:  
-**Work in progress...  
+**Work in progress...**  
 :warning:
-**
