@@ -1,1 +1,0 @@
-### kevoree-resolvers

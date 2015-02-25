@@ -1,4 +1,0 @@
-add node0 : JavascriptNode
-add sync : WebSocketGroup
-
-attach node0 sync
