@@ -1,3 +1,12 @@
 [submodule "model"]
 	path = model
 	url = https://github.com/kevoree/kevoree-js-model
+[submodule "core"]
+	path = core
+	url = https://github.com/kevoree/kevoree-js-core
+[submodule "entities"]
+	path = entities
+	url = https://github.com/kevoree/kevoree-js-entities
+[submodule "commons"]
+	path = commons
+	url = https://github.com/kevoree/kevoree-js-commons
