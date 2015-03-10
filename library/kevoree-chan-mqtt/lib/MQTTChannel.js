@@ -18,53 +18,51 @@ var MQTTChannel = AbstractChannel.extend({
      * @param done
      */
     start: function (done) {
-        this._super(function () {
-            var host = this.dictionary.getString('host'),
-                port = this.dictionary.getNumber('port');
+        var host = this.dictionary.getString('host'),
+            port = this.dictionary.getNumber('port');
 
-            if (host && host.length > 0 && port && port.length > 0) {
-                var topic = KEVOREE_PREFIX + this.getName() + '_' + this.getNodeName();
-                if (topic && topic.length > 0) {
-                    // create MQTT client
-                    this.client = mqtt.createClient(port, host);
+        if (host && host.length > 0 && port && port.length > 0) {
+            var topic = KEVOREE_PREFIX + this.getName() + '_' + this.getNodeName();
+            if (topic && topic.length > 0) {
+                // create MQTT client
+                this.client = mqtt.createClient(port, host);
 
-                    // register "connect" event listener
-                    this.client.on('connect', function () {
-                        this.log.info(this.toString(), this.getName()+' connected to '+host+':'+port);
-                        this.client.subscribe(topic, function (err) {
-                            if (err) {
-                                this.log.info(this.toString(), this.getName()+' unable to subcribe to topic '+topic+' (reason: '+err.message+')');
-                            } else {
-                                this.log.info(this.toString(), this.getName()+' subscribed to topic '+topic);
-                            }
-                        }.bind(this));
+                // register "connect" event listener
+                this.client.on('connect', function () {
+                    this.log.info(this.toString(), this.getName()+' connected to '+host+':'+port);
+                    this.client.subscribe(topic, function (err) {
+                        if (err) {
+                            this.log.info(this.toString(), this.getName()+' unable to subcribe to topic '+topic+' (reason: '+err.message+')');
+                        } else {
+                            this.log.info(this.toString(), this.getName()+' subscribed to topic '+topic);
+                        }
                     }.bind(this));
+                }.bind(this));
 
-                    // register "close" event listener
-                    this.client.on('close', function () {
-                        this.log.info(this.toString(), this.getName()+' closed connection with '+host+':'+port);
-                    }.bind(this));
+                // register "close" event listener
+                this.client.on('close', function () {
+                    this.log.info(this.toString(), this.getName()+' closed connection with '+host+':'+port);
+                }.bind(this));
 
-                    // register "message" event listener
-                    this.client.on('message', this.onMessage.bind(this));
+                // register "message" event listener
+                this.client.on('message', this.onMessage.bind(this));
 
-                    // register "error" event listener
-                    this.client.on('error', function (err) {
-                        this.log.error(this.toString(), this.getName()+' error: '+err.message);
-                        this.update();
-                    }.bind(this));
+                // register "error" event listener
+                this.client.on('error', function (err) {
+                    this.log.error(this.toString(), this.getName()+' error: '+err.message);
+                    this.update();
+                }.bind(this));
 
-                } else {
-                    done(new Error('MQTTChannel error: you must specify a topic to subscribe to (topic: '+topic+')'));
-                    return;
-                }
             } else {
-                done(new Error('MQTTChannel error: unable to create MQTT client with given attributes (host: '+host+', port: '+port+')'));
+                done(new Error('MQTTChannel error: you must specify a topic to subscribe to (topic: '+topic+')'));
                 return;
             }
+        } else {
+            done(new Error('MQTTChannel error: unable to create MQTT client with given attributes (host: '+host+', port: '+port+')'));
+            return;
+        }
 
-            done();
-        }.bind(this));
+        done();
     },
 
     /**
@@ -72,19 +70,15 @@ var MQTTChannel = AbstractChannel.extend({
      * @param done
      */
     stop: function (done) {
-        this._super(function () {
-            if (this.client) {
-                this.client.end();
-            }
-            done();
-        }.bind(this));
+        if (this.client) {
+            this.client.end();
+        }
+        done();
     },
 
     update: function (done) {
-        this._super(function () {
-            this.stop(function () {
-                this.start(done);
-            }.bind(this));
+        this.stop(function () {
+            this.start(done);
         }.bind(this));
     },
 

@@ -1,13 +1,14 @@
 {
   "name": "kevoree-chan-mqtt",
-  "version": "5.1.1-SNAPSHOT",
+  "version": "5.2.5",
   "main": "./lib/MQTTChannel.js",
   "description": "Kevoree channel able to connect to a remote MQTT broker to broadcast messages",
   "kevoree": {
     "package": "org.kevoree.library"
   },
   "scripts": {
-    "prepublish": "grunt"
+    "prepublish": "grunt",
+    "postpublish": "grunt publish"
   },
   "keywords": [
     "kevoree-std-lib",
@@ -17,16 +18,14 @@
     "mqtt"
   ],
   "dependencies": {
-    "kevoree-entities": "^3.0.1",
+    "kevoree-entities": "^8.0.2",
     "mqtt": "^0.3.10"
   },
   "devDependencies": {
     "grunt": "^0.4.1",
-    "grunt-kevoree": "^3.0.2",
-    "grunt-browserify": "^2.0.7",
-    "grunt-contrib-uglify": "^0.6.0",
+    "grunt-kevoree": "^5.2.2",
     "grunt-kevoree-genmodel": "^2.0.0",
-    "grunt-kevoree-registry": "^2.0.0"
+    "grunt-kevoree-registry": "^2.0.2"
   },
   "repository": {
     "type": "git",

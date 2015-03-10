@@ -1,12 +1,16 @@
 add node0 : JavascriptNode
-add sync : WebSocketGroup
-add node0.console : FakeConsole
-add node0.hello : HelloWorldComponent
+add sync : WSGroup
+
+add node0.console : ConsolePrinter
+add node0.ticker : Ticker
 add myChan : MQTTChannel
 
 attach node0 sync
 
-set sync.port/node0 = "9000"
+set sync.master = 'node0'
 
-bind node0.console.inMsg myChan
-bind node0.hello.sendText myChan
+bind node0.console.input myChan
+bind node0.ticker.tick myChan
+
+network node0.lo.ip 127.0.0.1
+set node0.logLevel = 'DEBUG'
