@@ -1,25 +1,25 @@
 add node0, node1 : JavascriptNode
 add sync : WSGroup
 
-add node0.broker : WSMsgBroker
+//add node0.broker : WSMsgBroker
 add node1.printer : ConsolePrinter
 add node0.ticker : Ticker
 
-add myChan, myChan1 : WSChan
+add myChan : WSChan
 
 attach node0, node1 sync
 
 set sync.master = "node0"
 set sync.port/node0 = "9000"
 
-set node0.broker.port = "9050"
+//set node0.broker.port = "9050"
 
 set myChan.host = "localhost"
 set myChan.port = "9050"
-set myChan1.host = "localhost"
-set myChan1.port = "9050"
 
 bind node0.ticker.tick myChan
 bind node1.printer.input myChan
 
 network node0.ip.local 127.0.0.1
+set node0.logLevel = 'DEBUG'
+set node1.logLevel = 'DEBUG'
