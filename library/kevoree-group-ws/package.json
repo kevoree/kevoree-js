@@ -1,6 +1,6 @@
 {
   "name": "kevoree-group-ws",
-  "version": "5.2.4",
+  "version": "5.2.5",
   "main": "./lib/WSGroup.js",
   "kevoree": {
     "package": "org.kevoree.library"
