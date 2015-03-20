@@ -21,34 +21,26 @@ module.exports = function (grunt) {
         },
 
         browserify: {
-            main: {
-                src: '<%= pkg.main %>',
-                dest: 'browser/<%= pkg.name %>.js',
+            browser: {
                 options: {
-                    alias: ['<%= pkg.main %>:<%= pkg.name %>'],
-                    external: [
-                        'kevoree-library',
-                        'kevoree-kotlin'
-                    ]
-                }
+                    alias: [ '<%= pkg.main %>:<%= pkg.name %>' ]
+                },
+                src: [],
+                dest: 'browser/<%= pkg.name %>.js'
             }
         },
 
         uglify: {
             options: {
-                banner: '// Browserify bundle of <%= pkg.name %>@<%= pkg.version %> - Generated on <%= getDate() %>\n',
+                banner: '// Browserify bundle of <%= pkg.name %>@<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd HH:MM") %>\n',
                 mangle: {
                     except: ['_super']
                 }
             },
-            bundle: {
-                src: '<%= browserify.main.dest %>',
-                dest: '<%= browserify.main.dest %>'
+            browser: {
+                src: '<%= browserify.browser.dest %>',
+                dest: 'browser/<%= pkg.name %>.min.js'
             }
-        },
-        getDate: function () {
-            var d = new Date();
-            return d.toISOString().split('T')[0] + ' ' + d.toLocaleTimeString();
         }
     });
 
@@ -58,8 +50,9 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-contrib-uglify');
 
-    grunt.registerTask('build', ['kevoree_genmodel', 'browserify', 'uglify']);
+    grunt.registerTask('build', ['kevoree_genmodel']);
     grunt.registerTask('default', 'build');
     grunt.registerTask('publish', 'kevoree_registry');
     grunt.registerTask('kev', ['kevoree']);
+    grunt.registerTask('browser', ['browserify', 'uglify']);
 };
