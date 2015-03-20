@@ -1,6 +1,6 @@
 {
   "name": "kevoree-comp-consoleprinter",
-  "version": "5.2.5",
+  "version": "5.2.6-SNAPSHOT",
   "main": "./lib/ConsolePrinter.js",
   "kevoree": {
     "package": "org.kevoree.library"
