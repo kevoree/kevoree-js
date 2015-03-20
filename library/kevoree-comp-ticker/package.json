@@ -1,6 +1,6 @@
 {
   "name": "kevoree-comp-ticker",
-  "version": "5.2.5",
+  "version": "5.2.6-SNAPSHOT",
   "main": "./lib/Ticker.js",
   "kevoree": {
     "package": "org.kevoree.library"
