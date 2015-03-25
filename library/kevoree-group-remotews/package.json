@@ -1,6 +1,6 @@
 {
   "name": "kevoree-group-remotews",
-  "version": "3.0.0-SNAPSHOT",
+  "version": "3.0.0",
   "main": "./lib/RemoteWSGroup.js",
   "kevoree": {
     "package": "org.kevoree.library"
