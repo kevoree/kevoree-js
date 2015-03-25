@@ -49,7 +49,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-kevoree-registry');
 
     grunt.registerTask('default', 'build');
-    grunt.registerTask('build', ['kevoree_genmodel']);
+    grunt.registerTask('build', ['kevoree_genmodel', 'browser']);
     grunt.registerTask('publish', ['kevoree_registry']);
     grunt.registerTask('kev', ['kevoree']);
     grunt.registerTask('browser', ['browserify', 'uglify']);
