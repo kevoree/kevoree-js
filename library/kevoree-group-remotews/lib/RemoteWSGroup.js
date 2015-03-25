@@ -53,14 +53,14 @@ var RemoteWSGroup = AbstractGroup.extend({
             try {
                 var factory = new kevoree.factory.DefaultKevoreeFactory();
                 if (msg.startsWith(PUSH)) {
-                    this.log.info(this.toString(), ws._socket.remoteAddress+":"+ws._socket.remotePort+" asked for a PUSH");
+                    this.log.info(this.toString(), '"'+this.getName()+'" received a push request');
 
                     var jsonLoader = factory.createJSONLoader();
                     var model = jsonLoader.loadModelFromString(msg.substr(PUSH.length, msg.length-1)).get(0);
                     this.kCore.deploy(model);
 
                 } else if (msg === PULL) {
-                    this.log.info(this.toString(), ws._socket.remoteAddress+":"+ws._socket.remotePort+" asked for a PULL");
+                    this.log.info(this.toString(), '"'+this.getName()+'" received a pull request');
 
                     var serializer = factory.createJSONSerializer();
                     var strModel = serializer.serialize(this.kCore.getCurrentModel());
