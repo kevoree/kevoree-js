@@ -15,48 +15,30 @@ module.exports = function (grunt) {
             }
         },
 
-        // generates compiled version of your views in Javascript
-        // in order to use them within your code
-        // You can, then, do something like this:
-        // var myView = require('../generated-ui/my-view.js');
-        // and use it like this:
-        // var htmlString = myView({foo: 'bar'});
-        kevoree: {
-            run: {
-                kevscript: 'kevs/main.kevs'
-            }
-        },
-
+        // publish your kevlib.json model to the Kevoree Registry
+        kevoree_registry: { src: 'kevlib.json' },
 
         browserify: {
-            main: {
-                src: '<%= pkg.main %>',
-                dest: 'browser/<%= pkg.name %>.js',
+            browser: {
                 options: {
-                    alias: ['<%= pkg.main %>:<%= pkg.name %>'],
-                    external: [
-                        'kevoree-library',
-                        'kevoree-kotlin'
-                    ]
-                }
+                    alias: [ '<%= pkg.main %>:<%= pkg.name %>' ]
+                },
+                src: [],
+                dest: 'browser/<%= pkg.name %>.js'
             }
         },
 
         uglify: {
             options: {
-                banner: '// Browserify bundle of <%= pkg.name %>@<%= pkg.version %> - Generated on <%= getDate() %>\n',
+                banner: '// Browserify bundle of <%= pkg.name %>@<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd HH:MM") %>\n',
                 mangle: {
                     except: ['_super']
                 }
             },
-            bundle: {
-                src: '<%= browserify.main.dest %>',
-                dest: '<%= browserify.main.dest %>'
+            browser: {
+                src: '<%= browserify.browser.dest %>',
+                dest: 'browser/<%= pkg.name %>.min.js'
             }
-        },
-        getDate: function () {
-            var d = new Date();
-            return d.toISOString().split('T')[0] + ' ' + d.toLocaleTimeString();
         }
     });
 
@@ -64,7 +46,11 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-kevoree-genmodel');
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-kevoree-registry');
 
-    grunt.registerTask('default', ['kevoree_genmodel', 'browserify', 'uglify']);
+    grunt.registerTask('default', 'build');
+    grunt.registerTask('build', ['kevoree_genmodel']);
+    grunt.registerTask('publish', ['kevoree_registry']);
     grunt.registerTask('kev', ['kevoree']);
+    grunt.registerTask('browser', ['browserify', 'uglify']);
 };

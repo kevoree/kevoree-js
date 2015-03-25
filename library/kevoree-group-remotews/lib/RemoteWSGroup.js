@@ -2,7 +2,9 @@ var AbstractGroup = require('kevoree-entities').AbstractGroup,
     SmartSocket   = require('smart-socket'),
     kevoree       = require('kevoree-library').org.kevoree;
 
-var LOOP_TIMEOUT = 5000;
+var LOOP_BREAK = 5000,
+    PUSH       = 'push/',
+    PULL       = 'pull';
 
 /**
  * Kevoree group
@@ -12,82 +14,79 @@ var RemoteWSGroup = AbstractGroup.extend({
     toString: 'RemoteWSGroup',
 
     dic_host: { optional: false },
-    dic_port: { optional: false, datatype: 'number' },
-    dic_path: { optional: true },
+    dic_port: { optional: true, defaultValue: 80 },
+    dic_path: { optional: true, defaultValue: '/' },
 
     /**
      * this method will be called by the Kevoree platform when your group has to start
      * @param done
      */
     start: function (done) {
-        this._super(function () {
-            var host = this.dictionary.getValue('host'),
-                port = this.dictionary.getValue('port'),
-                path = this.dictionary.getValue('path');
+        var host = this.dictionary.getString('host'),
+            port = this.dictionary.getNumber('port', 80),
+            path = this.dictionary.getString('path', '');
 
-            if (isNaN(parseInt(port))) {
-                done(new Error(this.toString()+' error: attribute "port" is not a number ('+port+')'));
-                return;
+        if (!host) {
+            done(new Error('"host" attribute is not specified'));
+            return;
+        }
+
+        if (path.substr(0, 1) === '/') {
+            path = path.substr(1, path.length-1);
+        }
+
+        var url = host+':'+port+'/'+path;
+        this.ss = new SmartSocket({
+            addresses: [ url ],
+            loopBreak: LOOP_BREAK
+        });
+
+        this.ss.on('open', function () {
+            this.log.info(this.toString(), 'Connected to '+url);
+        }.bind(this));
+
+        this.ss.on('message', function (ws, msg) {
+            if (msg.type) {
+                msg = msg.data;
             }
 
-            var address = host + ':' + port + processPath(path);
+            try {
+                var factory = new kevoree.factory.DefaultKevoreeFactory();
+                if (msg.startsWith(PUSH)) {
+                    this.log.info(this.toString(), ws._socket.remoteAddress+":"+ws._socket.remotePort+" asked for a PUSH");
 
-            this.ss = new SmartSocket({
-                addresses: [ address ],
-                loopBreak: LOOP_TIMEOUT,
-                handlers: {
-                    onopen: function (ws) {
-                        this.log.info(this.toString(), 'Connected to ws://'+address);
-                        ws.send(JSON.stringify({action: 'register', id: this.getPath()}));
-                    }.bind(this),
+                    var jsonLoader = factory.createJSONLoader();
+                    var model = jsonLoader.loadModelFromString(msg.substr(PUSH.length, msg.length-1)).get(0);
+                    this.kCore.deploy(model);
 
-                    onclose: function () {
-                        this.log.info(this.toString(), 'Connection lost with ws://'+address+' (will retry every '+LOOP_TIMEOUT+'ms until reconnected)');
-                    }.bind(this),
+                } else if (msg === PULL) {
+                    this.log.info(this.toString(), ws._socket.remoteAddress+":"+ws._socket.remotePort+" asked for a PULL");
 
-                    onerror: function (ws, err) {
-                        this.log.info(this.toString(), 'Connection problem with ws://'+address+' (will retry every '+LOOP_TIMEOUT+'ms until connected)');
-                    }.bind(this),
+                    var serializer = factory.createJSONSerializer();
+                    var strModel = serializer.serialize(this.kCore.getCurrentModel());
+                    ws.send(strModel);
 
-                    onmessage: function (ws, msg) {
-                        if (msg.type) msg = msg.data;
-
-                        try {
-                            var factory = new kevoree.factory.DefaultKevoreeFactory();
-                            msg = JSON.parse(msg);
-                            switch (msg.action) {
-                                case 'push':
-                                    this.log.info(this.toString(), ws._socket.remoteAddress+":"+ws._socket.remotePort+" asked for a PUSH");
-
-                                    var jsonLoader = factory.createJSONLoader();
-                                    var model = jsonLoader.loadModelFromString(msg.model).get(0);
-                                    this.kCore.deploy(model);
-                                    break;
-
-                                case 'pull':
-                                    this.log.info(this.toString(), ws._socket.remoteAddress+":"+ws._socket.remotePort+" asked for a PULL");
-
-                                    var serializer = factory.createJSONSerializer();
-                                    var strModel = serializer.serialize(this.kCore.getCurrentModel());
-                                    ws.send(JSON.stringify({
-                                        action: 'pullAnswer',
-                                        id: msg.id,
-                                        model: strModel
-                                    }));
-                                    break;
-                            }
-                        } catch (err) {
-                            this.log.warn(this.toString(), '"'+this.getName()+'" unable to process incoming message ('+msg.toString()+')');
-                        }
-                    }.bind(this)
+                } else {
+                    this.log.debug(this.toString(), '"'+this.getName()+'" unknown incoming message ('+msg.toString()+')');
                 }
-            });
-
-            this.ss.start();
-
-            // don't wait for this to successfully connect
-            done();
+            } catch (err) {
+                this.log.warn(this.toString(), '"'+this.getName()+'" unable to process incoming message ('+msg.toString()+')');
+                this.log.error(this.toString(), err.stack);
+            }
         }.bind(this));
+
+        this.ss.on('close', function () {
+            this.log.info(this.toString(), 'Connection lost with '+url+' (will retry every '+LOOP_BREAK+'ms until reconnected)');
+        }.bind(this));
+
+        this.ss.on('error', function () {
+            this.log.info(this.toString(), 'Connection problem with '+url+' (will retry every '+LOOP_BREAK+'ms until connected)');
+        }.bind(this));
+
+        this.ss.start();
+
+        // don't wait for this to successfully connect
+        done();
     },
 
     /**
@@ -95,22 +94,11 @@ var RemoteWSGroup = AbstractGroup.extend({
      * @param done
      */
     stop: function (done) {
-        this._super(function () {
+        if (this.ss) {
             this.ss.close(true);
-            done();
-        }.bind(this));
+        }
+        done();
     }
 });
-
-function processPath(path) {
-    if (path) {
-        if (path.startsWith('/')) {
-            return path;
-        } else {
-            return '/' + path;
-        }
-    }
-    return '';
-}
 
 module.exports = RemoteWSGroup;
