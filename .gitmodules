@@ -49,3 +49,6 @@
 [submodule "tools/grunt-kevoree-registry"]
 	path = tools/grunt-kevoree-registry
 	url = https://github.com/kevoree/grunt-kevoree-registry
+[submodule "tools/kevoree-gen-model"]
+	path = tools/kevoree-gen-model
+	url = https://github.com/kevoree/kevoree-gen-model
