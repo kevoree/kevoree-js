@@ -28,3 +28,6 @@
 [submodule "libraries/group/remotews"]
 	path = libraries/group/remotews
 	url = https://github.com/kevoree/kevoree-js-group-remotews
+[submodule "libraries/chan/ws"]
+	path = libraries/chan/ws
+	url = https://github.com/kevoree/kevoree-js-chan-ws
