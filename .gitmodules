@@ -34,3 +34,6 @@
 [submodule "libraries/comp/wsmsgbroker"]
 	path = libraries/comp/wsmsgbroker
 	url = https://github.com/kevoree/kevoree-js-comp-wsmsgbroker
+[submodule "libraries/chan/local"]
+	path = libraries/chan/local
+	url = https://github.com/kevoree/kevoree-js-chan-local
