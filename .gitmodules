@@ -52,3 +52,9 @@
 [submodule "tools/kevoree-gen-model"]
 	path = tools/kevoree-gen-model
 	url = https://github.com/kevoree/kevoree-gen-model
+[submodule "tools/kevoree-kevscript"]
+	path = tools/kevoree-kevscript
+	url = https://github.com/kevoree/kevoree-kevscript
+[submodule "library"]
+	path = library
+	url = https://github.com/kevoree/kevoree-js-library
