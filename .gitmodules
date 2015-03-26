@@ -22,3 +22,6 @@
 [submodule "libraries/comp/consoleprinter"]
 	path = libraries/comp/consoleprinter
 	url = https://github.com/kevoree/kevoree-js-comp-consoleprinter
+[submodule "libraries/group/ws"]
+	path = libraries/group/ws
+	url = https://github.com/kevoree/kevoree-js-group-ws
