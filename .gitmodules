@@ -40,3 +40,6 @@
 [submodule "tools/generator-kevoree"]
 	path = tools/generator-kevoree
 	url = https://github.com/kevoree/generator-kevoree
+[submodule "tools/grunt-kevoree"]
+	path = tools/grunt-kevoree
+	url = https://github.com/kevoree/grunt-kevoree
