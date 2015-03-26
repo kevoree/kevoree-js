@@ -3,7 +3,7 @@
 ## Clone the repo
 You want to clone this repository with all its Git submodules, this is how you do it:
 ```sh
-git clone --recursive git://github.com/foo/bar.git
+git clone --recursive git://github.com/kevoree/kevoree-js.git
 ```
 
 ## Structure
