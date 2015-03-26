@@ -43,3 +43,6 @@
 [submodule "tools/grunt-kevoree"]
 	path = tools/grunt-kevoree
 	url = https://github.com/kevoree/grunt-kevoree
+[submodule "tools/grunt-kevoree-genmodel"]
+	path = tools/grunt-kevoree-genmodel
+	url = https://github.com/kevoree/grunt-kevoree-genmodel
