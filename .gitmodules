@@ -10,3 +10,12 @@
 [submodule "commons"]
 	path = commons
 	url = https://github.com/kevoree/kevoree-js-commons
+[submodule "libraries/node-javascript"]
+	path = libraries/node-javascript
+	url = https://github.com/kevoree/kevoree-js-node-javascript
+[submodule "libraries/comp/ticker"]
+	path = libraries/comp/ticker
+	url = https://github.com/kevoree/kevoree-js-comp-ticker
+[submodule "libraries/node/javascript"]
+	path = libraries/node/javascript
+	url = https://github.com/kevoree/kevoree-js-node-javascript
