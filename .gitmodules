@@ -58,3 +58,6 @@
 [submodule "library"]
 	path = library
 	url = https://github.com/kevoree/kevoree-js-library
+[submodule "runtimes/nodejs"]
+	path = runtimes/nodejs
+	url = https://github.com/kevoree/kevoree-nodejs-runtime
