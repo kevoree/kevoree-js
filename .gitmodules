@@ -61,3 +61,6 @@
 [submodule "runtimes/nodejs"]
 	path = runtimes/nodejs
 	url = https://github.com/kevoree/kevoree-nodejs-runtime
+[submodule "runtimes/browser"]
+	path = runtimes/browser
+	url = https://github.com/kevoree/kevoree-browser-runtime
