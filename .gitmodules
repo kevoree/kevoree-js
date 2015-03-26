@@ -37,3 +37,6 @@
 [submodule "libraries/chan/local"]
 	path = libraries/chan/local
 	url = https://github.com/kevoree/kevoree-js-chan-local
+[submodule "tools/generator-kevoree"]
+	path = tools/generator-kevoree
+	url = https://github.com/kevoree/generator-kevoree
