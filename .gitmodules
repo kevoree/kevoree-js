@@ -64,3 +64,6 @@
 [submodule "runtimes/browser"]
 	path = runtimes/browser
 	url = https://github.com/kevoree/kevoree-browser-runtime
+[submodule "libraries/chan/remotews"]
+	path = libraries/chan/remotews
+	url = git@github.com:kevoree/kevoree-js-chan-remotews.git
