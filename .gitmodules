@@ -67,3 +67,12 @@
 [submodule "libraries/chan/remotews"]
 	path = libraries/chan/remotews
 	url = git@github.com:kevoree/kevoree-js-chan-remotews.git
+[submodule "libraries/chan/mqtt"]
+	path = libraries/chan/mqtt
+	url = git@github.com:kevoree/kevoree-js-chan-mqtt.git
+[submodule "libraries/comp/msgsender"]
+	path = libraries/comp/msgsender
+	url = git@github.com:kevoree/kevoree-js-comp-msgsender.git
+[submodule "libraries/comp/chart"]
+	path = libraries/comp/chart
+	url = git@github.com:kevoree/kevoree-js-comp-chart.git
