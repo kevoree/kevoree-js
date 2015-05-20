@@ -76,3 +76,6 @@
 [submodule "libraries/comp/chart"]
 	path = libraries/comp/chart
 	url = git@github.com:kevoree/kevoree-js-comp-chart.git
+[submodule "libraries/comp/mqttsubclient"]
+	path = libraries/comp/mqttsubclient
+	url = git@github.com:kevoree/kevoree-js-comp-mqttsubclient.git
