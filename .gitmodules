@@ -79,3 +79,6 @@
 [submodule "libraries/comp/mqttsubclient"]
 	path = libraries/comp/mqttsubclient
 	url = git@github.com:kevoree/kevoree-js-comp-mqttsubclient.git
+[submodule "libraries/comp/mqttpubclient"]
+	path = libraries/comp/mqttpubclient
+	url = git@github.com:kevoree/kevoree-js-comp-mqttpubclient.git
