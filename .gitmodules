@@ -82,3 +82,6 @@
 [submodule "libraries/comp/mqttpubclient"]
 	path = libraries/comp/mqttpubclient
 	url = git@github.com:kevoree/kevoree-js-comp-mqttpubclient.git
+[submodule "libraries/comp/nodered"]
+	path = libraries/comp/nodered
+	url = git@github.com:kevoree/kevoree-js-comp-nodered.git
