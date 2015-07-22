@@ -85,3 +85,6 @@
 [submodule "libraries/comp/nodered"]
 	path = libraries/comp/nodered
 	url = git@github.com:kevoree/kevoree-js-comp-nodered.git
+[submodule "tools/resolvers"]
+	path = tools/resolvers
+	url = git@github.com:kevoree/kevoree-js-resolvers.git
