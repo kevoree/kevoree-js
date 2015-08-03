@@ -54,7 +54,7 @@
 	url = https://github.com/kevoree/kevoree-gen-model
 [submodule "tools/kevoree-kevscript"]
 	path = tools/kevoree-kevscript
-	url = https://github.com/kevoree/kevoree-kevscript
+	url = https://github.com/kevoree/kevoree-js-kevscript
 [submodule "library"]
 	path = library
 	url = https://github.com/kevoree/kevoree-js-library
@@ -63,7 +63,7 @@
 	url = https://github.com/kevoree/kevoree-nodejs-runtime
 [submodule "runtimes/browser"]
 	path = runtimes/browser
-	url = https://github.com/kevoree/kevoree-browser-runtime
+	url = git@github.com:kevoree/kevoree-browser-runtime.git
 [submodule "libraries/chan/remotews"]
 	path = libraries/chan/remotews
 	url = git@github.com:kevoree/kevoree-js-chan-remotews.git
