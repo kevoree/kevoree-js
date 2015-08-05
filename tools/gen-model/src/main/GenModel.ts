@@ -22,7 +22,7 @@ export class GenModel {
           console.log('Params:  ')
           Reflect.getMetadata('Params', Type.prototype)
             .forEach(function (param: ParamData) {
-              console.log(`   ${param.fragmentDependant ? '#':''}${param.name}${param.optional ? '':'*'}: ${param.type} ${param.defaultValue ? '(default='+param.defaultValue+')':''}`)
+              console.log(`   ${param.meta.fragmentDependant ? '#':''}${param.name}${param.meta.optional ? '':'*'}: ${param.type} ${param.meta.defaultValue ? '(default='+param.meta.defaultValue+')':''}`)
             })
           console.log('Inputs:  ')
           Reflect.getMetadata('Inputs', Type.prototype)
