@@ -1,0 +1,15 @@
+{
+  "name": "kevoree-core",
+  "version": "1.0.0",
+  "description": "Kevoree core",
+  "main": "build/main/Core.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "kevoree",
+    "core"
+  ],
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "license": "LGPL-3.0"
+}
