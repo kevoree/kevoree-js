@@ -1,0 +1,19 @@
+{
+  "name": "kevoree-logger",
+  "version": "1.0.0",
+  "description": "Kevoree Logger",
+  "main": "build/main/Logger.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "kevoree",
+    "logger",
+    "log"
+  ],
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "license": "LGPL-3.0",
+  "dependencies": {
+    "chalk": "^1.1.0"
+  }
+}

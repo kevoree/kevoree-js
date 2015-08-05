@@ -1,0 +1,19 @@
+{
+  "name": "kevoree-gen-model",
+  "version": "1.0.0",
+  "description": "Kevoree model generator",
+  "main": "build/main/GenModel.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "kevoree",
+    "model",
+    "generator"
+  ],
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "license": "LGPL-3.0",
+  "dependencies": {
+    "reflect-metadata": "^0.1.0"
+  }
+}

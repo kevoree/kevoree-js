@@ -1,0 +1,18 @@
+{
+  "name": "kevoreejs",
+  "version": "1.0.0",
+  "private": "true",
+  "description": "Kevoree Node.js Runtime",
+  "main": "kevoree.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "kevoree-commons": "^2.1.2",
+    "kevoree-core": "^8.0.0-alpha",
+    "kevoree-library": "^5.0.9",
+    "kevoree-resolvers": "^3.0.0"
+  }
+}

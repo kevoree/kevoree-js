@@ -1,0 +1,15 @@
+{
+  "name": "kevoree-core",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Kevoree core",
+  "main": "Core.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "LGPL-3.0",
+  "dependencies": {
+    "kevoree-library": "^5.0.9"
+  }
+}
