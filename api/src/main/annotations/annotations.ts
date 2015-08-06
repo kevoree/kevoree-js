@@ -62,22 +62,26 @@ export function Inject(service: Services) {
   }
 }
 
-export function Input(target: any, propertyKey: string) {
-  var inputs: Array<string> = Reflect.getMetadata('Inputs', target)
-  if (!inputs) {
-    inputs = new Array<string>()
-    Reflect.defineMetadata('Inputs', inputs, target)
+export function Input(schema?: JSONSchema) {
+  return function (target: any, propertyKey: string) {
+    var inputs: Array<string> = Reflect.getMetadata('Inputs', target)
+    if (!inputs) {
+      inputs = new Array<string>()
+      Reflect.defineMetadata('Inputs', inputs, target)
+    }
+    inputs.push(propertyKey)
   }
-  inputs.push(propertyKey)
 }
 
-export function Output(target: any, propertyKey: string) {
-  var outputs: Array<string> = Reflect.getMetadata('Outputs', target)
-  if (!outputs) {
-    outputs = new Array<string>()
-    Reflect.defineMetadata('Outputs', outputs, target)
+export function Output(schema?: JSONSchema) {
+  return function (target: any, propertyKey: string) {
+    var outputs: Array<string> = Reflect.getMetadata('Outputs', target)
+    if (!outputs) {
+      outputs = new Array<string>()
+      Reflect.defineMetadata('Outputs', outputs, target)
+    }
+    outputs.push(propertyKey)
   }
-  outputs.push(propertyKey)
 }
 
 export function Param(meta?: ParamMeta) {
@@ -123,4 +127,17 @@ export interface TypeMeta {
 export interface InjectData {
   propertyKey: string
   service: Services
+}
+
+export enum SchemaType {
+  STRING, NUMBER, ARRAY, OBJECT
+}
+
+export interface JSONSchema {
+  title?: string
+  type: SchemaType,
+  properties?: {
+    [key: string]: JSONSchema
+  }
+  required?: Array<string>
 }

@@ -14,15 +14,14 @@
         "outDir": "build"
     },
     "filesGlob": [
-        "./typings/**/*.ts",
         "./src/**/*.ts",
+        "./typings/**/*.ts",
         "!./node_modules/**/*"
     ],
     "files": [
-        "./typings/chalk/chalk.d.ts",
-        "./typings/tsd.d.ts",
-        "./src/main/Logger.d.ts",
-        "./src/main/Logger.ts",
-        "./src/test/test.ts"
+        "./src/main/kevoree.ts",
+        "./src/test/test.ts",
+        "./typings/node/node.d.ts",
+        "./typings/tsd.d.ts"
     ]
 }

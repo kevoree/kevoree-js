@@ -14,8 +14,8 @@ declare module 'kevoree-api' {
   export function Group(meta?: TypeMeta): (target: any) => void;
   export function Node(meta?: TypeMeta): (target: any) => void;
   export function Inject(service: Services): (target: any, propertyKey: string) => void;
-  export function Input(target: any, propertyKey: string): void;
-  export function Output(target: any, propertyKey: string): void;
+  export function Input(schema?: JSONSchema): (target: any, propertyKey: string) => void;
+  export function Output(schema?: JSONSchema): (target: any, propertyKey: string) => void;
   export function Param(meta?: ParamMeta): (target: any, propertyKey: string) => void;
   export interface Callback {
       (err?: Error): void;
@@ -48,5 +48,18 @@ declare module 'kevoree-api' {
   export interface InjectData {
     propertyKey: string
     service: Services
+  }
+
+  export enum SchemaType {
+    STRING, NUMBER, ARRAY, OBJECT
+  }
+
+  export interface JSONSchema {
+    title?: string
+    type: SchemaType,
+    properties?: {
+      [key: string]: JSONSchema
+    }
+    required?: Array<string>
   }
 }

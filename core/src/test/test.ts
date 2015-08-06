@@ -1,3 +1,6 @@
-import { Core } from '../Core'
+import { Core } from '../main/Core'
+import { Logger } from 'kevoree-logger'
 
-var core = new Core()
+var logger = new Logger()
+var core = new Core(logger)
+core.start('node0')

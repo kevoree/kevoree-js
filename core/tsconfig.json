@@ -11,19 +11,21 @@
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
-        "outDir": "app/build"
+        "outDir": "build"
     },
     "filesGlob": [
-        "./test/**/*.ts",
-        "./app/src/**/*.ts",
+        "./src/**/*.ts",
+        "./typings/**/*.ts",
         "!./node_modules/**/*"
     ],
     "files": [
-        "./app/src/Core.d.ts",
-        "./app/src/Core.ts",
-        "./app/src/test/test.ts",
-        "./app/src/typings/kevoree-api/LoggerService.d.ts",
-        "./app/src/typings/kevoree-library/kevoree.d.ts",
-        "./app/src/typings/node/node.d.ts"
+        "./src/main/Core.d.ts",
+        "./src/main/Core.ts",
+        "./src/test/test.ts",
+        "./typings/kevoree-api/kevoree-api.d.ts",
+        "./typings/kevoree-library/kevoree.d.ts",
+        "./typings/kevoree-logger/kevoree-logger.d.ts",
+        "./typings/node/node.d.ts",
+        "./typings/tsd.d.ts"
     ]
 }

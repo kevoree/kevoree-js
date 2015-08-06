@@ -3,7 +3,7 @@ require('reflect-metadata')
 
 import { resolve } from 'path'
 import { readFile } from 'fs'
-import { Types, ParamData, InjectData } from 'kevoree-api'
+import { Types, Services, ParamData, InjectData } from 'kevoree-api'
 
 export class GenModel {
 
@@ -24,20 +24,14 @@ export class GenModel {
             .forEach(function (param: ParamData) {
               console.log(`   ${param.meta.fragmentDependant ? '#':''}${param.name}${param.meta.optional ? '':'*'}: ${param.type} ${param.meta.defaultValue ? '(default='+param.meta.defaultValue+')':''}`)
             })
-          console.log('Inputs:  ')
-          Reflect.getMetadata('Inputs', Type.prototype)
-            .forEach(function (param: string) {
-              console.log(`   ${param}`)
-            })
+          console.log(`Inputs:\n   ${Reflect.getMetadata('Inputs', Type.prototype).join(', ')}`)
+          console.log(`Outputs:\n   ${Reflect.getMetadata('Outputs', Type.prototype).join(', ')}`)
           console.log('Outputs: ')
-          Reflect.getMetadata('Outputs', Type.prototype)
-            .forEach(function (param: string) {
-              console.log(`   ${param}`)
-            })
           console.log('Injects: ')
           Reflect.getMetadata('Injects', Type.prototype)
             .forEach(function (data: InjectData) {
-              console.log(`   ${data.propertyKey}: ${Types[data.service]}`)
+              // check if service exists: Services[data.service]
+              console.log(`   ${data.propertyKey}: ${Services[data.service]}`)
             })
           var model = '{}'
           done(null, model)

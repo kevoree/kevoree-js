@@ -23,19 +23,19 @@ export class MyComp {
     done();
   }
 
-  @Input
+  @Input()
   input(msg: string): void {
     console.log('input: '+msg);
   }
 
-  @Input
+  @Input()
   input2(msg: string): void {
     console.log('input2: '+msg);
   }
 
-  @Output
+  @Output()
   output(msg: string): void {}
 
-  @Output
+  @Output()
   output2(msg: string): void {}
 }

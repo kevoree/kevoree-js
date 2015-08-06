@@ -1,5 +1,6 @@
 import {
-  Component, Inject, Services, Param, Input, Output, ModelService, Callback
+  Component, Inject, Services, Param, Input, Output, ModelService, Callback,
+  SchemaType
 }  from 'kevoree-api'
 
 @Component({desc: 'MyComp description is cool'})
@@ -26,10 +27,18 @@ class MyComp {
     done();
   }
 
-  @Input
+  @Input()
   input(msg: string): void {
-    this.logger.info(`${this.modelService.getName()} incoming message: ${msg}`)
+    this.logger.info(`${this.modelService.getName()} input incoming message: ${msg}`)
   }
+
+  @Input()
+  input2(msg: string): void {
+    this.logger.info(`${this.modelService.getName()} input2 incoming message: ${msg}`)
+  }
+
+  @Output()
+  output(msg: string): void {}
 }
 
 export = MyComp
