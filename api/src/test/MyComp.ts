@@ -1,6 +1,7 @@
 import {
-  Component, Inject, Input, Output, Param, Services, ModelService
-} from '../main/api'
+  Component, Input, Output, Param, ModelService, LoggerService
+} from '../main/kevoree-api'
+import { Inject } from 'ts-injector'
 
 @Component({ desc: 'This component does something' })
 export class MyComp {
@@ -11,14 +12,13 @@ export class MyComp {
   @Param({ defaultValue: 'ws.kevoree.org' })
   private host: string
 
-  @Inject(Services.ModelService)
+  @Inject('ModelService')
   private modelService: ModelService
 
-  @Inject(Services.LoggerService)
-  private logger: Logger
+  @Inject('LoggerService')
+  private logger: LoggerService
 
   start(done: (err?: Error) => void): void {
-    console.log('MyComp level');
     this.logger.info(`${this.modelService.getName()} started on node ${this.modelService.getNodeName()}`)
     done();
   }

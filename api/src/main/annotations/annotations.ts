@@ -1,16 +1,10 @@
 require('reflect-metadata')
 
-import { Services } from './Services'
-import { Types } from './Types'
-
 function typeDefinition(target: any, meta: TypeMeta) {
   Reflect.defineMetadata(MetaData.NAME, target.name, target.prototype)
   Reflect.defineMetadata(MetaData.META, meta || {}, target.prototype)
   if (!Reflect.hasMetadata(MetaData.PARAMS, target.prototype)) {
     Reflect.defineMetadata(MetaData.PARAMS, [], target.prototype)
-  }
-  if (!Reflect.hasMetadata('Injects', target.prototype)) {
-    Reflect.defineMetadata('Injects', [], target.prototype)
   }
   if (!Reflect.hasMetadata(MetaData.INPUTS, target.prototype)) {
     Reflect.defineMetadata(MetaData.INPUTS, [], target.prototype)
@@ -48,21 +42,7 @@ export function Node(meta?: TypeMeta) {
   }
 }
 
-export function Inject(service: Services) {
-  return function (target: any, propertyKey: string) {
-    var injects: Array<InjectData> = Reflect.getMetadata('kevoree:injects', target)
-    if (!injects) {
-      injects = new Array<InjectData>()
-      Reflect.defineMetadata('kevoree:injects', injects, target)
-    }
-    injects.push({
-      propertyKey: propertyKey,
-      service:     service
-    })
-  }
-}
-
-export function Input(schema?: JSONSchema) {
+export function Input(schema?: Object) {
   return function (target: any, propertyKey: string) {
     Reflect.defineMetadata(MetaData.MSG_SCHEMA, schema, target, propertyKey);
     var inputs: Array<string> = Reflect.getMetadata(MetaData.INPUTS, target)
@@ -74,7 +54,7 @@ export function Input(schema?: JSONSchema) {
   }
 }
 
-export function Output(schema?: JSONSchema) {
+export function Output(schema?: Object) {
   return function (target: any, propertyKey: string) {
     var outputs: Array<string> = Reflect.getMetadata(MetaData.OUTPUTS, target)
     if (!outputs) {
@@ -109,8 +89,14 @@ export function Param(meta?: ParamMeta) {
   }
 }
 
-export enum MetaData {
-  TYPE, META, NAME, PARAMS, INPUTS, OUTPUTS, MSG_SCHEMA
+export class MetaData {
+  static TYPE:       string = 'kevoree:type';
+  static META:       string = 'kevoree:meta';
+  static NAME:       string = 'kevoree:name';
+  static PARAMS:     string = 'kevoree:params';
+  static INPUTS:     string = 'kevoree:inputs';
+  static OUTPUTS:    string = 'kevoree:outputs';
+  static MSG_SCHEMA: string = 'kevoree:msg_schema';
 }
 
 export interface ParamMeta {
@@ -129,20 +115,9 @@ export interface TypeMeta {
   desc?: string
 }
 
-export interface InjectData {
-  propertyKey: string
-  service: Services
-}
-
-export enum SchemaType {
-  STRING, INT, FLOAT, DOUBLE, ARRAY, OBJECT
-}
-
-export interface JSONSchema {
-  title?: string
-  type: SchemaType,
-  properties?: {
-    [key: string]: JSONSchema
-  }
-  required?: Array<string>
+export enum Types {
+  Node,
+  Group,
+  Channel,
+  Component
 }

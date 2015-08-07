@@ -2,7 +2,7 @@
   "name": "kevoree-api",
   "version": "1.0.0",
   "description": "Kevoree component library",
-  "main": "build/main/api.js",
+  "main": "build/main/kevoree-api.js",
   "dependencies": {
     "reflect-metadata": "^0.1.0"
   },

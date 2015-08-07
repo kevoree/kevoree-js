@@ -1,6 +1,6 @@
 import { MyComp } from './MyComp'
 import { MyOtherComp } from './MyOtherComp'
-import { Types } from '../main/api'
+import { Types } from '../main/kevoree-api'
 
 console.log('========== MyComp')
 console.log('Type:    ', Types[Reflect.getMetadata('Type', MyComp)])

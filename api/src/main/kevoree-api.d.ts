@@ -1,36 +1,20 @@
 declare module 'kevoree-api' {
-  export enum Services {
-      ModelService = 0,
-      LoggerService = 1,
-  }
-  export enum Types {
-      Node = 0,
-      Group = 1,
-      Channel = 2,
-      Component = 3,
-  }
   export function Channel(meta?: TypeMeta): (target: any) => void;
   export function Component(meta?: TypeMeta): (target: any) => void;
   export function Group(meta?: TypeMeta): (target: any) => void;
   export function Node(meta?: TypeMeta): (target: any) => void;
-  export function Inject(service: Services): (target: any, propertyKey: string) => void;
   export function Input(schema?: Object): (target: any, propertyKey: string) => void;
   export function Output(schema?: Object): (target: any, propertyKey: string) => void;
   export function Param(meta?: ParamMeta): (target: any, propertyKey: string) => void;
-  export interface Callback {
-      (err?: Error): void;
-  }
-  export interface ModelService {
-      getName(): string;
-      getPath(): string;
-      getNodeName(): string;
-      getCurrentModel(): Object;
-      getDeployingModel(): Object;
-      getModelInstance(): Object;
-      deploy(model: Object, done: Callback): void;
-  }
-  export enum MetaData {
-    TYPE, META, NAME, PARAMS, INPUTS, OUTPUTS, MSG_SCHEMA
+
+  export class MetaData {
+    static TYPE: string;
+    static META: string;
+    static NAME: string;
+    static PARAMS: string;
+    static INPUTS: string;
+    static OUTPUTS: string;
+    static MSG_SCHEMA: string;
   }
 
   export interface ParamMeta {
@@ -49,8 +33,10 @@ declare module 'kevoree-api' {
     desc?: string
   }
 
-  export interface InjectData {
-    propertyKey: string
-    service: Services
+  export enum Types {
+    Node,
+    Group,
+    Channel,
+    Component
   }
 }

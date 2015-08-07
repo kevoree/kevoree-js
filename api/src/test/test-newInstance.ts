@@ -2,48 +2,46 @@ import { Logger }       from 'kevoree-logger'
 import { ModelServiceImpl } from './ModelServiceImpl'
 import { MyComp }       from './MyComp'
 import { MyOtherComp }  from './MyOtherComp'
-import { Services }     from '../main/api'
+import { Injector, Context } from 'ts-injector';
 
-var c1    = new MyComp(),
-    c2    = new MyOtherComp(),
+var c1: any = new MyComp(),
+    c2: any = new MyOtherComp(),
     name1 = 'comp0',
     name2 = 'comp1'
 
 var loggers = {}
 
-init('node0', c1, name1)
-init('node0', c2, name2)
+var injector = new Injector();
 
-function init(nodeName: string, instance: any, name: string) {
-  var injects = Reflect.getMetadata('Injects', instance.constructor) || []
-  injects.forEach((item: { propertyKey: string, service: Services }) => {
-    switch (item.service) {
-      case Services.ModelService:
-        Object.defineProperty(instance.constructor.prototype, item.propertyKey, {
-          value: new ModelServiceImpl(nodeName, name, {}, null)
-        })
-        console.info(`ModelService injected in ${name}`)
-        break;
+var ctx1 = new Context(),
+    ctx2 = new Context();
 
-      case Services.LoggerService:
-        loggers[instance.constructor.name] = loggers[instance.constructor.name] || new Logger(instance.constructor.name)
-        Object.defineProperty(instance.constructor.prototype, item.propertyKey, {
-          value: loggers[instance.constructor.name]
-        })
-        console.info(`LoggerService injected in ${name}`)
-        break;
+ctx1.register('LoggerService', new Logger('MyComp'));
+ctx1.register('ModelService', new ModelServiceImpl('node0', 'comp1', {}, null));
+injector.inject(c1, ctx1);
+
+ctx2.register('LoggerService', new Logger('MyOtherComp'));
+ctx2.register('ModelService', new ModelServiceImpl('node0', 'comp2', {}, null));
+injector.inject(c2, ctx2);
+
+if (typeof c1.start === 'function') {
+  c1.start((err?: Error) => {
+    if (err) {
+      throw err;
+    } else {
+      console.log('c1 started');
     }
-  })
+  });
+}
 
-  if (typeof instance.start === 'function') {
-    instance.start((err: Error) => {
-      if (err) {
-        console.log('error', name)
-      } else {
-        console.log('ok', name)
-      }
-    })
-  } else {
-    console.log('no start() for', name);
-  }
+if (typeof c2.start === 'function') {
+  c2.start((err?: Error) => {
+    if (err) {
+      throw err;
+    } else {
+      console.log('c2 started');
+    }
+  });
+} else {
+  console.log('c2.start() === undefined   ==> start anyway without any process on start');
 }

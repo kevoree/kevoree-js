@@ -1,4 +1,4 @@
-import { ModelService, Callback } from '../main/services/ModelService'
+import { ModelService } from '../main/services/ModelService'
 
 export class ModelServiceImpl implements ModelService {
   private nodeName: string
@@ -37,7 +37,7 @@ export class ModelServiceImpl implements ModelService {
     return (this.deployingModel || this.model).findByPath(this.getPath())
   }
 
-  deploy(done: Callback): void {
+  deploy(done: (err?: Error) => void): void {
     // todo
   }
 }

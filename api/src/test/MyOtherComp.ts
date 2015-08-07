@@ -1,10 +1,11 @@
 import {
-  Component, Inject, Input, Output, Param, Services, ModelService
-} from '../main/api'
+  Component, Input, Output, Param, ModelService
+} from '../main/kevoree-api';
+import { Inject } from 'ts-injector';
 
 @Component({ desc: 'This other component does something' })
 export class MyOtherComp {
 
-  @Inject(Services.ModelService)
+  @Inject('ModelService')
   private modelService: ModelService
 }
