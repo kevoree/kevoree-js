@@ -14,6 +14,7 @@
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "license": "LGPL-3.0",
   "dependencies": {
+    "is-my-json-valid": "^2.12.1",
     "reflect-metadata": "^0.1.0"
   }
 }

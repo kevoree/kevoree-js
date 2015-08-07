@@ -13,7 +13,7 @@ g.generate((err, model) => {
       if (err) {
         throw err
       } else {
-        console.log('gen ok')
+        console.log('gen done')
       }
     })
   }

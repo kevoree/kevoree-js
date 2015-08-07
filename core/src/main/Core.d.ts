@@ -10,3 +10,7 @@ declare interface Core {
 interface Callback {
   (err?: Error): void
 }
+
+interface DeployCallback {
+  (err: Error, update: boolean): void
+}

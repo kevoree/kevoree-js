@@ -3,7 +3,10 @@ require('reflect-metadata')
 
 import { resolve } from 'path'
 import { readFile } from 'fs'
-import { Types, Services, ParamData, InjectData } from 'kevoree-api'
+import { Types, Services, ParamData, InjectData, MetaData } from 'kevoree-api'
+var jsonValidator = require('is-my-json-valid');
+var metaJsonSchema = require('../../jsonschema.json');
+var util = require('util');
 
 export class GenModel {
 
@@ -16,23 +19,40 @@ export class GenModel {
         try {
           var pkg = JSON.parse(data)
           var Type = require(resolve(process.cwd(), pkg.main))
-          console.log('Type:    ', Types[Reflect.getMetadata('Type', Type.prototype)])
-          console.log('Name:    ', Reflect.getMetadata('Name', Type.prototype))
-          console.log('Meta:    ', Reflect.getMetadata('Meta', Type.prototype))
+          console.log('Type:    ', Types[Reflect.getMetadata(MetaData.TYPE, Type.prototype)])
+          console.log('Name:    ', Reflect.getMetadata(MetaData.NAME, Type.prototype))
+          console.log('Meta:    ', Reflect.getMetadata(MetaData.META, Type.prototype))
           console.log('Params:  ')
-          Reflect.getMetadata('Params', Type.prototype)
-            .forEach(function (param: ParamData) {
-              console.log(`   ${param.meta.fragmentDependant ? '#':''}${param.name}${param.meta.optional ? '':'*'}: ${param.type} ${param.meta.defaultValue ? '(default='+param.meta.defaultValue+')':''}`)
-            })
-          console.log(`Inputs:\n   ${Reflect.getMetadata('Inputs', Type.prototype).join(', ')}`)
-          console.log(`Outputs:\n   ${Reflect.getMetadata('Outputs', Type.prototype).join(', ')}`)
+          Reflect.getMetadata(MetaData.PARAMS, Type.prototype)
+            .forEach(function(param: ParamData) {
+            console.log(`   ${param.meta.fragmentDependant ? '#' : ''}${param.name}${param.meta.optional ? '' : '*'}: ${param.type} ${param.meta.defaultValue ? '(default=' + param.meta.defaultValue + ')' : ''}`)
+          })
+          console.log(`Inputs:\n   ${Reflect.getMetadata(MetaData.INPUTS, Type.prototype).join(', ')}`)
+          console.log(`Outputs:\n   ${Reflect.getMetadata(MetaData.OUTPUTS, Type.prototype).join(', ')}`)
           console.log('Outputs: ')
           console.log('Injects: ')
           Reflect.getMetadata('Injects', Type.prototype)
-            .forEach(function (data: InjectData) {
-              // check if service exists: Services[data.service]
-              console.log(`   ${data.propertyKey}: ${Services[data.service]}`)
-            })
+            .forEach(function(data: InjectData) {
+            // check if service exists: Services[data.service]
+            console.log(`   ${data.propertyKey}: ${Services[data.service]}`)
+          })
+
+          var schemaValidator = jsonValidator(metaJsonSchema, { verbose: true, greedy: true });
+          Reflect.getMetadata(MetaData.INPUTS, Type.prototype)
+            .forEach((name: string) => {
+            if (Reflect.getMetadata(MetaData.MSG_SCHEMA, Type.prototype, name)) {
+              var schema = Reflect.getMetadata(MetaData.MSG_SCHEMA, Type.prototype, name);
+              if (schema) {
+                var valid = schemaValidator(schema);
+                if (valid) {
+                  console.log(`input ${name} valid schema?: ${valid}`);
+                } else {
+                  console.log(`input ${name} valid schema?: ${valid}`);
+                  console.log(schemaValidator.errors);
+                }
+              }
+            }
+          });
           var model = '{}'
           done(null, model)
         } catch (err) {
