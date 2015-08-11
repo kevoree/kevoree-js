@@ -39,4 +39,25 @@ declare module 'kevoree-api' {
     Channel,
     Component
   }
+
+  interface Callback {
+    (err?: Error): void;
+  }
+
+  export interface ModelService {
+    getName(): string;
+    getPath(): string;
+    getNodeName(): string;
+    getCurrentModel(): Object;
+    getDeployingModel(): Object;
+    getModelInstance(): Object;
+    deploy(model: any, done: Callback): void;
+  }
+
+  export interface LoggerService {
+    info(tag: string, msg?: string): void;
+    debug(tag: string, msg?: string): void;
+    warn(tag: string, msg?: string): void;
+    error(tag: string, msg?: string): void;
+  }
 }

@@ -1,3 +1,7 @@
+interface Callback {
+  (err?: Error): void;
+}
+
 export interface ModelService {
   getName(): string;
   getPath(): string;
@@ -5,5 +9,5 @@ export interface ModelService {
   getCurrentModel(): Object;
   getDeployingModel(): Object;
   getModelInstance(): Object;
-  deploy(done: (err?: Error) => void): void;
+  deploy(model: any, done: Callback): void;
 }
