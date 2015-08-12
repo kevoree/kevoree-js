@@ -1,14 +1,15 @@
 import {
-  Component, Inject, Services, Param, Input, Output, ModelService, Callback
-}  from 'kevoree-api'
+  Component, Param, Input, Output, ModelService, Callback
+}  from 'kevoree-api';
+import { Inject } from 'ts-injector';
 
 @Component({desc: 'MyComp description is cool'})
 class MyComp {
 
-  @Inject(Services.ModelService)
+  @Inject('ModelService')
   private modelService: ModelService
 
-  @Inject(Services.LoggerService)
+  @Inject('LoggerService')
   private logger: Logger
 
   @Param({ defaultValue: 42 })

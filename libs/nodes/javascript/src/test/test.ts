@@ -22,7 +22,5 @@ di.inject(node, ctx);
 node.start((err) => {
   if (err) {
     console.log('Unable to start node');
-  } else {
-    console.log(node['modelService']);
   }
 });

@@ -2,7 +2,7 @@ declare interface Core {
 
   start(name: string): void
 
-  stop(done: Callback): void
+  stop(): void
 
   deploy(model: Object, done: Callback): void
 }

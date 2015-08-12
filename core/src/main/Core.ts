@@ -107,6 +107,7 @@ export class Core extends EventEmitter implements Core {
     // TODO if success: put model in read-write mode
     // TODO set cloned model as current model
     setTimeout(() => {
+      // faking time comsuming adaptations with setTimeout
       // unlock deploy
       this.isDeploying = false;
       // callback the model deployer

@@ -1,6 +1,9 @@
 {
   "name": "kevoree-comp-mycomp",
   "version": "1.0.0",
+  "kevoree": {
+    "namespace": "kevoree"
+  },
   "description": "Kevoree Comp",
   "main": "build/main/MyComp.js",
   "scripts": {

@@ -23,6 +23,7 @@
         "./src/test/test.ts",
         "./typings/kevoree-api/kevoree-api.d.ts",
         "./typings/kevoree-logger/kevoree-logger.d.ts",
+        "./typings/ts-injector/ts-injector.d.ts",
         "./typings/tsd.d.ts"
     ]
 }

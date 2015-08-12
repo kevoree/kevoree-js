@@ -20,9 +20,11 @@
     ],
     "files": [
         "./src/main/GenModel.ts",
+        "./src/main/Model.ts",
         "./src/test/test.ts",
         "./typings/kevoree-api/kevoree-api.d.ts",
         "./typings/node/node.d.ts",
+        "./typings/ts-injector/ts-injector.d.ts",
         "./typings/tsd.d.ts"
     ]
 }

@@ -1,6 +1,10 @@
 import { ModelService } from 'kevoree-api';
 
-export class ModelServiceImpl implements ModelService {
+interface ModelServiceWrapper extends ModelService {
+  setCurrentModel(model: any): void;
+}
+
+export class ModelServiceImpl implements ModelServiceWrapper {
 
   private nodeName: string;
   private name: string;
@@ -30,6 +34,10 @@ export class ModelServiceImpl implements ModelService {
 
   getCurrentModel(): any {
     return this.model;
+  }
+
+  setCurrentModel(model: any): void {
+    this.model = model;
   }
 
   getDeployingModel(): any {
