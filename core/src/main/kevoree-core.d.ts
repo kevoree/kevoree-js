@@ -1,10 +1,7 @@
 declare interface Core {
-
-  start(name: string): void
-
+  start(name: string, cb: Callback): void
   stop(): void
-
-  deploy(model: Object, done: Callback): void
+  deploy(model: Object, cb: Callback): void
 }
 
 interface Callback {

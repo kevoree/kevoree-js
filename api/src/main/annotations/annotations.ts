@@ -1,8 +1,8 @@
-require('reflect-metadata')
+require('reflect-metadata');
 
 function typeDefinition(target: any, meta: TypeMeta) {
-  Reflect.defineMetadata(MetaData.NAME, target.name, target.prototype)
-  Reflect.defineMetadata(MetaData.META, meta || {}, target.prototype)
+  Reflect.defineMetadata(MetaData.NAME, target.name, target.prototype);
+  Reflect.defineMetadata(MetaData.META, meta || {}, target.prototype);
   if (!Reflect.hasMetadata(MetaData.PARAMS, target.prototype)) {
     Reflect.defineMetadata(MetaData.PARAMS, [], target.prototype)
   }
@@ -16,28 +16,28 @@ function typeDefinition(target: any, meta: TypeMeta) {
 
 export function Channel(meta?: TypeMeta) {
   return function (target: any) {
-    Reflect.defineMetadata(MetaData.TYPE, Types.Channel, target.prototype)
+    Reflect.defineMetadata(MetaData.TYPE, Types.Channel, target.prototype);
     typeDefinition(target, meta)
   }
 }
 
 export function Component(meta?: TypeMeta) {
   return function (target: any) {
-    Reflect.defineMetadata(MetaData.TYPE, Types.Component, target.prototype)
+    Reflect.defineMetadata(MetaData.TYPE, Types.Component, target.prototype);
     typeDefinition(target, meta)
   }
 }
 
 export function Group(meta?: TypeMeta) {
   return function (target: any) {
-    Reflect.defineMetadata(MetaData.TYPE, Types.Group, target.prototype)
+    Reflect.defineMetadata(MetaData.TYPE, Types.Group, target.prototype);
     typeDefinition(target, meta)
   }
 }
 
 export function Node(meta?: TypeMeta) {
   return function (target: any) {
-    Reflect.defineMetadata(MetaData.TYPE, Types.Node, target.prototype)
+    Reflect.defineMetadata(MetaData.TYPE, Types.Node, target.prototype);
     typeDefinition(target, meta)
   }
 }
@@ -45,9 +45,9 @@ export function Node(meta?: TypeMeta) {
 export function Input(schema?: Object) {
   return function (target: any, propertyKey: string) {
     Reflect.defineMetadata(MetaData.MSG_SCHEMA, schema, target, propertyKey);
-    var inputs: Array<string> = Reflect.getMetadata(MetaData.INPUTS, target)
+    var inputs: Array<string> = Reflect.getMetadata(MetaData.INPUTS, target);
     if (!inputs) {
-      inputs = new Array<string>()
+      inputs = [];
       Reflect.defineMetadata(MetaData.INPUTS, inputs, target)
     }
     inputs.push(propertyKey)
@@ -56,9 +56,9 @@ export function Input(schema?: Object) {
 
 export function Output(schema?: Object) {
   return function (target: any, propertyKey: string) {
-    var outputs: Array<string> = Reflect.getMetadata(MetaData.OUTPUTS, target)
+    var outputs: Array<string> = Reflect.getMetadata(MetaData.OUTPUTS, target);
     if (!outputs) {
-      outputs = new Array<string>()
+      outputs = [];
       Reflect.defineMetadata(MetaData.OUTPUTS, outputs, target)
     }
     outputs.push(propertyKey)
@@ -67,13 +67,13 @@ export function Output(schema?: Object) {
 
 export function Param(meta?: ParamMeta) {
   return function(target: any, propertyKey: string) {
-    var params: Array<ParamData> = Reflect.getMetadata(MetaData.PARAMS, target)
+    var params: Array<ParamData> = Reflect.getMetadata(MetaData.PARAMS, target);
     if (!params) {
-      params = new Array<ParamData>()
+      params = [];
       Reflect.defineMetadata(MetaData.PARAMS, params, target)
     }
 
-    meta = meta || {}
+    meta = meta || {};
     if (typeof meta.optional === 'undefined') {
       meta.optional = true
     }

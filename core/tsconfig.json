@@ -19,13 +19,14 @@
         "!./node_modules/**/*"
     ],
     "files": [
-        "./src/main/Core.d.ts",
         "./src/main/Core.ts",
+        "./src/main/kevoree-core.d.ts",
         "./src/test/test.ts",
         "./typings/kevoree-api/kevoree-api.d.ts",
-        "./typings/kevoree-library/kevoree.d.ts",
         "./typings/kevoree-logger/kevoree-logger.d.ts",
+        "./typings/kevoree-model/kevoree-model.d.ts",
         "./typings/node/node.d.ts",
+        "./typings/ts-injector/ts-injector.d.ts",
         "./typings/tsd.d.ts"
     ]
 }

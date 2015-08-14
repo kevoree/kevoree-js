@@ -1,7 +1,14 @@
-import chalk = require('chalk')
+import chalk = require('chalk');
 
-export class Logger implements Logger {
-  private tag: string
+export declare interface Logger {
+  info(tag: string, msg?: string): void;
+  debug(tag: string, msg?: string): void;
+  warn(tag: string, msg?: string): void;
+  error(tag: string, msg?: string): void;
+}
+
+export class LoggerImpl implements Logger {
+  private tag: string;
 
   constructor(tag?: string) {
     this.tag = tag || 'Logger';
@@ -9,7 +16,7 @@ export class Logger implements Logger {
 
   info(tag: string, msg?: string): void {
     if (!msg) {
-      msg = tag
+      msg = tag;
       tag = this.tag
     }
 
@@ -18,7 +25,7 @@ export class Logger implements Logger {
 
   debug(tag: string, msg?: string): void {
     if (!msg) {
-      msg = tag
+      msg = tag;
       tag = this.tag
     }
 
@@ -27,7 +34,7 @@ export class Logger implements Logger {
 
   warn(tag: string, msg?: string): void {
     if (!msg) {
-      msg = tag
+      msg = tag;
       tag = this.tag
     }
 
@@ -36,7 +43,7 @@ export class Logger implements Logger {
 
   error(tag: string, msg?: string): void {
     if (!msg) {
-      msg = tag
+      msg = tag;
       tag = this.tag
     }
 
@@ -45,11 +52,13 @@ export class Logger implements Logger {
 }
 
 function getTime() {
-  var time = new Date()
-  var hours = (time.getHours().toString().length === 1) ? '0' + time.getHours() : time.getHours()
-  var mins = (time.getMinutes().toString().length === 1) ? '0' + time.getMinutes() : time.getMinutes()
-  var secs = (time.getSeconds().toString().length === 1) ? '0' + time.getSeconds() : time.getSeconds()
-  var ms = (time.getMilliseconds().toString().length === 1) ? '00' + time.getMilliseconds() : (time.getMilliseconds().toString().length === 2) ? '0' + time.getMilliseconds() : time.getMilliseconds()
+  var time = new Date();
+  var hours = (time.getHours().toString().length === 1) ? '0' + time.getHours() : time.getHours();
+  var mins = (time.getMinutes().toString().length === 1) ? '0' + time.getMinutes() : time.getMinutes();
+  var secs = (time.getSeconds().toString().length === 1) ? '0' + time.getSeconds() : time.getSeconds();
+  var ms = (time.getMilliseconds().toString().length === 1) ?
+    '00' + time.getMilliseconds() : (time.getMilliseconds().toString().length === 2) ?
+      '0' + time.getMilliseconds() : time.getMilliseconds();
   return chalk.grey(hours + ':' + mins + ':' + secs + ':' + ms)
 }
 

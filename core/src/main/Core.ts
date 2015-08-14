@@ -1,82 +1,102 @@
-import { EventEmitter } from 'events'
-import { Logger } from 'kevoree-logger'
-import * as kevoree from 'kevoree-library'
+import { EventEmitter } from 'events';
+import { Inject } from 'ts-injector';
+import { org } from 'kevoree-model';
 
 var NAME_PATTERN = /^[\w-]+$/;
 
 export class Core extends EventEmitter implements Core {
+  @Inject('Logger')
   private logger: Logger;
+
   private nodeName: string;
   private nodeInstance: Object;
   private pendingModels: Array<Item>;
-  private currentModel: kevoree.ContainerRoot;
-  private deployingModel: kevoree.ContainerRoot;
+  private currentModel: org.kevoree.Model;
+  private deployingModel: org.kevoree.Model;
   private emitter: EventEmitter;
   private isDeploying: boolean;
   private isStarted: boolean;
 
-  constructor(logger: Logger) {
+  constructor() {
     super();
-    this.logger = logger;
-    this.isStarted = true;
+    this.isStarted = false;
     this.emitter = new EventEmitter();
     this.pendingModels = [];
   }
 
-  start(name: string): void {
-    if (!name || name.length === 0) {
-      name = 'node0';
-    }
+  start(name: string, cb: Callback): void {
+    if (!this.isStarted) {
+      if (!name || name.length === 0) {
+        name = 'node0';
+      }
 
-    if (name.match(NAME_PATTERN)) {
-      this.nodeName = name;
-      var factory = new kevoree.factory.DefaultKevoreeFactory();
-      this.currentModel = factory.createContainerRoot();
-      factory.root(this.currentModel);
+      if (name.match(NAME_PATTERN)) {
+        this.nodeName = name;
 
-      var node = factory.createContainerNode();
-      node.name = this.nodeName;
-      node.started = false;
+        var dm = org.kevoree.modeling.memory.manager.DataManagerBuilder.buildDefault();
+        var kModel = new org.KevoreeModel(dm);
+        var kView = kModel.universe(0).time(0);
 
-      this.currentModel.addNodes(node);
+        kModel.connect((e) => {
+          if (e) {
+            cb(e);
+          } else {
+            this.currentModel = kView.createModel();
+            kView.setRoot(this.currentModel, (e) => {
+              if (e) {
+                cb(e);
+              } else {
+                var node = kView.createNode();
+                node.setName(this.nodeName);
+                node.setStarted(false);
+                this.currentModel.addNodes(node);
 
-      var id = setInterval(() => {
-        if (this.isStarted) {
-          if (!this.isDeploying) {
-            // no deployment in progress
-            var item = this.pendingModels.shift();
-            if (item) {
-              // there is a model in the pending queue
-              this.doDeploy(item);
-            }
+                this.isStarted = true;
+                var id = setInterval(() => {
+                  if (this.isStarted) {
+                    if (!this.isDeploying) {
+                      // no deployment in progress
+                      var item = this.pendingModels.shift();
+                      if (item) {
+                        // there is a model in the pending queue
+                        this.doDeploy(item);
+                      }
+                    }
+                  } else {
+                    // stop has been requested
+                    if (!this.isDeploying) {
+                      // no deployment in progress: do stop
+                      this.emitter.emit('stop');
+                    }
+                  }
+                });
+
+                this.emitter.once('stop', () => {
+                  // clear main loop
+                  clearInterval(id);
+                  this.logger.info('Core', `Platform stopped: ${this.nodeName}`);
+
+                  // notify deployers if any
+                  this.pendingModels.forEach((item: Item) => {
+                    item.callback(new Error('Core is stopped'), false);
+                  });
+
+                  // emit stop event
+                  this.emit('stop');
+                });
+
+                this.logger.info(`Platform started: ${this.nodeName}`);
+                cb();
+              }
+            });
           }
-        } else {
-          // stop has been requested
-          if (!this.isDeploying) {
-            // no deployment in progress: do stop
-            this.emitter.emit('stop');
-          }
-        }
-      });
-
-      this.emitter.once('stop', () => {
-        // clear main loop
-        clearInterval(id);
-        this.logger.info('Core', `Platform stopped: ${this.nodeName}`);
-
-        // notify deployers if any
-        this.pendingModels.forEach((item: Item) => {
-          item.callback(new Error('Core is stopped'), false);
         });
 
-        // emit stop event
-        this.emit('stop');
-      });
-
-      this.logger.info('Core', `Platform started: ${this.nodeName}`);
-
+      } else {
+        cb(new Error(`node name must match: ${NAME_PATTERN.toString()} (given: "${name}")`));
+      }
     } else {
-      throw new Error(`node name must match: ${NAME_PATTERN.toString()} (given: "${name}")`);
+      this.logger.warn('Core', 'Core is already started');
     }
   }
 
@@ -89,15 +109,15 @@ export class Core extends EventEmitter implements Core {
     }
   }
 
-  deploy(model: kevoree.ContainerRoot, done: DeployCallback): void {
-    var item = { model: model, callback: done }
+  deploy(model: org.kevoree.Model, cb: DeployCallback): void {
+    var item = { model: model, callback: cb }
     this.pendingModels.push(item)
   }
 
   private doDeploy(item: Item): void {
     // lock deploy
     this.isDeploying = true;
-    // TODO clone model
+    // TODO clone model'Core'
 
     // TODO put it in read-only mode
     // TODO diff with current
@@ -118,6 +138,6 @@ export class Core extends EventEmitter implements Core {
 
 
 class Item {
-  model: kevoree.ContainerRoot;
+  model: any;
   callback: DeployCallback;
 }

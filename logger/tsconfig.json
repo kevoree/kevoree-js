@@ -21,8 +21,8 @@
     "files": [
         "./typings/chalk/chalk.d.ts",
         "./typings/tsd.d.ts",
-        "./src/main/Logger.d.ts",
         "./src/main/Logger.ts",
+        "./src/main/kevoree-logger.d.ts",
         "./src/test/test.ts"
     ]
 }
