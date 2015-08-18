@@ -6,7 +6,7 @@
         "isolatedModules": false,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "noImplicitAny": false,
+        "noImplicitAny": true,
         "removeComments": true,
         "noLib": false,
         "preserveConstEnums": true,
@@ -19,8 +19,11 @@
         "!./node_modules/**/*"
     ],
     "files": [
-        "./src/main/kevoree.ts",
+        "./src/bin/cli.ts",
+        "./src/main/runtime.ts",
         "./src/test/test.ts",
+        "./typings/chalk/chalk.d.ts",
+        "./typings/commander/commander.d.ts",
         "./typings/node/node.d.ts",
         "./typings/tsd.d.ts"
     ]

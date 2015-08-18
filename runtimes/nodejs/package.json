@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "Kevoree Node.js runtime",
   "main": "build/main/kevoree.js",
+  "bin": {
+    "kevoreejs": "build/bin/cli.js"
+  },
   "scripts": {
+    "start": "node build/bin/cli.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -11,5 +15,9 @@
     "runtime"
   ],
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
-  "license": "LGPL-3.0"
+  "license": "LGPL-3.0",
+  "dependencies": {
+    "chalk": "^1.1.0",
+    "commander": "^2.8.1"
+  }
 }
