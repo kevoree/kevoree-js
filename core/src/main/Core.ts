@@ -4,7 +4,7 @@ import { org } from 'kevoree-model';
 
 var NAME_PATTERN = /^[\w-]+$/;
 
-export class Core extends EventEmitter implements Core {
+export class Core extends EventEmitter {
   @Inject('Logger')
   private logger: Logger;
 
@@ -42,7 +42,7 @@ export class Core extends EventEmitter implements Core {
             cb(e);
           } else {
             this.currentModel = kView.createModel();
-            kView.setRoot(this.currentModel, (e) => {
+            kView.setRoot(this.currentModel, (e: any) => {
               if (e) {
                 cb(e);
               } else {
@@ -136,6 +136,13 @@ export class Core extends EventEmitter implements Core {
   }
 }
 
+export interface Callback {
+  (err?: Error): void;
+}
+
+export interface DeployCallback {
+  (err: Error, update: boolean): void;
+}
 
 class Item {
   model: any;

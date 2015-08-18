@@ -6,6 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "typescript": {
+    "definitions": "src/main/kevoree-core.d.ts"
+  },
   "keywords": [
     "kevoree",
     "core"

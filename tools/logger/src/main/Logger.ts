@@ -9,46 +9,72 @@ export declare interface Logger {
 
 export class LoggerImpl implements Logger {
   private tag: string;
+  private level: LogLevel;
 
   constructor(tag?: string) {
     this.tag = tag || 'Logger';
-  }
-
-  info(tag: string, msg?: string): void {
-    if (!msg) {
-      msg = tag;
-      tag = this.tag
-    }
-
-    console.log(`${getTime() } ${info('INFO') }  ${processTag(tag) } ${info(msg) }`);
+    this.level = LogLevel.INFO;
   }
 
   debug(tag: string, msg?: string): void {
-    if (!msg) {
-      msg = tag;
-      tag = this.tag
-    }
+    if (this.level < LogLevel.INFO) {
+      if (!msg) {
+        msg = tag;
+        tag = this.tag
+      }
 
-    console.log(`${getTime() } ${debug('DEBUG') } ${processTag(tag) } ${debug(msg) }`);
+      var prepend = `${getTime() } ${debug('DEBUG') } ${processTag(tag) }`;
+      msg = msg.replace(/[\n\r]/g, '\n'+prepend);
+      console.log(`${prepend} ${debug(msg)}`);
+    }
+  }
+
+  info(tag: string, msg?: string): void {
+    if (this.level < LogLevel.WARN) {
+      if (!msg) {
+        msg = tag;
+        tag = this.tag
+      }
+
+      var prepend = `${getTime() } ${info('INFO') } ${processTag(tag) }`;
+      msg = msg.replace(/[\n\r]/g, '\n'+prepend);
+      console.log(`${prepend} ${info(msg)}`);
+    }
   }
 
   warn(tag: string, msg?: string): void {
-    if (!msg) {
-      msg = tag;
-      tag = this.tag
-    }
+    if (this.level < LogLevel.ERROR) {
+      if (!msg) {
+        msg = tag;
+        tag = this.tag
+      }
 
-    console.log(`${getTime() } ${warn('WARN') }  ${processTag(tag) } ${warnMsg(msg) }`);
+      var prepend = `${getTime() } ${warn('WARN') } ${warnMsg(tag) }`;
+      msg = msg.replace(/[\n\r]/g, '\n'+prepend);
+      console.log(`${prepend} ${warnMsg(msg)}`);
+    }
   }
 
   error(tag: string, msg?: string): void {
-    if (!msg) {
-      msg = tag;
-      tag = this.tag
-    }
+    if (this.level < LogLevel.QUIET) {
+      if (!msg) {
+        msg = tag;
+        tag = this.tag
+      }
 
-    console.log(`${getTime() } ${error('ERROR') } ${processTag(tag) } ${errorMsg(msg) }`);
+      var prepend = `${getTime() } ${error('ERROR') } ${processTag(tag) }`;
+      msg = msg.replace(/[\n\r]/g, '\n'+prepend);
+      console.log(`${prepend} ${errorMsg(msg)}`);
+    }
   }
+
+  setLevel(level: LogLevel): void {
+    this.level = level;
+  }
+}
+
+export enum LogLevel {
+  DEBUG, INFO, WARN, ERROR, QUIET
 }
 
 function getTime() {
