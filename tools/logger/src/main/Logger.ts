@@ -5,6 +5,7 @@ export declare interface Logger {
   debug(tag: string, msg?: string): void;
   warn(tag: string, msg?: string): void;
   error(tag: string, msg?: string): void;
+  setLevel(level: LogLevel): void;
 }
 
 export class LoggerImpl implements Logger {
