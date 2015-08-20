@@ -23,9 +23,7 @@
         "./src/main/JavascriptNode.ts",
         "./src/test/ModelServiceImpl.ts",
         "./src/test/test.ts",
-        "./typings/kevoree-api/kevoree-api.d.ts",
         "./typings/kevoree-logger/kevoree-logger.d.ts",
-        "./typings/kevoree-util/kevoree-util.d.ts",
-        "./typings/ts-injector/ts-injector.d.ts"
+        "./typings/tsd.d.ts"
     ]
 }

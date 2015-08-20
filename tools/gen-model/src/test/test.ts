@@ -7,7 +7,6 @@ g.generate((err, model) => {
   if (err) {
     throw err;
   } else {
-    model = JSON.stringify(JSON.parse(model), null, 2);
     var modelPath = resolve(process.cwd(), 'kevlib.json');
     writeFile(modelPath, model+'\n', { encoding: 'utf8' }, (err) => {
       if (err) {

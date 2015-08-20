@@ -1,13 +1,13 @@
 import {
-  Node, ModelService, LoggerService
+  Node
 } from 'kevoree-api';
 import { Inject } from 'ts-injector';
 
 @Node({ desc: 'JavaScript platform node' })
 class JavascriptNode {
 
-  @Inject('LoggerService')
-  private log: LoggerService;
+  @Inject('Logger')
+  private log: Logger;
 
   @Inject('ModelService')
   private modelService: ModelService;

@@ -1,5 +1,3 @@
-import { ModelService } from 'kevoree-api';
-
 interface ModelServiceWrapper extends ModelService {
   setCurrentModel(model: any): void;
 }

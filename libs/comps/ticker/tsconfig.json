@@ -1,11 +1,12 @@
 {
-    "version": "1.5.3",
+    "version": "1.5.0-beta",
     "compilerOptions": {
         "target": "es5",
         "module": "commonjs",
         "isolatedModules": false,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
+        "declaration": false,
         "noImplicitAny": true,
         "removeComments": true,
         "noLib": false,
@@ -19,11 +20,8 @@
         "!./node_modules/**/*"
     ],
     "files": [
-        "./src/main/Core.ts",
-        "./src/main/kevoree-core.d.ts",
+        "./src/main/Ticker.ts",
         "./src/test/test.ts",
-        "./typings/kevoree-logger/kevoree-logger.d.ts",
-        "./typings/mocha/mocha.d.ts",
         "./typings/node/node.d.ts",
         "./typings/tsd.d.ts"
     ]

@@ -1,3 +1,22 @@
+declare interface ModelService {
+  getName(): string;
+  getPath(): string;
+  getNodeName(): string;
+  getCurrentModel(): Object;
+  getDeployingModel(): Object;
+  getModelInstance(): Object;
+  deploy(model: any, done: Callback): void;
+}
+
+declare interface OutputPort {
+  send(msg: string): void;
+  send(msg: string, cb: Callback): void;
+}
+
+declare interface Callback {
+  (err?: Error): void;
+}
+
 declare module 'kevoree-api' {
   export function Channel(meta?: TypeMeta): (target: any) => void;
   export function Component(meta?: TypeMeta): (target: any) => void;
@@ -38,26 +57,5 @@ declare module 'kevoree-api' {
     Group,
     Channel,
     Component
-  }
-
-  interface Callback {
-    (err?: Error): void;
-  }
-
-  export interface ModelService {
-    getName(): string;
-    getPath(): string;
-    getNodeName(): string;
-    getCurrentModel(): Object;
-    getDeployingModel(): Object;
-    getModelInstance(): Object;
-    deploy(model: any, done: Callback): void;
-  }
-
-  export interface LoggerService {
-    info(tag: string, msg?: string): void;
-    debug(tag: string, msg?: string): void;
-    warn(tag: string, msg?: string): void;
-    error(tag: string, msg?: string): void;
   }
 }

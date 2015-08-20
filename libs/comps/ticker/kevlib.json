@@ -1,0 +1,11 @@
+[
+{"@class":"org.kevoree.Model","@uuid":1,"namespaces":[5]},
+{"@class":"org.kevoree.Namespace","@uuid":5,"name":"kevoree","typeDefinitions":[2],"op_Model_namespaces":[1]},
+{"@class":"org.kevoree.ComponentType","@uuid":2,"name":"Ticker","outputs":[10],"metaData":[6],"deployUnits":[3],"op_Namespace_typeDefinitions":[5]},
+{"@class":"org.kevoree.PortType","@uuid":10,"name":"tick","metaData":[11],"op_ComponentType_outputs":[2]},
+{"@class":"org.kevoree.Value","@uuid":6,"name":"description","value":"","op_TypeDefinition_metaData":[2]},
+{"@class":"org.kevoree.DeployUnit","@uuid":3,"name":"kevoree-comp-ticker","version":"6.0.0-alpha","metaData":[4],"op_TypeDefinition_deployUnits":[2]},
+{"@class":"org.kevoree.Value","@uuid":11,"name":"schema","value":"{\"type\":\"string\"}","op_PortType_metaData":[10]},
+{"@class":"org.kevoree.Value","@uuid":4,"name":"platform","value":"javascript","op_DeployUnit_metaData":[3]}
+]
+

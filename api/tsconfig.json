@@ -20,19 +20,10 @@
         "!./node_modules/**/*"
     ],
     "files": [
-        "./src/main/annotations/annotations.ts",
         "./src/main/kevoree-api.d.ts",
         "./src/main/kevoree-api.ts",
-        "./src/main/services/LoggerService.ts",
-        "./src/main/services/ModelService.ts",
-        "./src/test/ModelServiceImpl.ts",
-        "./src/test/MyComp.ts",
-        "./src/test/MyOtherComp.ts",
-        "./src/test/test-modelgen.ts",
-        "./src/test/test-newInstance.ts",
-        "./typings/kevoree-logger/kevoree-logger.d.ts",
+        "./src/test/test.ts",
         "./typings/node/node.d.ts",
-        "./typings/ts-injector/ts-injector.d.ts",
         "./typings/tsd.d.ts"
     ]
 }

@@ -1,11 +1,5 @@
 declare module java {
     module lang {
-        class Throwable {
-            private message;
-            private error;
-            constructor(message: string);
-            printStackTrace(): void;
-        }
         class System {
             static gc(): void;
             static out: {
@@ -16,13 +10,7 @@ declare module java {
                 println(obj?: any): void;
                 print(obj: any): void;
             };
-            static arraycopy(src: any[] | ArrayBuffer, srcPos: number, dest: any[] | ArrayBuffer, destPos: number, numElements: number): void;
-        }
-        class Exception extends Throwable {
-        }
-        class RuntimeException extends Exception {
-        }
-        class IndexOutOfBoundsException extends Exception {
+            static arraycopy(src: any[] | Float64Array | Int32Array, srcPos: number, dest: any[] | Float64Array | Int32Array, destPos: number, numElements: number): void;
         }
         interface Runnable {
             run(): void;
@@ -222,7 +210,18 @@ declare module org {
                 createByName(metaClassName: string, universe: number, time: number): org.kevoree.modeling.KObject;
                 create(clazz: org.kevoree.modeling.meta.KMetaClass, universe: number, time: number): org.kevoree.modeling.KObject;
                 lookup(universe: number, time: number, uuid: number, cb: (p: org.kevoree.modeling.KObject) => void): void;
+                lookupAll(universe: number, time: number, uuids: Float64Array, cb: (p: org.kevoree.modeling.KObject[]) => void): void;
                 createListener(universe: number): org.kevoree.modeling.KListener;
+                createModelContext(): org.kevoree.modeling.KModelContext;
+            }
+            interface KModelContext {
+                set(originTime: number, maxTime: number, originUniverse: number, maxUniverse: number): void;
+                originTime(): number;
+                originUniverse(): number;
+                maxTime(): number;
+                maxUniverse(): number;
+                listen(callback: (p: Float64Array) => void): void;
+                model(): org.kevoree.modeling.KModel<any>;
             }
             interface KObject {
                 universe(): number;
@@ -320,7 +319,27 @@ declare module org {
                     create(clazz: org.kevoree.modeling.meta.KMetaClass, universe: number, time: number): org.kevoree.modeling.KObject;
                     createByName(metaClassName: string, universe: number, time: number): org.kevoree.modeling.KObject;
                     lookup(p_universe: number, p_time: number, p_uuid: number, cb: (p: org.kevoree.modeling.KObject) => void): void;
+                    lookupAll(p_universe: number, p_time: number, p_uuids: Float64Array, cb: (p: org.kevoree.modeling.KObject[]) => void): void;
                     createListener(universe: number): org.kevoree.modeling.KListener;
+                    createModelContext(): org.kevoree.modeling.KModelContext;
+                }
+                class AbstractKModelContext implements org.kevoree.modeling.KModelContext {
+                    static ORIGIN_TIME: number;
+                    static MAX_TIME: number;
+                    static ORIGIN_UNIVERSE: number;
+                    static MAX_UNIVERSE: number;
+                    static NB_ELEM: number;
+                    private _callbacks;
+                    private _bounds;
+                    private _origin;
+                    constructor(p_origin: org.kevoree.modeling.KModel<any>);
+                    set(p_originTime: number, p_maxTime: number, p_originUniverse: number, p_maxUniverse: number): void;
+                    originTime(): number;
+                    originUniverse(): number;
+                    maxTime(): number;
+                    maxUniverse(): number;
+                    listen(new_callback: (p: Float64Array) => void): void;
+                    model(): org.kevoree.modeling.KModel<any>;
                 }
                 class AbstractKObject implements org.kevoree.modeling.KObject {
                     _uuid: number;
@@ -420,10 +439,10 @@ declare module org {
                 interface KContentDeliveryDriver {
                     get(keys: Float64Array, callback: (p: string[]) => void): void;
                     atomicGetIncrement(key: Float64Array, cb: (p: number) => void): void;
-                    put(keys: Float64Array, values: string[], error: (p: java.lang.Throwable) => void, excludeListener: number): void;
-                    remove(keys: Float64Array, error: (p: java.lang.Throwable) => void): void;
-                    connect(callback: (p: java.lang.Throwable) => void): void;
-                    close(callback: (p: java.lang.Throwable) => void): void;
+                    put(keys: Float64Array, values: string[], error: (p: Error) => void, excludeListener: number): void;
+                    remove(keys: Float64Array, error: (p: Error) => void): void;
+                    connect(callback: (p: Error) => void): void;
+                    close(callback: (p: Error) => void): void;
                     addUpdateListener(interceptor: (p: Float64Array) => void): number;
                     removeUpdateListener(id: number): void;
                 }
@@ -436,10 +455,10 @@ declare module org {
                         private additionalInterceptors;
                         atomicGetIncrement(key: Float64Array, cb: (p: number) => void): void;
                         get(keys: Float64Array, callback: (p: string[]) => void): void;
-                        put(p_keys: Float64Array, p_values: string[], p_callback: (p: java.lang.Throwable) => void, excludeListener: number): void;
-                        remove(p_keys: Float64Array, callback: (p: java.lang.Throwable) => void): void;
-                        connect(callback: (p: java.lang.Throwable) => void): void;
-                        close(callback: (p: java.lang.Throwable) => void): void;
+                        put(p_keys: Float64Array, p_values: string[], p_callback: (p: Error) => void, excludeListener: number): void;
+                        remove(p_keys: Float64Array, callback: (p: Error) => void): void;
+                        connect(callback: (p: Error) => void): void;
+                        close(callback: (p: Error) => void): void;
                         private nextListenerID();
                         addUpdateListener(p_interceptor: (p: Float64Array) => void): number;
                         removeUpdateListener(id: number): void;
@@ -519,7 +538,7 @@ declare module org {
                         load(payload: string, cb: (p: any) => void): void;
                     }
                     class JsonModelLoader {
-                        static load(manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, universe: number, time: number, payload: string, callback: (p: java.lang.Throwable) => void): void;
+                        static load(manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, universe: number, time: number, payload: string, callback: (p: Error) => void): void;
                         private static loadObj(p_param, manager, universe, time, p_mappedKeys, p_rootElem);
                         private static transposeArr(plainRawSet, p_mappedKeys);
                         private static sizeOfList(plainRawSet);
@@ -563,14 +582,14 @@ declare module org {
                         resolvers: java.util.ArrayList<org.kevoree.modeling.format.xmi.XMIResolveCommand>;
                         map: org.kevoree.modeling.memory.chunk.impl.ArrayStringMap<any>;
                         elementsCount: org.kevoree.modeling.memory.chunk.impl.ArrayStringMap<any>;
-                        successCallback: (p: java.lang.Throwable) => void;
+                        successCallback: (p: Error) => void;
                     }
                     class XMIModelLoader {
                         static LOADER_XMI_LOCAL_NAME: string;
                         static LOADER_XMI_XSI: string;
                         static LOADER_XMI_NS_URI: string;
                         static unescapeXml(src: string): string;
-                        static load(manager: org.kevoree.modeling.memory.manager.KDataManager, universe: number, time: number, str: string, callback: (p: java.lang.Throwable) => void): void;
+                        static load(manager: org.kevoree.modeling.memory.manager.KDataManager, universe: number, time: number, str: string, callback: (p: Error) => void): void;
                         private static deserialize(manager, universe, time, context);
                         private static callFactory(manager, universe, time, ctx, objectType);
                         private static loadObject(manager, universe, time, ctx, xmiAddress, objectType);
@@ -1075,12 +1094,12 @@ declare module org {
                         lookup(universe: number, time: number, uuid: number, callback: (p: org.kevoree.modeling.KObject) => void): void;
                         lookupAllObjects(universe: number, time: number, uuids: Float64Array, callback: (p: org.kevoree.modeling.KObject[]) => void): void;
                         lookupAllTimes(universe: number, times: Float64Array, uuid: number, callback: (p: org.kevoree.modeling.KObject[]) => void): void;
-                        save(callback: (p: java.lang.Throwable) => void): void;
+                        save(callback: (p: Error) => void): void;
                         getRoot(universe: number, time: number, callback: (p: org.kevoree.modeling.KObject) => void): void;
-                        setRoot(newRoot: org.kevoree.modeling.KObject, callback: (p: java.lang.Throwable) => void): void;
+                        setRoot(newRoot: org.kevoree.modeling.KObject, callback: (p: Error) => void): void;
                         model(): org.kevoree.modeling.KModel<any>;
-                        connect(callback: (p: java.lang.Throwable) => void): void;
-                        close(callback: (p: java.lang.Throwable) => void): void;
+                        connect(callback: (p: Error) => void): void;
+                        close(callback: (p: Error) => void): void;
                     }
                     module impl {
                         class DataManager implements org.kevoree.modeling.memory.manager.KDataManager, org.kevoree.modeling.memory.manager.internal.KInternalDataManager {
@@ -1108,22 +1127,22 @@ declare module org {
                             setModel(p_model: org.kevoree.modeling.KModel<any>): void;
                             constructor(p_cdn: org.kevoree.modeling.cdn.KContentDeliveryDriver, p_scheduler: org.kevoree.modeling.scheduler.KScheduler, p_factory: org.kevoree.modeling.memory.strategy.KMemoryStrategy);
                             model(): org.kevoree.modeling.KModel<any>;
-                            close(callback: (p: java.lang.Throwable) => void): void;
+                            close(callback: (p: Error) => void): void;
                             nextUniverseKey(): number;
                             nextObjectKey(): number;
                             nextModelKey(): number;
                             initUniverse(p_universe: number, p_parent: number): void;
-                            save(callback: (p: java.lang.Throwable) => void): void;
+                            save(callback: (p: Error) => void): void;
                             initKObject(obj: org.kevoree.modeling.KObject): void;
                             preciseChunk(universe: number, time: number, uuid: number, metaClass: org.kevoree.modeling.meta.KMetaClass, previousResolution: java.util.concurrent.atomic.AtomicReference<Float64Array>): org.kevoree.modeling.memory.chunk.KObjectChunk;
                             closestChunk(universe: number, time: number, uuid: number, metaClass: org.kevoree.modeling.meta.KMetaClass, previousResolution: java.util.concurrent.atomic.AtomicReference<Float64Array>): org.kevoree.modeling.memory.chunk.KObjectChunk;
-                            connect(connectCallback: (p: java.lang.Throwable) => void): void;
-                            delete(p_universe: org.kevoree.modeling.KUniverse<any, any>, callback: (p: java.lang.Throwable) => void): void;
+                            connect(connectCallback: (p: Error) => void): void;
+                            delete(p_universe: org.kevoree.modeling.KUniverse<any, any>, callback: (p: Error) => void): void;
                             lookup(universe: number, time: number, uuid: number, callback: (p: org.kevoree.modeling.KObject) => void): void;
                             lookupAllObjects(universe: number, time: number, uuids: Float64Array, callback: (p: org.kevoree.modeling.KObject[]) => void): void;
                             lookupAllTimes(universe: number, times: Float64Array, uuid: number, callback: (p: org.kevoree.modeling.KObject[]) => void): void;
                             getRoot(universe: number, time: number, callback: (p: org.kevoree.modeling.KObject) => void): void;
-                            setRoot(newRoot: org.kevoree.modeling.KObject, callback: (p: java.lang.Throwable) => void): void;
+                            setRoot(newRoot: org.kevoree.modeling.KObject, callback: (p: Error) => void): void;
                             cdn(): org.kevoree.modeling.cdn.KContentDeliveryDriver;
                             private attachContentDeliveryDriver(p_dataBase);
                             operationManager(): org.kevoree.modeling.operation.KOperationManager;
@@ -1177,7 +1196,7 @@ declare module org {
                             nextUniverseKey(): number;
                             nextObjectKey(): number;
                             nextModelKey(): number;
-                            delete(universe: org.kevoree.modeling.KUniverse<any, any>, callback: (p: java.lang.Throwable) => void): void;
+                            delete(universe: org.kevoree.modeling.KUniverse<any, any>, callback: (p: Error) => void): void;
                             operationManager(): org.kevoree.modeling.operation.KOperationManager;
                             setModel(model: org.kevoree.modeling.KModel<any>): void;
                             resolveTimes(currentUniverse: number, currentUuid: number, startTime: number, endTime: number, callback: (p: Float64Array) => void): void;
@@ -1198,7 +1217,7 @@ declare module org {
                         typeFromKey(universe: number, time: number, uuid: number): number;
                         resolveTimes(currentUniverse: number, currentUuid: number, startTime: number, endTime: number, callback: (p: Float64Array) => void): void;
                         getRoot(universe: number, time: number, callback: (p: org.kevoree.modeling.KObject) => void): void;
-                        setRoot(newRoot: org.kevoree.modeling.KObject, callback: (p: java.lang.Throwable) => void): void;
+                        setRoot(newRoot: org.kevoree.modeling.KObject, callback: (p: Error) => void): void;
                         getRelatedKeys(uuid: number, previousResolution: Float64Array): Float64Array;
                     }
                     module impl {
@@ -1219,7 +1238,7 @@ declare module org {
                             getOrLoadAndMark(universe: number, time: number, uuid: number, callback: (p: org.kevoree.modeling.memory.KChunk) => void): void;
                             getOrLoadAndMarkAll(keys: Float64Array, callback: (p: org.kevoree.modeling.memory.KChunk[]) => void): void;
                             getRoot(universe: number, time: number, callback: (p: org.kevoree.modeling.KObject) => void): void;
-                            setRoot(newRoot: org.kevoree.modeling.KObject, callback: (p: java.lang.Throwable) => void): void;
+                            setRoot(newRoot: org.kevoree.modeling.KObject, callback: (p: Error) => void): void;
                             resolveTimes(currentUniverse: number, currentUuid: number, startTime: number, endTime: number, callback: (p: Float64Array) => void): void;
                             static resolve_universe(globalTree: org.kevoree.modeling.memory.chunk.KLongLongMap, objUniverseTree: org.kevoree.modeling.memory.chunk.KLongLongMap, timeToResolve: number, originUniverseId: number): number;
                             static universeSelectByRange(globalTree: org.kevoree.modeling.memory.chunk.KLongLongMap, objUniverseTree: org.kevoree.modeling.memory.chunk.KLongLongMap, rangeMin: number, rangeMax: number, originUniverseId: number): Float64Array;
@@ -1466,7 +1485,7 @@ declare module org {
                 }
                 interface KMetaAttribute extends org.kevoree.modeling.meta.KMeta {
                     key(): boolean;
-                    attributeType(): org.kevoree.modeling.KType;
+                    attributeTypeId(): number;
                     strategy(): org.kevoree.modeling.extrapolation.Extrapolation;
                     precision(): number;
                     setExtrapolation(extrapolation: org.kevoree.modeling.extrapolation.Extrapolation): void;
@@ -1512,7 +1531,7 @@ declare module org {
                     extractor(): org.kevoree.modeling.traversal.KTraversal;
                 }
                 interface KMetaInferOutput extends org.kevoree.modeling.meta.KMeta {
-                    type(): org.kevoree.modeling.KType;
+                    attributeTypeId(): number;
                 }
                 interface KMetaModel extends org.kevoree.modeling.meta.KMeta {
                     metaClasses(): org.kevoree.modeling.meta.KMetaClass[];
@@ -1548,6 +1567,7 @@ declare module org {
                     static INT: org.kevoree.modeling.KType;
                     static DOUBLE: org.kevoree.modeling.KType;
                     static CONTINUOUS: org.kevoree.modeling.KType;
+                    static isEnum(attributeTypeId: number): boolean;
                 }
                 class MetaType {
                     static ATTRIBUTE: MetaType;
@@ -1591,9 +1611,9 @@ declare module org {
                         private _index;
                         _precision: number;
                         private _key;
-                        private _metaType;
+                        private _attributeTypeId;
                         private _extrapolation;
-                        attributeType(): org.kevoree.modeling.KType;
+                        attributeTypeId(): number;
                         index(): number;
                         metaName(): string;
                         metaType(): org.kevoree.modeling.meta.MetaType;
@@ -1602,7 +1622,7 @@ declare module org {
                         strategy(): org.kevoree.modeling.extrapolation.Extrapolation;
                         setExtrapolation(extrapolation: org.kevoree.modeling.extrapolation.Extrapolation): void;
                         setPrecision(p_precision: number): void;
-                        constructor(p_name: string, p_index: number, p_precision: number, p_key: boolean, p_metaType: org.kevoree.modeling.KType, p_extrapolation: org.kevoree.modeling.extrapolation.Extrapolation);
+                        constructor(p_name: string, p_index: number, p_precision: number, p_key: boolean, p_attributeTypeId: number, p_extrapolation: org.kevoree.modeling.extrapolation.Extrapolation);
                     }
                     class MetaClass implements org.kevoree.modeling.meta.KMetaClass {
                         private _name;
@@ -1706,11 +1726,11 @@ declare module org {
                         private _name;
                         private _index;
                         private _type;
-                        constructor(p_name: string, p_index: number, p_type: org.kevoree.modeling.KType);
+                        constructor(p_name: string, p_index: number, p_type: number);
                         index(): number;
                         metaName(): string;
                         metaType(): org.kevoree.modeling.meta.MetaType;
-                        type(): org.kevoree.modeling.KType;
+                        attributeTypeId(): number;
                     }
                     class MetaLiteral implements org.kevoree.modeling.meta.KLiteral {
                         private _name;
@@ -3318,19 +3338,18 @@ declare module org {
     }
 }
 declare module org {
-    class KevoreeModel extends org.kevoree.modeling.abs.AbstractKModel<any> {
+    class KevoreeModel extends org.kevoree.modeling.abs.AbstractKModel<org.KevoreeUniverse> {
         private _metaModel;
         constructor(p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager);
         internalCreateUniverse(key: number): org.KevoreeUniverse;
         metaModel(): org.kevoree.modeling.meta.KMetaModel;
         internalCreateObject(universe: number, time: number, uuid: number, p_clazz: org.kevoree.modeling.meta.KMetaClass, previousUniverse: number, previousTime: number): org.kevoree.modeling.KObject;
-        createDictionaryAttribute(universe: number, time: number): org.kevoree.DictionaryAttribute;
         createNamedElement(universe: number, time: number): org.kevoree.NamedElement;
         createDictionary(universe: number, time: number): org.kevoree.Dictionary;
         createPortType(universe: number, time: number): org.kevoree.PortType;
         createNode(universe: number, time: number): org.kevoree.Node;
-        createFragmentDictionary(universe: number, time: number): org.kevoree.FragmentDictionary;
         createPort(universe: number, time: number): org.kevoree.Port;
+        createFragmentDictionary(universe: number, time: number): org.kevoree.FragmentDictionary;
         createNodeType(universe: number, time: number): org.kevoree.NodeType;
         createNetworkInfo(universe: number, time: number): org.kevoree.NetworkInfo;
         createGroupType(universe: number, time: number): org.kevoree.GroupType;
@@ -3339,6 +3358,7 @@ declare module org {
         createNamespace(universe: number, time: number): org.kevoree.Namespace;
         createTypeDefinition(universe: number, time: number): org.kevoree.TypeDefinition;
         createDeployUnit(universe: number, time: number): org.kevoree.DeployUnit;
+        createAttributeType(universe: number, time: number): org.kevoree.AttributeType;
         createChannelType(universe: number, time: number): org.kevoree.ChannelType;
         createChannel(universe: number, time: number): org.kevoree.Channel;
         createDictionaryType(universe: number, time: number): org.kevoree.DictionaryType;
@@ -3348,18 +3368,17 @@ declare module org {
         createTypedElement(universe: number, time: number): org.kevoree.TypedElement;
         createModel(universe: number, time: number): org.kevoree.Model;
     }
-    class KevoreeUniverse extends org.kevoree.modeling.abs.AbstractKUniverse<any, any> {
+    class KevoreeUniverse extends org.kevoree.modeling.abs.AbstractKUniverse<org.KevoreeView, org.KevoreeUniverse> {
         constructor(p_key: number, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager);
         internal_create(timePoint: number): org.KevoreeView;
     }
     interface KevoreeView extends org.kevoree.modeling.KView {
-        createDictionaryAttribute(): org.kevoree.DictionaryAttribute;
         createNamedElement(): org.kevoree.NamedElement;
         createDictionary(): org.kevoree.Dictionary;
         createPortType(): org.kevoree.PortType;
         createNode(): org.kevoree.Node;
-        createFragmentDictionary(): org.kevoree.FragmentDictionary;
         createPort(): org.kevoree.Port;
+        createFragmentDictionary(): org.kevoree.FragmentDictionary;
         createNodeType(): org.kevoree.NodeType;
         createNetworkInfo(): org.kevoree.NetworkInfo;
         createGroupType(): org.kevoree.GroupType;
@@ -3368,6 +3387,7 @@ declare module org {
         createNamespace(): org.kevoree.Namespace;
         createTypeDefinition(): org.kevoree.TypeDefinition;
         createDeployUnit(): org.kevoree.DeployUnit;
+        createAttributeType(): org.kevoree.AttributeType;
         createChannelType(): org.kevoree.ChannelType;
         createChannel(): org.kevoree.Channel;
         createDictionaryType(): org.kevoree.DictionaryType;
@@ -3380,13 +3400,12 @@ declare module org {
     module impl {
         class KevoreeViewImpl extends org.kevoree.modeling.abs.AbstractKView implements org.KevoreeView {
             constructor(p_universe: number, _time: number, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager);
-            createDictionaryAttribute(): org.kevoree.DictionaryAttribute;
             createNamedElement(): org.kevoree.NamedElement;
             createDictionary(): org.kevoree.Dictionary;
             createPortType(): org.kevoree.PortType;
             createNode(): org.kevoree.Node;
-            createFragmentDictionary(): org.kevoree.FragmentDictionary;
             createPort(): org.kevoree.Port;
+            createFragmentDictionary(): org.kevoree.FragmentDictionary;
             createNodeType(): org.kevoree.NodeType;
             createNetworkInfo(): org.kevoree.NetworkInfo;
             createGroupType(): org.kevoree.GroupType;
@@ -3395,6 +3414,7 @@ declare module org {
             createNamespace(): org.kevoree.Namespace;
             createTypeDefinition(): org.kevoree.TypeDefinition;
             createDeployUnit(): org.kevoree.DeployUnit;
+            createAttributeType(): org.kevoree.AttributeType;
             createChannelType(): org.kevoree.ChannelType;
             createChannel(): org.kevoree.Channel;
             createDictionaryType(): org.kevoree.DictionaryType;
@@ -3406,6 +3426,22 @@ declare module org {
         }
     }
     module kevoree {
+        interface AttributeType extends org.kevoree.modeling.KObject, org.kevoree.TypedElement {
+            getDatatype(): org.kevoree.modeling.meta.KLiteral;
+            setDatatype(p_obj: org.kevoree.modeling.meta.KLiteral): org.kevoree.AttributeType;
+            getDefaultValue(): string;
+            setDefaultValue(p_obj: string): org.kevoree.AttributeType;
+            getFragmentDependant(): boolean;
+            setFragmentDependant(p_obj: boolean): org.kevoree.AttributeType;
+            getName(): string;
+            setName(p_obj: string): org.kevoree.AttributeType;
+            getOptional(): boolean;
+            setOptional(p_obj: boolean): org.kevoree.AttributeType;
+            addGenericTypes(p_obj: org.kevoree.TypedElement): org.kevoree.AttributeType;
+            removeGenericTypes(p_obj: org.kevoree.TypedElement): org.kevoree.AttributeType;
+            getGenericTypes(cb: (p: org.kevoree.TypedElement[]) => void): void;
+            sizeOfGenericTypes(): number;
+        }
         interface Channel extends org.kevoree.modeling.KObject, org.kevoree.Instance {
             getName(): string;
             setName(p_obj: string): org.kevoree.Channel;
@@ -3419,14 +3455,14 @@ declare module org {
             getDictionary(cb: (p: org.kevoree.Dictionary) => void): void;
             setTypeDefinition(p_obj: org.kevoree.TypeDefinition): org.kevoree.Channel;
             getTypeDefinition(cb: (p: org.kevoree.TypeDefinition) => void): void;
-            addFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Channel;
-            removeFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Channel;
-            getFragmentDictionary(cb: (p: org.kevoree.FragmentDictionary[]) => void): void;
-            sizeOfFragmentDictionary(): number;
             addPorts(p_obj: org.kevoree.Port): org.kevoree.Channel;
             removePorts(p_obj: org.kevoree.Port): org.kevoree.Channel;
             getPorts(cb: (p: org.kevoree.Port[]) => void): void;
             sizeOfPorts(): number;
+            addFragmentDictionaries(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Channel;
+            removeFragmentDictionaries(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Channel;
+            getFragmentDictionaries(cb: (p: org.kevoree.FragmentDictionary[]) => void): void;
+            sizeOfFragmentDictionaries(): number;
         }
         interface ChannelType extends org.kevoree.modeling.KObject, org.kevoree.TypeDefinition {
             getName(): string;
@@ -3467,10 +3503,6 @@ declare module org {
             sizeOfInputs(): number;
             setTypeDefinition(p_obj: org.kevoree.TypeDefinition): org.kevoree.Component;
             getTypeDefinition(cb: (p: org.kevoree.TypeDefinition) => void): void;
-            addFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Component;
-            removeFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Component;
-            getFragmentDictionary(cb: (p: org.kevoree.FragmentDictionary[]) => void): void;
-            sizeOfFragmentDictionary(): number;
         }
         interface ComponentType extends org.kevoree.modeling.KObject, org.kevoree.TypeDefinition {
             getName(): string;
@@ -3505,8 +3537,10 @@ declare module org {
             setName(p_obj: string): org.kevoree.DeployUnit;
             getVersion(): string;
             setVersion(p_obj: string): org.kevoree.DeployUnit;
-            setMetaData(p_obj: org.kevoree.Value): org.kevoree.DeployUnit;
-            getMetaData(cb: (p: org.kevoree.Value) => void): void;
+            addMetaData(p_obj: org.kevoree.Value): org.kevoree.DeployUnit;
+            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.DeployUnit;
+            getMetaData(cb: (p: org.kevoree.Value[]) => void): void;
+            sizeOfMetaData(): number;
             addRequiredLibs(p_obj: org.kevoree.DeployUnit): org.kevoree.DeployUnit;
             removeRequiredLibs(p_obj: org.kevoree.DeployUnit): org.kevoree.DeployUnit;
             getRequiredLibs(cb: (p: org.kevoree.DeployUnit[]) => void): void;
@@ -3518,31 +3552,15 @@ declare module org {
             getValues(cb: (p: org.kevoree.Value[]) => void): void;
             sizeOfValues(): number;
         }
-        interface DictionaryAttribute extends org.kevoree.modeling.KObject, org.kevoree.TypedElement {
-            getDatatype(): org.kevoree.modeling.meta.KLiteral;
-            setDatatype(p_obj: org.kevoree.modeling.meta.KLiteral): org.kevoree.DictionaryAttribute;
-            getDefaultValue(): string;
-            setDefaultValue(p_obj: string): org.kevoree.DictionaryAttribute;
-            getFragmentDependant(): boolean;
-            setFragmentDependant(p_obj: boolean): org.kevoree.DictionaryAttribute;
-            getName(): string;
-            setName(p_obj: string): org.kevoree.DictionaryAttribute;
-            getOptional(): boolean;
-            setOptional(p_obj: boolean): org.kevoree.DictionaryAttribute;
-            addGenericTypes(p_obj: org.kevoree.TypedElement): org.kevoree.DictionaryAttribute;
-            removeGenericTypes(p_obj: org.kevoree.TypedElement): org.kevoree.DictionaryAttribute;
-            getGenericTypes(cb: (p: org.kevoree.TypedElement[]) => void): void;
-            sizeOfGenericTypes(): number;
-        }
         interface DictionaryType extends org.kevoree.modeling.KObject {
-            addAttributes(p_obj: org.kevoree.DictionaryAttribute): org.kevoree.DictionaryType;
-            removeAttributes(p_obj: org.kevoree.DictionaryAttribute): org.kevoree.DictionaryType;
-            getAttributes(cb: (p: org.kevoree.DictionaryAttribute[]) => void): void;
+            addAttributes(p_obj: org.kevoree.AttributeType): org.kevoree.DictionaryType;
+            removeAttributes(p_obj: org.kevoree.AttributeType): org.kevoree.DictionaryType;
+            getAttributes(cb: (p: org.kevoree.AttributeType[]) => void): void;
             sizeOfAttributes(): number;
         }
-        interface FragmentDictionary extends org.kevoree.modeling.KObject, org.kevoree.Dictionary, org.kevoree.NamedElement {
-            getName(): string;
-            setName(p_obj: string): org.kevoree.FragmentDictionary;
+        interface FragmentDictionary extends org.kevoree.modeling.KObject, org.kevoree.Dictionary {
+            setNode(p_obj: org.kevoree.Node): org.kevoree.FragmentDictionary;
+            getNode(cb: (p: org.kevoree.Node) => void): void;
             addValues(p_obj: org.kevoree.Value): org.kevoree.FragmentDictionary;
             removeValues(p_obj: org.kevoree.Value): org.kevoree.FragmentDictionary;
             getValues(cb: (p: org.kevoree.Value[]) => void): void;
@@ -3565,10 +3583,10 @@ declare module org {
             getDictionary(cb: (p: org.kevoree.Dictionary) => void): void;
             setTypeDefinition(p_obj: org.kevoree.TypeDefinition): org.kevoree.Group;
             getTypeDefinition(cb: (p: org.kevoree.TypeDefinition) => void): void;
-            addFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Group;
-            removeFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Group;
-            getFragmentDictionary(cb: (p: org.kevoree.FragmentDictionary[]) => void): void;
-            sizeOfFragmentDictionary(): number;
+            addFragmentDictionaries(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Group;
+            removeFragmentDictionaries(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Group;
+            getFragmentDictionaries(cb: (p: org.kevoree.FragmentDictionary[]) => void): void;
+            sizeOfFragmentDictionaries(): number;
         }
         interface GroupType extends org.kevoree.modeling.KObject, org.kevoree.TypeDefinition {
             getName(): string;
@@ -3601,10 +3619,6 @@ declare module org {
             getDictionary(cb: (p: org.kevoree.Dictionary) => void): void;
             setTypeDefinition(p_obj: org.kevoree.TypeDefinition): org.kevoree.Instance;
             getTypeDefinition(cb: (p: org.kevoree.TypeDefinition) => void): void;
-            addFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Instance;
-            removeFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Instance;
-            getFragmentDictionary(cb: (p: org.kevoree.FragmentDictionary[]) => void): void;
-            sizeOfFragmentDictionary(): number;
         }
         interface Model extends org.kevoree.modeling.KObject {
             addNodes(p_obj: org.kevoree.Node): org.kevoree.Model;
@@ -3673,10 +3687,6 @@ declare module org {
             removeGroups(p_obj: org.kevoree.Group): org.kevoree.Node;
             getGroups(cb: (p: org.kevoree.Group[]) => void): void;
             sizeOfGroups(): number;
-            addFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Node;
-            removeFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Node;
-            getFragmentDictionary(cb: (p: org.kevoree.FragmentDictionary[]) => void): void;
-            sizeOfFragmentDictionary(): number;
             addNetworks(p_obj: org.kevoree.NetworkInfo): org.kevoree.Node;
             removeNetworks(p_obj: org.kevoree.NetworkInfo): org.kevoree.Node;
             getNetworks(cb: (p: org.kevoree.NetworkInfo[]) => void): void;
@@ -3711,6 +3721,10 @@ declare module org {
         interface PortType extends org.kevoree.modeling.KObject, org.kevoree.NamedElement {
             getName(): string;
             setName(p_obj: string): org.kevoree.PortType;
+            addMetaData(p_obj: org.kevoree.Value): org.kevoree.PortType;
+            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.PortType;
+            getMetaData(cb: (p: org.kevoree.Value[]) => void): void;
+            sizeOfMetaData(): number;
         }
         interface TypeDefinition extends org.kevoree.modeling.KObject, org.kevoree.NamedElement {
             getName(): string;
@@ -3745,6 +3759,23 @@ declare module org {
             setValue(p_obj: string): org.kevoree.Value;
         }
         module impl {
+            class AttributeTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.AttributeType {
+                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number);
+                getDatatype(): org.kevoree.modeling.meta.KLiteral;
+                setDatatype(p_obj: org.kevoree.modeling.meta.KLiteral): org.kevoree.AttributeType;
+                getDefaultValue(): string;
+                setDefaultValue(p_obj: string): org.kevoree.AttributeType;
+                getFragmentDependant(): boolean;
+                setFragmentDependant(p_obj: boolean): org.kevoree.AttributeType;
+                getName(): string;
+                setName(p_obj: string): org.kevoree.AttributeType;
+                getOptional(): boolean;
+                setOptional(p_obj: boolean): org.kevoree.AttributeType;
+                addGenericTypes(p_obj: org.kevoree.TypedElement): org.kevoree.AttributeType;
+                removeGenericTypes(p_obj: org.kevoree.TypedElement): org.kevoree.AttributeType;
+                getGenericTypes(cb: (p: org.kevoree.TypedElement[]) => void): void;
+                sizeOfGenericTypes(): number;
+            }
             class ChannelImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.Channel {
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number);
                 getName(): string;
@@ -3759,14 +3790,14 @@ declare module org {
                 getDictionary(cb: (p: org.kevoree.Dictionary) => void): void;
                 setTypeDefinition(p_obj: org.kevoree.TypeDefinition): org.kevoree.Channel;
                 getTypeDefinition(cb: (p: org.kevoree.TypeDefinition) => void): void;
-                addFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Channel;
-                removeFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Channel;
-                getFragmentDictionary(cb: (p: org.kevoree.FragmentDictionary[]) => void): void;
-                sizeOfFragmentDictionary(): number;
                 addPorts(p_obj: org.kevoree.Port): org.kevoree.Channel;
                 removePorts(p_obj: org.kevoree.Port): org.kevoree.Channel;
                 getPorts(cb: (p: org.kevoree.Port[]) => void): void;
                 sizeOfPorts(): number;
+                addFragmentDictionaries(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Channel;
+                removeFragmentDictionaries(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Channel;
+                getFragmentDictionaries(cb: (p: org.kevoree.FragmentDictionary[]) => void): void;
+                sizeOfFragmentDictionaries(): number;
             }
             class ChannelTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.ChannelType {
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number);
@@ -3809,10 +3840,6 @@ declare module org {
                 sizeOfInputs(): number;
                 setTypeDefinition(p_obj: org.kevoree.TypeDefinition): org.kevoree.Component;
                 getTypeDefinition(cb: (p: org.kevoree.TypeDefinition) => void): void;
-                addFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Component;
-                removeFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Component;
-                getFragmentDictionary(cb: (p: org.kevoree.FragmentDictionary[]) => void): void;
-                sizeOfFragmentDictionary(): number;
             }
             class ComponentTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.ComponentType {
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number);
@@ -3849,29 +3876,14 @@ declare module org {
                 setName(p_obj: string): org.kevoree.DeployUnit;
                 getVersion(): string;
                 setVersion(p_obj: string): org.kevoree.DeployUnit;
-                setMetaData(p_obj: org.kevoree.Value): org.kevoree.DeployUnit;
-                getMetaData(cb: (p: org.kevoree.Value) => void): void;
+                addMetaData(p_obj: org.kevoree.Value): org.kevoree.DeployUnit;
+                removeMetaData(p_obj: org.kevoree.Value): org.kevoree.DeployUnit;
+                getMetaData(cb: (p: org.kevoree.Value[]) => void): void;
+                sizeOfMetaData(): number;
                 addRequiredLibs(p_obj: org.kevoree.DeployUnit): org.kevoree.DeployUnit;
                 removeRequiredLibs(p_obj: org.kevoree.DeployUnit): org.kevoree.DeployUnit;
                 getRequiredLibs(cb: (p: org.kevoree.DeployUnit[]) => void): void;
                 sizeOfRequiredLibs(): number;
-            }
-            class DictionaryAttributeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.DictionaryAttribute {
-                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number);
-                getDatatype(): org.kevoree.modeling.meta.KLiteral;
-                setDatatype(p_obj: org.kevoree.modeling.meta.KLiteral): org.kevoree.DictionaryAttribute;
-                getDefaultValue(): string;
-                setDefaultValue(p_obj: string): org.kevoree.DictionaryAttribute;
-                getFragmentDependant(): boolean;
-                setFragmentDependant(p_obj: boolean): org.kevoree.DictionaryAttribute;
-                getName(): string;
-                setName(p_obj: string): org.kevoree.DictionaryAttribute;
-                getOptional(): boolean;
-                setOptional(p_obj: boolean): org.kevoree.DictionaryAttribute;
-                addGenericTypes(p_obj: org.kevoree.TypedElement): org.kevoree.DictionaryAttribute;
-                removeGenericTypes(p_obj: org.kevoree.TypedElement): org.kevoree.DictionaryAttribute;
-                getGenericTypes(cb: (p: org.kevoree.TypedElement[]) => void): void;
-                sizeOfGenericTypes(): number;
             }
             class DictionaryImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.Dictionary {
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number);
@@ -3882,15 +3894,15 @@ declare module org {
             }
             class DictionaryTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.DictionaryType {
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number);
-                addAttributes(p_obj: org.kevoree.DictionaryAttribute): org.kevoree.DictionaryType;
-                removeAttributes(p_obj: org.kevoree.DictionaryAttribute): org.kevoree.DictionaryType;
-                getAttributes(cb: (p: org.kevoree.DictionaryAttribute[]) => void): void;
+                addAttributes(p_obj: org.kevoree.AttributeType): org.kevoree.DictionaryType;
+                removeAttributes(p_obj: org.kevoree.AttributeType): org.kevoree.DictionaryType;
+                getAttributes(cb: (p: org.kevoree.AttributeType[]) => void): void;
                 sizeOfAttributes(): number;
             }
             class FragmentDictionaryImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.FragmentDictionary {
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number);
-                getName(): string;
-                setName(p_obj: string): org.kevoree.FragmentDictionary;
+                setNode(p_obj: org.kevoree.Node): org.kevoree.FragmentDictionary;
+                getNode(cb: (p: org.kevoree.Node) => void): void;
                 addValues(p_obj: org.kevoree.Value): org.kevoree.FragmentDictionary;
                 removeValues(p_obj: org.kevoree.Value): org.kevoree.FragmentDictionary;
                 getValues(cb: (p: org.kevoree.Value[]) => void): void;
@@ -3914,10 +3926,10 @@ declare module org {
                 getDictionary(cb: (p: org.kevoree.Dictionary) => void): void;
                 setTypeDefinition(p_obj: org.kevoree.TypeDefinition): org.kevoree.Group;
                 getTypeDefinition(cb: (p: org.kevoree.TypeDefinition) => void): void;
-                addFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Group;
-                removeFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Group;
-                getFragmentDictionary(cb: (p: org.kevoree.FragmentDictionary[]) => void): void;
-                sizeOfFragmentDictionary(): number;
+                addFragmentDictionaries(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Group;
+                removeFragmentDictionaries(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Group;
+                getFragmentDictionaries(cb: (p: org.kevoree.FragmentDictionary[]) => void): void;
+                sizeOfFragmentDictionaries(): number;
             }
             class GroupTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.GroupType {
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number);
@@ -3952,10 +3964,6 @@ declare module org {
                 getDictionary(cb: (p: org.kevoree.Dictionary) => void): void;
                 setTypeDefinition(p_obj: org.kevoree.TypeDefinition): org.kevoree.Instance;
                 getTypeDefinition(cb: (p: org.kevoree.TypeDefinition) => void): void;
-                addFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Instance;
-                removeFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Instance;
-                getFragmentDictionary(cb: (p: org.kevoree.FragmentDictionary[]) => void): void;
-                sizeOfFragmentDictionary(): number;
             }
             class ModelImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.Model {
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number);
@@ -4029,10 +4037,6 @@ declare module org {
                 removeGroups(p_obj: org.kevoree.Group): org.kevoree.Node;
                 getGroups(cb: (p: org.kevoree.Group[]) => void): void;
                 sizeOfGroups(): number;
-                addFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Node;
-                removeFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Node;
-                getFragmentDictionary(cb: (p: org.kevoree.FragmentDictionary[]) => void): void;
-                sizeOfFragmentDictionary(): number;
                 addNetworks(p_obj: org.kevoree.NetworkInfo): org.kevoree.Node;
                 removeNetworks(p_obj: org.kevoree.NetworkInfo): org.kevoree.Node;
                 getNetworks(cb: (p: org.kevoree.NetworkInfo[]) => void): void;
@@ -4070,6 +4074,10 @@ declare module org {
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number);
                 getName(): string;
                 setName(p_obj: string): org.kevoree.PortType;
+                addMetaData(p_obj: org.kevoree.Value): org.kevoree.PortType;
+                removeMetaData(p_obj: org.kevoree.Value): org.kevoree.PortType;
+                getMetaData(cb: (p: org.kevoree.Value[]) => void): void;
+                sizeOfMetaData(): number;
             }
             class TypeDefinitionImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.TypeDefinition {
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number);
@@ -4108,6 +4116,20 @@ declare module org {
             }
         }
         module meta {
+            class MetaAttributeType extends org.kevoree.modeling.meta.impl.MetaClass {
+                private static INSTANCE;
+                static ATT_DATATYPE: org.kevoree.modeling.meta.KMetaAttribute;
+                static ATT_DEFAULTVALUE: org.kevoree.modeling.meta.KMetaAttribute;
+                static ATT_FRAGMENTDEPENDANT: org.kevoree.modeling.meta.KMetaAttribute;
+                static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute;
+                static ATT_OPTIONAL: org.kevoree.modeling.meta.KMetaAttribute;
+                static REF_OP_DICTIONARYTYPE_ATTRIBUTES: org.kevoree.modeling.meta.KMetaReference;
+                static REF_GENERICTYPES: org.kevoree.modeling.meta.KMetaReference;
+                static REF_OP_ATTRIBUTETYPE_GENERICTYPES: org.kevoree.modeling.meta.KMetaReference;
+                static REF_OP_TYPEDELEMENT_GENERICTYPES: org.kevoree.modeling.meta.KMetaReference;
+                static getInstance(): org.kevoree.meta.MetaAttributeType;
+                constructor();
+            }
             class MetaChannel extends org.kevoree.modeling.meta.impl.MetaClass {
                 private static INSTANCE;
                 static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute;
@@ -4115,9 +4137,9 @@ declare module org {
                 static REF_METADATA: org.kevoree.modeling.meta.KMetaReference;
                 static REF_DICTIONARY: org.kevoree.modeling.meta.KMetaReference;
                 static REF_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaReference;
-                static REF_FRAGMENTDICTIONARY: org.kevoree.modeling.meta.KMetaReference;
                 static REF_OP_MODEL_CHANNELS: org.kevoree.modeling.meta.KMetaReference;
                 static REF_PORTS: org.kevoree.modeling.meta.KMetaReference;
+                static REF_FRAGMENTDICTIONARIES: org.kevoree.modeling.meta.KMetaReference;
                 static getInstance(): org.kevoree.meta.MetaChannel;
                 constructor();
             }
@@ -4146,7 +4168,6 @@ declare module org {
                 static REF_DICTIONARY: org.kevoree.modeling.meta.KMetaReference;
                 static REF_INPUTS: org.kevoree.modeling.meta.KMetaReference;
                 static REF_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaReference;
-                static REF_FRAGMENTDICTIONARY: org.kevoree.modeling.meta.KMetaReference;
                 static REF_OP_NODE_COMPONENTS: org.kevoree.modeling.meta.KMetaReference;
                 static getInstance(): org.kevoree.meta.MetaComponent;
                 constructor();
@@ -4171,7 +4192,6 @@ declare module org {
             }
             class MetaDataType extends org.kevoree.modeling.meta.impl.MetaEnum implements org.kevoree.modeling.KType {
                 static BOOL: org.kevoree.modeling.meta.KLiteral;
-                static BUTTON: org.kevoree.modeling.meta.KLiteral;
                 static BYTE: org.kevoree.modeling.meta.KLiteral;
                 static DECIMAL: org.kevoree.modeling.meta.KLiteral;
                 static INT: org.kevoree.modeling.meta.KLiteral;
@@ -4206,20 +4226,6 @@ declare module org {
                 static getInstance(): org.kevoree.meta.MetaDictionary;
                 constructor();
             }
-            class MetaDictionaryAttribute extends org.kevoree.modeling.meta.impl.MetaClass {
-                private static INSTANCE;
-                static ATT_DATATYPE: org.kevoree.modeling.meta.KMetaAttribute;
-                static ATT_DEFAULTVALUE: org.kevoree.modeling.meta.KMetaAttribute;
-                static ATT_FRAGMENTDEPENDANT: org.kevoree.modeling.meta.KMetaAttribute;
-                static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute;
-                static ATT_OPTIONAL: org.kevoree.modeling.meta.KMetaAttribute;
-                static REF_OP_DICTIONARYATTRIBUTE_GENERICTYPES: org.kevoree.modeling.meta.KMetaReference;
-                static REF_OP_DICTIONARYTYPE_ATTRIBUTES: org.kevoree.modeling.meta.KMetaReference;
-                static REF_GENERICTYPES: org.kevoree.modeling.meta.KMetaReference;
-                static REF_OP_TYPEDELEMENT_GENERICTYPES: org.kevoree.modeling.meta.KMetaReference;
-                static getInstance(): org.kevoree.meta.MetaDictionaryAttribute;
-                constructor();
-            }
             class MetaDictionaryType extends org.kevoree.modeling.meta.impl.MetaClass {
                 private static INSTANCE;
                 static REF_OP_NODETYPE_DICTIONARYTYPE: org.kevoree.modeling.meta.KMetaReference;
@@ -4231,16 +4237,14 @@ declare module org {
             }
             class MetaFragmentDictionary extends org.kevoree.modeling.meta.impl.MetaClass {
                 private static INSTANCE;
-                static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute;
+                static REF_NODE: org.kevoree.modeling.meta.KMetaReference;
                 static REF_OP_COMPONENT_DICTIONARY: org.kevoree.modeling.meta.KMetaReference;
-                static REF_OP_CHANNEL_FRAGMENTDICTIONARY: org.kevoree.modeling.meta.KMetaReference;
-                static REF_OP_INSTANCE_FRAGMENTDICTIONARY: org.kevoree.modeling.meta.KMetaReference;
                 static REF_OP_NODE_DICTIONARY: org.kevoree.modeling.meta.KMetaReference;
                 static REF_OP_INSTANCE_DICTIONARY: org.kevoree.modeling.meta.KMetaReference;
                 static REF_VALUES: org.kevoree.modeling.meta.KMetaReference;
-                static REF_OP_NODE_FRAGMENTDICTIONARY: org.kevoree.modeling.meta.KMetaReference;
-                static REF_OP_COMPONENT_FRAGMENTDICTIONARY: org.kevoree.modeling.meta.KMetaReference;
+                static REF_OP_GROUP_FRAGMENTDICTIONARIES: org.kevoree.modeling.meta.KMetaReference;
                 static REF_OP_CHANNEL_DICTIONARY: org.kevoree.modeling.meta.KMetaReference;
+                static REF_OP_CHANNEL_FRAGMENTDICTIONARIES: org.kevoree.modeling.meta.KMetaReference;
                 static getInstance(): org.kevoree.meta.MetaFragmentDictionary;
                 constructor();
             }
@@ -4253,7 +4257,7 @@ declare module org {
                 static REF_DICTIONARY: org.kevoree.modeling.meta.KMetaReference;
                 static REF_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaReference;
                 static REF_OP_MODEL_GROUPS: org.kevoree.modeling.meta.KMetaReference;
-                static REF_FRAGMENTDICTIONARY: org.kevoree.modeling.meta.KMetaReference;
+                static REF_FRAGMENTDICTIONARIES: org.kevoree.modeling.meta.KMetaReference;
                 static getInstance(): org.kevoree.meta.MetaGroup;
                 constructor();
             }
@@ -4280,7 +4284,6 @@ declare module org {
                 static REF_METADATA: org.kevoree.modeling.meta.KMetaReference;
                 static REF_DICTIONARY: org.kevoree.modeling.meta.KMetaReference;
                 static REF_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaReference;
-                static REF_FRAGMENTDICTIONARY: org.kevoree.modeling.meta.KMetaReference;
                 static getInstance(): org.kevoree.meta.MetaInstance;
                 constructor();
             }
@@ -4324,10 +4327,10 @@ declare module org {
                 static REF_COMPONENTS: org.kevoree.modeling.meta.KMetaReference;
                 static REF_DICTIONARY: org.kevoree.modeling.meta.KMetaReference;
                 static REF_CHILDREN: org.kevoree.modeling.meta.KMetaReference;
+                static REF_OP_FRAGMENTDICTIONARY_NODE: org.kevoree.modeling.meta.KMetaReference;
                 static REF_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaReference;
                 static REF_HOST: org.kevoree.modeling.meta.KMetaReference;
                 static REF_GROUPS: org.kevoree.modeling.meta.KMetaReference;
-                static REF_FRAGMENTDICTIONARY: org.kevoree.modeling.meta.KMetaReference;
                 static REF_NETWORKS: org.kevoree.modeling.meta.KMetaReference;
                 static getInstance(): org.kevoree.meta.MetaNode;
                 constructor();
@@ -4360,6 +4363,7 @@ declare module org {
             class MetaPortType extends org.kevoree.modeling.meta.impl.MetaClass {
                 private static INSTANCE;
                 static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute;
+                static REF_METADATA: org.kevoree.modeling.meta.KMetaReference;
                 static REF_OP_COMPONENTTYPE_INPUTS: org.kevoree.modeling.meta.KMetaReference;
                 static REF_OP_COMPONENTTYPE_OUTPUTS: org.kevoree.modeling.meta.KMetaReference;
                 static getInstance(): org.kevoree.meta.MetaPortType;
@@ -4384,8 +4388,8 @@ declare module org {
             class MetaTypedElement extends org.kevoree.modeling.meta.impl.MetaClass {
                 private static INSTANCE;
                 static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute;
-                static REF_OP_DICTIONARYATTRIBUTE_GENERICTYPES: org.kevoree.modeling.meta.KMetaReference;
                 static REF_GENERICTYPES: org.kevoree.modeling.meta.KMetaReference;
+                static REF_OP_ATTRIBUTETYPE_GENERICTYPES: org.kevoree.modeling.meta.KMetaReference;
                 static REF_OP_TYPEDELEMENT_GENERICTYPES: org.kevoree.modeling.meta.KMetaReference;
                 static getInstance(): org.kevoree.meta.MetaTypedElement;
                 constructor();
@@ -4394,6 +4398,7 @@ declare module org {
                 private static INSTANCE;
                 static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute;
                 static ATT_VALUE: org.kevoree.modeling.meta.KMetaAttribute;
+                static REF_OP_PORTTYPE_METADATA: org.kevoree.modeling.meta.KMetaReference;
                 static REF_OP_DEPLOYUNIT_METADATA: org.kevoree.modeling.meta.KMetaReference;
                 static REF_OP_NODETYPE_METADATA: org.kevoree.modeling.meta.KMetaReference;
                 static REF_OP_GROUPTYPE_METADATA: org.kevoree.modeling.meta.KMetaReference;
@@ -4410,6 +4415,7 @@ declare module org {
         }
     }
 }
+
 
 declare module 'kevoree-model' {
     export { java, org }

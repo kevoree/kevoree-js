@@ -1,13 +1,13 @@
 import { Injector, Context } from 'ts-injector';
 import { ModelServiceImpl } from './ModelServiceImpl';
-import { Logger } from 'kevoree-logger';
+import { LoggerImpl } from 'kevoree-logger';
 import JavascriptNode = require('../main/JavascriptNode');
 
 // create an injector
 var di = new Injector();
 var ctx = new Context();
 var modelService = new ModelServiceImpl('node0', 'node0', 'nodes[node0]', {});
-var loggerService = new Logger((<any> JavascriptNode).name);
+var loggerService = new LoggerImpl('JavascriptNode');
 
 ctx.register('ModelService', modelService);
 ctx.register('LoggerService', loggerService);
