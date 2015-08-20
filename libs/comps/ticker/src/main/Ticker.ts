@@ -20,8 +20,6 @@ class Ticker {
   private tick: OutputPort;
 
   start(cb: Callback): void {
-    console.log('delay', typeof this.delay, this.delay);
-    console.log('random', typeof this.random, this.random);
     this.timerId = setInterval(() => {
       var val: string;
       if (this.random) {
