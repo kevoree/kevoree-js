@@ -1,4 +1,4 @@
-import { Component, Output, Param, Async } from 'kevoree-api';
+import { Component, Output, Param } from 'kevoree-api';
 import { Inject } from 'ts-injector';
 
 @Component({
@@ -10,16 +10,18 @@ import { Inject } from 'ts-injector';
 class Ticker {
   private timerId: any;
 
-  @Param()
-  private delay: number = 3000;
+  @Param({ defaultValue: 3000 })
+  private delay: number;
 
-  @Param()
-  private random: boolean = false;
+  @Param({ defaultValue: false })
+  private random: boolean;
 
   @Output({ type: 'string' })
   private tick: OutputPort;
 
   start(cb: Callback): void {
+    console.log('delay', typeof this.delay, this.delay);
+    console.log('random', typeof this.random, this.random);
     this.timerId = setInterval(() => {
       var val: string;
       if (this.random) {

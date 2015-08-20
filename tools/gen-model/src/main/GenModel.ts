@@ -89,11 +89,13 @@ export class GenModel {
                         var attr = kView.createAttributeType();
                         attr.setName(param.name);
                         attr.setOptional(param.meta.optional);
+
                         attr.setDefaultValue(param.meta.defaultValue+'');
                         attr.setDatatype(org.kevoree.meta.MetaDataType.STRING);
                         attr.setFragmentDependant(param.meta.fragmentDependant);
                         dicType.addAttributes(attr);
                     });
+                    tdef.setDictionaryType(dicType);
 
                     Reflect.getMetadata(MetaData.INPUTS, Type.prototype).forEach((name: string) => {
                       var portType = kView.createPortType();

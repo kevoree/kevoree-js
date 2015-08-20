@@ -104,7 +104,7 @@ export class MetaData {
 export interface ParamMeta {
   optional?: boolean
   fragmentDependant?: boolean
-  defaultValue?: number | string
+  defaultValue?: number | string | boolean
 }
 
 export interface ParamData {
