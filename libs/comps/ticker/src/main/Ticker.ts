@@ -1,7 +1,12 @@
 import { Component, Output, Param, Async } from 'kevoree-api';
 import { Inject } from 'ts-injector';
 
-@Component({ desc: '' })
+@Component({
+  desc: 'By default, the ticker will send the current timestamp in milliseconds'
++ ' once every 3000ms. This can be tweaked using the <strong>delay</strong>'
++ ' parameter. You can also change the output to a random number between'
++ ' [0, 100[ by setting the attribute <strong>random</strong> to <strong>true'
++ ' </strong>'})
 class Ticker {
   private timerId: any;
 
@@ -18,7 +23,7 @@ class Ticker {
     this.timerId = setInterval(() => {
       var val: string;
       if (this.random) {
-        val = Math.floor(Math.random()*100)+'';
+        val = (Math.round(Math.random()*100) + 1)+'';
       } else {
         val = new Date().getTime()+'';
       }
