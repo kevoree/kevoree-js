@@ -1,5 +1,4 @@
 import { Component, Output, Param } from 'kevoree-api';
-import { Inject } from 'ts-injector';
 
 @Component({
   desc: 'By default, the ticker will send the current timestamp in milliseconds'
