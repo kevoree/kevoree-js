@@ -2,12 +2,12 @@
   "name": "kevoree-logger",
   "version": "1.0.0",
   "description": "Kevoree Logger",
-  "main": "build/main/Logger.js",
+  "main": "build/main/kevoree-logger.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "typescript": {
-    "definitions": "src/main/kevoree-logger.d.ts"
+    "definitions": "src/decl/kevoree-logger.d.ts"
   },
   "keywords": [
     "kevoree",

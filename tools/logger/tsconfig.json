@@ -8,6 +8,7 @@
         "emitDecoratorMetadata": true,
         "noImplicitAny": false,
         "removeComments": true,
+        "declaration": true,
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
@@ -16,13 +17,13 @@
     "filesGlob": [
         "./typings/**/*.ts",
         "./src/**/*.ts",
+        "!./src/decl/**/*",
         "!./node_modules/**/*"
     ],
     "files": [
         "./typings/chalk/chalk.d.ts",
         "./typings/tsd.d.ts",
-        "./src/main/Logger.ts",
-        "./src/main/kevoree-logger.d.ts",
+        "./src/main/kevoree-logger.ts",
         "./src/test/test.ts"
     ]
 }

@@ -1,16 +1,24 @@
-import { LoggerImpl } from '../main/Logger';
+/// <reference path="../../src/decl/kevoree-logger.d.ts"/>
 
-var log = new LoggerImpl('MyTag');
+import { LoggerFactory, LogLevel, Logger } from '../main/kevoree-logger';
 
+var log = LoggerFactory.createLogger('MyTag', 'log');
+var log2 = LoggerFactory.createLogger('AnotherTag', 'log1');
+var log3 = LoggerFactory.createLogger('SomethingReallyLong', 'log2');
+LoggerFactory.setLevel(LogLevel.DEBUG);
 
-log.info('test');
-log.info('AnotherTag', 'youpi');
+function print(log: Logger) {
+  // log.debug('lorem ipsum');
+  // log.info('dolor sit');
+  // log.warn('amet consectetur');
+  // log.error('adipiscing elit');
+  // console.log('=============');
+  // log.debug('lorem', 'ipsum');
+  // log.info('dolor','sit');
+  log.warn('amet','consec\ntetur', '\n');
+  // log.error('adipiscing','elit');
+}
 
-log.debug('test');
-log.debug('AnotherTag', 'youpi');
-
-log.warn('test');
-log.warn('AnotherTag', 'youpi');
-
-log.error('test');
-log.error('AnotherTag', 'youpi');
+print(log);
+print(log2);
+print(log3);

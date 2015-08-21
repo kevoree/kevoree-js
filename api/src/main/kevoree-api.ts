@@ -1,3 +1,4 @@
+import { Injectable } from 'ts-injector';
 require('reflect-metadata');
 
 function typeDefinition(target: any, meta: TypeMeta) {
@@ -116,6 +117,11 @@ export interface ParamData {
   name: string
   type: string
   meta: ParamMeta
+}
+
+export module Injectables {
+  export class LoggerService {}
+  export class ModelService {}
 }
 
 export interface TypeMeta {

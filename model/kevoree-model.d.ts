@@ -3360,7 +3360,7 @@ declare module org {
         createTypedElement(universe: number, time: number): org.kevoree.TypedElement;
         createModel(universe: number, time: number): org.kevoree.Model;
     }
-    class KevoreeUniverse extends org.kevoree.modeling.abs.AbstractKUniverse<org.KevoreeVieworg.KevoreeUniverse, org.KevoreeUniverse> {
+    class KevoreeUniverse extends org.kevoree.modeling.abs.AbstractKUniverse<org.KevoreeView, org.KevoreeUniverse> {
         constructor(p_key: number, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager);
         internal_create(timePoint: number): org.KevoreeView;
     }

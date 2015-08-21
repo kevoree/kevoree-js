@@ -1,4 +1,5 @@
-import { Component, Output, Param, DataType } from 'kevoree-api';
+import { Component, Output, Param, DataType, Injectables } from 'kevoree-api';
+import { Inject } from 'ts-injector';
 
 @Component({
   desc: 'By default, the ticker will send the current timestamp in milliseconds'
@@ -18,7 +19,14 @@ class Ticker {
   @Output({ type: 'string' })
   private tick: OutputPort;
 
+  @Inject(Injectables.LoggerService)
+  private log: KevoreeLogger.Logger;
+
+  @Inject(Injectables.ModelService)
+  private modelService: ModelService;
+
   start(cb: Callback): void {
+    this.log.info(`Starting ticker ${this.modelService.getName()}`, 'doing\nsome\ntest');
     this.timerId = setInterval(() => {
       var val: string;
       if (this.random) {
@@ -32,11 +40,13 @@ class Ticker {
   }
 
   stop(cb: Callback): void {
+    this.log.warn(`Stopping ticker ${this.modelService.getName()}`);
     clearInterval(this.timerId);
     cb();
   }
 
   update(cb: Callback): void {
+    this.log.debug(`Updating ticker ${this.modelService.getName()}`);
     this.stop(() => {
       this.start(cb);
     });

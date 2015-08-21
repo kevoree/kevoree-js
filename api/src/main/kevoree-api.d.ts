@@ -59,6 +59,11 @@ declare module 'kevoree-api' {
     STRING, BOOLEAN, INTEGER, DECIMAL, LIST, CHAR
   }
 
+  export module Injectables {
+    export class LoggerService {}
+    export class ModelService {}
+  }
+
   export enum Types {
     Node,
     Group,

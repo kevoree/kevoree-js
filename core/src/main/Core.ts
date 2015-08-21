@@ -74,7 +74,7 @@ export class Core extends EventEmitter {
                 this.emitter.once('stop', () => {
                   // clear main loop
                   clearInterval(id);
-                  this.logger.info('Core', `Platform stopped: ${this.nodeName}`);
+                  this.logger.info(`Platform stopped: ${this.nodeName}`);
 
                   // notify deployers if any
                   this.pendingModels.forEach((item: Item) => {
@@ -96,16 +96,16 @@ export class Core extends EventEmitter {
         cb(new Error(`node name must match: ${NAME_PATTERN.toString()} (given: "${name}")`));
       }
     } else {
-      this.logger.warn('Core', 'Core is already started');
+      this.logger.warn('Core is already started');
     }
   }
 
   stop(): void {
     this.isStarted = false;
     if (this.isDeploying) {
-      this.logger.info('Core', 'Core stop requested, waiting for current deploy to finish...');
+      this.logger.info('Core stop requested, waiting for current deploy to finish...');
     } else {
-      this.logger.info('Core', 'Core stop requested...');
+      this.logger.info('Core stop requested...');
     }
   }
 
