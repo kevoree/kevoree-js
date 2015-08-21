@@ -105,6 +105,11 @@ export interface ParamMeta {
   optional?: boolean
   fragmentDependant?: boolean
   defaultValue?: number | string | boolean
+  datatype?: DataType
+}
+
+export enum DataType {
+  STRING, BOOLEAN, INTEGER, DECIMAL, LIST, CHAR
 }
 
 export interface ParamData {

@@ -22,75 +22,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                 System.gc = function () {
                 };
                 System.arraycopy = function (src, srcPos, dest, destPos, numElements) {
-                    /*
-                     if(!Array.isArray(src) && ! Array.isArray(dest)){
-                     var udest = <ArrayBufferView> dest;
-                     var usrc =  <ArrayBufferView> src;
-                     udest.set(src.slice(srcPos,srcPos+numElements),destPos);
-                     } else {
-                     for (var i = 0; i < numElements; i++) {
-                     dest[destPos + i] = src[srcPos + i];
-                     }
-                     }
-                     */
-                    /*
-                     if (src['buffer'] != undefined && dest['buffer'] != undefined) {
-                     var srcBuffer = src['buffer'];
-                     var destBuffer = src['buffer'];
-                     if (srcPos != 0 || src['length'] != numElements) {
-                     srcBuffer = srcBuffer.slice(srcPos,srcPos+numElements);
-                     }
-                     destBuffer.set(srcBuffer, destPos);
-                     } else {
-
-                     for (var i = 0; i < numElements; i++) {
-                     dest[destPos + i] = src[srcPos + i];
-                     }
-                     }*/
-                    /*
-                     if(src instanceof Float64Array && dest instanceof Float64Array){
-                     var castedSrc = <Float64Array> src;
-                     var castedDest = <Float64Array> dest;
-                     if(srcPos == 0 && src.length == numElements){
-                     castedDest.set(castedSrc,destPos);
-                     } else {
-                     for (var i = 0; i < numElements; i++) {
-                     dest[destPos + i] = src[srcPos + i];
-                     }
-                     }
-                     } else if(src instanceof Int32Array && dest instanceof Int32Array){
-                     var castedSrc = <Int32Array> src;
-                     var castedDest = <Int32Array> dest;
-                     if(srcPos == 0 && src.length == numElements){
-                     castedDest.set(castedSrc,destPos);
-                     } else {
-                     for (var i = 0; i < numElements; i++) {
-                     dest[destPos + i] = src[srcPos + i];
-                     }
-                     }
-                     } else {
-                     for (var i = 0; i < numElements; i++) {
-                     dest[destPos + i] = src[srcPos + i];
-                     }
-                     }*/
                     for (var i = 0; i < numElements; i++) {
                         dest[destPos + i] = src[srcPos + i];
-                    }
-                };
-                System.out = {
-                    println: function (obj) {
-                        console.log(obj);
-                    },
-                    print: function (obj) {
-                        console.log(obj);
-                    }
-                };
-                System.err = {
-                    println: function (obj) {
-                        console.error(obj);
-                    },
-                    print: function (obj) {
-                        console.error(obj);
                     }
                 };
                 return System;
@@ -743,7 +676,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                         AbstractKModel.prototype.save = function (cb) {
                             this._manager.save(cb);
                         };
-                        AbstractKModel.prototype.setOperation = function (metaOperation, operation) {
+                        AbstractKModel.prototype.setClassOperation = function (metaOperation, operation) {
                             this._manager.operationManager().registerOperation(metaOperation, operation, null);
                         };
                         AbstractKModel.prototype.setInstanceOperation = function (metaOperation, target, operation) {
@@ -1221,8 +1154,11 @@ var __extends = (this && this.__extends) || function (d, b) {
                                             }
                                         }
                                         else {
-                                            if (result != null && result.equals(org.kevoree.modeling.traversal.visitor.KVisitResult.CONTINUE)) {
-                                                if (resolved != null && (traversed == null || !traversed.contains(resolved.uuid()))) {
+                                            if (!org.kevoree.modeling.util.Checker.isDefined(result)) {
+                                                result = org.kevoree.modeling.traversal.visitor.KVisitResult.STOP;
+                                            }
+                                            if (resolved != null && result.equals(org.kevoree.modeling.traversal.visitor.KVisitResult.CONTINUE)) {
+                                                if (traversed == null || !traversed.contains(resolved.uuid())) {
                                                     nextDeep.add(resolved);
                                                 }
                                             }
@@ -6219,7 +6155,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                                         var needUniverseCopy = !useClosest && (resolvedUniverse != universe);
                                         currentEntry = this._spaceManager.getAndMark(resolvedUniverse, resolvedTime, uuid);
                                         if (currentEntry == null) {
-                                            java.lang.System.err.println("Desphasing marking not done yet !!!!");
+                                            console.error("Desphasing marking not done yet !!!!");
+                                            ;
                                             this._spaceManager.unmarkMemoryElement(timeTree);
                                             this._spaceManager.unmarkMemoryElement(globalUniverseTree);
                                             this._spaceManager.unmarkMemoryElement(objectUniverseTree);
@@ -6282,7 +6219,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                                                 return clonedChunk;
                                             }
                                             else {
-                                                java.lang.System.err.println("Desphasing marking not done yet !!!!");
+                                                console.error("Desphasing marking not done yet !!!!");
+                                                ;
                                                 this._spaceManager.unmarkMemoryElement(currentEntry);
                                                 this._spaceManager.unmarkMemoryElement(timeTree);
                                                 this._spaceManager.unmarkMemoryElement(globalUniverseTree);
@@ -6984,7 +6922,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                                             var loopChunk = state.values[i];
                                             if (loopChunk != null) {
                                                 var content = loopChunk.serialize(p_metaModel);
-                                                java.lang.System.err.println(state.elementK3[i * 3] + "," + state.elementK3[i * 3 + 1] + "," + state.elementK3[i * 3 + 2] + "=>" + loopChunk.type() + "(count:" + loopChunk.counter() + ",flag:" + loopChunk.getFlags() + ")" + "==>" + content);
+                                                console.error(state.elementK3[i * 3] + "," + state.elementK3[i * 3 + 1] + "," + state.elementK3[i * 3 + 2] + "=>" + loopChunk.type() + "(count:" + loopChunk.counter() + ",flag:" + loopChunk.getFlags() + ")" + "==>" + content);
+                                                ;
                                             }
                                         }
                                     }
@@ -8427,7 +8366,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                                         }
                                     }
                                     else {
-                                        java.lang.System.err.println("BAD ROUTING !");
+                                        console.error("BAD ROUTING !");
+                                        ;
                                     }
                                 }
                             };
@@ -8834,7 +8774,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                                                     }
                                                 }
                                                 else {
-                                                    java.lang.System.err.println("WARN: Empty KObject " + loopObj.uuid());
+                                                    console.error("WARN: Empty KObject " + loopObj.uuid());
+                                                    ;
                                                 }
                                             }
                                             catch ($ex$) {
@@ -9126,7 +9067,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                                                     }
                                                 }
                                                 else {
-                                                    java.lang.System.err.println("WARN: Empty KObject " + loopObj.uuid());
+                                                    console.error("WARN: Empty KObject " + loopObj.uuid());
+                                                    ;
                                                 }
                                             }
                                             catch ($ex$) {
@@ -10886,7 +10828,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                                     catch ($ex$) {
                                         if ($ex$ instanceof Error) {
                                             var e = $ex$;
-                                            java.lang.System.out.println("projection failed. Aborted Compression");
+                                            console.log("projection failed. Aborted Compression");
+                                            ;
                                             return;
                                         }
                                         else {
@@ -14621,7 +14564,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                                     return row >= 0 && col >= 0 && row < this.mat.numRows && col < this.mat.numCols;
                                 };
                                 SimpleMatrix.prototype.printDimensions = function () {
-                                    java.lang.System.out.println("[rows = " + this.numRows() + " , cols = " + this.numCols() + " ]");
+                                    console.log("[rows = " + this.numRows() + " , cols = " + this.numCols() + " ]");
+                                    ;
                                 };
                                 SimpleMatrix.prototype.transpose = function () {
                                     var ret = this.createMatrix(this.mat.numCols, this.mat.numRows);
@@ -17836,7 +17780,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                                         };
                                         WatchedDoubleStepQREigen.prototype.exceptionalShift = function (x1, x2) {
                                             if (this.printHumps) {
-                                                java.lang.System.out.println("Performing exceptional implicit double step");
+                                                console.log("Performing exceptional implicit double step");
+                                                ;
                                             }
                                             var val = Math.abs(this.A.get(x2, x2));
                                             if (val == 0) {
@@ -17853,7 +17798,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                                         };
                                         WatchedDoubleStepQREigen.prototype.implicitDoubleStep = function (x1, x2) {
                                             if (this.printHumps) {
-                                                java.lang.System.out.println("Performing implicit double step");
+                                                console.log("Performing implicit double step");
+                                                ;
                                             }
                                             var z11 = this.A.get(x2 - 1, x2 - 1);
                                             var z12 = this.A.get(x2 - 1, x2);
@@ -18113,7 +18059,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                                         };
                                         WatchedDoubleStepQREigen.prototype.printSteps = function () {
                                             for (var i = 0; i < this.N; i++) {
-                                                java.lang.System.out.println("Step[" + i + "] = " + this.numStepsFind[i]);
+                                                console.log("Step[" + i + "] = " + this.numStepsFind[i]);
+                                                ;
                                             }
                                         };
                                         return WatchedDoubleStepQREigen;
@@ -19366,6 +19313,14 @@ var __extends = (this && this.__extends) || function (d, b) {
                     return ComponentTypeImpl;
                 })(org.kevoree.modeling.abs.AbstractKObject);
                 impl.ComponentTypeImpl = ComponentTypeImpl;
+                var DataTypeLiteral = (function (_super) {
+                    __extends(DataTypeLiteral, _super);
+                    function DataTypeLiteral(p_name, p_index, p_className) {
+                        _super.call(this, p_name, p_index, p_className);
+                    }
+                    return DataTypeLiteral;
+                })(org.kevoree.modeling.meta.impl.MetaLiteral);
+                impl.DataTypeLiteral = DataTypeLiteral;
                 var DeployUnitImpl = (function (_super) {
                     __extends(DeployUnitImpl, _super);
                     function DeployUnitImpl(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime) {
@@ -20743,13 +20698,12 @@ var __extends = (this && this.__extends) || function (d, b) {
                     function MetaDataType() {
                         _super.call(this, "org.kevoree.DataType", 0);
                         var p_lits_arr = new Array();
-                        p_lits_arr[0] = MetaDataType.BOOL;
-                        p_lits_arr[1] = MetaDataType.BYTE;
+                        p_lits_arr[0] = MetaDataType.BOOLEAN;
+                        p_lits_arr[1] = MetaDataType.CHAR;
                         p_lits_arr[2] = MetaDataType.DECIMAL;
-                        p_lits_arr[3] = MetaDataType.INT;
+                        p_lits_arr[3] = MetaDataType.INTEGER;
                         p_lits_arr[4] = MetaDataType.LIST;
-                        p_lits_arr[5] = MetaDataType.SHORT;
-                        p_lits_arr[6] = MetaDataType.STRING;
+                        p_lits_arr[5] = MetaDataType.STRING;
                         this.init(p_lits_arr);
                     }
                     MetaDataType.getInstance = function () {
@@ -20758,13 +20712,12 @@ var __extends = (this && this.__extends) || function (d, b) {
                         }
                         return MetaDataType.INSTANCE;
                     };
-                    MetaDataType.BOOL = new org.kevoree.modeling.meta.impl.MetaLiteral("BOOL", 0, "org.kevoree.DataType");
-                    MetaDataType.BYTE = new org.kevoree.modeling.meta.impl.MetaLiteral("BYTE", 1, "org.kevoree.DataType");
-                    MetaDataType.DECIMAL = new org.kevoree.modeling.meta.impl.MetaLiteral("DECIMAL", 2, "org.kevoree.DataType");
-                    MetaDataType.INT = new org.kevoree.modeling.meta.impl.MetaLiteral("INT", 3, "org.kevoree.DataType");
-                    MetaDataType.LIST = new org.kevoree.modeling.meta.impl.MetaLiteral("LIST", 4, "org.kevoree.DataType");
-                    MetaDataType.SHORT = new org.kevoree.modeling.meta.impl.MetaLiteral("SHORT", 5, "org.kevoree.DataType");
-                    MetaDataType.STRING = new org.kevoree.modeling.meta.impl.MetaLiteral("STRING", 6, "org.kevoree.DataType");
+                    MetaDataType.BOOLEAN = new org.kevoree.impl.DataTypeLiteral("BOOLEAN", 0, "org.kevoree.DataType");
+                    MetaDataType.CHAR = new org.kevoree.impl.DataTypeLiteral("CHAR", 1, "org.kevoree.DataType");
+                    MetaDataType.DECIMAL = new org.kevoree.impl.DataTypeLiteral("DECIMAL", 2, "org.kevoree.DataType");
+                    MetaDataType.INTEGER = new org.kevoree.impl.DataTypeLiteral("INTEGER", 3, "org.kevoree.DataType");
+                    MetaDataType.LIST = new org.kevoree.impl.DataTypeLiteral("LIST", 4, "org.kevoree.DataType");
+                    MetaDataType.STRING = new org.kevoree.impl.DataTypeLiteral("STRING", 5, "org.kevoree.DataType");
                     return MetaDataType;
                 })(org.kevoree.modeling.meta.impl.MetaEnum);
                 meta.MetaDataType = MetaDataType;

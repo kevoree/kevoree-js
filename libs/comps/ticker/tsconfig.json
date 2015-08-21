@@ -22,6 +22,7 @@
     "files": [
         "./src/main/Ticker.ts",
         "./src/test/test.ts",
+        "./typings/kevoree-model/kevoree-model.d.ts",
         "./typings/node/node.d.ts",
         "./typings/tsd.d.ts"
     ]

@@ -1,4 +1,4 @@
-import { Component, Output, Param } from 'kevoree-api';
+import { Component, Output, Param, DataType } from 'kevoree-api';
 
 @Component({
   desc: 'By default, the ticker will send the current timestamp in milliseconds'
@@ -9,7 +9,7 @@ import { Component, Output, Param } from 'kevoree-api';
 class Ticker {
   private timerId: any;
 
-  @Param({ defaultValue: 3000 })
+  @Param({ defaultValue: 3000, datatype: DataType.INTEGER })
   private delay: number;
 
   @Param({ defaultValue: false })
