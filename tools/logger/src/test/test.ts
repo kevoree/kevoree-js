@@ -13,10 +13,10 @@ function print(log: Logger) {
   // log.warn('amet consectetur');
   // log.error('adipiscing elit');
   // console.log('=============');
-  // log.debug('lorem', 'ipsum');
-  // log.info('dolor','sit');
-  log.warn('amet','consec\ntetur', '\n');
-  // log.error('adipiscing','elit');
+  log.debug('lorem', 'ipsum');
+  log.info('dolor sit');
+  log.warn('amet','consec\ntetur');
+  log.error((<any> new Error('Something')).stack);
 }
 
 print(log);
