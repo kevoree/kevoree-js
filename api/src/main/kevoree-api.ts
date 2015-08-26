@@ -1,4 +1,3 @@
-import { Injectable } from 'ts-injector';
 require('reflect-metadata');
 
 function typeDefinition(target: any, meta: TypeMeta) {

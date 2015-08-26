@@ -1,0 +1,44 @@
+{
+    "version": "1.5.0-beta",
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "isolatedModules": false,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "declaration": false,
+        "noImplicitAny": true,
+        "removeComments": true,
+        "noLib": false,
+        "preserveConstEnums": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "outDir": "build"
+    },
+    "filesGlob": [
+        "./src/**/*.ts",
+        "./typings/**/*.d.ts",
+        "!./node_modules/**/*"
+    ],
+    "files": [
+        "./src/main/KevScript.ts",
+        "./src/main/ast.d.ts",
+        "./src/main/parser.ts",
+        "./src/main/statements/add.ts",
+        "./src/main/statements/index.ts",
+        "./src/main/statements/instancePath.ts",
+        "./src/main/statements/nameList.ts",
+        "./src/main/statements/set.ts",
+        "./src/main/statements/string.ts",
+        "./src/main/statements/string2.ts",
+        "./src/main/statements/string3.ts",
+        "./src/main/statements/typeDef.ts",
+        "./src/main/statements/typeFQN.ts",
+        "./src/main/statements/version.ts",
+        "./src/test/test.ts",
+        "./typings/async/async.d.ts",
+        "./typings/mocha/mocha.d.ts",
+        "./typings/node/node.d.ts",
+        "./typings/shortid/shortid.d.ts",
+        "./typings/tsd.d.ts"
+    ]
+}

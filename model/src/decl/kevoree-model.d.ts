@@ -1092,7 +1092,7 @@ declare module org {
                         save(callback: org.kevoree.modeling.KCallback<any>): void;
                         getRoot(universe: number, time: number, callback: org.kevoree.modeling.KCallback<any>): void;
                         setRoot(newRoot: org.kevoree.modeling.KObject, callback: org.kevoree.modeling.KCallback<any>): void;
-                        model(): org.kevoree.modeling.KModel<any>;
+                        model(): org.kevoree.modeling.KModel<org.KevoreeUniverse>;
                         connect(callback: org.kevoree.modeling.KCallback<any>): void;
                         close(callback: org.kevoree.modeling.KCallback<any>): void;
                     }

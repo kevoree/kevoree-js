@@ -1,0 +1,25 @@
+{
+  "name": "kevoree-kevscript",
+  "version": "4.0.0-alpha",
+  "description": "Kevoree KevScript interpretor",
+  "main": "build/main/KevScript.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "async": "^1.4.2",
+    "kevoree-model": "^6.0.0-alpha",
+    "shortid": "^2.2.2",
+    "waxeye": "^0.8.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "mocha build/test"
+  },
+  "keywords": [
+    "kevoree",
+    "kevscript"
+  ],
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "license": "LGPL-3.0"
+}

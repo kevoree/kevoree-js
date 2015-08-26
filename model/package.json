@@ -2,12 +2,12 @@
   "name": "kevoree-model",
   "version": "6.0.0-alpha",
   "description": "Kevoree model generated with KMFv4 using org.kevoree.mm v6\"",
-  "main": "kevoree-model.js",
+  "main": "build/main/kevoree-model.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "typescript": {
-    "definitions": "kevoree-model.d.ts"
+    "definitions": "src/decl/kevoree-model.d.ts"
   },
   "author": "",
   "license": "ISC"

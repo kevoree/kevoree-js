@@ -6,7 +6,7 @@ var NAME_PATTERN = /^[\w-]+$/;
 
 export class Core extends EventEmitter {
   @Inject('Logger')
-  private logger: Logger;
+  private logger: KevoreeLogger.Logger;
 
   private nodeName: string;
   private nodeInstance: Object;
