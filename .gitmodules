@@ -18,7 +18,7 @@
 	url = https://github.com/kevoree/kevoree-js-comp-ticker
 [submodule "libraries/node/javascript"]
 	path = libraries/node/javascript
-	url = https://github.com/kevoree/kevoree-js-node-javascript
+	url = git@github.com:kevoree/kevoree-js-node-javascript.git
 [submodule "libraries/comp/consoleprinter"]
 	path = libraries/comp/consoleprinter
 	url = https://github.com/kevoree/kevoree-js-comp-consoleprinter
