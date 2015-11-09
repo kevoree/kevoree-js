@@ -1,4 +1,4 @@
-import { LoggerImpl } from 'kevoree-logger';
+import { Logger } from 'kevoree-logger';
 import { Injector } from 'ts-injector';
 import { Core } from 'kevoree-core';
 
@@ -8,14 +8,10 @@ export class Runtime {
   private logger: Logger;
   private core: Core;
 
-  constructor(logger: Logger) {
-    if (!logger) {
-      throw new Error('You must give a logger instance to the runtime');
-    }
+  constructor() {
     this.injector = new Injector();
-    this.logger = logger;
 
-    this.injector.register('Logger', this.logger);
+    this.injector.register(LoggerImpl, this.logger);
 
     this.core = new Core();
     this.injector.inject(this.core);

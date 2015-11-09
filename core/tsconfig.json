@@ -26,5 +26,6 @@
         "./typings/mocha/mocha.d.ts",
         "./typings/node/node.d.ts",
         "./typings/tsd.d.ts"
-    ]
+    ],
+    "exclude": []
 }

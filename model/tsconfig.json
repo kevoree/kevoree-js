@@ -24,7 +24,6 @@
     "files": [
         "./src/main/kevoree-model.ts",
         "./src/test/test.ts",
-        "./typings/mocha/mocha.d.ts",
-        "./typings/node/node.d.ts"
+        "./typings/mocha/mocha.d.ts"
     ]
 }

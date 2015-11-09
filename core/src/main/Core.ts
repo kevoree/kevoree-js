@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { Inject } from 'ts-injector';
+import injector = require('ts-injector');
 import { org } from 'kevoree-model';
 
 var NAME_PATTERN = /^[\w-]+$/;
@@ -37,7 +37,7 @@ export class Core extends EventEmitter {
         var kModel = new org.KevoreeModel(dm);
         var kView = kModel.universe(0).time(0);
 
-        kModel.connect((e) => {
+        kModel.connect((e: any) => {
           if (e) {
             cb(e);
           } else {

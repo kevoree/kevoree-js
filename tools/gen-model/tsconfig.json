@@ -11,17 +11,17 @@
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
-        "outDir": "build"
+        "outDir": "built"
     },
     "filesGlob": [
-        "./src/**/*.ts",
-        "./typings/**/*.ts",
-        "!./node_modules/**/*"
+        "src/**/*.ts",
+        "typings/**/*.ts",
+        "!node_modules/**/*"
     ],
     "files": [
-        "./src/main/GenModel.ts",
-        "./src/test/test.ts",
-        "./typings/node/node.d.ts",
-        "./typings/tsd.d.ts"
+        "src/main/GenModel.ts",
+        "src/test/test.ts",
+        "typings/node/node.d.ts",
+        "typings/tsd.d.ts"
     ]
 }

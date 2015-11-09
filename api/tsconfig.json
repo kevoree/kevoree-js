@@ -8,18 +8,17 @@
         "emitDecoratorMetadata": true,
         "noImplicitAny": true,
         "removeComments": true,
-        "declaration": false,
+        "declaration": true,
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
-        "outDir": "../built"
+        "outDir": "built"
     },
     "filesGlob": [
-        "**/*.ts"
+        "src/**/*.ts"
     ],
     "files": [
-        "main/kevoree-api.d.ts",
-        "main/kevoree-api.ts",
-        "test/test.ts"
+        "src/main/kevoree-api.ts",
+        "src/test/test.ts"
     ]
 }

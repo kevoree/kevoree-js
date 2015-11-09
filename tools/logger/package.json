@@ -2,11 +2,11 @@
   "name": "kevoree-logger",
   "version": "1.0.0",
   "description": "Kevoree Logger",
-  "main": "build/main/kevoree-logger.js",
+  "main": "built/main/kevoree-logger.js",
   "scripts": {
     "test": "node built/test/test.js"
   },
-  "typings": "src/main/kevoree-logger.d.ts",
+  "typings": "built/main/kevoree-logger.d.ts",
   "keywords": [
     "kevoree",
     "logger",

@@ -11,8 +11,7 @@ declare module 'kevoree-core' {
   import { org } from 'kevoree-model';
 
   export class Core extends EventEmitter {
-    start(name: string, cb: Callback): void
-    stop(): void
-    deploy(model: org.kevoree.Model, cb: DeployCallback): void
-  }
+    start(name: string, cb: Callback): void;
+    stop(): void;
+    deploy(model: org.kevoree.Model, cb: DeployCallback): void;  }
 }

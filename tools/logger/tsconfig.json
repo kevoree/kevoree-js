@@ -23,7 +23,6 @@
     "files": [
         "typings/chalk/chalk.d.ts",
         "typings/tsd.d.ts",
-        "src/main/kevoree-logger.d.ts",
         "src/main/kevoree-logger.ts",
         "src/test/test.ts"
     ]
