@@ -1,5 +1,3 @@
-/// <reference path="../../src/decl/kevoree-logger.d.ts"/>
-
 import { LoggerFactory, LogLevel, Logger } from '../main/kevoree-logger';
 
 var log = LoggerFactory.createLogger('MyTag', 'log');

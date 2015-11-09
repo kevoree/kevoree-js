@@ -4,11 +4,9 @@
   "description": "Kevoree Logger",
   "main": "build/main/kevoree-logger.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node built/test/test.js"
   },
-  "typescript": {
-    "definitions": "src/decl/kevoree-logger.d.ts"
-  },
+  "typings": "src/main/kevoree-logger.d.ts",
   "keywords": [
     "kevoree",
     "logger",

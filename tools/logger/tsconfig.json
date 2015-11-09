@@ -3,6 +3,7 @@
     "compilerOptions": {
         "target": "es5",
         "module": "commonjs",
+        "moduleResolution": "node",
         "isolatedModules": false,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
@@ -12,18 +13,18 @@
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
-        "outDir": "build"
+        "outDir": "built"
     },
     "filesGlob": [
-        "./typings/**/*.ts",
-        "./src/**/*.ts",
-        "!./src/decl/**/*",
-        "!./node_modules/**/*"
+        "typings/**/*.ts",
+        "src/**/*.ts",
+        "!node_modules/**/*"
     ],
     "files": [
-        "./typings/chalk/chalk.d.ts",
-        "./typings/tsd.d.ts",
-        "./src/main/kevoree-logger.ts",
-        "./src/test/test.ts"
+        "typings/chalk/chalk.d.ts",
+        "typings/tsd.d.ts",
+        "src/main/kevoree-logger.d.ts",
+        "src/main/kevoree-logger.ts",
+        "src/test/test.ts"
     ]
 }
