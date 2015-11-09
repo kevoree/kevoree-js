@@ -1,25 +1,4 @@
-declare interface ModelService {
-  getName(): string;
-  getPath(): string;
-  getNodeName(): string;
-  getCurrentModel(): Object;
-  getDeployingModel(): Object;
-  getModelInstance(): Object;
-  deploy(model: any, done: Callback): void;
-}
-
-declare interface OutputPort {
-  send(msg: string): void;
-  send(msg: string, cb: Callback): void;
-}
-
-declare interface Callback {
-  (err?: Error): void;
-}
-
 declare module 'kevoree-api' {
-  import { org } from 'kevoree-model';
-
   export function Channel(meta?: TypeMeta): (target: any) => void;
   export function Component(meta?: TypeMeta): (target: any) => void;
   export function Group(meta?: TypeMeta): (target: any) => void;
@@ -27,6 +6,25 @@ declare module 'kevoree-api' {
   export function Input(schema?: Object): (target: any, propertyKey: string) => void;
   export function Output(schema?: Object): (target: any, propertyKey: string) => void;
   export function Param(meta?: ParamMeta): (target: any, propertyKey: string) => void;
+
+  interface ModelService {
+    getName(): string;
+    getPath(): string;
+    getNodeName(): string;
+    getCurrentModel(): Object;
+    getDeployingModel(): Object;
+    getModelInstance(): Object;
+    deploy(model: any, done: Callback): void;
+  }
+
+  interface OutputPort {
+    send(msg: string): void;
+    send(msg: string, cb: Callback): void;
+  }
+
+  interface Callback {
+    (err?: Error): void;
+  }
 
   export class MetaData {
     static TYPE: string;
@@ -60,7 +58,7 @@ declare module 'kevoree-api' {
   }
 
   export module Injectables {
-    export class LoggerService {}
+    export class LoggerService  {}
     export class ModelService {}
   }
 

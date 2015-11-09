@@ -1,8 +1,8 @@
 {
-    "version": "1.5.3",
     "compilerOptions": {
         "target": "es5",
         "module": "commonjs",
+        "moduleResolution": "node",
         "isolatedModules": false,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
@@ -12,18 +12,14 @@
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
-        "outDir": "build"
+        "outDir": "../built"
     },
     "filesGlob": [
-        "./src/**/*.ts",
-        "./typings/**/*.ts",
-        "!./node_modules/**/*"
+        "**/*.ts"
     ],
     "files": [
-        "./src/main/kevoree-api.d.ts",
-        "./src/main/kevoree-api.ts",
-        "./src/test/test.ts",
-        "./typings/node/node.d.ts",
-        "./typings/tsd.d.ts"
+        "main/kevoree-api.d.ts",
+        "main/kevoree-api.ts",
+        "test/test.ts"
     ]
 }

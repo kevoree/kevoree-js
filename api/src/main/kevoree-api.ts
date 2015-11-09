@@ -1,4 +1,4 @@
-require('reflect-metadata');
+import 'reflect-metadata';
 
 function typeDefinition(target: any, meta: TypeMeta) {
   Reflect.defineMetadata(MetaData.NAME, target.name, target.prototype);

@@ -4,11 +4,12 @@
   "description": "Kevoree component library",
   "main": "build/main/kevoree-api.js",
   "dependencies": {
-    "reflect-metadata": "^0.1.0"
+    "reflect-metadata": "^0.1.2"
   },
   "typescript": {
-    "definitions": "src/main/kevoree-api.d.ts"
+    "definitions": "lib/kevoree-api.d.ts"
   },
+  "typings": "lib/kevoree-api.d.ts",
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
