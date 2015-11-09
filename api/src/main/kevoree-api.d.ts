@@ -3,6 +3,9 @@ declare module 'kevoree-api' {
   export function Component(meta?: TypeMeta): (target: any) => void;
   export function Group(meta?: TypeMeta): (target: any) => void;
   export function Node(meta?: TypeMeta): (target: any) => void;
+  export function Start(async?: boolean): (target: any, funcName: string) => void;
+  export function Stop(async?: boolean): (target: any, funcName: string) => void;
+  export function Update(async?: boolean): (target: any, funcName: string) => void;
   export function Input(schema?: Object): (target: any, propertyKey: string) => void;
   export function Output(schema?: Object): (target: any, propertyKey: string) => void;
   export function Param(meta?: ParamMeta): (target: any, propertyKey: string) => void;
@@ -28,6 +31,9 @@ declare module 'kevoree-api' {
 
   export class MetaData {
     static TYPE: string;
+    static START: string;
+    static STOP: string;
+    static UPDATE: string;
     static META: string;
     static NAME: string;
     static PARAMS: string;
@@ -55,11 +61,6 @@ declare module 'kevoree-api' {
 
   export enum DataType {
     STRING, BOOLEAN, INTEGER, DECIMAL, LIST, CHAR
-  }
-
-  export module Injectables {
-    export class LoggerService  {}
-    export class ModelService {}
   }
 
   export enum Types {

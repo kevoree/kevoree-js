@@ -1,5 +1,5 @@
 import {
-    Component, Param, Input, Output, DataType
+    Component, Param, Input, Output, DataType, Start, Stop, Update, Callback
 } from '../main/kevoree-api';
 
 @Component()
@@ -10,6 +10,26 @@ class TestComp {
 
     @Input()
     input(): void {
+
+    }
+
+    @Start()
+    start(): void {
+
+    }
+
+    @Stop()
+    stop(): void {
+
+    }
+
+    @Update()
+    update(): void {
+
+    }
+
+    @Update()
+    update2(): void {
 
     }
 }

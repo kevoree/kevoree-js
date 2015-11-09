@@ -6,10 +6,7 @@
   "dependencies": {
     "reflect-metadata": "^0.1.2"
   },
-  "typescript": {
-    "definitions": "lib/kevoree-api.d.ts"
-  },
-  "typings": "lib/kevoree-api.d.ts",
+  "typings": "src/main/kevoree-api.d.ts",
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

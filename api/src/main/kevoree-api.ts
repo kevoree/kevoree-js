@@ -42,6 +42,41 @@ export function Node(meta?: TypeMeta) {
   };
 }
 
+function lifecycleMethod(async: boolean, name: string, meta: string) {
+    return function (target: any, funcName: string) {
+        if (Reflect.hasMetadata(meta, target)) {
+            throw new Error(`Only one method must be annotated with @${name}`);
+        }
+
+        var params: any[] = Reflect.getMetadata('design:paramtypes', target, funcName);
+        if (async) {
+            if (params.length === 1 && params[0] instanceof Function) {
+                Reflect.defineMetadata(meta, true, target); // true => asynchronous
+            } else {
+                throw new Error(`Asynchronous @${name} expects a callback parameter in the method signature (eg. ${target.constructor.name}.${funcName}(done: Callback))`);
+            }
+        } else {
+            if (params.length === 0) {
+                Reflect.defineMetadata(meta, false, target); // false => synchronous
+            } else {
+                throw new Error(`Synchronous @${name} method signature should not define parameters (eg. ${target.constructor.name}.${funcName}())`);
+            }
+        }
+    };
+}
+
+export function Start(async: boolean = false) {
+    return lifecycleMethod(async, 'Start', MetaData.START);
+}
+
+export function Stop(async: boolean = false) {
+    return lifecycleMethod(async, 'Stop', MetaData.STOP);
+}
+
+export function Update(async: boolean = false) {
+    return lifecycleMethod(async, 'Update', MetaData.UPDATE);
+}
+
 export function Input(schema?: Object) {
   return function (target: any, propertyKey: string) {
     Reflect.defineMetadata(MetaData.MSG_SCHEMA, schema, target, propertyKey);
@@ -92,13 +127,15 @@ export function Param(meta?: ParamMeta) {
 
 export class MetaData {
   static TYPE:       string = 'kevoree:type';
+  static START:      string = 'kevoree:start';
+  static STOP:       string = 'kevoree:stop';
+  static UPDATE:     string = 'kevoree:update';
   static META:       string = 'kevoree:meta';
   static NAME:       string = 'kevoree:name';
   static PARAMS:     string = 'kevoree:params';
   static INPUTS:     string = 'kevoree:inputs';
   static OUTPUTS:    string = 'kevoree:outputs';
   static MSG_SCHEMA: string = 'kevoree:msg_schema';
-  static ASYNC:      string = 'kevoree:async';
 }
 
 export interface ParamMeta {
@@ -118,13 +155,12 @@ export interface ParamData {
   meta: ParamMeta
 }
 
-export module Injectables {
-  export class LoggerService {}
-  export class ModelService {}
-}
-
 export interface TypeMeta {
   desc?: string
+}
+
+export interface Callback {
+    (err?: Error): void;
 }
 
 export enum Types {
