@@ -2,7 +2,8 @@
   "name": "kevoree-core",
   "version": "1.0.0",
   "description": "Kevoree core",
-  "main": "build/main/Core.js",
+  "main": "built/main/kevoree-core.js",
+  "typings": "built/main/kevoree-core.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,7 +16,5 @@
   ],
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "license": "LGPL-3.0",
-  "dependencies": {
-    "kevoree-library": "^5.0.9"
-  }
+  "dependencies": {}
 }

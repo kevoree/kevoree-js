@@ -1,17 +1,15 @@
-/// <reference path="../../typings/mocha/mocha.d.ts" />
-
 import * as Assert from 'assert';
-import { LoggerImpl, LogLevel } from 'kevoree-logger';
+import { LoggerFactory, LoggerImpl, LogLevel } from 'kevoree-logger';
 import { Injector, Context }    from 'ts-injector';
-import { Core }       from '../main/Core';
-import { org }        from 'kevoree-model'
+import { Core }       from '../main/kevoree-core';
+import { org }        from 'kevoree-model';
 
 describe('Core', () => {
   var injector = new Injector();
-  var logger = new LoggerImpl((<any> Core).name);
+  var logger = LoggerFactory.createLogger((<any> Core).name, 'core');
   logger.setLevel(LogLevel.QUIET);
   var ctx = new Context();
-  ctx.register('Logger', logger);
+  ctx.register(LoggerImpl, logger);
   var core = new Core();
   injector.inject(core, ctx);
 

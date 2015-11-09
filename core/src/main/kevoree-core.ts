@@ -1,12 +1,13 @@
 import { EventEmitter } from 'events';
-import injector = require('ts-injector');
+import { Inject } from 'ts-injector';
 import { org } from 'kevoree-model';
+import { Logger, LoggerImpl } from 'kevoree-logger';
 
 var NAME_PATTERN = /^[\w-]+$/;
 
 export class Core extends EventEmitter {
-  @Inject('Logger')
-  private logger: KevoreeLogger.Logger;
+  @Inject(LoggerImpl)
+  private logger: Logger;
 
   private nodeName: string;
   private nodeInstance: Object;

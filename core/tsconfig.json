@@ -3,29 +3,28 @@
     "compilerOptions": {
         "target": "es5",
         "module": "commonjs",
+        "moduleResolution": "node",
         "isolatedModules": false,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "noImplicitAny": true,
+        "declaration": true,
         "removeComments": true,
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
-        "outDir": "build"
+        "outDir": "built"
     },
     "filesGlob": [
-        "./src/**/*.ts",
-        "./typings/**/*.ts",
-        "!./node_modules/**/*"
+        "src/**/*.ts",
+        "typings/**/*.ts"
     ],
     "files": [
-        "./src/main/Core.ts",
-        "./src/main/kevoree-core.d.ts",
-        "./src/test/test.ts",
-        "./typings/kevoree-logger/kevoree-logger.d.ts",
-        "./typings/mocha/mocha.d.ts",
-        "./typings/node/node.d.ts",
-        "./typings/tsd.d.ts"
+        "src/main/kevoree-core.ts",
+        "src/test/test.ts",
+        "typings/mocha/mocha.d.ts",
+        "typings/node/node.d.ts",
+        "typings/tsd.d.ts"
     ],
     "exclude": []
 }
