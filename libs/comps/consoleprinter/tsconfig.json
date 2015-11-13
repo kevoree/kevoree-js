@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "outDir": "built"
+    },
+    "filesGlob": [
+        "src/**/*.ts"
+    ],
+    "files": [
+        "src/main/ConsolePrinter.ts",
+        "src/test/ContextServiceImpl.ts",
+        "src/test/ModelServiceImpl.ts",
+        "src/test/OutputPortImpl.ts",
+        "src/test/test.ts"
+    ]
+}
