@@ -15,12 +15,10 @@
         "outDir": "built"
     },
     "filesGlob": [
-        "src/**/*.ts",
-        "typings/**/*.d.ts"
+        "src/**/*.ts"
     ],
     "files": [
-        "src/main/kevoree-model.ts",
-        "src/test/test.ts",
-        "typings/mocha/mocha.d.ts"
+        "src/main/model.ts",
+        "src/test/test.ts"
     ]
 }

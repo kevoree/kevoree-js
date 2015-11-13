@@ -1,4 +1,5 @@
-import { org } from '../main/kevoree-model';
+/**
+import { org } from '../main/model';
 
 describe('Kevoree model tests', () => {
   var dm = org.kevoree.modeling.memory.manager.DataManagerBuilder.buildDefault();
@@ -23,3 +24,4 @@ describe('Kevoree model tests', () => {
 
   })
 })
+**/

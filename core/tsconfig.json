@@ -20,6 +20,7 @@
         "typings/**/*.ts"
     ],
     "files": [
+        "src/main/Core.ts",
         "src/main/kevoree-core.ts",
         "src/test/test.ts",
         "typings/mocha/mocha.d.ts",
