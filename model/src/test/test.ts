@@ -7,17 +7,89 @@ describe('Kevoree model tests', () => {
     kModel.connect(() => {
         var kView = kModel.universe(0).time(0);
         var model = kView.createModel();
-        var listener = kModel.createListener(0);
-        listener.listen(model);
-        listener.then((o: org.kevoree.Element) => {
-            console.log('Updated', o.toJSON());
-        });
 
-        it('add node', (done: MochaDone) => {
+        it('create and add node', () => {
             var node = kView.createNode();
             node.setName('myNode');
             model.addNodes(node);
-            done();
+        });
+
+        it('create and add component inside the node', (done: MochaDone) => {
+            model.getNodes(nodes => {
+                var comp = kView.createComponent();
+                comp.setName('myComp');
+                comp.addHost(nodes[0]);
+                nodes[0].addComponents(comp);
+                done();
+            });
+        });
+
+        it('create and add subNode inside the node', (done: MochaDone) => {
+            model.getNodes(nodes => {
+                var subNode = kView.createNode();
+                subNode.setName('mySubNode');
+                subNode.addHost(nodes[0]);
+                nodes[0].addSubNodes(subNode);
+                done();
+            });
+        });
+
+        it('create and add group', () => {
+            var group = kView.createGroup();
+            group.setName('myGroup');
+            model.addGroups(group);
+        });
+
+        it('create and add channel', () => {
+            var channel = kView.createChannel();
+            channel.setName('myChan');
+            model.addChannels(channel);
+        });
+
+        it('create and add a namespace', () => {
+            var ns = kView.createNamespace();
+            ns.setName('kevoree');
+            model.addNamespaces(ns);
+        });
+
+        it('create and add a node typeDef inside the namespace', (done: MochaDone) => {
+            model.getNamespaces(namespaces => {
+                var type = kView.createNodeType();
+                type.setName('JavascriptNode');
+                type.setVersion('1');
+                namespaces[0].addTypeDefinitions(type);
+                done();
+            });
+        });
+
+        it('create and add a group typeDef inside the namespace', (done: MochaDone) => {
+            model.getNamespaces(namespaces => {
+                var type = kView.createGroupType();
+                type.setName('WSGroup');
+                type.setVersion('1');
+                namespaces[0].addTypeDefinitions(type);
+                done();
+            });
+        });
+
+        it('create and add a channel typeDef inside the namespace', (done: MochaDone) => {
+            model.getNamespaces(namespaces => {
+                var type = kView.createChannelType();
+                type.setName('WSChan');
+                type.setVersion('1');
+                namespaces[0].addTypeDefinitions(type);
+                done();
+            });
+        });
+
+        it('create and add a component typeDef inside the namespace', (done: MochaDone) => {
+            model.getNamespaces(namespaces => {
+                var type = kView.createComponentType();
+                type.setName('Ticker');
+                type.setVersion('1');
+                namespaces[0].addTypeDefinitions(type);
+                done();
+            });
         });
     })
 });
