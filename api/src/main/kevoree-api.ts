@@ -21,3 +21,5 @@ export * from './services/Injectables';
 export * from './Callback';
 export * from './DataType';
 export * from './TypeEnum';
+
+export * from './port/OutputPort';

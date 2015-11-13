@@ -1,6 +1,6 @@
 import {
     Component, Output, Param, DataType, Injectables, ModelService,
-    ContextService, Callback
+    ContextService, Callback, OutputPort
 } from 'kevoree-api';
 import { Inject } from 'ts-injector';
 import { Logger } from 'kevoree-logger';
@@ -20,8 +20,8 @@ class Ticker {
   @Param({ defaultValue: false })
   private random: boolean;
 
-  // @Output({ type: 'string' })
-  // private tick: OutputPort;
+  @Output({ type: 'string' })
+  private tick: OutputPort;
 
   @Inject(Injectables.LoggerService)
   private log: Logger;
@@ -41,17 +41,17 @@ class Ticker {
       } else {
         val = new Date().getTime()+'';
       }
-    //   this.tick.send(val);
+      this.tick.send(val);
     }, this.delay);
   }
 
   stop(): void {
-    this.log.warn('Stopping');
+    this.log.info('Stopping');
     clearInterval(this.timerId);
   }
 
   update(): void {
-    this.log.debug('Updating');
+    this.log.info('Updating');
     this.stop();
     this.start();
   }
