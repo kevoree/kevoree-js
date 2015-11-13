@@ -12,11 +12,11 @@
         "outDir": "built"
     },
     "filesGlob": [
-        "src/**/*.ts",
-        "!node_modules/**"
+        "src/**/*.ts"
     ],
     "files": [
         "src/main/JavascriptNode.ts",
+        "src/test/ContextServiceImpl.ts",
         "src/test/ModelServiceImpl.ts",
         "src/test/test.ts"
     ]

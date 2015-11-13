@@ -1,46 +1,32 @@
-/// <reference path="../../node_modules/reflect-metadata/reflect-metadata.d.ts"/>
-
-import { MetaData, ParamData, Injectables } from 'kevoree-api';
+import { Injectables } from 'kevoree-api';
 import { Injector, Context } from 'ts-injector';
-import { LoggerFactory } from 'kevoree-logger';
-require('reflect-metadata');
+import { ModelServiceImpl } from './ModelServiceImpl';
+import { ContextServiceImpl } from './ContextServiceImpl';
+import { LoggerImpl, LoggerFactory } from 'kevoree-logger';
 import Ticker = require('../main/Ticker');
 
-var t = new Ticker();
+// create an injector
+var di = new Injector();
+var modelService = new ModelServiceImpl();
+di.register(Injectables.ModelService, modelService);
 
-Reflect.getMetadata(MetaData.OUTPUTS, Ticker.prototype).forEach((name: string) => {
-  t[name] = {
-    send(msg: string, cb?: Callback): void {
-      console.log(`need to send ${msg}`);
-    }
-  };
-});
+// contextual injector for the node
+var ctx = new Context();
+ctx.register(Injectables.LoggerService, LoggerFactory.createLogger('Ticker', 'comp'));
+ctx.register(Injectables.ContextService, new ContextServiceImpl('comp', 'node0'));
 
-var injector = new Injector();
-var context = new Context();
-var logger = LoggerFactory.createLogger('TypeDefinition', 'tdef');
-logger.debug('lorem ipsum');
-logger.info('dolor sit');
-logger.warn('amet consectetur');
-logger.error('adipiscing elit');
-context.register(Injectables.LoggerService, LoggerFactory.createLogger((<any> Ticker).name, 'ticker'));
-context.register(Injectables.ModelService, {
-  getName:     function () { return 'ticker'; },
-  getNodeName: function () { return 'node0';  }
-});
-injector.inject(t, context);
+// create a node instance
+var comp = new Ticker();
 
-var noop = () => { };
+// inject services in instance
+di.inject(comp, ctx);
 
-Reflect.getMetadata(MetaData.PARAMS, Ticker.prototype).forEach((param: ParamData) => {
-  t[param.name] = param.meta.defaultValue;
-});
-t.start(noop);
+// start instance
+comp.start();
+
+// update instance
+comp.update();
 
 setTimeout(() => {
-  console.log('adapting...');
-  t['delay'] = 500;
-  t['random'] = true;
-  t.update(noop);
-  console.log('adapted');
-}, 5000);
+    comp.stop();
+}, 2000);
