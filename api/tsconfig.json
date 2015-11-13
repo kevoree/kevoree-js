@@ -18,7 +18,29 @@
         "src/**/*.ts"
     ],
     "files": [
+        "src/main/annotations/Channel.ts",
+        "src/main/annotations/Component.ts",
+        "src/main/annotations/Group.ts",
+        "src/main/annotations/Input.ts",
+        "src/main/annotations/metas/MetaData.ts",
+        "src/main/annotations/metas/ParamData.ts",
+        "src/main/annotations/metas/ParamMeta.ts",
+        "src/main/annotations/metas/TypeMeta.ts",
+        "src/main/annotations/Node.ts",
+        "src/main/annotations/Output.ts",
+        "src/main/annotations/Param.ts",
+        "src/main/annotations/Start.ts",
+        "src/main/annotations/Stop.ts",
+        "src/main/annotations/Update.ts",
+        "src/main/Callback.ts",
+        "src/main/DataType.ts",
         "src/main/kevoree-api.ts",
+        "src/main/services/ContextService.ts",
+        "src/main/services/Injectables.ts",
+        "src/main/services/ModelService.ts",
+        "src/main/TypeEnum.ts",
+        "src/main/util/lifecycleMethod.ts",
+        "src/main/util/typeDefinition.ts",
         "src/test/test.ts"
     ]
 }

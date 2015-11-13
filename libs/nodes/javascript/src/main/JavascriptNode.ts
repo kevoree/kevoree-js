@@ -1,20 +1,23 @@
-import { ModelService, Node, Start, Stop } from 'kevoree-api';
+import { Node, Start, Stop, Injectables, ModelService, ContextService } from 'kevoree-api';
 import { Inject } from 'ts-injector';
-import { Logger, LoggerImpl } from 'kevoree-logger';
+import { Logger } from 'kevoree-logger';
 
 @Node({ desc: '<strong>TODO</strong> JavascriptNode description' })
 class JavascriptNode {
 
-    @Inject(LoggerImpl)
+    @Inject(Injectables.LoggerService)
     private logger: Logger;
 
-    @Inject(null)
+    @Inject(Injectables.ModelService)
     private modelService: ModelService;
+
+    @Inject(Injectables.ContextService)
+    private context: ContextService;
 
     @Start()
     start(): void {
         this.logger.info('Node started');
-
+        this.modelService.submitScript(`add ${this.context.getInstanceName()}.ticker: Ticker`);
     }
 
     @Stop()

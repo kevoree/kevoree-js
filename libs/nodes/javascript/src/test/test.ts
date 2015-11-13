@@ -1,16 +1,19 @@
+import { Injectables } from 'kevoree-api';
 import { Injector, Context } from 'ts-injector';
 import { ModelServiceImpl } from './ModelServiceImpl';
+import { ContextServiceImpl } from './ContextServiceImpl';
 import { LoggerImpl, LoggerFactory } from 'kevoree-logger';
 import JavascriptNode = require('../main/JavascriptNode');
 
 // create an injector
 var di = new Injector();
-var ctx = new Context();
 var modelService = new ModelServiceImpl();
-var loggerService = LoggerFactory.createLogger('JavascriptNode', 'node0');
+di.register(Injectables.ModelService, modelService);
 
-ctx.register(ModelServiceImpl, modelService);
-ctx.register(LoggerImpl, loggerService);
+// contextual injector for the node
+var ctx = new Context();
+ctx.register(Injectables.LoggerService, LoggerFactory.createLogger('JavascriptNode', 'node0'));
+ctx.register(Injectables.ContextService, new ContextServiceImpl('node0', 'node0'));
 
 // create a node instance
 var node = new JavascriptNode();
