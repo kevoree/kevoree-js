@@ -15,10 +15,13 @@
         "outDir": "built"
     },
     "filesGlob": [
-        "src/**/*.ts"
+        "src/**/*.ts",
+        "typings/**/*.d.ts"
     ],
     "files": [
         "src/main/model.ts",
-        "src/test/test.ts"
+        "src/test/test.ts",
+        "typings/mocha/mocha.d.ts",
+        "typings/tsd.d.ts"
     ]
 }

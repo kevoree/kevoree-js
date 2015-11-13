@@ -5,7 +5,7 @@
   "main": "built/main/model.js",
   "typings": "built/main/model.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha built/test/test.js"
   },
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "license": "LGPL-3.0"
