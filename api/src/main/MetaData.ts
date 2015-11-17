@@ -5,6 +5,7 @@ export class MetaData {
   static UPDATE:     string = 'kevoree:update';
   static META:       string = 'kevoree:meta';
   static NAME:       string = 'kevoree:name';
+  static PARAM:      string = 'kevoree:param';
   static PARAMS:     string = 'kevoree:params';
   static INPUTS:     string = 'kevoree:inputs';
   static OUTPUTS:    string = 'kevoree:outputs';

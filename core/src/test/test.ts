@@ -23,4 +23,15 @@ describe('Core', () => {
       }
     });
   });
+
+  it('should stop the core', (done) => {
+      core.stop(done);
+  });
+
+  it('should not start with a wrong name "a b"', (done) => {
+      core.start('a b', (e) => {
+          Assert.notEqual(e, null);
+          done();
+      });
+  });
 });

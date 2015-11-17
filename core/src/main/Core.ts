@@ -1,16 +1,17 @@
 import { EventEmitter } from 'events';
-import { Inject } from 'ts-injector';
 import { org } from 'kevoree-model';
-import { Logger, LoggerImpl } from 'kevoree-logger';
+import { Logger, LoggerFactory } from 'kevoree-logger';
+import { Callback } from 'kevoree-api';
+import { DeployCallback } from './DeployCallback';
+import { NodeInstance } from './NodeInstance';
 
 var NAME_PATTERN = /^[\w-]+$/;
 
 export class Core extends EventEmitter {
-  @Inject({ name: 'LoggerService' })
-  private logger: Logger;
 
+  private logger: Logger;
   private nodeName: string;
-  private nodeInstance: Object;
+  private nodeInstance: NodeInstance;
   private pendingModels: Array<Item>;
   private currentModel: org.kevoree.Model;
   private deployingModel: org.kevoree.Model;
@@ -20,6 +21,7 @@ export class Core extends EventEmitter {
 
   constructor() {
     super();
+    this.logger = LoggerFactory.createLogger((<any> Core).name, 'core');
     this.isStarted = false;
     this.emitter = new EventEmitter();
     this.pendingModels = [];
@@ -101,13 +103,20 @@ export class Core extends EventEmitter {
     }
   }
 
-  stop(): void {
-    this.isStarted = false;
-    if (this.isDeploying) {
-      this.logger.info('Core stop requested, waiting for current deploy to finish...');
-    } else {
-      this.logger.info('Core stop requested...');
-    }
+  stop(cb: Callback): void {
+      if (this.isStarted) {
+          if (this.isDeploying) {
+
+          } else {
+              if (this.nodeInstance) {
+
+              } else {
+                  cb();
+              }
+          }
+      } else {
+          cb();
+      }
   }
 
   deploy(model: org.kevoree.Model, cb: DeployCallback): void {
@@ -133,16 +142,9 @@ export class Core extends EventEmitter {
       this.isDeploying = false;
       // callback the model deployer
       item.callback(null, true);
+      this.emit('deployed');
     }, 2000);
   }
-}
-
-export interface Callback {
-  (err?: Error): void;
-}
-
-export interface DeployCallback {
-  (err: Error, update: boolean): void;
 }
 
 class Item {

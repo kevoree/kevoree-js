@@ -1,8 +1,8 @@
 {
-    "version": "1.5.3",
     "compilerOptions": {
         "target": "es5",
         "module": "commonjs",
+        "moduleResolution": "node",
         "isolatedModules": false,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
@@ -11,20 +11,19 @@
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
-        "outDir": "build"
+        "outDir": "built"
     },
     "filesGlob": [
-        "./src/**/*.ts",
-        "./typings/**/*.ts",
-        "!./node_modules/**/*"
+        "src/**/*.ts",
+        "typings/**/*.ts"
     ],
     "files": [
-        "./src/bin/cli.ts",
-        "./src/main/runtime.ts",
-        "./src/test/test.ts",
-        "./typings/chalk/chalk.d.ts",
-        "./typings/commander/commander.d.ts",
-        "./typings/node/node.d.ts",
-        "./typings/tsd.d.ts"
+        "src/bin/cli.ts",
+        "src/main/runtime.ts",
+        "src/test/test.ts",
+        "typings/chalk/chalk.d.ts",
+        "typings/commander/commander.d.ts",
+        "typings/node/node.d.ts",
+        "typings/tsd.d.ts"
     ]
 }

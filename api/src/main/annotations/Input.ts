@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { MetaData } from './metas/MetaData';
+import { MetaData } from '../MetaData';
 
 export function Input(schema?: Object) {
   return function (target: any, propertyKey: string) {

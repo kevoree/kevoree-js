@@ -1,3 +1,3 @@
 export interface TypeMeta {
-  desc?: string
+  description?: string
 }

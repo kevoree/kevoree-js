@@ -1,4 +1,4 @@
-import { Node, Start, Stop, Injectables, ModelService, ContextService } from 'kevoree-api';
+import { Node, Start, Stop, Injectables, Param, DataType } from 'kevoree-api';
 import { Inject } from 'ts-injector';
 import { Logger } from 'kevoree-logger';
 
@@ -8,16 +8,12 @@ class JavascriptNode {
     @Inject(Injectables.LoggerService)
     private logger: Logger;
 
-    @Inject(Injectables.ModelService)
-    private modelService: ModelService;
-
-    @Inject(Injectables.ContextService)
-    private context: ContextService;
+    @Param({ datatype: DataType.LIST })
+    private logLevel: string;
 
     @Start()
     start(): void {
-        this.logger.info('Node started');
-        this.modelService.submitScript(`add ${this.context.getInstanceName()}.ticker: Ticker`);
+
     }
 
     @Stop()

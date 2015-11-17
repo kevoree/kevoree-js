@@ -1,23 +1,25 @@
-import { Logger } from 'kevoree-logger';
-import { Injector } from 'ts-injector';
+import { Logger, LoggerFactory } from 'kevoree-logger';
 import { Core } from 'kevoree-core';
 
 export class Runtime {
 
-  private injector: Injector;
-  private logger: Logger;
-  private core: Core;
+    private logger: Logger;
+    private core: Core;
 
-  constructor() {
-    this.injector = new Injector();
+    constructor() {
+        this.logger = LoggerFactory.createLogger((<any> Runtime).name, "runtime");
+        this.core = new Core();
+    }
 
-    this.injector.register(LoggerImpl, this.logger);
+    start(nodeName: string, cb: Callback): void {
+        this.core.start(nodeName, cb);
+    }
 
-    this.core = new Core();
-    this.injector.inject(this.core);
-  }
+    stop(cb: Callback): void {
+        this.core.stop(cb);
+    }
+}
 
-  start(name: string, cb: Callback): void {
-    this.core.start(name, cb);
-  }
+export interface Callback {
+    (e?: Error): void;
 }

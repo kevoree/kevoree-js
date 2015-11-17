@@ -21,7 +21,9 @@
     ],
     "files": [
         "src/main/Core.ts",
+        "src/main/DeployCallback.ts",
         "src/main/kevoree-core.ts",
+        "src/main/NodeInstance.ts",
         "src/test/test.ts",
         "typings/mocha/mocha.d.ts",
         "typings/node/node.d.ts",

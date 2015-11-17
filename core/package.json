@@ -7,9 +7,7 @@
   "scripts": {
     "test": "mocha built/test/test.js"
   },
-  "typescript": {
-    "definitions": "src/main/kevoree-core.d.ts"
-  },
+  "typings": "built/main/kevoree-core.d.ts",
   "keywords": [
     "kevoree",
     "core"

@@ -1,6 +1,6 @@
 export enum TypeEnum {
-  Node,
-  Group,
-  Channel,
-  Component
+  NODE,
+  GROUP,
+  CHANNEL,
+  COMPONENT
 }
