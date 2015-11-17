@@ -5,7 +5,7 @@ import {
 import * as Assert from 'assert';
 
 describe('Inputs annotations', () => {
-    describe('MetaData.INPUTS', () => {
+    it('contains every method name', () => {
         @Component()
         class MyComp {
             @Input()
@@ -18,26 +18,32 @@ describe('Inputs annotations', () => {
             in3(msg: string): void {}
         }
 
-        it('contains every method name', () => {
-            var inputs = Reflect.getMetadata(MetaData.INPUTS, MyComp.prototype);
-            Assert.deepEqual(inputs, ['in', 'in2', 'in3']);
-            inputs.forEach((input: string) => {
-                var schema = Reflect.getMetadata(MetaData.MSG_SCHEMA, MyComp.prototype, input);
-                Assert.equal(schema, undefined);
-            });
+        var inputs = Reflect.getMetadata(MetaData.INPUTS, MyComp.prototype);
+        Assert.deepEqual(inputs, ['in', 'in2', 'in3']);
+        inputs.forEach((input: string) => {
+            var schema = Reflect.getMetadata(MetaData.MSG_SCHEMA, MyComp.prototype, input);
+            Assert.equal(schema, undefined);
         });
     });
 
-    describe('@Input({ type: \'string\' })', () => {
+    it('MetaData.MSG_SCHEMA contains defined schema for specific method', () => {
         @Component()
         class MyComp {
             @Input({ type: 'string' })
             in(msg: string): void {}
         }
 
-        it('MetaData.MSG_SCHEMA contains defined schema for specific method', () => {
-            var schema = Reflect.getMetadata(MetaData.MSG_SCHEMA, MyComp.prototype, 'in');
-            Assert.deepEqual(schema, { type: 'string' });
+        var schema = Reflect.getMetadata(MetaData.MSG_SCHEMA, MyComp.prototype, 'in');
+        Assert.deepEqual(schema, { type: 'string' });
+    });
+
+    it('missing string parameter in signature must throw', () => {
+        Assert.throws(() => {
+            @Component()
+            class MyComp {
+                @Input()
+                in(): void {}
+            }
         });
     });
 });
