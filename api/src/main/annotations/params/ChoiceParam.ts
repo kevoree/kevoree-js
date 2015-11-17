@@ -11,6 +11,12 @@ export function ChoiceParam(meta?: ChoiceParamMeta) {
 
         meta['datatype'] = Reflect.getMetadata('design:type', target, propertyKey).name;
 
+        if (typeof meta.defaultIndex !== 'undefined') {
+            if (meta.defaultIndex > meta.choices.length - 1) {
+                throw new Error(`@ChoiceParam on ${propertyKey} defines a defaultIndex that is out of bound regarding the choices. (min: 0, max: ${meta.choices.length-1})`);
+            }
+        }
+
         var params = Reflect.getMetadata(MetaData.PARAMS, target);
         if (!params) {
             params = [];

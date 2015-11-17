@@ -8,7 +8,7 @@ export function lifecycleMethod(async: boolean, name: string, meta: string) {
 
         var params: any[] = Reflect.getMetadata('design:paramtypes', target, funcName);
         if (async) {
-            if (params.length === 1 && params[0] instanceof Function) {
+            if (params.length === 1 && params[0] === Function) {
                 var data: LifecycleMeta = { name: funcName, async: true };
                 Reflect.defineMetadata(meta, data, target);
             } else {

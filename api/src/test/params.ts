@@ -52,7 +52,7 @@ describe('Params annotations', () => {
             @ChoiceParam()
             private foo: string;
 
-            @ChoiceParam({ optional: false, default: 1, choices: ['one', 'two', 'three'] })
+            @ChoiceParam({ optional: false, defaultIndex: 1, choices: ['one', 'two', 'three'] })
             private bar: string;
         }
 
@@ -61,7 +61,7 @@ describe('Params annotations', () => {
             Assert.equal(data.optional, true);
             Assert.equal(data.fragment, false);
             Assert.deepEqual(data.choices, []);
-            Assert.equal(data.default, undefined);
+            Assert.equal(data.defaultIndex, undefined);
         });
 
         it('custom values', () => {
@@ -69,7 +69,17 @@ describe('Params annotations', () => {
             Assert.equal(data.optional, false);
             Assert.equal(data.fragment, false);
             Assert.deepEqual(data.choices, ['one', 'two', 'three']);
-            Assert.equal(data.default, 1);
+            Assert.equal(data.defaultIndex, 1);
+        });
+
+        it('wrong defaultIndex must throw', () => {
+            Assert.throws(() => {
+                @Component()
+                class WrongComp {
+                    @ChoiceParam({ choices: ['', ''], defaultIndex: 3 })
+                    private foo: string;
+                }
+            });
         });
     });
 });
