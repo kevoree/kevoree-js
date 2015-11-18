@@ -1,7 +1,7 @@
 import { Component, Input, Injectables, ContextService } from 'kevoree-api';
 import { Inject } from 'ts-injector';
 
-@Component({ desc: 'Prints out incoming messages to the terminal console' })
+@Component({ description: 'Prints out incoming messages to the terminal console' })
 class ConsolePrinter {
 
     @Inject(Injectables.ContextService)

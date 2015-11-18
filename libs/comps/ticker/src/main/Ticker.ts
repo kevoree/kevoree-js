@@ -1,23 +1,23 @@
 import {
-    Component, Output, Param, DataType, Injectables, ModelService,
+    Component, Output, IntParam, BooleanParam, Injectables, ModelService,
     ContextService, Callback, OutputPort
 } from 'kevoree-api';
 import { Inject } from 'ts-injector';
 import { Logger } from 'kevoree-logger';
 
 @Component({
-  desc: 'By default, the ticker will send the current timestamp in milliseconds'
-+ ' once every 3000ms. This can be tweaked using the <strong>delay</strong>'
-+ ' parameter. You can also change the output to a random number between'
-+ ' [0, 100[ by setting the attribute <strong>random</strong> to <strong>true'
-+ ' </strong>'})
+  description: 'By default, the ticker will send the current timestamp in '
++ ' milliseconds once every 3000ms. This can be tweaked using the '
++ ' <strong>delay</strong> parameter. You can also change the output to a '
++ ' random number between [0, 100[ by setting the attribute <strong>random'
++ '</strong> to <strong>true</strong>'})
 class Ticker {
   private timerId: any;
 
-  @Param({ defaultValue: 3000, datatype: DataType.INTEGER })
+  @IntParam({ default: 3000 })
   private delay: number;
 
-  @Param({ defaultValue: false })
+  @BooleanParam({ default: false })
   private random: boolean;
 
   @Output({ type: 'string' })

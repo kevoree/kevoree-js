@@ -1,20 +1,21 @@
-import { Node, Start, Stop, Injectables, Param, DataType } from 'kevoree-api';
+import { Node, Start, Stop, Injectables, ChoiceParam } from 'kevoree-api';
 import { Inject } from 'ts-injector';
 import { Logger } from 'kevoree-logger';
 
-@Node({ desc: '<strong>TODO</strong> JavascriptNode description' })
+@Node({ description: '<strong>TODO</strong> JavascriptNode description' })
 class JavascriptNode {
 
     @Inject(Injectables.LoggerService)
     private logger: Logger;
 
-    @Param({ datatype: DataType.LIST })
+    @ChoiceParam({
+        choices: ['DEBUG', 'INFO', 'WARN', 'ERROR', 'QUIET'],
+        defaultIndex: 1
+    })
     private logLevel: string;
 
     @Start()
-    start(): void {
-
-    }
+    start(): void {}
 
     @Stop()
     stop(): void {
