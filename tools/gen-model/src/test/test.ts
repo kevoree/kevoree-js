@@ -3,7 +3,7 @@ import { writeFile } from 'fs';
 import { resolve } from 'path';
 
 var g = new GenModel();
-g.generate((err, model) => {
+g.generate(process.cwd(), (err, model) => {
   if (err) {
     throw err;
   } else {

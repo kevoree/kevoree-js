@@ -14,7 +14,7 @@ import { Logger } from 'kevoree-logger';
 class Ticker {
   private timerId: any;
 
-  @IntParam({ default: 3000 })
+  @IntParam({ default: 3000, min: 0 })
   private delay: number;
 
   @BooleanParam({ default: false })

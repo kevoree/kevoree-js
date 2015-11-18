@@ -9,14 +9,15 @@ export function ChoiceParam(meta?: ChoiceParamMeta) {
 
         if (typeof meta.optional === 'undefined') { meta.optional = true; }
         if (typeof meta.fragment === 'undefined') { meta.fragment = false; }
-
-        meta['datatype'] = ParamType.CHOICES;
+        if (typeof meta.choices === 'undefined') { meta.choices = []; }
 
         if (typeof meta.defaultIndex !== 'undefined') {
             if (meta.defaultIndex > meta.choices.length - 1) {
                 throw new Error(`@ChoiceParam on ${propertyKey} defines a defaultIndex that is out of bound regarding the choices. (min: 0, max: ${meta.choices.length-1})`);
             }
         }
+
+        meta.datatype = ParamType.CHOICES;
 
         var params = Reflect.getMetadata(MetaData.PARAMS, target);
         if (!params) {

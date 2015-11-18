@@ -534,16 +534,16 @@ export module org {
                                 if (indexStartElem != -1) {
                                     try {
                                         switch (partIndex) {
-                                            case 0:
+                                            case 0: 
                                             key.universe = org.kevoree.modeling.util.Base64.decodeToLongWithBounds(payload, indexStartElem, i);
                                             break;
-                                            case 1:
+                                            case 1: 
                                             key.time = org.kevoree.modeling.util.Base64.decodeToLongWithBounds(payload, indexStartElem, i);
                                             break;
-                                            case 2:
+                                            case 2: 
                                             key.obj = org.kevoree.modeling.util.Base64.decodeToLongWithBounds(payload, indexStartElem, i);
                                             break;
-                                            default:
+                                            default: 
                                             break;
                                         }
                                     } catch ($ex$) {
@@ -567,16 +567,16 @@ export module org {
                         if (indexStartElem != -1) {
                             try {
                                 switch (partIndex) {
-                                    case 0:
+                                    case 0: 
                                     key.universe = org.kevoree.modeling.util.Base64.decodeToLongWithBounds(payload, indexStartElem, maxRead);
                                     break;
-                                    case 1:
+                                    case 1: 
                                     key.time = org.kevoree.modeling.util.Base64.decodeToLongWithBounds(payload, indexStartElem, maxRead);
                                     break;
-                                    case 2:
+                                    case 2: 
                                     key.obj = org.kevoree.modeling.util.Base64.decodeToLongWithBounds(payload, indexStartElem, maxRead);
                                     break;
-                                    default:
+                                    default: 
                                     break;
                                 }
                             } catch ($ex$) {
@@ -1787,23 +1787,23 @@ export module org {
                         }
                         var typeId: number = metaOutput.attributeTypeId();
                         switch (typeId) {
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID:
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID: 
                             if (<boolean>output) {
                                 return 1.0;
                             } else {
                                 return 0.0;
                             }
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
                             return <number>output;
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID:
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID: 
                             return <number>output;
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID:
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID: 
                             return <number>output;
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID:
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID: 
                             return <number>output;
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID:
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID: 
                             throw new Error("String are not managed yet");
-                            default:
+                            default: 
                             if (org.kevoree.modeling.meta.KPrimitiveTypes.isEnum(metaOutput.attributeTypeId())) {
                                 var metaEnum: org.kevoree.modeling.meta.KMetaEnum = this._manager.model().metaModel().metaTypes()[metaOutput.attributeTypeId()];
                                 if (output instanceof org.kevoree.modeling.meta.impl.MetaLiteral) {
@@ -1822,23 +1822,23 @@ export module org {
                     private internalReverseOutput(inferred: number, metaOutput: org.kevoree.modeling.meta.KMetaInferOutput): any {
                         var typeId: number = metaOutput.attributeTypeId();
                         switch (typeId) {
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID:
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID: 
                             if (inferred >= 0.5) {
                                 return true;
                             } else {
                                 return false;
                             }
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
                             return inferred;
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID:
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID: 
                             return <number>inferred;
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID:
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID: 
                             return inferred;
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID:
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID: 
                             return inferred;
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID:
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID: 
                             throw new Error("String are not managed yet");
-                            default:
+                            default: 
                             if (org.kevoree.modeling.meta.KPrimitiveTypes.isEnum(metaOutput.attributeTypeId())) {
                                 var ceiledInferred: number = this.math_ceil(inferred);
                                 var metaEnum: org.kevoree.modeling.meta.KMetaEnum = this._manager.model().metaModel().metaTypes()[metaOutput.attributeTypeId()];
@@ -2285,11 +2285,11 @@ export module org {
                                 var extrapolatedValue: number = this.extrapolateValue(raw, current.metaClass(), attribute.index(), current.now(), raw.time());
                                 var attTypeId: number = attribute.attributeTypeId();
                                 switch (attTypeId) {
-                                    case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID:
+                                    case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID: 
                                     return extrapolatedValue;
-                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
+                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
                                     return extrapolatedValue;
-                                    default:
+                                    default: 
                                     return null;
                                 }
                             } else {
@@ -2498,11 +2498,11 @@ export module org {
                                 var extrapolatedValue: number = this.extrapolateValue(raw, current.metaClass(), attribute.index(), current.now(), raw.time());
                                 var attTypeId: number = attribute.attributeTypeId();
                                 switch (attTypeId) {
-                                    case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID:
+                                    case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID: 
                                     return extrapolatedValue;
-                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
+                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
                                     return extrapolatedValue;
-                                    default:
+                                    default: 
                                     return null;
                                 }
                             } else {
@@ -2770,7 +2770,7 @@ export module org {
                                             var metaAttribute: org.kevoree.modeling.meta.KMetaAttribute = <org.kevoree.modeling.meta.KMetaAttribute>metaElement;
                                             var metaAttId: number = metaAttribute.attributeTypeId();
                                             switch (metaAttId) {
-                                                case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID:
+                                                case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID: 
                                                 var plainRawSet: string[] = <string[]>p_param.get(metaAttribute.metaName());
                                                 var convertedRaw: Float64Array = new Float64Array(plainRawSet.length);
                                                 for (var l: number = 0; l < plainRawSet.length; l++) {
@@ -2787,23 +2787,23 @@ export module org {
                                                 }
                                                 raw.setPrimitiveType(metaElement.index(), convertedRaw, current.metaClass());
                                                 break;
-                                                default:
+                                                default: 
                                                 var converted: any = null;
                                                 var rawPayload: string = p_param.get(metaElement.metaName()).toString();
                                                 switch (metaAttId) {
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID:
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID: 
                                                     converted = org.kevoree.modeling.format.json.JsonString.unescape(rawPayload);
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID:
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID: 
                                                     converted = org.kevoree.modeling.util.PrimitiveHelper.parseLong(rawPayload);
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID:
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID: 
                                                     converted = org.kevoree.modeling.util.PrimitiveHelper.parseInt(rawPayload);
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID:
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID: 
                                                     converted = org.kevoree.modeling.util.PrimitiveHelper.parseBoolean(rawPayload);
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
                                                     converted = org.kevoree.modeling.util.PrimitiveHelper.parseDouble(rawPayload);
                                                     break;
                                                 }
@@ -3094,43 +3094,43 @@ export module org {
                                     i++;
                                     var current2: string = p_src.charAt(i);
                                     switch (current2) {
-                                        case '"':
+                                        case '"': 
                                         builder.append('\"');
                                         break;
-                                        case '\\':
+                                        case '\\': 
                                         builder.append(current2);
                                         break;
-                                        case '/':
+                                        case '/': 
                                         builder.append(current2);
                                         break;
-                                        case 'b':
+                                        case 'b': 
                                         builder.append('\b');
                                         break;
-                                        case 'f':
+                                        case 'f': 
                                         builder.append('\f');
                                         break;
-                                        case 'n':
+                                        case 'n': 
                                         builder.append('\n');
                                         break;
-                                        case 'r':
+                                        case 'r': 
                                         builder.append('\r');
                                         break;
-                                        case 't':
+                                        case 't': 
                                         builder.append('\t');
                                         break;
-                                        case '{':
+                                        case '{': 
                                         builder.append("\\{");
                                         break;
-                                        case '}':
+                                        case '}': 
                                         builder.append("\\}");
                                         break;
-                                        case '[':
+                                        case '[': 
                                         builder.append("\\[");
                                         break;
-                                        case ']':
+                                        case ']': 
                                         builder.append("\\]");
                                         break;
-                                        case ',':
+                                        case ',': 
                                         builder.append("\\,");
                                         break;
                                     }
@@ -4846,7 +4846,7 @@ export module org {
 
                         }
 
-                        export module AbstractArrayTree {
+                        export module AbstractArrayTree { 
                             export class InternalState {
 
                                 public _back_meta: Int32Array;
@@ -5228,7 +5228,7 @@ export module org {
 
                         }
 
-                        export module ArrayLongLongMap {
+                        export module ArrayLongLongMap { 
                             export class InternalState {
 
                                 public elementDataSize: number;
@@ -5373,13 +5373,13 @@ export module org {
                                                 var metaAttribute: org.kevoree.modeling.meta.KMetaAttribute = <org.kevoree.modeling.meta.KMetaAttribute>metaElements[i];
                                                 var metaAttId: number = metaAttribute.attributeTypeId();
                                                 switch (metaAttId) {
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID:
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID: 
                                                     org.kevoree.modeling.util.Base64.encodeStringToBuffer(<string>this.raw[i], builder);
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID:
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID: 
                                                     org.kevoree.modeling.util.Base64.encodeLongToBuffer(<number>this.raw[i], builder);
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID:
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID: 
                                                     var castedArr: Float64Array = <Float64Array>this.raw[i];
                                                     org.kevoree.modeling.util.Base64.encodeIntToBuffer(castedArr.length, builder);
                                                     for (var j: number = 0; j < castedArr.length; j++) {
@@ -5387,20 +5387,20 @@ export module org {
                                                         org.kevoree.modeling.util.Base64.encodeDoubleToBuffer(castedArr[j], builder);
                                                     }
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID:
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID: 
                                                     if (<boolean>this.raw[i]) {
                                                         builder.append("1");
                                                     } else {
                                                         builder.append("0");
                                                     }
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
                                                     org.kevoree.modeling.util.Base64.encodeDoubleToBuffer(<number>this.raw[i], builder);
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID:
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID: 
                                                     org.kevoree.modeling.util.Base64.encodeIntToBuffer(<number>this.raw[i], builder);
                                                     break;
-                                                    default:
+                                                    default: 
                                                     if (org.kevoree.modeling.meta.KPrimitiveTypes.isEnum(metaAttribute.attributeTypeId())) {
                                                         org.kevoree.modeling.util.Base64.encodeIntToBuffer(<number>this.raw[i], builder);
                                                     }
@@ -5434,21 +5434,21 @@ export module org {
                             private loadObject(metaAttribute: org.kevoree.modeling.meta.KMetaAttribute, p_payload: string, p_start: number, p_end: number): any {
                                 var metaAttId: number = metaAttribute.attributeTypeId();
                                 switch (metaAttId) {
-                                    case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID:
+                                    case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID: 
                                     return org.kevoree.modeling.util.Base64.decodeToStringWithBounds(p_payload, p_start, p_end);
-                                    case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID:
+                                    case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID: 
                                     return org.kevoree.modeling.util.Base64.decodeToLongWithBounds(p_payload, p_start, p_end);
-                                    case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID:
+                                    case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID: 
                                     return org.kevoree.modeling.util.Base64.decodeToIntWithBounds(p_payload, p_start, p_end);
-                                    case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID:
+                                    case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID: 
                                     if (p_payload.charAt(p_start) == '1') {
                                         return true;
                                     } else {
                                         return false;
                                     }
-                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
+                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
                                     return org.kevoree.modeling.util.Base64.decodeToDoubleWithBounds(p_payload, p_start, p_end);
-                                    default:
+                                    default: 
                                     return null;
                                 }
                             }
@@ -5737,15 +5737,15 @@ export module org {
                                                 var metaAttribute: org.kevoree.modeling.meta.KMetaAttribute = <org.kevoree.modeling.meta.KMetaAttribute>metaElements[i];
                                                 var metaAttId: number = metaAttribute.attributeTypeId();
                                                 switch (metaAttId) {
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID:
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID: 
                                                     builder.append("\"");
                                                     builder.append(org.kevoree.modeling.format.json.JsonString.encode(<string>this.raw[i]));
                                                     builder.append("\"");
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID:
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID: 
                                                     builder.append(this.raw[i]);
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID:
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID: 
                                                     builder.append("[");
                                                     var castedArr: Float64Array = <Float64Array>this.raw[i];
                                                     for (var j: number = 0; j < castedArr.length; j++) {
@@ -5756,20 +5756,20 @@ export module org {
                                                     }
                                                     builder.append("]");
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID:
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID: 
                                                     if (<boolean>this.raw[i]) {
                                                         builder.append("1");
                                                     } else {
                                                         builder.append("0");
                                                     }
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
                                                     builder.append(this.raw[i]);
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID:
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID: 
                                                     builder.append(this.raw[i]);
                                                     break;
-                                                    default:
+                                                    default: 
                                                     if (org.kevoree.modeling.meta.KPrimitiveTypes.isEnum(metaAttribute.attributeTypeId())) {
                                                         org.kevoree.modeling.util.Base64.encodeIntToBuffer(<number>this.raw[i], builder);
                                                     }
@@ -7688,15 +7688,15 @@ export module org {
 
                             private internal_createElement(p_universe: number, p_time: number, p_obj: number, type: number): org.kevoree.modeling.memory.KChunk {
                                 switch (type) {
-                                    case org.kevoree.modeling.memory.space.KChunkTypes.OBJECT_CHUNK:
+                                    case org.kevoree.modeling.memory.space.KChunkTypes.OBJECT_CHUNK: 
                                     return new org.kevoree.modeling.memory.chunk.impl.HeapObjectChunk(p_universe, p_time, p_obj, this);
-                                    case org.kevoree.modeling.memory.space.KChunkTypes.LONG_LONG_MAP:
+                                    case org.kevoree.modeling.memory.space.KChunkTypes.LONG_LONG_MAP: 
                                     return new org.kevoree.modeling.memory.chunk.impl.ArrayLongLongMap(p_universe, p_time, p_obj, this);
-                                    case org.kevoree.modeling.memory.space.KChunkTypes.LONG_TREE:
+                                    case org.kevoree.modeling.memory.space.KChunkTypes.LONG_TREE: 
                                     return new org.kevoree.modeling.memory.chunk.impl.ArrayLongTree(p_universe, p_time, p_obj, this);
-                                    case org.kevoree.modeling.memory.space.KChunkTypes.LONG_LONG_TREE:
+                                    case org.kevoree.modeling.memory.space.KChunkTypes.LONG_LONG_TREE: 
                                     return new org.kevoree.modeling.memory.chunk.impl.ArrayLongLongTree(p_universe, p_time, p_obj, this);
-                                    default:
+                                    default: 
                                     return null;
                                 }
                             }
@@ -7940,7 +7940,7 @@ export module org {
 
                         }
 
-                        export module HeapChunkSpace {
+                        export module HeapChunkSpace { 
                             export class InternalState {
 
                                 public sparse: boolean = false;
@@ -8212,22 +8212,22 @@ export module org {
                                     buffer.append(Message.KEYS_NAME[i]);
                                     buffer.append(org.kevoree.modeling.KConfig.VAL_SEP);
                                     switch (i) {
-                                        case 0:
+                                        case 0: 
                                         org.kevoree.modeling.util.Base64.encodeIntToBuffer(<number>this.internal[i], buffer);
                                         break;
-                                        case 1:
+                                        case 1: 
                                         org.kevoree.modeling.util.Base64.encodeIntToBuffer(<number>this.internal[i], buffer);
                                         break;
-                                        case 2:
+                                        case 2: 
                                         org.kevoree.modeling.util.Base64.encodeStringToBuffer(<string>this.internal[i], buffer);
                                         break;
-                                        case 3:
+                                        case 3: 
                                         org.kevoree.modeling.util.Base64.encodeStringToBuffer(<string>this.internal[i], buffer);
                                         break;
-                                        case 4:
+                                        case 4: 
                                         org.kevoree.modeling.util.Base64.encodeStringToBuffer(<string>this.internal[i], buffer);
                                         break;
-                                        case 5:
+                                        case 5: 
                                         var lkeys: Float64Array = <Float64Array>this.internal[i];
                                         org.kevoree.modeling.util.Base64.encodeIntToBuffer(lkeys.length, buffer);
                                         for (var j: number = 0; j < lkeys.length; j++) {
@@ -8235,7 +8235,7 @@ export module org {
                                             org.kevoree.modeling.util.Base64.encodeLongToBuffer(lkeys[j], buffer);
                                         }
                                         break;
-                                        case 6:
+                                        case 6: 
                                         var lvalues: string[] = <string[]>this.internal[i];
                                         org.kevoree.modeling.util.Base64.encodeIntToBuffer(lvalues.length, buffer);
                                         for (var j: number = 0; j < lvalues.length; j++) {
@@ -8245,7 +8245,7 @@ export module org {
                                             }
                                         }
                                         break;
-                                        case 7:
+                                        case 7: 
                                         var lvalues2: string[] = <string[]>this.internal[i];
                                         org.kevoree.modeling.util.Base64.encodeIntToBuffer(lvalues2.length, buffer);
                                         for (var j: number = 0; j < lvalues2.length; j++) {
@@ -9522,21 +9522,21 @@ export module org {
                             return builder.toString();
                         } else {
                             switch (type) {
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID:
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID: 
                                 if (<boolean>elem) {
                                     return "1";
                                 } else {
                                     return "0";
                                 }
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID:
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID: 
                                 return org.kevoree.modeling.format.json.JsonString.encode(elem.toString());
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
                                 return org.kevoree.modeling.util.Base64.encodeDouble(<number>elem);
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID:
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID: 
                                 return org.kevoree.modeling.util.Base64.encodeInt(<number>elem);
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID:
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID: 
                                 return org.kevoree.modeling.util.Base64.encodeLong(<number>elem);
-                                default:
+                                default: 
                                 return org.kevoree.modeling.util.Base64.encodeInt((<org.kevoree.modeling.meta.KLiteral>elem).index());
                             }
                         }
@@ -9575,22 +9575,22 @@ export module org {
                             }
                             var result: any[];
                             switch (type) {
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID:
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID: 
                                 result = new Array();
                                 break;
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID:
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID: 
                                 result = new Array();
                                 break;
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
                                 result = new Array();
                                 break;
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID:
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID: 
                                 result = new Array();
                                 break;
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID:
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID: 
                                 result = new Array();
                                 break;
-                                default:
+                                default: 
                                 result = new Array();
                             }
                             for (var j: number = 0; j < params.size(); j++) {
@@ -9599,17 +9599,17 @@ export module org {
                             return result;
                         } else {
                             switch (type) {
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID:
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID: 
                                 return org.kevoree.modeling.util.PrimitiveHelper.equals(payload, "1");
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID:
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID: 
                                 return org.kevoree.modeling.format.json.JsonString.unescape(payload);
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
                                 return org.kevoree.modeling.util.Base64.decodeToDouble(payload);
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID:
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID: 
                                 return org.kevoree.modeling.util.Base64.decodeToInt(payload);
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID:
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID: 
                                 return org.kevoree.modeling.util.Base64.decodeToLong(payload);
-                                default:
+                                default: 
                                 var literalIndex: number = org.kevoree.modeling.util.Base64.decodeToInt(payload);
                                 return metaModel.metaTypes()[type].literal(literalIndex);
                             }
@@ -10468,7 +10468,7 @@ export module org {
 
                         }
 
-                        export module FilterAttributeQueryAction {
+                        export module FilterAttributeQueryAction { 
                             export class QueryParam {
 
                                 private _name: string;
@@ -11321,15 +11321,15 @@ export module org {
                      }
                      return resultTmp;
                      }
-
-
+                    
+                    
                      public static encodeString(s : string) {
                      var result = "";
                      var sLength = s.length;
                      var currentSourceChar;
                      var currentEncodedChar = 0;
                      var freeBitsInCurrentChar = 6;
-
+                    
                      for(var charIdx = 0; charIdx < sLength; charIdx++) {
                        currentSourceChar = s.charCodeAt(charIdx);
                        if(freeBitsInCurrentChar == 6) {
@@ -11346,7 +11346,7 @@ export module org {
                          freeBitsInCurrentChar = 6;
                        }
                      }
-
+                    
                      if(freeBitsInCurrentChar != 6) {
                        result += Base64.encodeArray[currentEncodedChar];
                      }
@@ -11357,7 +11357,7 @@ export module org {
                      var currentSourceChar;
                      var currentEncodedChar = 0;
                      var freeBitsInCurrentChar = 6;
-
+                    
                      for(var charIdx = 0; charIdx < sLength; charIdx++) {
                        currentSourceChar = s.charCodeAt(charIdx);
                        if(freeBitsInCurrentChar == 6) {
@@ -11374,7 +11374,7 @@ export module org {
                          freeBitsInCurrentChar = 6;
                        }
                      }
-
+                    
                      if(freeBitsInCurrentChar != 6) {
                        buffer.append(Base64.encodeArray[currentEncodedChar]);
                      }
@@ -11387,7 +11387,7 @@ export module org {
                      var currentSourceChar;
                      var currentDecodedChar = 0;
                      var freeBitsInCurrentChar = 8;
-
+                    
                      for(var charIdx = offsetBegin; charIdx < offsetEnd; charIdx++) {
                       currentSourceChar = Base64.decodeArray[s.charAt(charIdx)];
                       if(freeBitsInCurrentChar == 8) {
@@ -11880,13 +11880,13 @@ export module org {
                                     for (var ii: number = 0; ii < this._cacheAST.length; ii++) {
                                         var mathToken: org.kevoree.modeling.util.maths.expression.impl.MathToken = this._cacheAST[ii];
                                         switch (mathToken.type()) {
-                                            case 0:
+                                            case 0: 
                                             var v1: number = stack.pop();
                                             var v2: number = stack.pop();
                                             var castedOp: org.kevoree.modeling.util.maths.expression.impl.MathOperation = <org.kevoree.modeling.util.maths.expression.impl.MathOperation>mathToken;
                                             stack.push(castedOp.eval(v2, v1));
                                             break;
-                                            case 1:
+                                            case 1: 
                                             var castedFunction: org.kevoree.modeling.util.maths.expression.impl.MathFunction = <org.kevoree.modeling.util.maths.expression.impl.MathFunction>mathToken;
                                             var p: Float64Array = new Float64Array(castedFunction.getNumParams());
                                             for (var i: number = castedFunction.getNumParams() - 1; i >= 0; i--) {
@@ -11894,11 +11894,11 @@ export module org {
                                             }
                                             stack.push(castedFunction.eval(p));
                                             break;
-                                            case 2:
+                                            case 2: 
                                             var castedDouble: org.kevoree.modeling.util.maths.expression.impl.MathDoubleToken = <org.kevoree.modeling.util.maths.expression.impl.MathDoubleToken>mathToken;
                                             stack.push(castedDouble.content());
                                             break;
-                                            case 3:
+                                            case 3: 
                                             var castedFreeToken: org.kevoree.modeling.util.maths.expression.impl.MathFreeToken = <org.kevoree.modeling.util.maths.expression.impl.MathFreeToken>mathToken;
                                             if (this.varResolver(castedFreeToken.content()) != null) {
                                                 stack.push(this.varResolver(castedFreeToken.content()));
@@ -20774,11 +20774,10 @@ export module org {
             tempMetaClasses[14] = org.kevoree.meta.MetaPortType.getInstance();
             tempMetaClasses[1] = org.kevoree.meta.MetaNode.getInstance();
             tempMetaClasses[13] = org.kevoree.meta.MetaPort.getInstance();
-            tempMetaClasses[25] = org.kevoree.meta.MetaMsgProtocol.getInstance();
             tempMetaClasses[17] = org.kevoree.meta.MetaNodeType.getInstance();
             tempMetaClasses[18] = org.kevoree.meta.MetaGroupType.getInstance();
             tempMetaClasses[12] = org.kevoree.meta.MetaOutputPort.getInstance();
-            tempMetaClasses[28] = org.kevoree.meta.MetaIntDataType.getInstance();
+            tempMetaClasses[25] = org.kevoree.meta.MetaIntDataType.getInstance();
             tempMetaClasses[7] = org.kevoree.meta.MetaInstance.getInstance();
             tempMetaClasses[6] = org.kevoree.meta.MetaValue.getInstance();
             tempMetaClasses[4] = org.kevoree.meta.MetaNamespace.getInstance();
@@ -20788,20 +20787,19 @@ export module org {
             tempMetaClasses[3] = org.kevoree.meta.MetaGroup.getInstance();
             tempMetaClasses[10] = org.kevoree.meta.MetaComponent.getInstance();
             tempMetaClasses[0] = org.kevoree.meta.MetaModel.getInstance();
-            tempMetaClasses[23] = org.kevoree.meta.MetaDictionary.getInstance();
-            tempMetaClasses[29] = org.kevoree.meta.MetaLongDataType.getInstance();
-            tempMetaClasses[32] = org.kevoree.meta.MetaChoice.getInstance();
+            tempMetaClasses[26] = org.kevoree.meta.MetaLongDataType.getInstance();
             tempMetaClasses[5] = org.kevoree.meta.MetaElement.getInstance();
-            tempMetaClasses[27] = org.kevoree.meta.MetaDoubleDataType.getInstance();
-            tempMetaClasses[31] = org.kevoree.meta.MetaChoiceDataType.getInstance();
-            tempMetaClasses[19] = org.kevoree.meta.MetaFragmentDictionaryType.getInstance();
-            tempMetaClasses[24] = org.kevoree.meta.MetaDataType.getInstance();
+            tempMetaClasses[24] = org.kevoree.meta.MetaDoubleDataType.getInstance();
+            tempMetaClasses[28] = org.kevoree.meta.MetaChoiceDataType.getInstance();
+            tempMetaClasses[29] = org.kevoree.meta.MetaItem.getInstance();
+            tempMetaClasses[22] = org.kevoree.meta.MetaDataType.getInstance();
+            tempMetaClasses[30] = org.kevoree.meta.MetaListDataType.getInstance();
             tempMetaClasses[8] = org.kevoree.meta.MetaTypeDefinition.getInstance();
-            tempMetaClasses[22] = org.kevoree.meta.MetaAttributeType.getInstance();
-            tempMetaClasses[30] = org.kevoree.meta.MetaBooleanDataType.getInstance();
-            tempMetaClasses[20] = org.kevoree.meta.MetaChannelType.getInstance();
-            tempMetaClasses[26] = org.kevoree.meta.MetaStringDataType.getInstance();
-            tempMetaClasses[21] = org.kevoree.meta.MetaComponentType.getInstance();
+            tempMetaClasses[21] = org.kevoree.meta.MetaAttributeType.getInstance();
+            tempMetaClasses[27] = org.kevoree.meta.MetaBooleanDataType.getInstance();
+            tempMetaClasses[19] = org.kevoree.meta.MetaChannelType.getInstance();
+            tempMetaClasses[23] = org.kevoree.meta.MetaStringDataType.getInstance();
+            tempMetaClasses[20] = org.kevoree.meta.MetaComponentType.getInstance();
             tempMetaClasses[11] = org.kevoree.meta.MetaInputPort.getInstance();
             var tempEnums: org.kevoree.modeling.meta.KMetaEnum[] = new Array();
             (<org.kevoree.modeling.meta.impl.MetaModel>this._metaModel).init(tempMetaClasses, tempEnums);
@@ -20820,73 +20818,69 @@ export module org {
                 return null;
             }
             switch (p_clazz.index()) {
-                case 9:
+                case 9: 
                 return new org.kevoree.impl.MetricImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 14:
+                case 14: 
                 return new org.kevoree.impl.PortTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 1:
+                case 1: 
                 return new org.kevoree.impl.NodeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 13:
+                case 13: 
                 return new org.kevoree.impl.PortImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 25:
-                return new org.kevoree.impl.MsgProtocolImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 17:
+                case 17: 
                 return new org.kevoree.impl.NodeTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 18:
+                case 18: 
                 return new org.kevoree.impl.GroupTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 12:
+                case 12: 
                 return new org.kevoree.impl.OutputPortImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 28:
+                case 25: 
                 return new org.kevoree.impl.IntDataTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 7:
+                case 7: 
                 return new org.kevoree.impl.InstanceImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 6:
+                case 6: 
                 return new org.kevoree.impl.ValueImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 4:
+                case 4: 
                 return new org.kevoree.impl.NamespaceImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 16:
+                case 16: 
                 return new org.kevoree.impl.DeployUnitImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 2:
+                case 2: 
                 return new org.kevoree.impl.ChannelImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 15:
+                case 15: 
                 return new org.kevoree.impl.DictionaryTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 3:
+                case 3: 
                 return new org.kevoree.impl.GroupImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 10:
+                case 10: 
                 return new org.kevoree.impl.ComponentImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 0:
+                case 0: 
                 return new org.kevoree.impl.ModelImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 23:
-                return new org.kevoree.impl.DictionaryImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 29:
+                case 26: 
                 return new org.kevoree.impl.LongDataTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 32:
-                return new org.kevoree.impl.ChoiceImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 5:
+                case 5: 
                 return new org.kevoree.impl.ElementImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 27:
+                case 24: 
                 return new org.kevoree.impl.DoubleDataTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 31:
+                case 28: 
                 return new org.kevoree.impl.ChoiceDataTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 19:
-                return new org.kevoree.impl.FragmentDictionaryTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 24:
+                case 29: 
+                return new org.kevoree.impl.ItemImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
+                case 22: 
                 return new org.kevoree.impl.DataTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 8:
+                case 30: 
+                return new org.kevoree.impl.ListDataTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
+                case 8: 
                 return new org.kevoree.impl.TypeDefinitionImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 22:
+                case 21: 
                 return new org.kevoree.impl.AttributeTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 30:
+                case 27: 
                 return new org.kevoree.impl.BooleanDataTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 20:
+                case 19: 
                 return new org.kevoree.impl.ChannelTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 26:
+                case 23: 
                 return new org.kevoree.impl.StringDataTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 21:
+                case 20: 
                 return new org.kevoree.impl.ComponentTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 11:
+                case 11: 
                 return new org.kevoree.impl.InputPortImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                default:
+                default: 
                 return new org.kevoree.modeling.meta.impl.GenericObject(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
             }
         }
@@ -20905,10 +20899,6 @@ export module org {
 
         public createPort(universe: number, time: number): org.kevoree.Port {
             return <org.kevoree.Port>this.create(org.kevoree.meta.MetaPort.getInstance(), universe, time);
-        }
-
-        public createMsgProtocol(universe: number, time: number): org.kevoree.MsgProtocol {
-            return <org.kevoree.MsgProtocol>this.create(org.kevoree.meta.MetaMsgProtocol.getInstance(), universe, time);
         }
 
         public createNodeType(universe: number, time: number): org.kevoree.NodeType {
@@ -20963,16 +20953,8 @@ export module org {
             return <org.kevoree.Model>this.create(org.kevoree.meta.MetaModel.getInstance(), universe, time);
         }
 
-        public createDictionary(universe: number, time: number): org.kevoree.Dictionary {
-            return <org.kevoree.Dictionary>this.create(org.kevoree.meta.MetaDictionary.getInstance(), universe, time);
-        }
-
         public createLongDataType(universe: number, time: number): org.kevoree.LongDataType {
             return <org.kevoree.LongDataType>this.create(org.kevoree.meta.MetaLongDataType.getInstance(), universe, time);
-        }
-
-        public createChoice(universe: number, time: number): org.kevoree.Choice {
-            return <org.kevoree.Choice>this.create(org.kevoree.meta.MetaChoice.getInstance(), universe, time);
         }
 
         public createElement(universe: number, time: number): org.kevoree.Element {
@@ -20987,12 +20969,16 @@ export module org {
             return <org.kevoree.ChoiceDataType>this.create(org.kevoree.meta.MetaChoiceDataType.getInstance(), universe, time);
         }
 
-        public createFragmentDictionaryType(universe: number, time: number): org.kevoree.FragmentDictionaryType {
-            return <org.kevoree.FragmentDictionaryType>this.create(org.kevoree.meta.MetaFragmentDictionaryType.getInstance(), universe, time);
+        public createItem(universe: number, time: number): org.kevoree.Item {
+            return <org.kevoree.Item>this.create(org.kevoree.meta.MetaItem.getInstance(), universe, time);
         }
 
         public createDataType(universe: number, time: number): org.kevoree.DataType {
             return <org.kevoree.DataType>this.create(org.kevoree.meta.MetaDataType.getInstance(), universe, time);
+        }
+
+        public createListDataType(universe: number, time: number): org.kevoree.ListDataType {
+            return <org.kevoree.ListDataType>this.create(org.kevoree.meta.MetaListDataType.getInstance(), universe, time);
         }
 
         public createTypeDefinition(universe: number, time: number): org.kevoree.TypeDefinition {
@@ -21047,8 +21033,6 @@ export module org {
 
         createPort(): org.kevoree.Port;
 
-        createMsgProtocol(): org.kevoree.MsgProtocol;
-
         createNodeType(): org.kevoree.NodeType;
 
         createGroupType(): org.kevoree.GroupType;
@@ -21075,11 +21059,7 @@ export module org {
 
         createModel(): org.kevoree.Model;
 
-        createDictionary(): org.kevoree.Dictionary;
-
         createLongDataType(): org.kevoree.LongDataType;
-
-        createChoice(): org.kevoree.Choice;
 
         createElement(): org.kevoree.Element;
 
@@ -21087,9 +21067,11 @@ export module org {
 
         createChoiceDataType(): org.kevoree.ChoiceDataType;
 
-        createFragmentDictionaryType(): org.kevoree.FragmentDictionaryType;
+        createItem(): org.kevoree.Item;
 
         createDataType(): org.kevoree.DataType;
+
+        createListDataType(): org.kevoree.ListDataType;
 
         createTypeDefinition(): org.kevoree.TypeDefinition;
 
@@ -21128,10 +21110,6 @@ export module org {
 
             public createPort(): org.kevoree.Port {
                 return <org.kevoree.Port>this.create(org.kevoree.meta.MetaPort.getInstance());
-            }
-
-            public createMsgProtocol(): org.kevoree.MsgProtocol {
-                return <org.kevoree.MsgProtocol>this.create(org.kevoree.meta.MetaMsgProtocol.getInstance());
             }
 
             public createNodeType(): org.kevoree.NodeType {
@@ -21186,16 +21164,8 @@ export module org {
                 return <org.kevoree.Model>this.create(org.kevoree.meta.MetaModel.getInstance());
             }
 
-            public createDictionary(): org.kevoree.Dictionary {
-                return <org.kevoree.Dictionary>this.create(org.kevoree.meta.MetaDictionary.getInstance());
-            }
-
             public createLongDataType(): org.kevoree.LongDataType {
                 return <org.kevoree.LongDataType>this.create(org.kevoree.meta.MetaLongDataType.getInstance());
-            }
-
-            public createChoice(): org.kevoree.Choice {
-                return <org.kevoree.Choice>this.create(org.kevoree.meta.MetaChoice.getInstance());
             }
 
             public createElement(): org.kevoree.Element {
@@ -21210,12 +21180,16 @@ export module org {
                 return <org.kevoree.ChoiceDataType>this.create(org.kevoree.meta.MetaChoiceDataType.getInstance());
             }
 
-            public createFragmentDictionaryType(): org.kevoree.FragmentDictionaryType {
-                return <org.kevoree.FragmentDictionaryType>this.create(org.kevoree.meta.MetaFragmentDictionaryType.getInstance());
+            public createItem(): org.kevoree.Item {
+                return <org.kevoree.Item>this.create(org.kevoree.meta.MetaItem.getInstance());
             }
 
             public createDataType(): org.kevoree.DataType {
                 return <org.kevoree.DataType>this.create(org.kevoree.meta.MetaDataType.getInstance());
+            }
+
+            public createListDataType(): org.kevoree.ListDataType {
+                return <org.kevoree.ListDataType>this.create(org.kevoree.meta.MetaListDataType.getInstance());
             }
 
             public createTypeDefinition(): org.kevoree.TypeDefinition {
@@ -21251,6 +21225,14 @@ export module org {
     }
     export module kevoree {
         export interface AttributeType extends org.kevoree.modeling.KObject, org.kevoree.Element {
+
+            getFragment(): boolean;
+
+            setFragment(p_obj: boolean): org.kevoree.AttributeType;
+
+            getName(): string;
+
+            setName(p_obj: string): org.kevoree.AttributeType;
 
             getOptional(): boolean;
 
@@ -21380,25 +21362,13 @@ export module org {
 
             sizeOfDeployUnits(): number;
 
-            addFragDictionaries(p_obj: org.kevoree.FragmentDictionaryType): org.kevoree.ChannelType;
-
-            removeFragDictionaries(p_obj: org.kevoree.FragmentDictionaryType): org.kevoree.ChannelType;
-
-            getFragDictionaries(cb: org.kevoree.modeling.KCallback<org.kevoree.FragmentDictionaryType[]>): void;
-
-            sizeOfFragDictionaries(): number;
-
-        }
-
-        export interface Choice extends org.kevoree.modeling.KObject {
-
-            getValue(): string;
-
-            setValue(p_obj: string): org.kevoree.Choice;
-
         }
 
         export interface ChoiceDataType extends org.kevoree.modeling.KObject, org.kevoree.DataType {
+
+            getDefaultIndex(): number;
+
+            setDefaultIndex(p_obj: number): org.kevoree.ChoiceDataType;
 
             addMetaData(p_obj: org.kevoree.Value): org.kevoree.ChoiceDataType;
 
@@ -21408,19 +21378,11 @@ export module org {
 
             sizeOfMetaData(): number;
 
-            addDefault(p_obj: org.kevoree.Choice): org.kevoree.ChoiceDataType;
+            addChoices(p_obj: org.kevoree.Item): org.kevoree.ChoiceDataType;
 
-            removeDefault(p_obj: org.kevoree.Choice): org.kevoree.ChoiceDataType;
+            removeChoices(p_obj: org.kevoree.Item): org.kevoree.ChoiceDataType;
 
-            getDefault(cb: org.kevoree.modeling.KCallback<org.kevoree.Choice[]>): void;
-
-            sizeOfDefault(): number;
-
-            addChoices(p_obj: org.kevoree.Choice): org.kevoree.ChoiceDataType;
-
-            removeChoices(p_obj: org.kevoree.Choice): org.kevoree.ChoiceDataType;
-
-            getChoices(cb: org.kevoree.modeling.KCallback<org.kevoree.Choice[]>): void;
+            getChoices(cb: org.kevoree.modeling.KCallback<org.kevoree.Item[]>): void;
 
             sizeOfChoices(): number;
 
@@ -21582,10 +21544,6 @@ export module org {
 
         }
 
-        export interface Dictionary extends org.kevoree.modeling.KObject {
-
-        }
-
         export interface DictionaryType extends org.kevoree.modeling.KObject, org.kevoree.Element {
 
             addMetaData(p_obj: org.kevoree.Value): org.kevoree.DictionaryType;
@@ -21639,18 +21597,6 @@ export module org {
             getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
 
             sizeOfMetaData(): number;
-
-        }
-
-        export interface FragmentDictionaryType extends org.kevoree.modeling.KObject, org.kevoree.Dictionary {
-
-            addFragment(p_obj: org.kevoree.Node): org.kevoree.FragmentDictionaryType;
-
-            removeFragment(p_obj: org.kevoree.Node): org.kevoree.FragmentDictionaryType;
-
-            getFragment(cb: org.kevoree.modeling.KCallback<org.kevoree.Node[]>): void;
-
-            sizeOfFragment(): number;
 
         }
 
@@ -21731,14 +21677,6 @@ export module org {
             getDeployUnits(cb: org.kevoree.modeling.KCallback<org.kevoree.DeployUnit[]>): void;
 
             sizeOfDeployUnits(): number;
-
-            addFragDictionaries(p_obj: org.kevoree.FragmentDictionaryType): org.kevoree.GroupType;
-
-            removeFragDictionaries(p_obj: org.kevoree.FragmentDictionaryType): org.kevoree.GroupType;
-
-            getFragDictionaries(cb: org.kevoree.modeling.KCallback<org.kevoree.FragmentDictionaryType[]>): void;
-
-            sizeOfFragDictionaries(): number;
 
         }
 
@@ -21830,6 +21768,34 @@ export module org {
 
         }
 
+        export interface Item extends org.kevoree.modeling.KObject {
+
+            getValue(): string;
+
+            setValue(p_obj: string): org.kevoree.Item;
+
+        }
+
+        export interface ListDataType extends org.kevoree.modeling.KObject, org.kevoree.DataType {
+
+            addMetaData(p_obj: org.kevoree.Value): org.kevoree.ListDataType;
+
+            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.ListDataType;
+
+            getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
+
+            sizeOfMetaData(): number;
+
+            addDefault(p_obj: org.kevoree.Item): org.kevoree.ListDataType;
+
+            removeDefault(p_obj: org.kevoree.Item): org.kevoree.ListDataType;
+
+            getDefault(cb: org.kevoree.modeling.KCallback<org.kevoree.Item[]>): void;
+
+            sizeOfDefault(): number;
+
+        }
+
         export interface LongDataType extends org.kevoree.modeling.KObject, org.kevoree.DataType {
 
             getDefault(): number;
@@ -21915,22 +21881,6 @@ export module org {
             getNamespaces(cb: org.kevoree.modeling.KCallback<org.kevoree.Namespace[]>): void;
 
             sizeOfNamespaces(): number;
-
-        }
-
-        export interface MsgProtocol extends org.kevoree.modeling.KObject, org.kevoree.Element {
-
-            getName(): string;
-
-            setName(p_obj: string): org.kevoree.MsgProtocol;
-
-            addMetaData(p_obj: org.kevoree.Value): org.kevoree.MsgProtocol;
-
-            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.MsgProtocol;
-
-            getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
-
-            sizeOfMetaData(): number;
 
         }
 
@@ -22136,11 +22086,11 @@ export module org {
 
             sizeOfMetaData(): number;
 
-            addProtocol(p_obj: org.kevoree.MsgProtocol): org.kevoree.PortType;
+            addProtocol(p_obj: org.kevoree.Value): org.kevoree.PortType;
 
-            removeProtocol(p_obj: org.kevoree.MsgProtocol): org.kevoree.PortType;
+            removeProtocol(p_obj: org.kevoree.Value): org.kevoree.PortType;
 
-            getProtocol(cb: org.kevoree.modeling.KCallback<org.kevoree.MsgProtocol[]>): void;
+            getProtocol(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
 
             sizeOfProtocol(): number;
 
@@ -22227,6 +22177,24 @@ export module org {
 
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
                     super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
+                }
+
+                public getFragment(): boolean {
+                    return <boolean>this.get(org.kevoree.meta.MetaAttributeType.ATT_FRAGMENT);
+                }
+
+                public setFragment(p_obj: boolean): org.kevoree.AttributeType {
+                    this.set(org.kevoree.meta.MetaAttributeType.ATT_FRAGMENT, p_obj);
+                    return this;
+                }
+
+                public getName(): string {
+                    return <string>this.get(org.kevoree.meta.MetaAttributeType.ATT_NAME);
+                }
+
+                public setName(p_obj: string): org.kevoree.AttributeType {
+                    this.set(org.kevoree.meta.MetaAttributeType.ATT_NAME, p_obj);
+                    return this;
                 }
 
                 public getOptional(): boolean {
@@ -22613,39 +22581,21 @@ export module org {
                     return this.size(org.kevoree.meta.MetaChannelType.REL_DEPLOYUNITS);
                 }
 
-                public addFragDictionaries(p_obj: org.kevoree.FragmentDictionaryType): org.kevoree.ChannelType {
-                    this.add(org.kevoree.meta.MetaChannelType.REL_FRAGDICTIONARIES, p_obj);
-                    return this;
-                }
-
-                public removeFragDictionaries(p_obj: org.kevoree.FragmentDictionaryType): org.kevoree.ChannelType {
-                    this.remove(org.kevoree.meta.MetaChannelType.REL_FRAGDICTIONARIES, p_obj);
-                    return this;
-                }
-
-                public getFragDictionaries(cb: org.kevoree.modeling.KCallback<org.kevoree.FragmentDictionaryType[]>): void {
-                    if (cb == null) {
-                        return;
-                    }
-                    this.getRelation(org.kevoree.meta.MetaChannelType.REL_FRAGDICTIONARIES,  (kObjects : org.kevoree.modeling.KObject[]) => {
-                        var casted: org.kevoree.FragmentDictionaryType[] = new Array();
-                        for (var i: number = 0; i < kObjects.length; i++) {
-                            casted[i] = <org.kevoree.FragmentDictionaryType>kObjects[i];
-                        }
-                        cb(casted);
-                    });
-                }
-
-                public sizeOfFragDictionaries(): number {
-                    return this.size(org.kevoree.meta.MetaChannelType.REL_FRAGDICTIONARIES);
-                }
-
             }
 
             export class ChoiceDataTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.ChoiceDataType {
 
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
                     super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
+                }
+
+                public getDefaultIndex(): number {
+                    return <number>this.get(org.kevoree.meta.MetaChoiceDataType.ATT_DEFAULTINDEX);
+                }
+
+                public setDefaultIndex(p_obj: number): org.kevoree.ChoiceDataType {
+                    this.set(org.kevoree.meta.MetaChoiceDataType.ATT_DEFAULTINDEX, p_obj);
+                    return this;
                 }
 
                 public addMetaData(p_obj: org.kevoree.Value): org.kevoree.ChoiceDataType {
@@ -22675,51 +22625,24 @@ export module org {
                     return this.size(org.kevoree.meta.MetaChoiceDataType.REL_METADATA);
                 }
 
-                public addDefault(p_obj: org.kevoree.Choice): org.kevoree.ChoiceDataType {
-                    this.add(org.kevoree.meta.MetaChoiceDataType.REL_DEFAULT, p_obj);
-                    return this;
-                }
-
-                public removeDefault(p_obj: org.kevoree.Choice): org.kevoree.ChoiceDataType {
-                    this.remove(org.kevoree.meta.MetaChoiceDataType.REL_DEFAULT, p_obj);
-                    return this;
-                }
-
-                public getDefault(cb: org.kevoree.modeling.KCallback<org.kevoree.Choice[]>): void {
-                    if (cb == null) {
-                        return;
-                    }
-                    this.getRelation(org.kevoree.meta.MetaChoiceDataType.REL_DEFAULT,  (kObjects : org.kevoree.modeling.KObject[]) => {
-                        var casted: org.kevoree.Choice[] = new Array();
-                        for (var i: number = 0; i < kObjects.length; i++) {
-                            casted[i] = <org.kevoree.Choice>kObjects[i];
-                        }
-                        cb(casted);
-                    });
-                }
-
-                public sizeOfDefault(): number {
-                    return this.size(org.kevoree.meta.MetaChoiceDataType.REL_DEFAULT);
-                }
-
-                public addChoices(p_obj: org.kevoree.Choice): org.kevoree.ChoiceDataType {
+                public addChoices(p_obj: org.kevoree.Item): org.kevoree.ChoiceDataType {
                     this.add(org.kevoree.meta.MetaChoiceDataType.REL_CHOICES, p_obj);
                     return this;
                 }
 
-                public removeChoices(p_obj: org.kevoree.Choice): org.kevoree.ChoiceDataType {
+                public removeChoices(p_obj: org.kevoree.Item): org.kevoree.ChoiceDataType {
                     this.remove(org.kevoree.meta.MetaChoiceDataType.REL_CHOICES, p_obj);
                     return this;
                 }
 
-                public getChoices(cb: org.kevoree.modeling.KCallback<org.kevoree.Choice[]>): void {
+                public getChoices(cb: org.kevoree.modeling.KCallback<org.kevoree.Item[]>): void {
                     if (cb == null) {
                         return;
                     }
                     this.getRelation(org.kevoree.meta.MetaChoiceDataType.REL_CHOICES,  (kObjects : org.kevoree.modeling.KObject[]) => {
-                        var casted: org.kevoree.Choice[] = new Array();
+                        var casted: org.kevoree.Item[] = new Array();
                         for (var i: number = 0; i < kObjects.length; i++) {
-                            casted[i] = <org.kevoree.Choice>kObjects[i];
+                            casted[i] = <org.kevoree.Item>kObjects[i];
                         }
                         cb(casted);
                     });
@@ -22727,23 +22650,6 @@ export module org {
 
                 public sizeOfChoices(): number {
                     return this.size(org.kevoree.meta.MetaChoiceDataType.REL_CHOICES);
-                }
-
-            }
-
-            export class ChoiceImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.Choice {
-
-                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
-                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
-                }
-
-                public getValue(): string {
-                    return <string>this.get(org.kevoree.meta.MetaChoice.ATT_VALUE);
-                }
-
-                public setValue(p_obj: string): org.kevoree.Choice {
-                    this.set(org.kevoree.meta.MetaChoice.ATT_VALUE, p_obj);
-                    return this;
                 }
 
             }
@@ -23221,14 +23127,6 @@ export module org {
 
             }
 
-            export class DictionaryImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.Dictionary {
-
-                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
-                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
-                }
-
-            }
-
             export class DictionaryTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.DictionaryType {
 
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
@@ -23384,41 +23282,6 @@ export module org {
 
                 public sizeOfMetaData(): number {
                     return this.size(org.kevoree.meta.MetaElement.REL_METADATA);
-                }
-
-            }
-
-            export class FragmentDictionaryTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.FragmentDictionaryType {
-
-                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
-                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
-                }
-
-                public addFragment(p_obj: org.kevoree.Node): org.kevoree.FragmentDictionaryType {
-                    this.add(org.kevoree.meta.MetaFragmentDictionaryType.REL_FRAGMENT, p_obj);
-                    return this;
-                }
-
-                public removeFragment(p_obj: org.kevoree.Node): org.kevoree.FragmentDictionaryType {
-                    this.remove(org.kevoree.meta.MetaFragmentDictionaryType.REL_FRAGMENT, p_obj);
-                    return this;
-                }
-
-                public getFragment(cb: org.kevoree.modeling.KCallback<org.kevoree.Node[]>): void {
-                    if (cb == null) {
-                        return;
-                    }
-                    this.getRelation(org.kevoree.meta.MetaFragmentDictionaryType.REL_FRAGMENT,  (kObjects : org.kevoree.modeling.KObject[]) => {
-                        var casted: org.kevoree.Node[] = new Array();
-                        for (var i: number = 0; i < kObjects.length; i++) {
-                            casted[i] = <org.kevoree.Node>kObjects[i];
-                        }
-                        cb(casted);
-                    });
-                }
-
-                public sizeOfFragment(): number {
-                    return this.size(org.kevoree.meta.MetaFragmentDictionaryType.REL_FRAGMENT);
                 }
 
             }
@@ -23660,33 +23523,6 @@ export module org {
 
                 public sizeOfDeployUnits(): number {
                     return this.size(org.kevoree.meta.MetaGroupType.REL_DEPLOYUNITS);
-                }
-
-                public addFragDictionaries(p_obj: org.kevoree.FragmentDictionaryType): org.kevoree.GroupType {
-                    this.add(org.kevoree.meta.MetaGroupType.REL_FRAGDICTIONARIES, p_obj);
-                    return this;
-                }
-
-                public removeFragDictionaries(p_obj: org.kevoree.FragmentDictionaryType): org.kevoree.GroupType {
-                    this.remove(org.kevoree.meta.MetaGroupType.REL_FRAGDICTIONARIES, p_obj);
-                    return this;
-                }
-
-                public getFragDictionaries(cb: org.kevoree.modeling.KCallback<org.kevoree.FragmentDictionaryType[]>): void {
-                    if (cb == null) {
-                        return;
-                    }
-                    this.getRelation(org.kevoree.meta.MetaGroupType.REL_FRAGDICTIONARIES,  (kObjects : org.kevoree.modeling.KObject[]) => {
-                        var casted: org.kevoree.FragmentDictionaryType[] = new Array();
-                        for (var i: number = 0; i < kObjects.length; i++) {
-                            casted[i] = <org.kevoree.FragmentDictionaryType>kObjects[i];
-                        }
-                        cb(casted);
-                    });
-                }
-
-                public sizeOfFragDictionaries(): number {
-                    return this.size(org.kevoree.meta.MetaGroupType.REL_FRAGDICTIONARIES);
                 }
 
             }
@@ -23949,6 +23785,85 @@ export module org {
 
             }
 
+            export class ItemImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.Item {
+
+                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
+                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
+                }
+
+                public getValue(): string {
+                    return <string>this.get(org.kevoree.meta.MetaItem.ATT_VALUE);
+                }
+
+                public setValue(p_obj: string): org.kevoree.Item {
+                    this.set(org.kevoree.meta.MetaItem.ATT_VALUE, p_obj);
+                    return this;
+                }
+
+            }
+
+            export class ListDataTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.ListDataType {
+
+                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
+                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
+                }
+
+                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.ListDataType {
+                    this.add(org.kevoree.meta.MetaListDataType.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.ListDataType {
+                    this.remove(org.kevoree.meta.MetaListDataType.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaListDataType.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Value[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.Value>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfMetaData(): number {
+                    return this.size(org.kevoree.meta.MetaListDataType.REL_METADATA);
+                }
+
+                public addDefault(p_obj: org.kevoree.Item): org.kevoree.ListDataType {
+                    this.add(org.kevoree.meta.MetaListDataType.REL_DEFAULT, p_obj);
+                    return this;
+                }
+
+                public removeDefault(p_obj: org.kevoree.Item): org.kevoree.ListDataType {
+                    this.remove(org.kevoree.meta.MetaListDataType.REL_DEFAULT, p_obj);
+                    return this;
+                }
+
+                public getDefault(cb: org.kevoree.modeling.KCallback<org.kevoree.Item[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaListDataType.REL_DEFAULT,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Item[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.Item>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfDefault(): number {
+                    return this.size(org.kevoree.meta.MetaListDataType.REL_DEFAULT);
+                }
+
+            }
+
             export class LongDataTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.LongDataType {
 
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
@@ -24203,50 +24118,6 @@ export module org {
 
                 public sizeOfNamespaces(): number {
                     return this.size(org.kevoree.meta.MetaModel.REL_NAMESPACES);
-                }
-
-            }
-
-            export class MsgProtocolImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.MsgProtocol {
-
-                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
-                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
-                }
-
-                public getName(): string {
-                    return <string>this.get(org.kevoree.meta.MetaMsgProtocol.ATT_NAME);
-                }
-
-                public setName(p_obj: string): org.kevoree.MsgProtocol {
-                    this.set(org.kevoree.meta.MetaMsgProtocol.ATT_NAME, p_obj);
-                    return this;
-                }
-
-                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.MsgProtocol {
-                    this.add(org.kevoree.meta.MetaMsgProtocol.REL_METADATA, p_obj);
-                    return this;
-                }
-
-                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.MsgProtocol {
-                    this.remove(org.kevoree.meta.MetaMsgProtocol.REL_METADATA, p_obj);
-                    return this;
-                }
-
-                public getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void {
-                    if (cb == null) {
-                        return;
-                    }
-                    this.getRelation(org.kevoree.meta.MetaMsgProtocol.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
-                        var casted: org.kevoree.Value[] = new Array();
-                        for (var i: number = 0; i < kObjects.length; i++) {
-                            casted[i] = <org.kevoree.Value>kObjects[i];
-                        }
-                        cb(casted);
-                    });
-                }
-
-                public sizeOfMetaData(): number {
-                    return this.size(org.kevoree.meta.MetaMsgProtocol.REL_METADATA);
                 }
 
             }
@@ -24873,24 +24744,24 @@ export module org {
                     return this.size(org.kevoree.meta.MetaPortType.REL_METADATA);
                 }
 
-                public addProtocol(p_obj: org.kevoree.MsgProtocol): org.kevoree.PortType {
+                public addProtocol(p_obj: org.kevoree.Value): org.kevoree.PortType {
                     this.add(org.kevoree.meta.MetaPortType.REL_PROTOCOL, p_obj);
                     return this;
                 }
 
-                public removeProtocol(p_obj: org.kevoree.MsgProtocol): org.kevoree.PortType {
+                public removeProtocol(p_obj: org.kevoree.Value): org.kevoree.PortType {
                     this.remove(org.kevoree.meta.MetaPortType.REL_PROTOCOL, p_obj);
                     return this;
                 }
 
-                public getProtocol(cb: org.kevoree.modeling.KCallback<org.kevoree.MsgProtocol[]>): void {
+                public getProtocol(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void {
                     if (cb == null) {
                         return;
                     }
                     this.getRelation(org.kevoree.meta.MetaPortType.REL_PROTOCOL,  (kObjects : org.kevoree.modeling.KObject[]) => {
-                        var casted: org.kevoree.MsgProtocol[] = new Array();
+                        var casted: org.kevoree.Value[] = new Array();
                         for (var i: number = 0; i < kObjects.length; i++) {
-                            casted[i] = <org.kevoree.MsgProtocol>kObjects[i];
+                            casted[i] = <org.kevoree.Value>kObjects[i];
                         }
                         cb(casted);
                     });
@@ -25120,10 +24991,12 @@ export module org {
             export class MetaAttributeType extends org.kevoree.modeling.meta.impl.MetaClass {
 
                 private static INSTANCE: org.kevoree.meta.MetaAttributeType = null;
-                public static ATT_OPTIONAL: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("optional", 0, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_AttributeType_metaData", 22, -1);
-                public static REL_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("datatype", 2, true, 24, "op_AttributeType_datatype", 22, 1);
-                public static REL_OP_DICTIONARYTYPE_ATTRIBUTES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_DictionaryType_attributes", 3, false, 15, "attributes", 22, -1);
+                public static ATT_FRAGMENT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("fragment", 0, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 1, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_OPTIONAL: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("optional", 2, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 3, true, 6, "op_AttributeType_metaData", 21, -1);
+                public static REL_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("datatype", 4, true, 22, "op_AttributeType_datatype", 21, 1);
+                public static REL_OP_DICTIONARYTYPE_ATTRIBUTES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_DictionaryType_attributes", 5, false, 15, "attributes", 21, -1);
                 public static getInstance(): org.kevoree.meta.MetaAttributeType {
                     if (MetaAttributeType.INSTANCE == null) {
                         MetaAttributeType.INSTANCE = new org.kevoree.meta.MetaAttributeType();
@@ -25132,12 +25005,14 @@ export module org {
                 }
 
                 constructor() {
-                    super("org.kevoree.AttributeType", 22, null, new Int32Array([5]));
+                    super("org.kevoree.AttributeType", 21, null, new Int32Array([5]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
-                    temp_all[0] = MetaAttributeType.ATT_OPTIONAL;
-                    temp_all[1] = MetaAttributeType.REL_METADATA;
-                    temp_all[2] = MetaAttributeType.REL_DATATYPE;
-                    temp_all[3] = MetaAttributeType.REL_OP_DICTIONARYTYPE_ATTRIBUTES;
+                    temp_all[0] = MetaAttributeType.ATT_FRAGMENT;
+                    temp_all[1] = MetaAttributeType.ATT_NAME;
+                    temp_all[2] = MetaAttributeType.ATT_OPTIONAL;
+                    temp_all[3] = MetaAttributeType.REL_METADATA;
+                    temp_all[4] = MetaAttributeType.REL_DATATYPE;
+                    temp_all[5] = MetaAttributeType.REL_OP_DICTIONARYTYPE_ATTRIBUTES;
                     this.init(temp_all);
                 }
 
@@ -25147,8 +25022,8 @@ export module org {
 
                 private static INSTANCE: org.kevoree.meta.MetaBooleanDataType = null;
                 public static ATT_DEFAULT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("default", 0, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_Element_metaData", 30, -1);
-                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 2, false, 22, "datatype", 30, -1);
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_Element_metaData", 27, -1);
+                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 2, false, 21, "datatype", 27, -1);
                 public static getInstance(): org.kevoree.meta.MetaBooleanDataType {
                     if (MetaBooleanDataType.INSTANCE == null) {
                         MetaBooleanDataType.INSTANCE = new org.kevoree.meta.MetaBooleanDataType();
@@ -25157,7 +25032,7 @@ export module org {
                 }
 
                 constructor() {
-                    super("org.kevoree.BooleanDataType", 30, null, new Int32Array([24]));
+                    super("org.kevoree.BooleanDataType", 27, null, new Int32Array([22]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaBooleanDataType.ATT_DEFAULT;
                     temp_all[1] = MetaBooleanDataType.REL_METADATA;
@@ -25206,15 +25081,14 @@ export module org {
                 public static ATT_REMOTE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("remote", 1, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static ATT_FRAGMENTABLE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("fragmentable", 2, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static ATT_VERSION: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("version", 3, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 4, true, 6, "op_TypeDefinition_metaData", 20, -1);
-                public static REL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("dictionary", 5, true, 15, "op_TypeDefinition_dictionary", 20, 1);
-                public static REL_OP_NODE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_typeDefinition", 6, false, 1, "typeDefinition", 20, -1);
-                public static REL_OP_INSTANCE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Instance_typeDefinition", 7, false, 7, "typeDefinition", 20, -1);
-                public static REL_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("deployUnits", 8, true, 16, "op_TypeDefinition_deployUnits", 20, -1);
-                public static REL_OP_NAMESPACE_TYPEDEFINITIONS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Namespace_typeDefinitions", 9, false, 4, "typeDefinitions", 20, -1);
-                public static REL_OP_COMPONENT_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_typeDefinition", 10, false, 10, "typeDefinition", 20, -1);
-                public static REL_FRAGDICTIONARIES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("fragDictionaries", 11, true, 19, "op_ChannelType_fragDictionaries", 20, -1);
-                public static REL_OP_CHANNEL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_typeDefinition", 12, false, 2, "typeDefinition", 20, -1);
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 4, true, 6, "op_TypeDefinition_metaData", 19, -1);
+                public static REL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("dictionary", 5, true, 15, "op_TypeDefinition_dictionary", 19, 1);
+                public static REL_OP_NODE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_typeDefinition", 6, false, 1, "typeDefinition", 19, -1);
+                public static REL_OP_INSTANCE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Instance_typeDefinition", 7, false, 7, "typeDefinition", 19, -1);
+                public static REL_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("deployUnits", 8, true, 16, "op_TypeDefinition_deployUnits", 19, -1);
+                public static REL_OP_NAMESPACE_TYPEDEFINITIONS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Namespace_typeDefinitions", 9, false, 4, "typeDefinitions", 19, -1);
+                public static REL_OP_COMPONENT_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_typeDefinition", 10, false, 10, "typeDefinition", 19, -1);
+                public static REL_OP_CHANNEL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_typeDefinition", 11, false, 2, "typeDefinition", 19, -1);
                 public static getInstance(): org.kevoree.meta.MetaChannelType {
                     if (MetaChannelType.INSTANCE == null) {
                         MetaChannelType.INSTANCE = new org.kevoree.meta.MetaChannelType();
@@ -25223,7 +25097,7 @@ export module org {
                 }
 
                 constructor() {
-                    super("org.kevoree.ChannelType", 20, null, new Int32Array([8]));
+                    super("org.kevoree.ChannelType", 19, null, new Int32Array([8]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaChannelType.ATT_NAME;
                     temp_all[1] = MetaChannelType.ATT_REMOTE;
@@ -25236,32 +25110,7 @@ export module org {
                     temp_all[8] = MetaChannelType.REL_DEPLOYUNITS;
                     temp_all[9] = MetaChannelType.REL_OP_NAMESPACE_TYPEDEFINITIONS;
                     temp_all[10] = MetaChannelType.REL_OP_COMPONENT_TYPEDEFINITION;
-                    temp_all[11] = MetaChannelType.REL_FRAGDICTIONARIES;
-                    temp_all[12] = MetaChannelType.REL_OP_CHANNEL_TYPEDEFINITION;
-                    this.init(temp_all);
-                }
-
-            }
-
-            export class MetaChoice extends org.kevoree.modeling.meta.impl.MetaClass {
-
-                private static INSTANCE: org.kevoree.meta.MetaChoice = null;
-                public static ATT_VALUE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("value", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_OP_CHOICEDATATYPE_DEFAULT: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ChoiceDataType_default", 1, false, 31, "default", 32, -1);
-                public static REL_OP_CHOICEDATATYPE_CHOICES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ChoiceDataType_choices", 2, false, 31, "choices", 32, -1);
-                public static getInstance(): org.kevoree.meta.MetaChoice {
-                    if (MetaChoice.INSTANCE == null) {
-                        MetaChoice.INSTANCE = new org.kevoree.meta.MetaChoice();
-                    }
-                    return MetaChoice.INSTANCE;
-                }
-
-                constructor() {
-                    super("org.kevoree.Choice", 32, null, new Int32Array([]));
-                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
-                    temp_all[0] = MetaChoice.ATT_VALUE;
-                    temp_all[1] = MetaChoice.REL_OP_CHOICEDATATYPE_DEFAULT;
-                    temp_all[2] = MetaChoice.REL_OP_CHOICEDATATYPE_CHOICES;
+                    temp_all[11] = MetaChannelType.REL_OP_CHANNEL_TYPEDEFINITION;
                     this.init(temp_all);
                 }
 
@@ -25270,10 +25119,10 @@ export module org {
             export class MetaChoiceDataType extends org.kevoree.modeling.meta.impl.MetaClass {
 
                 private static INSTANCE: org.kevoree.meta.MetaChoiceDataType = null;
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 0, true, 6, "op_Element_metaData", 31, -1);
-                public static REL_DEFAULT: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("default", 1, true, 32, "op_ChoiceDataType_default", 31, 1);
-                public static REL_CHOICES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("choices", 2, true, 32, "op_ChoiceDataType_choices", 31, -1);
-                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 3, false, 22, "datatype", 31, -1);
+                public static ATT_DEFAULTINDEX: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("defaultIndex", 0, 0, false, -4, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_Element_metaData", 28, -1);
+                public static REL_CHOICES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("choices", 2, true, 29, "op_ChoiceDataType_choices", 28, -1);
+                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 3, false, 21, "datatype", 28, -1);
                 public static getInstance(): org.kevoree.meta.MetaChoiceDataType {
                     if (MetaChoiceDataType.INSTANCE == null) {
                         MetaChoiceDataType.INSTANCE = new org.kevoree.meta.MetaChoiceDataType();
@@ -25282,10 +25131,10 @@ export module org {
                 }
 
                 constructor() {
-                    super("org.kevoree.ChoiceDataType", 31, null, new Int32Array([24]));
+                    super("org.kevoree.ChoiceDataType", 28, null, new Int32Array([22]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
-                    temp_all[0] = MetaChoiceDataType.REL_METADATA;
-                    temp_all[1] = MetaChoiceDataType.REL_DEFAULT;
+                    temp_all[0] = MetaChoiceDataType.ATT_DEFAULTINDEX;
+                    temp_all[1] = MetaChoiceDataType.REL_METADATA;
                     temp_all[2] = MetaChoiceDataType.REL_CHOICES;
                     temp_all[3] = MetaChoiceDataType.REL_OP_ATTRIBUTETYPE_DATATYPE;
                     this.init(temp_all);
@@ -25333,16 +25182,16 @@ export module org {
                 public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static ATT_REMOTE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("remote", 1, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static ATT_VERSION: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("version", 2, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_INPUTTYPES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("inputTypes", 3, true, 14, "op_ComponentType_inputTypes", 21, -1);
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 4, true, 6, "op_TypeDefinition_metaData", 21, -1);
-                public static REL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("dictionary", 5, true, 15, "op_TypeDefinition_dictionary", 21, 1);
-                public static REL_OP_NODE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_typeDefinition", 6, false, 1, "typeDefinition", 21, -1);
-                public static REL_OP_INSTANCE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Instance_typeDefinition", 7, false, 7, "typeDefinition", 21, -1);
-                public static REL_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("deployUnits", 8, true, 16, "op_TypeDefinition_deployUnits", 21, -1);
-                public static REL_OP_NAMESPACE_TYPEDEFINITIONS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Namespace_typeDefinitions", 9, false, 4, "typeDefinitions", 21, -1);
-                public static REL_OP_COMPONENT_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_typeDefinition", 10, false, 10, "typeDefinition", 21, -1);
-                public static REL_OUTPUTTYPES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("outputTypes", 11, true, 14, "op_ComponentType_outputTypes", 21, -1);
-                public static REL_OP_CHANNEL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_typeDefinition", 12, false, 2, "typeDefinition", 21, -1);
+                public static REL_INPUTTYPES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("inputTypes", 3, true, 14, "op_ComponentType_inputTypes", 20, -1);
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 4, true, 6, "op_TypeDefinition_metaData", 20, -1);
+                public static REL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("dictionary", 5, true, 15, "op_TypeDefinition_dictionary", 20, 1);
+                public static REL_OP_NODE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_typeDefinition", 6, false, 1, "typeDefinition", 20, -1);
+                public static REL_OP_INSTANCE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Instance_typeDefinition", 7, false, 7, "typeDefinition", 20, -1);
+                public static REL_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("deployUnits", 8, true, 16, "op_TypeDefinition_deployUnits", 20, -1);
+                public static REL_OP_NAMESPACE_TYPEDEFINITIONS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Namespace_typeDefinitions", 9, false, 4, "typeDefinitions", 20, -1);
+                public static REL_OP_COMPONENT_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_typeDefinition", 10, false, 10, "typeDefinition", 20, -1);
+                public static REL_OUTPUTTYPES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("outputTypes", 11, true, 14, "op_ComponentType_outputTypes", 20, -1);
+                public static REL_OP_CHANNEL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_typeDefinition", 12, false, 2, "typeDefinition", 20, -1);
                 public static getInstance(): org.kevoree.meta.MetaComponentType {
                     if (MetaComponentType.INSTANCE == null) {
                         MetaComponentType.INSTANCE = new org.kevoree.meta.MetaComponentType();
@@ -25351,7 +25200,7 @@ export module org {
                 }
 
                 constructor() {
-                    super("org.kevoree.ComponentType", 21, null, new Int32Array([8]));
+                    super("org.kevoree.ComponentType", 20, null, new Int32Array([8]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaComponentType.ATT_NAME;
                     temp_all[1] = MetaComponentType.ATT_REMOTE;
@@ -25374,8 +25223,8 @@ export module org {
             export class MetaDataType extends org.kevoree.modeling.meta.impl.MetaClass {
 
                 private static INSTANCE: org.kevoree.meta.MetaDataType = null;
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 0, true, 6, "op_Element_metaData", 24, -1);
-                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 1, false, 22, "datatype", 24, -1);
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 0, true, 6, "op_Element_metaData", 22, -1);
+                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 1, false, 21, "datatype", 22, -1);
                 public static getInstance(): org.kevoree.meta.MetaDataType {
                     if (MetaDataType.INSTANCE == null) {
                         MetaDataType.INSTANCE = new org.kevoree.meta.MetaDataType();
@@ -25384,7 +25233,7 @@ export module org {
                 }
 
                 constructor() {
-                    super("org.kevoree.DataType", 24, null, new Int32Array([5]));
+                    super("org.kevoree.DataType", 22, null, new Int32Array([5]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaDataType.REL_METADATA;
                     temp_all[1] = MetaDataType.REL_OP_ATTRIBUTETYPE_DATATYPE;
@@ -25429,31 +25278,13 @@ export module org {
 
             }
 
-            export class MetaDictionary extends org.kevoree.modeling.meta.impl.MetaClass {
-
-                private static INSTANCE: org.kevoree.meta.MetaDictionary = null;
-                public static getInstance(): org.kevoree.meta.MetaDictionary {
-                    if (MetaDictionary.INSTANCE == null) {
-                        MetaDictionary.INSTANCE = new org.kevoree.meta.MetaDictionary();
-                    }
-                    return MetaDictionary.INSTANCE;
-                }
-
-                constructor() {
-                    super("org.kevoree.Dictionary", 23, null, new Int32Array([]));
-                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
-                    this.init(temp_all);
-                }
-
-            }
-
             export class MetaDictionaryType extends org.kevoree.modeling.meta.impl.MetaClass {
 
                 private static INSTANCE: org.kevoree.meta.MetaDictionaryType = null;
                 public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 0, true, 6, "op_DictionaryType_metaData", 15, -1);
                 public static REL_OP_GROUPTYPE_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_GroupType_dictionary", 1, false, 18, "dictionary", 15, -1);
                 public static REL_OP_TYPEDEFINITION_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_TypeDefinition_dictionary", 2, false, 8, "dictionary", 15, -1);
-                public static REL_ATTRIBUTES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("attributes", 3, true, 22, "op_DictionaryType_attributes", 15, -1);
+                public static REL_ATTRIBUTES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("attributes", 3, true, 21, "op_DictionaryType_attributes", 15, -1);
                 public static REL_OP_NODETYPE_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_NodeType_dictionary", 4, false, 17, "dictionary", 15, -1);
                 public static getInstance(): org.kevoree.meta.MetaDictionaryType {
                     if (MetaDictionaryType.INSTANCE == null) {
@@ -25481,8 +25312,8 @@ export module org {
                 public static ATT_DEFAULT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("default", 0, 0, false, -5, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static ATT_MIN: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("min", 1, 0, false, -5, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static ATT_MAX: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("max", 2, 0, false, -5, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 3, true, 6, "op_Element_metaData", 27, -1);
-                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 4, false, 22, "datatype", 27, -1);
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 3, true, 6, "op_Element_metaData", 24, -1);
+                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 4, false, 21, "datatype", 24, -1);
                 public static getInstance(): org.kevoree.meta.MetaDoubleDataType {
                     if (MetaDoubleDataType.INSTANCE == null) {
                         MetaDoubleDataType.INSTANCE = new org.kevoree.meta.MetaDoubleDataType();
@@ -25491,7 +25322,7 @@ export module org {
                 }
 
                 constructor() {
-                    super("org.kevoree.DoubleDataType", 27, null, new Int32Array([24]));
+                    super("org.kevoree.DoubleDataType", 24, null, new Int32Array([22]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaDoubleDataType.ATT_DEFAULT;
                     temp_all[1] = MetaDoubleDataType.ATT_MIN;
@@ -25518,30 +25349,6 @@ export module org {
                     super("org.kevoree.Element", 5, null, new Int32Array([]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaElement.REL_METADATA;
-                    this.init(temp_all);
-                }
-
-            }
-
-            export class MetaFragmentDictionaryType extends org.kevoree.modeling.meta.impl.MetaClass {
-
-                private static INSTANCE: org.kevoree.meta.MetaFragmentDictionaryType = null;
-                public static REL_OP_GROUPTYPE_FRAGDICTIONARIES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_GroupType_fragDictionaries", 0, false, 18, "fragDictionaries", 19, -1);
-                public static REL_FRAGMENT: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("fragment", 1, true, 1, "op_FragmentDictionaryType_fragment", 19, -1);
-                public static REL_OP_CHANNELTYPE_FRAGDICTIONARIES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ChannelType_fragDictionaries", 2, false, 20, "fragDictionaries", 19, -1);
-                public static getInstance(): org.kevoree.meta.MetaFragmentDictionaryType {
-                    if (MetaFragmentDictionaryType.INSTANCE == null) {
-                        MetaFragmentDictionaryType.INSTANCE = new org.kevoree.meta.MetaFragmentDictionaryType();
-                    }
-                    return MetaFragmentDictionaryType.INSTANCE;
-                }
-
-                constructor() {
-                    super("org.kevoree.FragmentDictionaryType", 19, null, new Int32Array([23]));
-                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
-                    temp_all[0] = MetaFragmentDictionaryType.REL_OP_GROUPTYPE_FRAGDICTIONARIES;
-                    temp_all[1] = MetaFragmentDictionaryType.REL_FRAGMENT;
-                    temp_all[2] = MetaFragmentDictionaryType.REL_OP_CHANNELTYPE_FRAGDICTIONARIES;
                     this.init(temp_all);
                 }
 
@@ -25590,8 +25397,7 @@ export module org {
                 public static REL_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("deployUnits", 7, true, 16, "op_GroupType_deployUnits", 18, -1);
                 public static REL_OP_NAMESPACE_TYPEDEFINITIONS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Namespace_typeDefinitions", 8, false, 4, "typeDefinitions", 18, -1);
                 public static REL_OP_COMPONENT_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_typeDefinition", 9, false, 10, "typeDefinition", 18, -1);
-                public static REL_FRAGDICTIONARIES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("fragDictionaries", 10, true, 19, "op_GroupType_fragDictionaries", 18, -1);
-                public static REL_OP_CHANNEL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_typeDefinition", 11, false, 2, "typeDefinition", 18, -1);
+                public static REL_OP_CHANNEL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_typeDefinition", 10, false, 2, "typeDefinition", 18, -1);
                 public static getInstance(): org.kevoree.meta.MetaGroupType {
                     if (MetaGroupType.INSTANCE == null) {
                         MetaGroupType.INSTANCE = new org.kevoree.meta.MetaGroupType();
@@ -25612,8 +25418,7 @@ export module org {
                     temp_all[7] = MetaGroupType.REL_DEPLOYUNITS;
                     temp_all[8] = MetaGroupType.REL_OP_NAMESPACE_TYPEDEFINITIONS;
                     temp_all[9] = MetaGroupType.REL_OP_COMPONENT_TYPEDEFINITION;
-                    temp_all[10] = MetaGroupType.REL_FRAGDICTIONARIES;
-                    temp_all[11] = MetaGroupType.REL_OP_CHANNEL_TYPEDEFINITION;
+                    temp_all[10] = MetaGroupType.REL_OP_CHANNEL_TYPEDEFINITION;
                     this.init(temp_all);
                 }
 
@@ -25677,8 +25482,8 @@ export module org {
                 public static ATT_DEFAULT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("default", 0, 0, false, -4, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static ATT_MIN: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("min", 1, 0, false, -4, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static ATT_MAX: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("max", 2, 0, false, -4, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 3, true, 6, "op_IntDataType_metaData", 28, -1);
-                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 4, false, 22, "datatype", 28, -1);
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 3, true, 6, "op_IntDataType_metaData", 25, -1);
+                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 4, false, 21, "datatype", 25, -1);
                 public static getInstance(): org.kevoree.meta.MetaIntDataType {
                     if (MetaIntDataType.INSTANCE == null) {
                         MetaIntDataType.INSTANCE = new org.kevoree.meta.MetaIntDataType();
@@ -25687,7 +25492,7 @@ export module org {
                 }
 
                 constructor() {
-                    super("org.kevoree.IntDataType", 28, null, new Int32Array([24]));
+                    super("org.kevoree.IntDataType", 25, null, new Int32Array([22]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaIntDataType.ATT_DEFAULT;
                     temp_all[1] = MetaIntDataType.ATT_MIN;
@@ -25699,14 +25504,62 @@ export module org {
 
             }
 
+            export class MetaItem extends org.kevoree.modeling.meta.impl.MetaClass {
+
+                private static INSTANCE: org.kevoree.meta.MetaItem = null;
+                public static ATT_VALUE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("value", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_OP_LISTDATATYPE_DEFAULT: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ListDataType_default", 1, false, 30, "default", 29, -1);
+                public static REL_OP_CHOICEDATATYPE_CHOICES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ChoiceDataType_choices", 2, false, 28, "choices", 29, -1);
+                public static getInstance(): org.kevoree.meta.MetaItem {
+                    if (MetaItem.INSTANCE == null) {
+                        MetaItem.INSTANCE = new org.kevoree.meta.MetaItem();
+                    }
+                    return MetaItem.INSTANCE;
+                }
+
+                constructor() {
+                    super("org.kevoree.Item", 29, null, new Int32Array([]));
+                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
+                    temp_all[0] = MetaItem.ATT_VALUE;
+                    temp_all[1] = MetaItem.REL_OP_LISTDATATYPE_DEFAULT;
+                    temp_all[2] = MetaItem.REL_OP_CHOICEDATATYPE_CHOICES;
+                    this.init(temp_all);
+                }
+
+            }
+
+            export class MetaListDataType extends org.kevoree.modeling.meta.impl.MetaClass {
+
+                private static INSTANCE: org.kevoree.meta.MetaListDataType = null;
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 0, true, 6, "op_Element_metaData", 30, -1);
+                public static REL_DEFAULT: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("default", 1, true, 29, "op_ListDataType_default", 30, -1);
+                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 2, false, 21, "datatype", 30, -1);
+                public static getInstance(): org.kevoree.meta.MetaListDataType {
+                    if (MetaListDataType.INSTANCE == null) {
+                        MetaListDataType.INSTANCE = new org.kevoree.meta.MetaListDataType();
+                    }
+                    return MetaListDataType.INSTANCE;
+                }
+
+                constructor() {
+                    super("org.kevoree.ListDataType", 30, null, new Int32Array([22]));
+                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
+                    temp_all[0] = MetaListDataType.REL_METADATA;
+                    temp_all[1] = MetaListDataType.REL_DEFAULT;
+                    temp_all[2] = MetaListDataType.REL_OP_ATTRIBUTETYPE_DATATYPE;
+                    this.init(temp_all);
+                }
+
+            }
+
             export class MetaLongDataType extends org.kevoree.modeling.meta.impl.MetaClass {
 
                 private static INSTANCE: org.kevoree.meta.MetaLongDataType = null;
                 public static ATT_DEFAULT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("default", 0, 0, false, -3, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static ATT_MIN: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("min", 1, 0, false, -3, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static ATT_MAX: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("max", 2, 0, false, -3, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 3, true, 6, "op_LongDataType_metaData", 29, -1);
-                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 4, false, 22, "datatype", 29, -1);
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 3, true, 6, "op_LongDataType_metaData", 26, -1);
+                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 4, false, 21, "datatype", 26, -1);
                 public static getInstance(): org.kevoree.meta.MetaLongDataType {
                     if (MetaLongDataType.INSTANCE == null) {
                         MetaLongDataType.INSTANCE = new org.kevoree.meta.MetaLongDataType();
@@ -25715,7 +25568,7 @@ export module org {
                 }
 
                 constructor() {
-                    super("org.kevoree.LongDataType", 29, null, new Int32Array([24]));
+                    super("org.kevoree.LongDataType", 26, null, new Int32Array([22]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaLongDataType.ATT_DEFAULT;
                     temp_all[1] = MetaLongDataType.ATT_MIN;
@@ -25787,30 +25640,6 @@ export module org {
 
             }
 
-            export class MetaMsgProtocol extends org.kevoree.modeling.meta.impl.MetaClass {
-
-                private static INSTANCE: org.kevoree.meta.MetaMsgProtocol = null;
-                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_MsgProtocol_metaData", 25, -1);
-                public static REL_OP_PORTTYPE_PROTOCOL: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_PortType_protocol", 2, false, 14, "protocol", 25, -1);
-                public static getInstance(): org.kevoree.meta.MetaMsgProtocol {
-                    if (MetaMsgProtocol.INSTANCE == null) {
-                        MetaMsgProtocol.INSTANCE = new org.kevoree.meta.MetaMsgProtocol();
-                    }
-                    return MetaMsgProtocol.INSTANCE;
-                }
-
-                constructor() {
-                    super("org.kevoree.MsgProtocol", 25, null, new Int32Array([5]));
-                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
-                    temp_all[0] = MetaMsgProtocol.ATT_NAME;
-                    temp_all[1] = MetaMsgProtocol.REL_METADATA;
-                    temp_all[2] = MetaMsgProtocol.REL_OP_PORTTYPE_PROTOCOL;
-                    this.init(temp_all);
-                }
-
-            }
-
             export class MetaNamespace extends org.kevoree.modeling.meta.impl.MetaClass {
 
                 private static INSTANCE: org.kevoree.meta.MetaNamespace = null;
@@ -25847,12 +25676,11 @@ export module org {
                 public static REL_COMPONENTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("components", 4, true, 10, "op_Node_components", 1, -1);
                 public static REL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("typeDefinition", 5, true, 8, "op_Node_typeDefinition", 1, 1);
                 public static REL_HOST: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("host", 6, true, 1, "op_Node_host", 1, 1);
-                public static REL_OP_FRAGMENTDICTIONARYTYPE_FRAGMENT: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_FragmentDictionaryType_fragment", 7, false, 19, "fragment", 1, -1);
-                public static REL_GROUPS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("groups", 8, true, 3, "nodes", 1, -1);
-                public static REL_SUBNODES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("subNodes", 9, true, 1, "op_Node_subNodes", 1, -1);
-                public static REL_METRICS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metrics", 10, true, 9, "op_Node_metrics", 1, -1);
-                public static REL_OP_COMPONENT_HOST: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_host", 11, false, 10, "host", 1, -1);
-                public static REL_OP_NODE_SUBNODES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_subNodes", 12, false, 1, "subNodes", 1, -1);
+                public static REL_GROUPS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("groups", 7, true, 3, "nodes", 1, -1);
+                public static REL_SUBNODES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("subNodes", 8, true, 1, "op_Node_subNodes", 1, -1);
+                public static REL_METRICS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metrics", 9, true, 9, "op_Node_metrics", 1, -1);
+                public static REL_OP_COMPONENT_HOST: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_host", 10, false, 10, "host", 1, -1);
+                public static REL_OP_NODE_SUBNODES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_subNodes", 11, false, 1, "subNodes", 1, -1);
                 public static getInstance(): org.kevoree.meta.MetaNode {
                     if (MetaNode.INSTANCE == null) {
                         MetaNode.INSTANCE = new org.kevoree.meta.MetaNode();
@@ -25870,12 +25698,11 @@ export module org {
                     temp_all[4] = MetaNode.REL_COMPONENTS;
                     temp_all[5] = MetaNode.REL_TYPEDEFINITION;
                     temp_all[6] = MetaNode.REL_HOST;
-                    temp_all[7] = MetaNode.REL_OP_FRAGMENTDICTIONARYTYPE_FRAGMENT;
-                    temp_all[8] = MetaNode.REL_GROUPS;
-                    temp_all[9] = MetaNode.REL_SUBNODES;
-                    temp_all[10] = MetaNode.REL_METRICS;
-                    temp_all[11] = MetaNode.REL_OP_COMPONENT_HOST;
-                    temp_all[12] = MetaNode.REL_OP_NODE_SUBNODES;
+                    temp_all[7] = MetaNode.REL_GROUPS;
+                    temp_all[8] = MetaNode.REL_SUBNODES;
+                    temp_all[9] = MetaNode.REL_METRICS;
+                    temp_all[10] = MetaNode.REL_OP_COMPONENT_HOST;
+                    temp_all[11] = MetaNode.REL_OP_NODE_SUBNODES;
                     this.init(temp_all);
                 }
 
@@ -25976,10 +25803,10 @@ export module org {
                 private static INSTANCE: org.kevoree.meta.MetaPortType = null;
                 public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_PortType_metaData", 14, -1);
-                public static REL_PROTOCOL: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("protocol", 2, true, 25, "op_PortType_protocol", 14, -1);
-                public static REL_OP_COMPONENTTYPE_OUTPUTTYPES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ComponentType_outputTypes", 3, false, 21, "outputTypes", 14, -1);
+                public static REL_PROTOCOL: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("protocol", 2, true, 6, "op_PortType_protocol", 14, -1);
+                public static REL_OP_COMPONENTTYPE_OUTPUTTYPES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ComponentType_outputTypes", 3, false, 20, "outputTypes", 14, -1);
                 public static REL_OP_PORT_TYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Port_type", 4, false, 13, "type", 14, -1);
-                public static REL_OP_COMPONENTTYPE_INPUTTYPES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ComponentType_inputTypes", 5, false, 21, "inputTypes", 14, -1);
+                public static REL_OP_COMPONENTTYPE_INPUTTYPES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ComponentType_inputTypes", 5, false, 20, "inputTypes", 14, -1);
                 public static getInstance(): org.kevoree.meta.MetaPortType {
                     if (MetaPortType.INSTANCE == null) {
                         MetaPortType.INSTANCE = new org.kevoree.meta.MetaPortType();
@@ -26006,8 +25833,8 @@ export module org {
                 private static INSTANCE: org.kevoree.meta.MetaStringDataType = null;
                 public static ATT_DEFAULT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("default", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static ATT_MULTILINE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("multiline", 1, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 2, true, 6, "op_Element_metaData", 26, -1);
-                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 3, false, 22, "datatype", 26, -1);
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 2, true, 6, "op_Element_metaData", 23, -1);
+                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 3, false, 21, "datatype", 23, -1);
                 public static getInstance(): org.kevoree.meta.MetaStringDataType {
                     if (MetaStringDataType.INSTANCE == null) {
                         MetaStringDataType.INSTANCE = new org.kevoree.meta.MetaStringDataType();
@@ -26016,7 +25843,7 @@ export module org {
                 }
 
                 constructor() {
-                    super("org.kevoree.StringDataType", 26, null, new Int32Array([24]));
+                    super("org.kevoree.StringDataType", 23, null, new Int32Array([22]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaStringDataType.ATT_DEFAULT;
                     temp_all[1] = MetaStringDataType.ATT_MULTILINE;
@@ -26072,22 +25899,22 @@ export module org {
                 public static ATT_VALUE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("value", 1, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static REL_OP_DEPLOYUNIT_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_DeployUnit_metaData", 2, false, 16, "metaData", 6, -1);
                 public static REL_OP_DICTIONARYTYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_DictionaryType_metaData", 3, false, 15, "metaData", 6, -1);
-                public static REL_OP_ATTRIBUTETYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_metaData", 4, false, 22, "metaData", 6, -1);
+                public static REL_OP_ATTRIBUTETYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_metaData", 4, false, 21, "metaData", 6, -1);
                 public static REL_OP_METRIC_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Metric_metaData", 5, false, 9, "metaData", 6, -1);
                 public static REL_OP_NODETYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_NodeType_metaData", 6, false, 17, "metaData", 6, -1);
-                public static REL_OP_LONGDATATYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_LongDataType_metaData", 7, false, 29, "metaData", 6, -1);
+                public static REL_OP_LONGDATATYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_LongDataType_metaData", 7, false, 26, "metaData", 6, -1);
                 public static REL_OP_PORT_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Port_metaData", 8, false, 13, "metaData", 6, -1);
                 public static REL_OP_COMPONENT_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_metaData", 9, false, 10, "metaData", 6, -1);
                 public static REL_OP_MODEL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Model_metaData", 10, false, 0, "metaData", 6, -1);
                 public static REL_OP_INSTANCE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Instance_metaData", 11, false, 7, "metaData", 6, -1);
-                public static REL_OP_INTDATATYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_IntDataType_metaData", 12, false, 28, "metaData", 6, -1);
+                public static REL_OP_INTDATATYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_IntDataType_metaData", 12, false, 25, "metaData", 6, -1);
                 public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 13, true, 6, "op_Value_metaData", 6, -1);
                 public static REL_OP_PORTTYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_PortType_metaData", 14, false, 14, "metaData", 6, -1);
-                public static REL_OP_GROUPTYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_GroupType_metaData", 15, false, 18, "metaData", 6, -1);
-                public static REL_OP_NAMESPACE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Namespace_metaData", 16, false, 4, "metaData", 6, -1);
-                public static REL_OP_TYPEDEFINITION_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_TypeDefinition_metaData", 17, false, 8, "metaData", 6, -1);
-                public static REL_OP_VALUE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Value_metaData", 18, false, 6, "metaData", 6, -1);
-                public static REL_OP_MSGPROTOCOL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_MsgProtocol_metaData", 19, false, 25, "metaData", 6, -1);
+                public static REL_OP_PORTTYPE_PROTOCOL: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_PortType_protocol", 15, false, 14, "protocol", 6, -1);
+                public static REL_OP_GROUPTYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_GroupType_metaData", 16, false, 18, "metaData", 6, -1);
+                public static REL_OP_NAMESPACE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Namespace_metaData", 17, false, 4, "metaData", 6, -1);
+                public static REL_OP_TYPEDEFINITION_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_TypeDefinition_metaData", 18, false, 8, "metaData", 6, -1);
+                public static REL_OP_VALUE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Value_metaData", 19, false, 6, "metaData", 6, -1);
                 public static REL_OP_CHANNEL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_metaData", 20, false, 2, "metaData", 6, -1);
                 public static REL_OP_NODE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_metaData", 21, false, 1, "metaData", 6, -1);
                 public static REL_OP_ELEMENT_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Element_metaData", 22, false, 5, "metaData", 6, -1);
@@ -26116,11 +25943,11 @@ export module org {
                     temp_all[12] = MetaValue.REL_OP_INTDATATYPE_METADATA;
                     temp_all[13] = MetaValue.REL_METADATA;
                     temp_all[14] = MetaValue.REL_OP_PORTTYPE_METADATA;
-                    temp_all[15] = MetaValue.REL_OP_GROUPTYPE_METADATA;
-                    temp_all[16] = MetaValue.REL_OP_NAMESPACE_METADATA;
-                    temp_all[17] = MetaValue.REL_OP_TYPEDEFINITION_METADATA;
-                    temp_all[18] = MetaValue.REL_OP_VALUE_METADATA;
-                    temp_all[19] = MetaValue.REL_OP_MSGPROTOCOL_METADATA;
+                    temp_all[15] = MetaValue.REL_OP_PORTTYPE_PROTOCOL;
+                    temp_all[16] = MetaValue.REL_OP_GROUPTYPE_METADATA;
+                    temp_all[17] = MetaValue.REL_OP_NAMESPACE_METADATA;
+                    temp_all[18] = MetaValue.REL_OP_TYPEDEFINITION_METADATA;
+                    temp_all[19] = MetaValue.REL_OP_VALUE_METADATA;
                     temp_all[20] = MetaValue.REL_OP_CHANNEL_METADATA;
                     temp_all[21] = MetaValue.REL_OP_NODE_METADATA;
                     temp_all[22] = MetaValue.REL_OP_ELEMENT_METADATA;

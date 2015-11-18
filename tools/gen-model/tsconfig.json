@@ -1,13 +1,14 @@
 {
-    "version": "1.5.3",
     "compilerOptions": {
         "target": "es5",
         "module": "commonjs",
+        "moduleResolution": "node",
         "isolatedModules": false,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "noImplicitAny": true,
         "removeComments": true,
+        "declaration": true,
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
@@ -15,8 +16,7 @@
     },
     "filesGlob": [
         "src/**/*.ts",
-        "typings/**/*.ts",
-        "!node_modules/**/*"
+        "typings/**/*.ts"
     ],
     "files": [
         "src/main/GenModel.ts",

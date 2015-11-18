@@ -3,6 +3,7 @@ import { MetaData } from '../../MetaData';
 import { ParamType } from '../../ParamType';
 import { BooleanParamMeta } from '../metas/BooleanParamMeta';
 
+
 export function BooleanParam(meta?: BooleanParamMeta) {
     return function(target: any, propertyKey: string) {
         meta = meta || {};
@@ -10,7 +11,7 @@ export function BooleanParam(meta?: BooleanParamMeta) {
         if (typeof meta.optional === 'undefined') { meta.optional = true; }
         if (typeof meta.fragment === 'undefined') { meta.fragment = false; }
 
-        meta['datatype'] = ParamType.BOOLEAN;
+        meta.datatype = ParamType.BOOLEAN;
 
         var params = Reflect.getMetadata(MetaData.PARAMS, target);
         if (!params) {

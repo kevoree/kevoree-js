@@ -2,21 +2,24 @@ import 'reflect-metadata';
 import { resolve } from 'path';
 import { readFile } from 'fs';
 import * as util from 'util';
-import { Types, ParamData, MetaData, TypeMeta, DataType } from 'kevoree-api';
+import {
+    TypeEnum, ParamMeta, MetaData, TypeMeta, ParamType, StringParamMeta,
+    BooleanParamMeta, ChoiceParamMeta, ListParamMeta, NumberParamMeta
+} from 'kevoree-api';
 import { MetaData as InjectMetaData, InjectData } from 'ts-injector';
 import { org } from 'kevoree-model';
+import { ModelCallback } from './ModelCallback';
 
 var jsonValidator = require('is-my-json-valid');
 var metaJsonSchema = require('../../jsonschema.json');
 var schemaValidator = jsonValidator(metaJsonSchema, { verbose: true, greedy: true });
 
 export class GenModel {
-
-    generate(done: ModelCallback): void {
+    generate(path: string, done: ModelCallback): void {
         var kModel = new org.KevoreeModel(org.kevoree.modeling.memory.manager.DataManagerBuilder.buildDefault());
         var kView = kModel.universe(0).time(0);
         kModel.connect(() => {
-            var pkgPath = resolve(process.cwd(), 'package.json');
+            var pkgPath = resolve(path, 'package.json');
             readFile(pkgPath, { encoding: 'utf8' }, (err, data) => {
                 if (err) {
                     done(err);
@@ -32,7 +35,7 @@ export class GenModel {
                         }
 
                         try {
-                            classPath = resolve(process.cwd(), pkg.main);
+                            classPath = resolve(path, pkg.main);
                             Type = require(classPath);
                         } catch (err) {
                             done(new Error(`Unable to load class ${classPath}`));
@@ -43,16 +46,16 @@ export class GenModel {
                         if (typeof type !== 'undefined') {
                             var tdef: org.kevoree.TypeDefinition;
                             switch (type) {
-                                case Types.Node:
+                                case TypeEnum.NODE:
                                     tdef = kView.createNodeType();
                                     break;
-                                case Types.Group:
+                                case TypeEnum.GROUP:
                                     tdef = kView.createGroupType();
                                     break;
-                                case Types.Channel:
+                                case TypeEnum.CHANNEL:
                                     tdef = kView.createChannelType();
                                     break;
-                                case Types.Component:
+                                case TypeEnum.COMPONENT:
                                     tdef = kView.createComponentType();
                                     break;
                             }
@@ -78,70 +81,68 @@ export class GenModel {
                                             if (meta) {
                                                 var descMeta = kView.createValue();
                                                 descMeta.setName('description');
-                                                descMeta.setValue(meta.desc);
+                                                descMeta.setValue(meta.description);
                                                 tdef.addMetaData(descMeta);
                                             }
 
                                             var dicType = kView.createDictionaryType();
-                                            Reflect.getMetadata(MetaData.PARAMS, Type.prototype).forEach((param: ParamData) => {
+                                            Reflect.getMetadata(MetaData.PARAMS, Type.prototype).forEach((name: string) => {
+                                                var data: ParamMeta = Reflect.getMetadata(MetaData.PARAM, Type.prototype, name);
                                                 var attr = kView.createAttributeType();
-                                                attr.setName(param.name);
-                                                attr.setOptional(param.meta.optional);
-                                                attr.setDefaultValue(param.meta.defaultValue + '');
-                                                attr.setFragmentDependant(param.meta.fragmentDependant);
-
-                                                if (typeof param.meta.datatype === 'undefined') {
-                                                    switch (param.type) {
-                                                        case 'Number':
-                                                            attr.setDatatype(org.kevoree.meta.MetaDataType.INTEGER);
-                                                            break;
-
-                                                        case 'String':
-                                                            attr.setDatatype(org.kevoree.meta.MetaDataType.STRING);
-                                                            break;
-
-                                                        case 'Boolean':
-                                                            attr.setDatatype(org.kevoree.meta.MetaDataType.BOOLEAN);
-                                                            break;
-
-                                                        default:
-                                                            done(new Error(`Param "${param.name}" has an invalid type.`));
-                                                            return;
-                                                    }
-                                                } else {
-                                                    switch (param.meta.datatype) {
-                                                        case DataType.STRING:
-                                                            attr.setDatatype(org.kevoree.meta.MetaDataType.STRING);
-                                                            break;
-
-                                                        case DataType.BOOLEAN:
-                                                            attr.setDatatype(org.kevoree.meta.MetaDataType.BOOLEAN);
-                                                            break;
-
-                                                        case DataType.INTEGER:
-                                                            attr.setDatatype(org.kevoree.meta.MetaDataType.INTEGER);
-                                                            break;
-
-                                                        case DataType.DECIMAL:
-                                                            attr.setDatatype(org.kevoree.meta.MetaDataType.DECIMAL);
-                                                            break;
-
-                                                        case DataType.LIST:
-                                                            attr.setDatatype(org.kevoree.meta.MetaDataType.LIST);
-                                                            break;
-
-                                                        case DataType.CHAR:
-                                                            attr.setDatatype(org.kevoree.meta.MetaDataType.CHAR);
-                                                            break;
-
-                                                        default:
-                                                            done(new Error(`Param "${param.name}" has an invalid type.`));
-                                                            return;
-                                                    }
-                                                }
+                                                attr.setName(name);
+                                                attr.setOptional(data.optional);
+                                                attr.setFragment(data.fragment);
                                                 dicType.addAttributes(attr);
+
+                                                switch (data.datatype) {
+                                                    case ParamType.STRING:
+                                                        var sdt = kView.createStringDataType();
+                                                        sdt.setMultiline((<StringParamMeta> data).multiline);
+                                                        sdt.setDefault((<StringParamMeta> data).default);
+                                                        attr.addDatatype(sdt);
+                                                        break;
+
+                                                    case ParamType.BOOLEAN:
+                                                        var bdt = kView.createBooleanDataType();
+                                                        bdt.setDefault((<BooleanParamMeta> data).default);
+                                                        attr.addDatatype(bdt);
+                                                        break;
+
+                                                    case ParamType.INTEGER:
+                                                        var idt = kView.createIntDataType();
+                                                        idt.setDefault((<NumberParamMeta> data).default);
+                                                        idt.setMin((<NumberParamMeta> data).min);
+                                                        idt.setMax((<NumberParamMeta> data).max);
+                                                        attr.addDatatype(idt);
+                                                        break;
+
+                                                    case ParamType.CHOICES:
+                                                        var cdt = kView.createChoiceDataType();
+                                                        cdt.setDefaultIndex((<ChoiceParamMeta> data).defaultIndex);
+                                                        (<ChoiceParamMeta> data).choices.forEach((val) => {
+                                                            var choice = kView.createItem();
+                                                            choice.setValue(val);
+                                                            cdt.addChoices(choice);
+                                                        });
+                                                        attr.addDatatype(cdt);
+                                                        break;
+
+                                                    case ParamType.LIST:
+                                                        var ldt = kView.createListDataType();
+                                                        (<ListParamMeta> data).default.forEach((val) => {
+                                                            var value = kView.createItem();
+                                                            value.setValue(val);
+                                                            ldt.addDefault(value);
+                                                        });
+                                                        attr.addDatatype(ldt);
+                                                        break;
+
+                                                    default:
+                                                        done(new Error(`Param "${name}" has an invalid type.`));
+                                                        return;
+                                                }
                                             });
-                                            tdef.setDictionaryType(dicType);
+                                            tdef.addDictionary(dicType);
 
                                             Reflect.getMetadata(MetaData.INPUTS, Type.prototype).forEach((name: string) => {
                                                 var portType = kView.createPortType();
@@ -153,10 +154,10 @@ export class GenModel {
                                                     if (schema) {
                                                         var valid = schemaValidator(schema);
                                                         if (valid) {
-                                                            var schemaMeta = kView.createValue();
-                                                            schemaMeta.setName('schema');
-                                                            schemaMeta.setValue(schema);
-                                                            portType.addMetaData(schemaMeta);
+                                                            var protocol = kView.createValue();
+                                                            protocol.setName('jsonschema');
+                                                            protocol.setValue(schema);
+                                                            portType.addProtocol(protocol);
                                                         } else {
                                                             done(new Error(`Invalid schema for input port ${name} (${schema})`));
                                                             return;
@@ -164,7 +165,7 @@ export class GenModel {
                                                     }
                                                 }
 
-                                                (<org.kevoree.ComponentType> tdef).addInputs(portType);
+                                                (<org.kevoree.ComponentType> tdef).addInputTypes(portType);
                                             });
 
                                             Reflect.getMetadata(MetaData.OUTPUTS, Type.prototype).forEach((name: string) => {
@@ -178,8 +179,8 @@ export class GenModel {
                                                         var valid = schemaValidator(schema);
                                                         if (valid) {
                                                             var schemaMeta = kView.createValue();
-                                                            schemaMeta.setName('schema');
-                                                            schemaMeta.setValue(JSON.stringify(schema));
+                                                            schemaMeta.setName('jsonschema');
+                                                            schemaMeta.setValue(schema);
                                                             portType.addMetaData(schemaMeta);
                                                         } else {
                                                             done(new Error(`Invalid schema for output port ${name} (${schema})`));
@@ -188,20 +189,11 @@ export class GenModel {
                                                     }
                                                 }
 
-                                                (<org.kevoree.ComponentType> tdef).addOutputs(portType);
+                                                (<org.kevoree.ComponentType> tdef).addOutputTypes(portType);
                                             });
 
-                                            var injects = Reflect.getMetadata(InjectMetaData.INJECTS, Type.prototype) || [];
-                                            injects.forEach((inject: InjectData) => {
-                                                // model.services.push({
-                                                //   name: inject.name,
-                                                //   className: inject.className
-                                                // });
-                                            });
-
-                                            var view: org.KevoreeView = model.manager().model().universe(0).time(0);
-                                            view.json().save(model, (modelStr: string) => {
-                                                view.disconnect(null);
+                                            kView.json().save(model, (modelStr: string) => {
+                                                kModel.disconnect(() => {});
                                                 done(null, modelStr);
                                             });
                                         } else {
@@ -271,8 +263,4 @@ export class GenModel {
         //   });
         // }
     }
-}
-
-declare interface ModelCallback {
-    (err: Error, model?: string): void;
 }

@@ -1,7 +1,7 @@
 {
   "name": "kevoree-comp-ticker",
   "version": "6.0.0-alpha",
-  "main": "build/main/Ticker.js",
+  "main": "built/main/Ticker.js",
   "kevoree": {
     "namespace": "kevoree"
   },

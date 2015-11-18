@@ -11,7 +11,7 @@ export function StringParam(meta?: StringParamMeta) {
         if (typeof meta.fragment === 'undefined') { meta.fragment = false; }
         if (typeof meta.multiline === 'undefined') { meta.multiline = false; }
 
-        meta['datatype'] = ParamType.STRING;
+        meta.datatype = ParamType.STRING;
 
         var params = Reflect.getMetadata(MetaData.PARAMS, target);
         if (!params) {

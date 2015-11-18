@@ -1,7 +1,8 @@
 import 'reflect-metadata';
 import {
     Component, StringParam, ChoiceParam, MetaData, StringParamMeta, IntParam,
-    ChoiceParamMeta, ListParam, ListParamMeta, BooleanParam, DecimalParam
+    ChoiceParamMeta, ListParam, ListParamMeta, BooleanParam, DecimalParam,
+    NumberParamMeta, ParamType
 } from '../main/kevoree-api';
 import * as Assert from 'assert';
 
@@ -47,6 +48,78 @@ describe('Params annotations', () => {
             Assert.equal(data.fragment, false, 'fragment should be false');
             Assert.equal(data.multiline, true, 'multiline should be true');
             Assert.equal(data.default, 'bar', 'default should be bar');
+        });
+    });
+
+    describe('@IntParam', () => {
+        @Component()
+        class MyComp {
+            @IntParam()
+            private foo: number;
+
+            @IntParam({ optional: false, default: 42 })
+            private bar: number;
+
+            @IntParam({ min: 12, max: 52 })
+            private range: number;
+        }
+
+        it('default values', () => {
+            var data: NumberParamMeta = Reflect.getMetadata(MetaData.PARAM, MyComp.prototype, 'foo');
+            Assert.equal(data.optional, true, 'optional should be true');
+            Assert.equal(data.fragment, false, 'fragment should be false');
+            Assert.equal(data.datatype, ParamType.INTEGER, 'datatype should be ParamType.INTEGER');
+            Assert.equal(data.default, undefined, 'default should be undefined');
+            Assert.equal(data.min, undefined, 'min should be undefined');
+            Assert.equal(data.max, undefined, 'max should be undefined');
+        });
+
+        it('custom values', () => {
+            var data: NumberParamMeta = Reflect.getMetadata(MetaData.PARAM, MyComp.prototype, 'bar');
+            Assert.equal(data.optional, false, 'optional should be false');
+            Assert.equal(data.fragment, false, 'fragment should be false');
+            Assert.equal(data.default, 42, 'default should be 42');
+            Assert.equal(data.min, undefined, 'min should be undefined');
+            Assert.equal(data.max, undefined, 'max should be undefined');
+        });
+
+        it('custom values with min & max', () => {
+            var data: NumberParamMeta = Reflect.getMetadata(MetaData.PARAM, MyComp.prototype, 'range');
+            Assert.equal(data.optional, true, 'optional should be true');
+            Assert.equal(data.fragment, false, 'fragment should be false');
+            Assert.equal(data.default, undefined, 'default should be undefined');
+            Assert.equal(data.min, 12, 'min should be 12');
+            Assert.equal(data.max, 52, 'max should be 52');
+        });
+
+        it('min must be <= max or throw', () => {
+            Assert.throws(() => {
+                @Component()
+                class WrongComp {
+                    @IntParam({ min: 5, max: 0 })
+                    private wrong: number;
+                }
+            });
+        });
+
+        it('default must be >= min or throw', () => {
+            Assert.throws(() => {
+                @Component()
+                class WrongComp {
+                    @IntParam({ min: 5, default: 0 })
+                    private wrong: number;
+                }
+            });
+        });
+
+        it('default must be <= max or throw', () => {
+            Assert.throws(() => {
+                @Component()
+                class WrongComp {
+                    @IntParam({ max: 5, default: 10 })
+                    private wrong: number;
+                }
+            });
         });
     });
 
