@@ -1,6 +1,6 @@
 export * from './MetaData';
 export * from './Callback';
-export * from './DataType';
+export * from './ParamType';
 export * from './TypeEnum';
 
 export * from './annotations/Channel';
@@ -18,9 +18,16 @@ export * from './annotations/metas/ParamMeta';
 export * from './annotations/metas/LifecycleMeta';
 export * from './annotations/metas/StringParamMeta';
 export * from './annotations/metas/ChoiceParamMeta';
+export * from './annotations/metas/ListParamMeta';
+export * from './annotations/metas/NumberParamMeta';
+export * from './annotations/metas/BooleanParamMeta';
 
 export * from './annotations/params/StringParam';
 export * from './annotations/params/ChoiceParam';
+export * from './annotations/params/BooleanParam';
+export * from './annotations/params/ListParam';
+export * from './annotations/params/IntParam';
+export * from './annotations/params/DecimalParam';
 
 export * from './services/ModelService';
 export * from './services/ContextService';

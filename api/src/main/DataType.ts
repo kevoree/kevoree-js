@@ -1,3 +1,0 @@
-export enum DataType {
-  STRING, BOOLEAN, INTEGER, DECIMAL, LIST, CHAR
-}

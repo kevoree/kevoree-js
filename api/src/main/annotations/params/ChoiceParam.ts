@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import { MetaData } from '../../MetaData';
+import { ParamType } from '../../ParamType';
 import { ChoiceParamMeta } from '../metas/ChoiceParamMeta';
 
 export function ChoiceParam(meta?: ChoiceParamMeta) {
@@ -9,7 +10,7 @@ export function ChoiceParam(meta?: ChoiceParamMeta) {
         if (typeof meta.optional === 'undefined') { meta.optional = true; }
         if (typeof meta.fragment === 'undefined') { meta.fragment = false; }
 
-        meta['datatype'] = Reflect.getMetadata('design:type', target, propertyKey).name;
+        meta['datatype'] = ParamType.CHOICES;
 
         if (typeof meta.defaultIndex !== 'undefined') {
             if (meta.defaultIndex > meta.choices.length - 1) {
