@@ -88,3 +88,6 @@
 [submodule "tools/resolvers"]
 	path = tools/resolvers
 	url = git@github.com:kevoree/kevoree-js-resolvers.git
+[submodule "libraries/comp/websiteviewer"]
+	path = libraries/comp/websiteviewer
+	url = git@github.com:kevoree/kevoree-js-comp-websiteviewer.git
