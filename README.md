@@ -1,9 +1,9 @@
-# Kevoree JS ![Kevoree](http://editor.kevoree.org/images/logo.png)
+# Kevoree JS ![Kevoree]
 
 ## Clone the repo
 You want to clone this repository with all its Git submodules, this is how you do it:
 ```sh
-git clone --recursive git://github.com/kevoree/kevoree-js.git
+git clone --recursive git@github.com:kevoree/kevoree-js.git
 ```
 
 ## Structure
