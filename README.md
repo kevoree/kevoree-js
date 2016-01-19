@@ -1,4 +1,4 @@
-# Kevoree JS ![Kevoree]
+# Kevoree JS
 
 ## Clone the repo
 You want to clone this repository with all its Git submodules, this is how you do it:
