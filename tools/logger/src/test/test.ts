@@ -1,22 +1,24 @@
 import { LoggerFactory, LogLevel, Logger } from '../main/kevoree-logger';
 
-var log = LoggerFactory.createLogger('MyTag', 'log');
-var log2 = LoggerFactory.createLogger('AnotherTag', 'log1');
-var log3 = LoggerFactory.createLogger('SomethingReallyLong', 'log2');
 LoggerFactory.setLevel(LogLevel.DEBUG);
 
-function print(log: Logger) {
-  // log.debug('lorem ipsum');
-  // log.info('dolor sit');
-  // log.warn('amet consectetur');
-  // log.error('adipiscing elit');
-  // console.log('=============');
-  log.debug('lorem', 'ipsum');
-  log.info('dolor sit');
-  log.warn('amet','consec\ntetur');
-  log.error((<any> new Error('Something')).stack);
-}
+var log = LoggerFactory.createLogger('node0');
+log.debug('lorem ipsum');
+log.info('dolor sit');
+log.warn('amet '+' consec\ntetur');
+log.error('simple error message');
+log.error('New message of the error', new Error('Something'));
 
-print(log);
-print(log2);
-print(log3);
+var log2 = LoggerFactory.createLogger('comp0');
+log2.debug('lorem ipsum');
+log2.info('dolor sit');
+log2.warn('amet '+' consec\ntetur');
+log2.error('simple error message');
+log2.error('New message of the error', new Error('Something'));
+
+var log3 = LoggerFactory.createLogger('comp1');
+log3.debug('lorem ipsum');
+log3.info('dolor sit');
+log3.warn('amet '+' consec\ntetur');
+log3.error('simple error message');
+log3.error('New message of the error', new Error('Something'));

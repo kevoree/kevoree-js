@@ -24,6 +24,13 @@
         "typings/chalk/chalk.d.ts",
         "typings/tsd.d.ts",
         "src/main/kevoree-logger.ts",
+        "src/main/Logger.ts",
+        "src/main/LoggerFactory.ts",
+        "src/main/LoggerImpl.ts",
+        "src/main/LogLevel.ts",
         "src/test/test.ts"
-    ]
+    ],
+    "atom": {
+        "rewriteTsconfig": true
+    }
 }
