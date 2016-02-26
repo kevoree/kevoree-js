@@ -1,66 +1,66 @@
 [submodule "model"]
 	path = model
-	url = https://github.com/kevoree/kevoree-js-model
+	url = git@github.com:kevoree/kevoree-js-model.git
 [submodule "core"]
 	path = core
-	url = https://github.com/kevoree/kevoree-js-core
+	url = git@github.com:kevoree/kevoree-js-core.git
 [submodule "entities"]
 	path = entities
-	url = https://github.com/kevoree/kevoree-js-entities
+	url = git@github.com:kevoree/kevoree-js-entities.git
 [submodule "commons"]
 	path = commons
-	url = https://github.com/kevoree/kevoree-js-commons
+	url = git@github.com:kevoree/kevoree-js-commons.git
 [submodule "libraries/node-javascript"]
 	path = libraries/node-javascript
-	url = https://github.com/kevoree/kevoree-js-node-javascript
+	url = git@github.com:kevoree/kevoree-js-node-javascript
 [submodule "libraries/comp/ticker"]
 	path = libraries/comp/ticker
-	url = https://github.com/kevoree/kevoree-js-comp-ticker
+	url = git@github.com:kevoree/kevoree-js-comp-ticker.git
 [submodule "libraries/node/javascript"]
 	path = libraries/node/javascript
 	url = git@github.com:kevoree/kevoree-js-node-javascript.git
 [submodule "libraries/comp/consoleprinter"]
 	path = libraries/comp/consoleprinter
-	url = https://github.com/kevoree/kevoree-js-comp-consoleprinter
+	url = git@github.com:kevoree/kevoree-js-comp-consoleprinter.git
 [submodule "libraries/group/ws"]
 	path = libraries/group/ws
-	url = https://github.com/kevoree/kevoree-js-group-ws
+	url = git@github.com:kevoree/kevoree-js-group-ws.git
 [submodule "libraries/group/remotews"]
 	path = libraries/group/remotews
-	url = https://github.com/kevoree/kevoree-js-group-remotews
+	url = git@github.com:kevoree/kevoree-js-group-remotews.git
 [submodule "libraries/chan/ws"]
 	path = libraries/chan/ws
-	url = https://github.com/kevoree/kevoree-js-chan-ws
+	url = git@github.com:kevoree/kevoree-js-chan-ws.git
 [submodule "libraries/comp/wsmsgbroker"]
 	path = libraries/comp/wsmsgbroker
-	url = https://github.com/kevoree/kevoree-js-comp-wsmsgbroker
+	url = git@github.com:kevoree/kevoree-js-comp-wsmsgbroker.git
 [submodule "libraries/chan/local"]
 	path = libraries/chan/local
-	url = https://github.com/kevoree/kevoree-js-chan-local
+	url = git@github.com:kevoree/kevoree-js-chan-local.git
 [submodule "tools/generator-kevoree"]
 	path = tools/generator-kevoree
-	url = https://github.com/kevoree/generator-kevoree
+	url = git@github.com:kevoree/generator-kevoree.git
 [submodule "tools/grunt-kevoree"]
 	path = tools/grunt-kevoree
-	url = https://github.com/kevoree/grunt-kevoree
+	url = git@github.com:kevoree/grunt-kevoree.git
 [submodule "tools/grunt-kevoree-genmodel"]
 	path = tools/grunt-kevoree-genmodel
-	url = https://github.com/kevoree/grunt-kevoree-genmodel
+	url = git@github.com:kevoree/grunt-kevoree-genmodel.git
 [submodule "tools/grunt-kevoree-registry"]
 	path = tools/grunt-kevoree-registry
-	url = https://github.com/kevoree/grunt-kevoree-registry
+	url = git@github.com:kevoree/grunt-kevoree-registry.git
 [submodule "tools/kevoree-gen-model"]
 	path = tools/kevoree-gen-model
-	url = https://github.com/kevoree/kevoree-gen-model
+	url = git@github.com:kevoree/kevoree-gen-model.git
 [submodule "tools/kevoree-kevscript"]
 	path = tools/kevoree-kevscript
-	url = https://github.com/kevoree/kevoree-js-kevscript
+	url = git@github.com:kevoree/kevoree-js-kevscript.git
 [submodule "library"]
 	path = library
-	url = https://github.com/kevoree/kevoree-js-library
+	url = git@github.com:kevoree/kevoree-js-library.git
 [submodule "runtimes/nodejs"]
 	path = runtimes/nodejs
-	url = https://github.com/kevoree/kevoree-nodejs-runtime
+	url = git@github.com:kevoree/kevoree-nodejs-runtime.git
 [submodule "runtimes/browser"]
 	path = runtimes/browser
 	url = git@github.com:kevoree/kevoree-browser-runtime.git
