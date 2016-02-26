@@ -8,5 +8,6 @@ export function Node(meta?: TypeMeta) {
   return function (target: any) {
     Reflect.defineMetadata(MetaData.TYPE, TypeEnum.NODE, target.prototype);
     typeDefinition(target, meta);
+    return target;
   };
 }

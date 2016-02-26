@@ -8,5 +8,6 @@ export function Group(meta?: TypeMeta) {
   return function (target: any) {
     Reflect.defineMetadata(MetaData.TYPE, TypeEnum.GROUP, target.prototype);
     typeDefinition(target, meta);
+    return target;
   };
 }

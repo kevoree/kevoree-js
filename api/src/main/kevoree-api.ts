@@ -1,6 +1,5 @@
 export * from './MetaData';
 export * from './Callback';
-export * from './ParamType';
 export * from './TypeEnum';
 
 export * from './annotations/Channel';
@@ -14,20 +13,18 @@ export * from './annotations/Stop';
 export * from './annotations/Update';
 
 export * from './annotations/metas/TypeMeta';
-export * from './annotations/metas/ParamMeta';
 export * from './annotations/metas/LifecycleMeta';
-export * from './annotations/metas/StringParamMeta';
-export * from './annotations/metas/ChoiceParamMeta';
-export * from './annotations/metas/ListParamMeta';
-export * from './annotations/metas/NumberParamMeta';
-export * from './annotations/metas/BooleanParamMeta';
+export * from './annotations/metas/MinMaxMeta';
+export * from './annotations/metas/LengthMeta';
+export * from './annotations/metas/NumberTypeMeta';
 
-export * from './annotations/params/StringParam';
-export * from './annotations/params/ChoiceParam';
-export * from './annotations/params/BooleanParam';
-export * from './annotations/params/ListParam';
-export * from './annotations/params/IntParam';
-export * from './annotations/params/DecimalParam';
+export * from './annotations/params/Param';
+export * from './annotations/params/Required';
+export * from './annotations/params/Min';
+export * from './annotations/params/Max';
+export * from './annotations/params/Length';
+export * from './annotations/params/Multiline';
+export * from './annotations/params/NumberType';
 
 export * from './services/ModelService';
 export * from './services/ContextService';

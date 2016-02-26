@@ -1,3 +1,0 @@
-export enum ParamType {
-  STRING, BOOLEAN, INTEGER, DECIMAL, CHOICES, LIST, CHAR
-}

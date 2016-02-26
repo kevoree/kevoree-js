@@ -8,5 +8,6 @@ export function Component(meta?: TypeMeta) {
   return function (target: any) {
     Reflect.defineMetadata(MetaData.TYPE, TypeEnum.COMPONENT, target.prototype);
     typeDefinition(target, meta);
+    return target;
   };
 }

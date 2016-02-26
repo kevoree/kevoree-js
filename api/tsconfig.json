@@ -14,9 +14,49 @@
         "suppressImplicitAnyIndexErrors": true,
         "outDir": "built"
     },
-    "filesGlob": [
-        "src/**/*.ts",
-        "typings/**/*.d.ts"
+    "files": [
+        "src/main/annotations/Channel.ts",
+        "src/main/annotations/Component.ts",
+        "src/main/annotations/Group.ts",
+        "src/main/annotations/Input.ts",
+        "src/main/annotations/metas/LengthMeta.ts",
+        "src/main/annotations/metas/LifecycleMeta.ts",
+        "src/main/annotations/metas/MinMaxMeta.ts",
+        "src/main/annotations/metas/NumberTypeMeta.ts",
+        "src/main/annotations/metas/TypeMeta.ts",
+        "src/main/annotations/Node.ts",
+        "src/main/annotations/Output.ts",
+        "src/main/annotations/params/Fragment.ts",
+        "src/main/annotations/params/Length.ts",
+        "src/main/annotations/params/Max.ts",
+        "src/main/annotations/params/Min.ts",
+        "src/main/annotations/params/Multiline.ts",
+        "src/main/annotations/params/NumberType.ts",
+        "src/main/annotations/params/Param.ts",
+        "src/main/annotations/params/Required.ts",
+        "src/main/annotations/Start.ts",
+        "src/main/annotations/Stop.ts",
+        "src/main/annotations/Update.ts",
+        "src/main/api/OutputPort.ts",
+        "src/main/Callback.ts",
+        "src/main/kevoree-api.ts",
+        "src/main/MetaData.ts",
+        "src/main/services/ContextService.ts",
+        "src/main/services/Injectables.ts",
+        "src/main/services/ModelService.ts",
+        "src/main/TypeEnum.ts",
+        "src/main/util/lifecycleMethod.ts",
+        "src/main/util/typeDefinition.ts",
+        "src/test/inputs.ts",
+        "src/test/lifecycles.ts",
+        "src/test/outputs.ts",
+        "src/test/params.ts",
+        "src/test/types.ts",
+        "typings/mocha/mocha.d.ts",
+        "typings/node/node.d.ts",
+        "typings/tsd.d.ts"
     ],
-    "files": []
+    "atom": {
+        "rewriteTsconfig": true
+    }
 }
