@@ -12,11 +12,11 @@ export class Runtime {
     }
 
     start(nodeName: string, cb: Callback): void {
-        this.core.start(nodeName, cb);
+        //this.core.start(nodeName, cb);
     }
 
     stop(cb: Callback): void {
-        this.core.stop(cb);
+        //this.core.stop(cb);
     }
 }
 

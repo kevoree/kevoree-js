@@ -5,7 +5,7 @@
 
 var waxeye = require('waxeye');
 
-class Parser {}
+function Parser() {}
 
 Parser.prototype = new waxeye.WaxeyeParser(0, true, [new waxeye.FA("kevScript", [new waxeye.State([new waxeye.Edge(50, 1, false)], false),
   new waxeye.State([new waxeye.Edge(1, 2, false),
@@ -350,5 +350,6 @@ Parser.prototype = new waxeye.WaxeyeParser(0, true, [new waxeye.FA("kevScript", 
     new waxeye.State([], true)], waxeye.FA.NEG),
   new waxeye.FA("", [new waxeye.State([new waxeye.Edge(["\""], 1, false)], false),
     new waxeye.State([], true)], waxeye.FA.NEG)]);
+
 
 export = Parser;

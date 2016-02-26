@@ -20,8 +20,12 @@
     ],
     "files": [
         "src/main/GenModel.ts",
+        "src/main/ModelCallback.ts",
         "src/test/test.ts",
         "typings/node/node.d.ts",
         "typings/tsd.d.ts"
-    ]
+    ],
+    "atom": {
+        "rewriteTsconfig": true
+    }
 }

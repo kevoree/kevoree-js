@@ -20,5 +20,8 @@
         "src/test/ModelServiceImpl.ts",
         "src/test/OutputPortImpl.ts",
         "src/test/test.ts"
-    ]
+    ],
+    "atom": {
+        "rewriteTsconfig": true
+    }
 }

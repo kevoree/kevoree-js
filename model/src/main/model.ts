@@ -534,16 +534,16 @@ export module org {
                                 if (indexStartElem != -1) {
                                     try {
                                         switch (partIndex) {
-                                            case 0: 
+                                            case 0:
                                             key.universe = org.kevoree.modeling.util.Base64.decodeToLongWithBounds(payload, indexStartElem, i);
                                             break;
-                                            case 1: 
+                                            case 1:
                                             key.time = org.kevoree.modeling.util.Base64.decodeToLongWithBounds(payload, indexStartElem, i);
                                             break;
-                                            case 2: 
+                                            case 2:
                                             key.obj = org.kevoree.modeling.util.Base64.decodeToLongWithBounds(payload, indexStartElem, i);
                                             break;
-                                            default: 
+                                            default:
                                             break;
                                         }
                                     } catch ($ex$) {
@@ -567,16 +567,16 @@ export module org {
                         if (indexStartElem != -1) {
                             try {
                                 switch (partIndex) {
-                                    case 0: 
+                                    case 0:
                                     key.universe = org.kevoree.modeling.util.Base64.decodeToLongWithBounds(payload, indexStartElem, maxRead);
                                     break;
-                                    case 1: 
+                                    case 1:
                                     key.time = org.kevoree.modeling.util.Base64.decodeToLongWithBounds(payload, indexStartElem, maxRead);
                                     break;
-                                    case 2: 
+                                    case 2:
                                     key.obj = org.kevoree.modeling.util.Base64.decodeToLongWithBounds(payload, indexStartElem, maxRead);
                                     break;
-                                    default: 
+                                    default:
                                     break;
                                 }
                             } catch ($ex$) {
@@ -613,7 +613,7 @@ export module org {
 
                 destroy(): void;
 
-                then(updatedObjects: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObject>): void;
+                then(updatedObjects: org.kevoree.modeling.KCallback<any>): void;
 
             }
 
@@ -662,6 +662,16 @@ export module org {
                 createTraversal(startingElements: org.kevoree.modeling.KObject[]): org.kevoree.modeling.traversal.KTraversal;
 
                 createReusableTraversal(): org.kevoree.modeling.traversal.KTraversal;
+
+                indexByName(universe: number, time: number, indexName: string, callback: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObjectIndex>): void;
+
+                find(metaClass: org.kevoree.modeling.meta.KMetaClass, universe: number, time: number, attributes: string, callback: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObject>): void;
+
+                findByName(indexName: string, universe: number, time: number, attributes: string, callback: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObject>): void;
+
+                findAll(metaClass: org.kevoree.modeling.meta.KMetaClass, universe: number, time: number, callback: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObject[]>): void;
+
+                findAllByName(indexName: string, universe: number, time: number, callback: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObject[]>): void;
 
             }
 
@@ -737,6 +747,8 @@ export module org {
 
                 setByName(metaAttributeName: string, payload: any): void;
 
+                enforceTimepoint(): void;
+
                 timeDephasing(): number;
 
                 allTimes(cb: org.kevoree.modeling.KCallback<Float64Array>): void;
@@ -758,6 +770,18 @@ export module org {
                 invokeOperationByName(operationName: string, params: any[], strategy: org.kevoree.modeling.operation.KOperationStrategy, cb: org.kevoree.modeling.KCallback<any>): void;
 
                 manager(): org.kevoree.modeling.memory.manager.KDataManager;
+
+                compare(target: org.kevoree.modeling.KObject): org.kevoree.modeling.meta.KMeta[];
+
+            }
+
+            export interface KObjectIndex extends org.kevoree.modeling.KObject {
+
+                getIndex(key: string): number;
+
+                setIndex(key: string, value: number): void;
+
+                values(): Float64Array;
 
             }
 
@@ -829,13 +853,11 @@ export module org {
 
                 now(): number;
 
+                model(): org.kevoree.modeling.KModel<any>;
+
                 json(): org.kevoree.modeling.format.KModelFormat;
 
                 equals(other: any): boolean;
-
-                setRoot(elem: org.kevoree.modeling.KObject, cb: org.kevoree.modeling.KCallback<any>): void;
-
-                getRoot(cb: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObject>): void;
 
             }
 
@@ -991,6 +1013,96 @@ export module org {
                         return new org.kevoree.modeling.traversal.impl.Traversal(null);
                     }
 
+                    public find(metaClass: org.kevoree.modeling.meta.KMetaClass, universe: number, time: number, attributes: string, callback: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObject>): void {
+                        this.findByName(metaClass.metaName(), universe, time, attributes, callback);
+                    }
+
+                    public findByName(indexName: string, universe: number, time: number, attributes: string, callback: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObject>): void {
+                        if (!org.kevoree.modeling.util.Checker.isDefined(attributes)) {
+                            if (org.kevoree.modeling.util.Checker.isDefined(callback)) {
+                                callback(null);
+                            }
+                        } else {
+                            this._manager.index(universe, time, indexName,  (kObjectIndex : org.kevoree.modeling.KObjectIndex) => {
+                                var concat: string = "";
+                                var params: org.kevoree.modeling.memory.chunk.KStringMap<string> = this.buildParams(attributes);
+                                if (params.size() == 0) {
+                                    concat = attributes;
+                                } else {
+                                    var currentClass: org.kevoree.modeling.meta.KMetaClass = this.metaModel().metaClassByName(indexName);
+                                    if (currentClass == null) {
+                                        concat = attributes;
+                                    } else {
+                                        var elems: org.kevoree.modeling.meta.KMeta[] = currentClass.metaElements();
+                                        for (var i: number = 0; i < elems.length; i++) {
+                                            if (elems[i] != null && elems[i].metaType().equals(org.kevoree.modeling.meta.MetaType.ATTRIBUTE) && (<org.kevoree.modeling.meta.KMetaAttribute>elems[i]).key()) {
+                                                var lvalue: string = params.get(elems[i].metaName());
+                                                if (lvalue != null) {
+                                                    concat += lvalue;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                var objectUUID: number = kObjectIndex.getIndex(concat);
+                                if (objectUUID == org.kevoree.modeling.KConfig.NULL_LONG) {
+                                    if (org.kevoree.modeling.util.Checker.isDefined(callback)) {
+                                        callback(null);
+                                    }
+                                } else {
+                                    this._manager.lookup(universe, time, objectUUID, callback);
+                                }
+                            });
+                        }
+                    }
+
+                    private buildParams(p_paramString: string): org.kevoree.modeling.memory.chunk.KStringMap<string> {
+                        var params: org.kevoree.modeling.memory.chunk.KStringMap<string> = new org.kevoree.modeling.memory.chunk.impl.ArrayStringMap<string>(org.kevoree.modeling.KConfig.CACHE_INIT_SIZE, org.kevoree.modeling.KConfig.CACHE_LOAD_FACTOR);
+                        var iParam: number = 0;
+                        var lastStart: number = iParam;
+                        while (iParam < p_paramString.length){
+                            if (p_paramString.charAt(iParam) == org.kevoree.modeling.traversal.query.impl.QueryEngine.VALS_SEP) {
+                                var p: string = p_paramString.substring(lastStart, iParam).trim();
+                                if (!org.kevoree.modeling.util.PrimitiveHelper.equals(p, "")) {
+                                    var pArray: string[] = p.split(org.kevoree.modeling.traversal.query.impl.QueryEngine.VAL_SEP);
+                                    if (pArray.length > 1) {
+                                        params.put(pArray[0].trim(), pArray[1].trim());
+                                    }
+                                }
+                                lastStart = iParam + 1;
+                            }
+                            iParam = iParam + 1;
+                        }
+                        var lastParam: string = p_paramString.substring(lastStart, iParam).trim();
+                        if (!org.kevoree.modeling.util.PrimitiveHelper.equals(lastParam, "")) {
+                            var pArray: string[] = lastParam.split(org.kevoree.modeling.traversal.query.impl.QueryEngine.VAL_SEP);
+                            if (pArray.length > 1) {
+                                params.put(pArray[0].trim(), pArray[1].trim());
+                            }
+                        }
+                        return params;
+                    }
+
+                    public indexByName(universe: number, time: number, indexName: string, callback: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObjectIndex>): void {
+                        this._manager.index(universe, time, indexName, callback);
+                    }
+
+                    public findAll(metaClass: org.kevoree.modeling.meta.KMetaClass, universe: number, time: number, callback: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObject[]>): void {
+                        this.findAllByName(metaClass.metaName(), universe, time, callback);
+                    }
+
+                    public findAllByName(indexName: string, universe: number, time: number, callback: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObject[]>): void {
+                        this._manager.index(universe, time, indexName,  (index : org.kevoree.modeling.KObjectIndex) => {
+                            if (index == null) {
+                                if (callback != null) {
+                                    callback(new Array());
+                                }
+                            } else {
+                                this._manager.lookupAllObjects(universe, time, index.values(), callback);
+                            }
+                        });
+                    }
+
                 }
 
                 export class AbstractKModelContext implements org.kevoree.modeling.KModelContext {
@@ -1069,7 +1181,7 @@ export module org {
                     public _metaClass: org.kevoree.modeling.meta.KMetaClass;
                     public _manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager;
                     private static OUT_OF_CACHE_MSG: string = "Out of cache Error";
-                    private _previousResolveds: java.util.concurrent.atomic.AtomicReference<Float64Array>;
+                    public _previousResolveds: java.util.concurrent.atomic.AtomicReference<Float64Array>;
                     public static UNIVERSE_PREVIOUS_INDEX: number = 0;
                     public static TIME_PREVIOUS_INDEX: number = 1;
                     constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_actualUniverse: number, p_actualTime: number) {
@@ -1155,7 +1267,7 @@ export module org {
                         } else {
                             var singleRoot: org.kevoree.modeling.KObject[] = new Array();
                             singleRoot[0] = this;
-                            org.kevoree.modeling.traversal.query.impl.QueryEngine.getINSTANCE().eval(query, singleRoot, cb);
+                            org.kevoree.modeling.traversal.query.impl.QueryEngine.getINSTANCE().eval(query, singleRoot, this._manager.model().universe(this._universe).time(this._time), cb);
                         }
                     }
 
@@ -1190,6 +1302,8 @@ export module org {
                         var transposed: org.kevoree.modeling.meta.KMetaAttribute = this._metaClass.attribute(attributeName);
                         if (transposed != null) {
                             transposed.strategy().mutate(this, transposed, payload, this._manager);
+                        } else {
+                            throw new Error("Bad API usage, " + attributeName + " not found on object");
                         }
                     }
 
@@ -1215,7 +1329,7 @@ export module org {
                         }
                         var raw: org.kevoree.modeling.memory.chunk.KObjectChunk = this._manager.preciseChunk(this._universe, this._time, this._uuid, this._metaClass, this._previousResolveds);
                         if (raw != null) {
-                            if (p_metaReference.maxBound() < 0 || (p_metaReference.maxBound() <= raw.getLongArraySize(p_metaReference.index(), this._metaClass) + 1)) {
+                            if (p_metaReference.maxBound() < 0 || (p_metaReference.maxBound() > raw.getLongArraySize(p_metaReference.index(), this._metaClass))) {
                                 if (raw.addLongToArray(p_metaReference.index(), p_param.uuid(), this._metaClass)) {
                                     if (p_setOpposite) {
                                         (<org.kevoree.modeling.abs.AbstractKObject>p_param).internal_add(p_param.metaClass().reference(p_metaReference.oppositeName()), this, false);
@@ -1225,6 +1339,10 @@ export module org {
                                 throw new Error("MaxBound constraint violated on relation " + p_metaReference.metaName() + " from metaClass " + this._metaClass.metaName());
                             }
                         }
+                    }
+
+                    public enforceTimepoint(): void {
+                        this._manager.preciseChunk(this._universe, this._time, this._uuid, this._metaClass, this._previousResolveds);
                     }
 
                     public removeByName(relationName: string, objToAdd: org.kevoree.modeling.KObject): void {
@@ -1650,24 +1768,141 @@ export module org {
                         this.internal_times(beginningOfSearch, endOfSearch, cb);
                     }
 
+                    public compare(target: org.kevoree.modeling.KObject): org.kevoree.modeling.meta.KMeta[] {
+                        if (target.metaClass().index() != this.metaClass().index()) {
+                            throw new Error("Bad API usage, the object should be compare to a similar one (" + this.metaClass().metaName() + "/" + target.metaClass().metaName() + ")");
+                        }
+                        var elems: org.kevoree.modeling.meta.KMeta[] = this.metaClass().metaElements();
+                        var result: org.kevoree.modeling.meta.KMeta[] = new Array();
+                        var current: number = 0;
+                        for (var i: number = 0; i < elems.length; i++) {
+                            var meta: org.kevoree.modeling.meta.KMeta = elems[i];
+                            if (meta.metaType().equals(org.kevoree.modeling.meta.MetaType.ATTRIBUTE)) {
+                                var attribute: org.kevoree.modeling.meta.KMetaAttribute = <org.kevoree.modeling.meta.KMetaAttribute>meta;
+                                var currentAttV: any = this.get(attribute);
+                                var targetAttV: any = target.get(attribute);
+                                if (currentAttV == null && targetAttV != null) {
+                                    result[current] = attribute;
+                                    current++;
+                                } else {
+                                    if (currentAttV != null && targetAttV == null) {
+                                        result[current] = attribute;
+                                        current++;
+                                    } else {
+                                        if (currentAttV != null && targetAttV != null) {
+                                            switch (attribute.attributeTypeId()) {
+                                                case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID:
+                                                var castedCurrentBool: boolean = <boolean>currentAttV;
+                                                var castedTargetBool: boolean = <boolean>targetAttV;
+                                                if (castedCurrentBool != castedTargetBool) {
+                                                    result[current] = attribute;
+                                                    current++;
+                                                }
+                                                break;
+                                                case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID:
+                                                var castedCurrentDouble: number = <number>currentAttV;
+                                                var castedTargetDouble: number = <number>targetAttV;
+                                                if (castedCurrentDouble != castedTargetDouble) {
+                                                    result[current] = attribute;
+                                                    current++;
+                                                }
+                                                break;
+                                                case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
+                                                var castedCurrentDoubleZ: number = <number>currentAttV;
+                                                var castedTargetDoubleZ: number = <number>targetAttV;
+                                                if (castedCurrentDoubleZ != castedTargetDoubleZ) {
+                                                    result[current] = attribute;
+                                                    current++;
+                                                }
+                                                break;
+                                                case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID:
+                                                var castedCurrentInt: number = <number>currentAttV;
+                                                var castedTargetInt: number = <number>targetAttV;
+                                                if (castedCurrentInt != castedTargetInt) {
+                                                    result[current] = attribute;
+                                                    current++;
+                                                }
+                                                break;
+                                                case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID:
+                                                var castedCurrentLong: number = <number>currentAttV;
+                                                var castedTargetLong: number = <number>targetAttV;
+                                                if (castedCurrentLong != castedTargetLong) {
+                                                    result[current] = attribute;
+                                                    current++;
+                                                }
+                                                break;
+                                                case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID:
+                                                var castedCurrentString: string = <string>currentAttV;
+                                                var castedTargetString: string = <string>targetAttV;
+                                                if (!org.kevoree.modeling.util.PrimitiveHelper.equals(castedCurrentString, castedTargetString)) {
+                                                    result[current] = attribute;
+                                                    current++;
+                                                }
+                                                break;
+                                                default:
+                                                if (org.kevoree.modeling.meta.KPrimitiveTypes.isEnum(attribute.attributeTypeId())) {
+                                                    var castedCurrentEnum: org.kevoree.modeling.meta.KLiteral = <org.kevoree.modeling.meta.KLiteral>currentAttV;
+                                                    var castedTargetEnum: org.kevoree.modeling.meta.KLiteral = <org.kevoree.modeling.meta.KLiteral>targetAttV;
+                                                    if (castedCurrentEnum.index() != castedTargetEnum.index()) {
+                                                        result[current] = attribute;
+                                                        current++;
+                                                    }
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        var trimmed: org.kevoree.modeling.meta.KMeta[] = new Array();
+                        java.lang.System.arraycopy(result, 0, trimmed, 0, current);
+                        return trimmed;
+                    }
+
+                }
+
+                export class AbstractKObjectIndex extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.modeling.KObjectIndex {
+
+                    constructor(p_universe: number, p_time: number, p_uuid: number, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_actualUniverse: number, p_actualTime: number) {
+                        super(p_universe, p_time, p_uuid, org.kevoree.modeling.meta.impl.MetaClassIndex.INSTANCE, p_manager, p_actualUniverse, p_actualTime);
+                    }
+
+                    public getIndex(key: string): number {
+                        var chunk: org.kevoree.modeling.memory.chunk.KObjectIndexChunk = <org.kevoree.modeling.memory.chunk.KObjectIndexChunk>this._manager.closestChunk(this._universe, this._time, this._uuid, this._metaClass, this._previousResolveds);
+                        return chunk.get(key);
+                    }
+
+                    public setIndex(key: string, value: number): void {
+                        var chunk: org.kevoree.modeling.memory.chunk.KObjectIndexChunk = <org.kevoree.modeling.memory.chunk.KObjectIndexChunk>this._manager.preciseChunk(this._universe, this._time, this._uuid, this._metaClass, this._previousResolveds);
+                        chunk.put(key, value);
+                    }
+
+                    public values(): Float64Array {
+                        var chunk: org.kevoree.modeling.memory.chunk.KObjectIndexChunk = <org.kevoree.modeling.memory.chunk.KObjectIndexChunk>this._manager.closestChunk(this._universe, this._time, this._uuid, this._metaClass, this._previousResolveds);
+                        var result: Float64Array = new Float64Array(chunk.size());
+                        var i: Int32Array = new Int32Array([0]);
+                        chunk.each( (key : string, value : number) => {
+                            if (value != org.kevoree.modeling.KConfig.NULL_LONG) {
+                                result[i[0]] = value;
+                                i[0]++;
+                            }
+                        });
+                        if (result.length == i[0]) {
+                            return result;
+                        } else {
+                            var trimmedResult: Float64Array = new Float64Array(i[0]);
+                            java.lang.System.arraycopy(result, 0, trimmedResult, 0, i[0]);
+                            return trimmedResult;
+                        }
+                    }
+
                 }
 
                 export class AbstractKObjectInfer extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.modeling.KObjectInfer {
 
                     constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, currentUniverse: number, currentTime: number) {
                         super(p_universe, p_time, p_uuid, p_metaClass, p_manager, currentUniverse, currentTime);
-                    }
-
-                    private dependenciesResolver(dependencies: org.kevoree.modeling.KObject[]): org.kevoree.modeling.traversal.KTraversalIndexResolver {
-                        return  (indexName : string) => {
-                            var dependency: org.kevoree.modeling.meta.KMetaDependency = this._metaClass.dependencies().dependencyByName(indexName);
-                            if (dependency != null) {
-                                var single: org.kevoree.modeling.KObject[] = new Array();
-                                single[0] = dependencies[dependency.index()];
-                                return single;
-                            }
-                            return null;
-                        };
                     }
 
                     public genericTrain(dependencies: org.kevoree.modeling.KObject[], expectedOutputs: any[], callback: org.kevoree.modeling.KCallback<any>): void {
@@ -1686,14 +1921,25 @@ export module org {
                             throw new Error("Dependencies are mandatory for KObjectInfer");
                         }
                         var selfObject: org.kevoree.modeling.KObjectInfer = this;
+                        var selfView: org.kevoree.modeling.KView = selfObject.manager().model().universe(this._universe).time(this._time);
                         var waiter: org.kevoree.modeling.defer.KDefer = this.manager().model().defer();
                         for (var i: number = 0; i < p_dependencies.length; i++) {
                             if (p_dependencies[i].length != this._metaClass.dependencies().allDependencies().length) {
                                 throw new Error("Bad number of arguments for allDependencies");
                             }
-                            var resolver: org.kevoree.modeling.traversal.KTraversalIndexResolver = this.dependenciesResolver(p_dependencies[i]);
+                            var loopDependencies: org.kevoree.modeling.KObject[] = p_dependencies[i];
                             for (var j: number = 0; j < this._metaClass.inputs().length; j++) {
-                                this._metaClass.inputs()[j].extractor().exec(null, resolver, waiter.waitResult());
+                                var loopInput: org.kevoree.modeling.meta.KMetaInferInput = this._metaClass.inputs()[j];
+                                if (org.kevoree.modeling.util.PrimitiveHelper.equals(loopInput.metaName(), "this") || org.kevoree.modeling.util.PrimitiveHelper.equals(loopInput.metaName(), "self")) {
+                                    loopInput.extractor().exec([selfObject], selfView, waiter.waitResult());
+                                } else {
+                                    var dependency: org.kevoree.modeling.meta.KMetaDependency = this._metaClass.dependencies().dependencyByName(loopInput.metaName());
+                                    if (dependency != null) {
+                                        loopInput.extractor().exec([loopDependencies[dependency.index()]], selfView, waiter.waitResult());
+                                    } else {
+                                        throw new Error("Bad API definition, " + loopInput.metaName() + " isn't defined as a dependency");
+                                    }
+                                }
                             }
                         }
                         waiter.then( (results : any[]) => {
@@ -1743,14 +1989,25 @@ export module org {
                             throw new Error("Bad number of arguments for allDependencies");
                         }
                         var selfObject: org.kevoree.modeling.KObjectInfer = this;
+                        var selfView: org.kevoree.modeling.KView = selfObject.manager().model().universe(this._universe).time(this._time);
                         var waiter: org.kevoree.modeling.defer.KDefer = this.manager().model().defer();
                         for (var i: number = 0; i < p_dependencies.length; i++) {
                             if (p_dependencies[i].length != this._metaClass.dependencies().allDependencies().length) {
                                 throw new Error("Bad number of arguments for allDependencies");
                             }
-                            var resolver: org.kevoree.modeling.traversal.KTraversalIndexResolver = this.dependenciesResolver(p_dependencies[i]);
+                            var loopDependencies: org.kevoree.modeling.KObject[] = p_dependencies[i];
                             for (var j: number = 0; j < this._metaClass.inputs().length; j++) {
-                                this._metaClass.inputs()[j].extractor().exec(null, resolver, waiter.waitResult());
+                                var loopInput: org.kevoree.modeling.meta.KMetaInferInput = this._metaClass.inputs()[j];
+                                if (org.kevoree.modeling.util.PrimitiveHelper.equals(loopInput.metaName(), "this") || org.kevoree.modeling.util.PrimitiveHelper.equals(loopInput.metaName(), "self")) {
+                                    loopInput.extractor().exec([selfObject], selfView, waiter.waitResult());
+                                } else {
+                                    var dependency: org.kevoree.modeling.meta.KMetaDependency = this._metaClass.dependencies().dependencyByName(loopInput.metaName());
+                                    if (dependency != null) {
+                                        loopInput.extractor().exec([loopDependencies[dependency.index()]], selfView, waiter.waitResult());
+                                    } else {
+                                        throw new Error("Bad API definition, " + loopInput.metaName() + " isn't defined as a dependency");
+                                    }
+                                }
                             }
                         }
                         waiter.then( (results : any[]) => {
@@ -1787,23 +2044,23 @@ export module org {
                         }
                         var typeId: number = metaOutput.attributeTypeId();
                         switch (typeId) {
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID: 
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID:
                             if (<boolean>output) {
                                 return 1.0;
                             } else {
                                 return 0.0;
                             }
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
                             return <number>output;
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID: 
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID:
                             return <number>output;
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID: 
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID:
                             return <number>output;
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID: 
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID:
                             return <number>output;
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID: 
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID:
                             throw new Error("String are not managed yet");
-                            default: 
+                            default:
                             if (org.kevoree.modeling.meta.KPrimitiveTypes.isEnum(metaOutput.attributeTypeId())) {
                                 var metaEnum: org.kevoree.modeling.meta.KMetaEnum = this._manager.model().metaModel().metaTypes()[metaOutput.attributeTypeId()];
                                 if (output instanceof org.kevoree.modeling.meta.impl.MetaLiteral) {
@@ -1822,23 +2079,23 @@ export module org {
                     private internalReverseOutput(inferred: number, metaOutput: org.kevoree.modeling.meta.KMetaInferOutput): any {
                         var typeId: number = metaOutput.attributeTypeId();
                         switch (typeId) {
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID: 
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID:
                             if (inferred >= 0.5) {
                                 return true;
                             } else {
                                 return false;
                             }
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
                             return inferred;
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID: 
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID:
                             return <number>inferred;
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID: 
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID:
                             return inferred;
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID: 
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID:
                             return inferred;
-                            case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID: 
+                            case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID:
                             throw new Error("String are not managed yet");
-                            default: 
+                            default:
                             if (org.kevoree.modeling.meta.KPrimitiveTypes.isEnum(metaOutput.attributeTypeId())) {
                                 var ceiledInferred: number = this.math_ceil(inferred);
                                 var metaEnum: org.kevoree.modeling.meta.KMetaEnum = this._manager.model().metaModel().metaTypes()[metaOutput.attributeTypeId()];
@@ -1925,12 +2182,8 @@ export module org {
                         return this._universe;
                     }
 
-                    public setRoot(elem: org.kevoree.modeling.KObject, cb: org.kevoree.modeling.KCallback<any>): void {
-                        this._manager.setRoot(elem, cb);
-                    }
-
-                    public getRoot(cb: org.kevoree.modeling.KCallback<any>): void {
-                        this._manager.getRoot(this._universe, this._time, cb);
+                    public model(): org.kevoree.modeling.KModel<any> {
+                        return this._manager.model();
                     }
 
                     public select(query: string, cb: org.kevoree.modeling.KCallback<any[]>): void {
@@ -1938,15 +2191,7 @@ export module org {
                             if (query == null || query.length == 0) {
                                 cb(new Array());
                             } else {
-                                this._manager.getRoot(this._universe, this._time,  (rootObj : org.kevoree.modeling.KObject) => {
-                                    if (rootObj == null) {
-                                        cb(new Array());
-                                    } else {
-                                        var singleRoot: org.kevoree.modeling.KObject[] = new Array();
-                                        singleRoot[0] = rootObj;
-                                        org.kevoree.modeling.traversal.query.impl.QueryEngine.getINSTANCE().eval(query, singleRoot, cb);
-                                    }
-                                });
+                                org.kevoree.modeling.traversal.query.impl.QueryEngine.getINSTANCE().eval(query, new Array(), this, cb);
                             }
                         }
                     }
@@ -2240,23 +2485,131 @@ export module org {
                         }
 
                         public mutate(current: org.kevoree.modeling.KObject, attribute: org.kevoree.modeling.meta.KMetaAttribute, payload: any, dataManager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager): void {
-                            var internalPayload: org.kevoree.modeling.memory.chunk.KObjectChunk = dataManager.preciseChunk(current.universe(), current.now(), current.uuid(), current.metaClass(), (<org.kevoree.modeling.abs.AbstractKObject>current).previousResolved());
-                            if (internalPayload != null) {
+                            var internalPreviousPayload: org.kevoree.modeling.memory.chunk.KObjectChunk = dataManager.closestChunk(current.universe(), current.now(), current.uuid(), current.metaClass(), (<org.kevoree.modeling.abs.AbstractKObject>current).previousResolved());
+                            if (internalPreviousPayload != null) {
+                                var toSetValue: any;
                                 if (org.kevoree.modeling.meta.KPrimitiveTypes.isEnum(attribute.attributeTypeId())) {
                                     if (payload instanceof org.kevoree.modeling.meta.impl.MetaLiteral) {
-                                        internalPayload.setPrimitiveType(attribute.index(), (<org.kevoree.modeling.meta.KLiteral>payload).index(), current.metaClass());
+                                        toSetValue = (<org.kevoree.modeling.meta.KLiteral>payload).index();
                                     } else {
                                         var metaEnum: org.kevoree.modeling.meta.KMetaEnum = (<org.kevoree.modeling.abs.AbstractKObject>current)._manager.model().metaModel().metaTypes()[attribute.attributeTypeId()];
                                         var foundLiteral: org.kevoree.modeling.meta.KLiteral = metaEnum.literalByName(payload.toString());
                                         if (foundLiteral != null) {
-                                            internalPayload.setPrimitiveType(attribute.index(), foundLiteral.index(), current.metaClass());
+                                            toSetValue = foundLiteral.index();
+                                        } else {
+                                            toSetValue = null;
                                         }
                                     }
                                 } else {
                                     if (payload == null) {
-                                        internalPayload.setPrimitiveType(attribute.index(), null, current.metaClass());
+                                        toSetValue = null;
                                     } else {
-                                        internalPayload.setPrimitiveType(attribute.index(), this.convert(attribute, payload), current.metaClass());
+                                        toSetValue = this.convert(attribute, payload);
+                                    }
+                                }
+                                var previousValue: any = internalPreviousPayload.getPrimitiveType(attribute.index(), current.metaClass());
+                                if (previousValue == null && toSetValue == null) {
+                                    return;
+                                }
+                                if (previousValue != null && toSetValue != null) {
+                                    switch (attribute.attributeTypeId()) {
+                                        case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID:
+                                        var previousBoolOrdinal: boolean = <boolean>previousValue;
+                                        var nextBoolOrdinal: boolean = <boolean>toSetValue;
+                                        if (previousBoolOrdinal == nextBoolOrdinal) {
+                                            return;
+                                        }
+                                        break;
+                                        case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID:
+                                        var previousContinuousOrdinal: number = <number>previousValue;
+                                        var nextContinuousOrdinal: number = <number>toSetValue;
+                                        if (previousContinuousOrdinal == nextContinuousOrdinal) {
+                                            return;
+                                        }
+                                        break;
+                                        case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
+                                        var previousDoubleOrdinal: number = <number>previousValue;
+                                        var nextDoubleOrdinal: number = <number>toSetValue;
+                                        if (previousDoubleOrdinal == nextDoubleOrdinal) {
+                                            return;
+                                        }
+                                        break;
+                                        case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID:
+                                        var previousIntOrdinal: number = <number>previousValue;
+                                        var nextIntOrdinal: number = <number>toSetValue;
+                                        if (previousIntOrdinal == nextIntOrdinal) {
+                                            return;
+                                        }
+                                        break;
+                                        case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID:
+                                        var previousLongOrdinal: number = <number>previousValue;
+                                        var nextLongOrdinal: number = <number>toSetValue;
+                                        if (previousLongOrdinal == nextLongOrdinal) {
+                                            return;
+                                        }
+                                        break;
+                                        case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID:
+                                        var previousString: string = <string>previousValue;
+                                        var nextString: string = <string>toSetValue;
+                                        if (org.kevoree.modeling.util.PrimitiveHelper.equals(previousString, nextString)) {
+                                            return;
+                                        }
+                                        break;
+                                        default:
+                                        if (org.kevoree.modeling.meta.KPrimitiveTypes.isEnum(attribute.attributeTypeId())) {
+                                            var previousEnumOrdinal: number = <number>previousValue;
+                                            var nextEnumOrdinal: number = <number>toSetValue;
+                                            if (previousEnumOrdinal == nextEnumOrdinal) {
+                                                return;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                                var previousHash: string = null;
+                                if (attribute.key()) {
+                                    var metas: org.kevoree.modeling.meta.KMeta[] = current.metaClass().metaElements();
+                                    for (var i: number = 0; i < metas.length; i++) {
+                                        if (metas[i].metaType().equals(org.kevoree.modeling.meta.MetaType.ATTRIBUTE) && (<org.kevoree.modeling.meta.KMetaAttribute>metas[i]).key()) {
+                                            var loopElem: any = internalPreviousPayload.getPrimitiveType(metas[i].index(), current.metaClass());
+                                            if (loopElem != null) {
+                                                if (previousHash == null) {
+                                                    previousHash = loopElem.toString();
+                                                } else {
+                                                    previousHash += loopElem.toString();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                var internalPayload: org.kevoree.modeling.memory.chunk.KObjectChunk = dataManager.preciseChunk(current.universe(), current.now(), current.uuid(), current.metaClass(), (<org.kevoree.modeling.abs.AbstractKObject>current).previousResolved());
+                                if (internalPayload != null) {
+                                    internalPayload.setPrimitiveType(attribute.index(), toSetValue, current.metaClass());
+                                    var newHash: string = null;
+                                    if (attribute.key()) {
+                                        var metas: org.kevoree.modeling.meta.KMeta[] = current.metaClass().metaElements();
+                                        for (var i: number = 0; i < metas.length; i++) {
+                                            if (metas[i].metaType().equals(org.kevoree.modeling.meta.MetaType.ATTRIBUTE) && (<org.kevoree.modeling.meta.KMetaAttribute>metas[i]).key()) {
+                                                var loopElem: any = internalPayload.getPrimitiveType(metas[i].index(), current.metaClass());
+                                                if (loopElem != null) {
+                                                    if (newHash == null) {
+                                                        newHash = loopElem.toString();
+                                                    } else {
+                                                        newHash += loopElem.toString();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        var finalPreviousHash: string = previousHash;
+                                        var finalNewHash: string = newHash;
+                                        dataManager.index(current.universe(), current.now(), current.metaClass().metaName(),  (classIndex : org.kevoree.modeling.KObjectIndex) => {
+                                            if (finalPreviousHash != null) {
+                                                classIndex.setIndex(finalPreviousHash, org.kevoree.modeling.KConfig.NULL_LONG);
+                                            }
+                                            if (finalNewHash != null) {
+                                                classIndex.setIndex(finalNewHash, current.uuid());
+                                            }
+                                        });
                                     }
                                 }
                             }
@@ -2285,11 +2638,11 @@ export module org {
                                 var extrapolatedValue: number = this.extrapolateValue(raw, current.metaClass(), attribute.index(), current.now(), raw.time());
                                 var attTypeId: number = attribute.attributeTypeId();
                                 switch (attTypeId) {
-                                    case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID: 
+                                    case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID:
                                     return extrapolatedValue;
-                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
+                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
                                     return extrapolatedValue;
-                                    default: 
+                                    default:
                                     return null;
                                 }
                             } else {
@@ -2498,11 +2851,11 @@ export module org {
                                 var extrapolatedValue: number = this.extrapolateValue(raw, current.metaClass(), attribute.index(), current.now(), raw.time());
                                 var attTypeId: number = attribute.attributeTypeId();
                                 switch (attTypeId) {
-                                    case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID: 
+                                    case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID:
                                     return extrapolatedValue;
-                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
+                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
                                     return extrapolatedValue;
-                                    default: 
+                                    default:
                                     return null;
                                 }
                             } else {
@@ -2675,8 +3028,6 @@ export module org {
 
                     save(model: org.kevoree.modeling.KObject, cb: org.kevoree.modeling.KCallback<string>): void;
 
-                    saveRoot(cb: org.kevoree.modeling.KCallback<string>): void;
-
                     load(payload: string, cb: org.kevoree.modeling.KCallback<any>): void;
 
                 }
@@ -2686,7 +3037,6 @@ export module org {
 
                         public static KEY_META: string = "@class";
                         public static KEY_UUID: string = "@uuid";
-                        public static KEY_ROOT: string = "@root";
                         private _manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager;
                         private _universe: number;
                         private _time: number;
@@ -2702,18 +3052,6 @@ export module org {
                                 org.kevoree.modeling.format.json.JsonModelSerializer.serialize(model, cb);
                             } else {
                                 throw new Error(JsonFormat.NULL_PARAM_MSG);
-                            }
-                        }
-
-                        public saveRoot(cb: org.kevoree.modeling.KCallback<string>): void {
-                            if (org.kevoree.modeling.util.Checker.isDefined(cb)) {
-                                this._manager.getRoot(this._universe, this._time,  (root : org.kevoree.modeling.KObject) => {
-                                    if (root == null) {
-                                        cb(null);
-                                    } else {
-                                        org.kevoree.modeling.format.json.JsonModelSerializer.serialize(root, cb);
-                                    }
-                                });
                             }
                         }
 
@@ -2749,7 +3087,7 @@ export module org {
                              org.kevoree.modeling.format.json.JsonModelLoader.loadObj(elem2, manager, universe, time, mappedKeys, rootElem);
                              } catch(e){ console.error(e); }
                              }
-                             if (rootElem[0] != null) { manager.setRoot(rootElem[0], (throwable : Error) => { if (callback != null) { callback(throwable); }}); } else { if (callback != null) { callback(null); } }
+                             if (callback != null) { callback(null); }
                              }
                         }
 
@@ -2761,59 +3099,18 @@ export module org {
                             manager.initKObject(current);
                             var raw: org.kevoree.modeling.memory.chunk.KObjectChunk = manager.preciseChunk(current.universe(), current.now(), current.uuid(), current.metaClass(), (<org.kevoree.modeling.abs.AbstractKObject>current).previousResolved());
                             p_param.each( (metaKey : string, payload_content : any) => {
-                                if (org.kevoree.modeling.util.PrimitiveHelper.equals(metaKey, org.kevoree.modeling.format.json.JsonFormat.KEY_ROOT)) {
-                                    p_rootElem[0] = current;
-                                } else {
-                                    var metaElement: org.kevoree.modeling.meta.KMeta = metaClass.metaByName(metaKey);
-                                    if (payload_content != null) {
-                                        if (metaElement != null && metaElement.metaType().equals(org.kevoree.modeling.meta.MetaType.ATTRIBUTE)) {
-                                            var metaAttribute: org.kevoree.modeling.meta.KMetaAttribute = <org.kevoree.modeling.meta.KMetaAttribute>metaElement;
-                                            var metaAttId: number = metaAttribute.attributeTypeId();
-                                            switch (metaAttId) {
-                                                case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID: 
-                                                var plainRawSet: string[] = <string[]>p_param.get(metaAttribute.metaName());
-                                                var convertedRaw: Float64Array = new Float64Array(plainRawSet.length);
-                                                for (var l: number = 0; l < plainRawSet.length; l++) {
-                                                    try {
-                                                        convertedRaw[l] = org.kevoree.modeling.util.PrimitiveHelper.parseDouble(plainRawSet[l]);
-                                                    } catch ($ex$) {
-                                                        if ($ex$ instanceof Error) {
-                                                            var e: Error = <Error>$ex$;
-                                                            console.error(e['stack']);;
-                                                        } else {
-                                                            throw $ex$;
-                                                        }
-                                                    }
-                                                }
-                                                raw.setPrimitiveType(metaElement.index(), convertedRaw, current.metaClass());
-                                                break;
-                                                default: 
-                                                var converted: any = null;
-                                                var rawPayload: string = p_param.get(metaElement.metaName()).toString();
-                                                switch (metaAttId) {
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID: 
-                                                    converted = org.kevoree.modeling.format.json.JsonString.unescape(rawPayload);
-                                                    break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID: 
-                                                    converted = org.kevoree.modeling.util.PrimitiveHelper.parseLong(rawPayload);
-                                                    break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID: 
-                                                    converted = org.kevoree.modeling.util.PrimitiveHelper.parseInt(rawPayload);
-                                                    break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID: 
-                                                    converted = org.kevoree.modeling.util.PrimitiveHelper.parseBoolean(rawPayload);
-                                                    break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
-                                                    converted = org.kevoree.modeling.util.PrimitiveHelper.parseDouble(rawPayload);
-                                                    break;
-                                                }
-                                                raw.setPrimitiveType(metaElement.index(), converted, current.metaClass());
-                                                break;
-                                            }
-                                        } else {
-                                            if (metaElement != null && metaElement.metaType() == org.kevoree.modeling.meta.MetaType.RELATION) {
+                                var metaElement: org.kevoree.modeling.meta.KMeta = metaClass.metaByName(metaKey);
+                                if (payload_content != null) {
+                                    if (metaElement != null && metaElement.metaType().equals(org.kevoree.modeling.meta.MetaType.ATTRIBUTE)) {
+                                        var metaAttribute: org.kevoree.modeling.meta.KMetaAttribute = <org.kevoree.modeling.meta.KMetaAttribute>metaElement;
+                                        var metaAttId: number = metaAttribute.attributeTypeId();
+                                        switch (metaAttId) {
+                                            case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID:
+                                            var plainRawSet: string[] = <string[]>p_param.get(metaAttribute.metaName());
+                                            var convertedRaw: Float64Array = new Float64Array(plainRawSet.length);
+                                            for (var l: number = 0; l < plainRawSet.length; l++) {
                                                 try {
-                                                    raw.setPrimitiveType(metaElement.index(), org.kevoree.modeling.format.json.JsonModelLoader.transposeArr(<java.util.ArrayList<string>>payload_content, p_mappedKeys), current.metaClass());
+                                                    convertedRaw[l] = org.kevoree.modeling.util.PrimitiveHelper.parseDouble(plainRawSet[l]);
                                                 } catch ($ex$) {
                                                     if ($ex$ instanceof Error) {
                                                         var e: Error = <Error>$ex$;
@@ -2821,6 +3118,43 @@ export module org {
                                                     } else {
                                                         throw $ex$;
                                                     }
+                                                }
+                                            }
+                                            raw.setPrimitiveType(metaElement.index(), convertedRaw, current.metaClass());
+                                            break;
+                                            default:
+                                            var converted: any = null;
+                                            var rawPayload: string = p_param.get(metaElement.metaName()).toString();
+                                            switch (metaAttId) {
+                                                case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID:
+                                                converted = org.kevoree.modeling.format.json.JsonString.unescape(rawPayload);
+                                                break;
+                                                case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID:
+                                                converted = org.kevoree.modeling.util.PrimitiveHelper.parseLong(rawPayload);
+                                                break;
+                                                case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID:
+                                                converted = org.kevoree.modeling.util.PrimitiveHelper.parseInt(rawPayload);
+                                                break;
+                                                case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID:
+                                                converted = org.kevoree.modeling.util.PrimitiveHelper.parseBoolean(rawPayload);
+                                                break;
+                                                case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
+                                                converted = org.kevoree.modeling.util.PrimitiveHelper.parseDouble(rawPayload);
+                                                break;
+                                            }
+                                            raw.setPrimitiveType(metaElement.index(), converted, current.metaClass());
+                                            break;
+                                        }
+                                    } else {
+                                        if (metaElement != null && metaElement.metaType() == org.kevoree.modeling.meta.MetaType.RELATION) {
+                                            try {
+                                                raw.setPrimitiveType(metaElement.index(), org.kevoree.modeling.format.json.JsonModelLoader.transposeArr(<java.util.ArrayList<string>>payload_content, p_mappedKeys), current.metaClass());
+                                            } catch ($ex$) {
+                                                if ($ex$ instanceof Error) {
+                                                    var e: Error = <Error>$ex$;
+                                                    console.error(e['stack']);;
+                                                } else {
+                                                    throw $ex$;
                                                 }
                                             }
                                         }
@@ -2877,44 +3211,35 @@ export module org {
                     export class JsonModelSerializer {
 
                         public static serialize(model: org.kevoree.modeling.KObject, callback: org.kevoree.modeling.KCallback<string>): void {
-                            (<org.kevoree.modeling.abs.AbstractKObject>model)._manager.getRoot(model.universe(), model.now(),  (rootObj : org.kevoree.modeling.KObject) => {
-                                var isRoot: boolean = false;
-                                if (rootObj != null) {
-                                    isRoot = rootObj.uuid() == model.uuid();
+                            var builder: java.lang.StringBuilder = new java.lang.StringBuilder();
+                            builder.append("[\n");
+                            org.kevoree.modeling.format.json.JsonModelSerializer.printJSON(model, builder);
+                            model.visit( (elem : org.kevoree.modeling.KObject) => {
+                                var isRoot2: boolean = false;
+                                builder.append(",\n");
+                                try {
+                                    org.kevoree.modeling.format.json.JsonModelSerializer.printJSON(elem, builder);
+                                } catch ($ex$) {
+                                    if ($ex$ instanceof Error) {
+                                        var e: Error = <Error>$ex$;
+                                        console.error(e['stack']);;
+                                        builder.append("{}");
+                                    } else {
+                                        throw $ex$;
+                                    }
                                 }
-                                var builder: java.lang.StringBuilder = new java.lang.StringBuilder();
-                                builder.append("[\n");
-                                org.kevoree.modeling.format.json.JsonModelSerializer.printJSON(model, builder, isRoot);
-                                model.visit( (elem : org.kevoree.modeling.KObject) => {
-                                    var isRoot2: boolean = false;
-                                    if (rootObj != null) {
-                                        isRoot2 = rootObj.uuid() == elem.uuid();
-                                    }
-                                    builder.append(",\n");
-                                    try {
-                                        org.kevoree.modeling.format.json.JsonModelSerializer.printJSON(elem, builder, isRoot2);
-                                    } catch ($ex$) {
-                                        if ($ex$ instanceof Error) {
-                                            var e: Error = <Error>$ex$;
-                                            console.error(e['stack']);;
-                                            builder.append("{}");
-                                        } else {
-                                            throw $ex$;
-                                        }
-                                    }
-                                    return org.kevoree.modeling.traversal.visitor.KVisitResult.CONTINUE;
-                                },  (throwable : Error) => {
-                                    builder.append("\n]\n");
-                                    callback(builder.toString());
-                                });
+                                return org.kevoree.modeling.traversal.visitor.KVisitResult.CONTINUE;
+                            },  (throwable : Error) => {
+                                builder.append("\n]\n");
+                                callback(builder.toString());
                             });
                         }
 
-                        public static printJSON(elem: org.kevoree.modeling.KObject, builder: java.lang.StringBuilder, isRoot: boolean): void {
+                        public static printJSON(elem: org.kevoree.modeling.KObject, builder: java.lang.StringBuilder): void {
                             if (elem != null) {
                                 var raw: org.kevoree.modeling.memory.chunk.KObjectChunk = (<org.kevoree.modeling.abs.AbstractKObject>elem)._manager.closestChunk(elem.universe(), elem.now(), elem.uuid(), elem.metaClass(), (<org.kevoree.modeling.abs.AbstractKObject>elem).previousResolved());
                                 if (raw != null) {
-                                    builder.append(org.kevoree.modeling.format.json.JsonRaw.encode(raw, elem.uuid(), elem.metaClass(), isRoot));
+                                    builder.append(org.kevoree.modeling.format.json.JsonRaw.encode(raw, elem.uuid(), elem.metaClass()));
                                 }
                             }
                         }
@@ -2944,15 +3269,12 @@ export module org {
 
                     export class JsonRaw {
 
-                        public static encode(raw: org.kevoree.modeling.memory.chunk.KObjectChunk, uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, isRoot: boolean): string {
+                        public static encode(raw: org.kevoree.modeling.memory.chunk.KObjectChunk, uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass): string {
                             var builder: java.lang.StringBuilder = new java.lang.StringBuilder();
                             builder.append("{\"@class\":\"");
                             builder.append(p_metaClass.metaName());
                             builder.append("\",\"@uuid\":");
                             builder.append(uuid);
-                            if (isRoot) {
-                                builder.append(",\"" + org.kevoree.modeling.format.json.JsonFormat.KEY_ROOT + "\":true");
-                            }
                             var metaElements: org.kevoree.modeling.meta.KMeta[] = p_metaClass.metaElements();
                             for (var i: number = 0; i < metaElements.length; i++) {
                                 var loopMeta: org.kevoree.modeling.meta.KMeta = metaElements[i];
@@ -3094,43 +3416,43 @@ export module org {
                                     i++;
                                     var current2: string = p_src.charAt(i);
                                     switch (current2) {
-                                        case '"': 
+                                        case '"':
                                         builder.append('\"');
                                         break;
-                                        case '\\': 
+                                        case '\\':
                                         builder.append(current2);
                                         break;
-                                        case '/': 
+                                        case '/':
                                         builder.append(current2);
                                         break;
-                                        case 'b': 
+                                        case 'b':
                                         builder.append('\b');
                                         break;
-                                        case 'f': 
+                                        case 'f':
                                         builder.append('\f');
                                         break;
-                                        case 'n': 
+                                        case 'n':
                                         builder.append('\n');
                                         break;
-                                        case 'r': 
+                                        case 'r':
                                         builder.append('\r');
                                         break;
-                                        case 't': 
+                                        case 't':
                                         builder.append('\t');
                                         break;
-                                        case '{': 
+                                        case '{':
                                         builder.append("\\{");
                                         break;
-                                        case '}': 
+                                        case '}':
                                         builder.append("\\}");
                                         break;
-                                        case '[': 
+                                        case '[':
                                         builder.append("\\[");
                                         break;
-                                        case ']': 
+                                        case ']':
                                         builder.append("\\]");
                                         break;
-                                        case ',': 
+                                        case ',':
                                         builder.append("\\,");
                                         break;
                                     }
@@ -4183,6 +4505,34 @@ export module org {
 
                     }
 
+                    export interface KObjectIndexChunk extends org.kevoree.modeling.memory.chunk.KObjectChunk, org.kevoree.modeling.memory.chunk.KStringLongMap {
+
+                    }
+
+                    export interface KStringLongMap {
+
+                        contains(key: string): boolean;
+
+                        get(key: string): number;
+
+                        put(key: string, value: number): void;
+
+                        each(callback: org.kevoree.modeling.memory.chunk.KStringLongMapCallBack): void;
+
+                        size(): number;
+
+                        clear(): void;
+
+                        remove(key: string): void;
+
+                    }
+
+                    export interface KStringLongMapCallBack {
+
+                        (key: string, value: number): void;
+
+                    }
+
                     export interface KStringMap<V> {
 
                         contains(key: string): boolean;
@@ -4846,7 +5196,7 @@ export module org {
 
                         }
 
-                        export module AbstractArrayTree { 
+                        export module AbstractArrayTree {
                             export class InternalState {
 
                                 public _back_meta: Int32Array;
@@ -5228,7 +5578,7 @@ export module org {
 
                         }
 
-                        export module ArrayLongLongMap { 
+                        export module ArrayLongLongMap {
                             export class InternalState {
 
                                 public elementDataSize: number;
@@ -5271,7 +5621,7 @@ export module org {
                             }
 
                             public type(): number {
-                                return org.kevoree.modeling.memory.space.KChunkTypes.LONG_LONG_TREE;
+                                return -1;
                             }
 
                         }
@@ -5373,13 +5723,13 @@ export module org {
                                                 var metaAttribute: org.kevoree.modeling.meta.KMetaAttribute = <org.kevoree.modeling.meta.KMetaAttribute>metaElements[i];
                                                 var metaAttId: number = metaAttribute.attributeTypeId();
                                                 switch (metaAttId) {
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID: 
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID:
                                                     org.kevoree.modeling.util.Base64.encodeStringToBuffer(<string>this.raw[i], builder);
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID: 
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID:
                                                     org.kevoree.modeling.util.Base64.encodeLongToBuffer(<number>this.raw[i], builder);
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID: 
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID:
                                                     var castedArr: Float64Array = <Float64Array>this.raw[i];
                                                     org.kevoree.modeling.util.Base64.encodeIntToBuffer(castedArr.length, builder);
                                                     for (var j: number = 0; j < castedArr.length; j++) {
@@ -5387,20 +5737,20 @@ export module org {
                                                         org.kevoree.modeling.util.Base64.encodeDoubleToBuffer(castedArr[j], builder);
                                                     }
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID: 
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID:
                                                     if (<boolean>this.raw[i]) {
                                                         builder.append("1");
                                                     } else {
                                                         builder.append("0");
                                                     }
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
                                                     org.kevoree.modeling.util.Base64.encodeDoubleToBuffer(<number>this.raw[i], builder);
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID: 
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID:
                                                     org.kevoree.modeling.util.Base64.encodeIntToBuffer(<number>this.raw[i], builder);
                                                     break;
-                                                    default: 
+                                                    default:
                                                     if (org.kevoree.modeling.meta.KPrimitiveTypes.isEnum(metaAttribute.attributeTypeId())) {
                                                         org.kevoree.modeling.util.Base64.encodeIntToBuffer(<number>this.raw[i], builder);
                                                     }
@@ -5434,21 +5784,21 @@ export module org {
                             private loadObject(metaAttribute: org.kevoree.modeling.meta.KMetaAttribute, p_payload: string, p_start: number, p_end: number): any {
                                 var metaAttId: number = metaAttribute.attributeTypeId();
                                 switch (metaAttId) {
-                                    case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID: 
+                                    case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID:
                                     return org.kevoree.modeling.util.Base64.decodeToStringWithBounds(p_payload, p_start, p_end);
-                                    case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID: 
+                                    case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID:
                                     return org.kevoree.modeling.util.Base64.decodeToLongWithBounds(p_payload, p_start, p_end);
-                                    case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID: 
+                                    case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID:
                                     return org.kevoree.modeling.util.Base64.decodeToIntWithBounds(p_payload, p_start, p_end);
-                                    case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID: 
+                                    case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID:
                                     if (p_payload.charAt(p_start) == '1') {
                                         return true;
                                     } else {
                                         return false;
                                     }
-                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
+                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
                                     return org.kevoree.modeling.util.Base64.decodeToDoubleWithBounds(p_payload, p_start, p_end);
-                                    default: 
+                                    default:
                                     return null;
                                 }
                             }
@@ -5737,15 +6087,15 @@ export module org {
                                                 var metaAttribute: org.kevoree.modeling.meta.KMetaAttribute = <org.kevoree.modeling.meta.KMetaAttribute>metaElements[i];
                                                 var metaAttId: number = metaAttribute.attributeTypeId();
                                                 switch (metaAttId) {
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID: 
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID:
                                                     builder.append("\"");
                                                     builder.append(org.kevoree.modeling.format.json.JsonString.encode(<string>this.raw[i]));
                                                     builder.append("\"");
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID: 
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID:
                                                     builder.append(this.raw[i]);
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID: 
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.CONTINUOUS_ID:
                                                     builder.append("[");
                                                     var castedArr: Float64Array = <Float64Array>this.raw[i];
                                                     for (var j: number = 0; j < castedArr.length; j++) {
@@ -5756,20 +6106,20 @@ export module org {
                                                     }
                                                     builder.append("]");
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID: 
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID:
                                                     if (<boolean>this.raw[i]) {
                                                         builder.append("1");
                                                     } else {
                                                         builder.append("0");
                                                     }
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
                                                     builder.append(this.raw[i]);
                                                     break;
-                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID: 
+                                                    case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID:
                                                     builder.append(this.raw[i]);
                                                     break;
-                                                    default: 
+                                                    default:
                                                     if (org.kevoree.modeling.meta.KPrimitiveTypes.isEnum(metaAttribute.attributeTypeId())) {
                                                         org.kevoree.modeling.util.Base64.encodeIntToBuffer(<number>this.raw[i], builder);
                                                     }
@@ -5867,6 +6217,465 @@ export module org {
 
                         }
 
+                        export class HeapObjectIndexChunk implements org.kevoree.modeling.memory.chunk.KObjectIndexChunk {
+
+                            public elementCount: number;
+                            public droppedCount: number;
+                            public state: org.kevoree.modeling.memory.chunk.impl.HeapObjectIndexChunk.InternalState = null;
+                            public threshold: number;
+                            private initialCapacity: number = 16;
+                            private static loadFactor: number = (<number>75 / <number>100);
+                            private _flags: java.util.concurrent.atomic.AtomicLong;
+                            private _counter: java.util.concurrent.atomic.AtomicInteger;
+                            private _space: org.kevoree.modeling.memory.space.KChunkSpace;
+                            private _universe: number;
+                            private _time: number;
+                            private _obj: number;
+                            private _metaClassIndex: number = -1;
+                            private _dependencies: java.util.concurrent.atomic.AtomicReference<Float64Array>;
+                            constructor(p_universe: number, p_time: number, p_obj: number, p_space: org.kevoree.modeling.memory.space.KChunkSpace) {
+                                this._universe = p_universe;
+                                this._time = p_time;
+                                this._obj = p_obj;
+                                this._flags = new java.util.concurrent.atomic.AtomicLong(0);
+                                this._counter = new java.util.concurrent.atomic.AtomicInteger(0);
+                                this._space = p_space;
+                                this.elementCount = 0;
+                                this.droppedCount = 0;
+                                var newstate: org.kevoree.modeling.memory.chunk.impl.HeapObjectIndexChunk.InternalState = new org.kevoree.modeling.memory.chunk.impl.HeapObjectIndexChunk.InternalState(this.initialCapacity, new Array(), new Float64Array(this.initialCapacity), new Int32Array(this.initialCapacity), new Int32Array(this.initialCapacity));
+                                for (var i: number = 0; i < this.initialCapacity; i++) {
+                                    newstate.elementNext[i] = -1;
+                                    newstate.elementHash[i] = -1;
+                                }
+                                this.state = newstate;
+                                this.threshold = <number>(newstate.elementDataSize * HeapObjectIndexChunk.loadFactor);
+                                this._dependencies = new java.util.concurrent.atomic.AtomicReference<Float64Array>();
+                            }
+
+                            public clone(p_universe: number, p_time: number, p_obj: number, p_metaClass: org.kevoree.modeling.meta.KMetaModel): org.kevoree.modeling.memory.chunk.KObjectChunk {
+                                var cloned: org.kevoree.modeling.memory.chunk.impl.HeapObjectIndexChunk = new org.kevoree.modeling.memory.chunk.impl.HeapObjectIndexChunk(p_universe, p_time, p_obj, this._space);
+                                cloned._metaClassIndex = this._metaClassIndex;
+                                cloned.state = this.state.clone();
+                                cloned.elementCount = this.elementCount;
+                                cloned.droppedCount = this.droppedCount;
+                                cloned.threshold = this.threshold;
+                                cloned.internal_set_dirty();
+                                return cloned;
+                            }
+
+                            public metaClassIndex(): number {
+                                return this._metaClassIndex;
+                            }
+
+                            public toJSON(metaModel: org.kevoree.modeling.meta.KMetaModel): string {
+                                return null;
+                            }
+
+                            public setPrimitiveType(index: number, content: any, metaClass: org.kevoree.modeling.meta.KMetaClass): void {
+                            }
+
+                            public getPrimitiveType(index: number, metaClass: org.kevoree.modeling.meta.KMetaClass): any {
+                                return null;
+                            }
+
+                            public getLongArray(index: number, metaClass: org.kevoree.modeling.meta.KMetaClass): Float64Array {
+                                return new Float64Array(0);
+                            }
+
+                            public getLongArraySize(index: number, metaClass: org.kevoree.modeling.meta.KMetaClass): number {
+                                return 0;
+                            }
+
+                            public getLongArrayElem(index: number, refIndex: number, metaClass: org.kevoree.modeling.meta.KMetaClass): number {
+                                return 0;
+                            }
+
+                            public addLongToArray(index: number, newRef: number, metaClass: org.kevoree.modeling.meta.KMetaClass): boolean {
+                                return false;
+                            }
+
+                            public removeLongToArray(index: number, previousRef: number, metaClass: org.kevoree.modeling.meta.KMetaClass): boolean {
+                                return false;
+                            }
+
+                            public clearLongArray(index: number, metaClass: org.kevoree.modeling.meta.KMetaClass): void {
+                            }
+
+                            public getDoubleArray(index: number, metaClass: org.kevoree.modeling.meta.KMetaClass): Float64Array {
+                                return new Float64Array(0);
+                            }
+
+                            public getDoubleArraySize(index: number, metaClass: org.kevoree.modeling.meta.KMetaClass): number {
+                                return 0;
+                            }
+
+                            public getDoubleArrayElem(index: number, arrayIndex: number, metaClass: org.kevoree.modeling.meta.KMetaClass): number {
+                                return 0;
+                            }
+
+                            public setDoubleArrayElem(index: number, arrayIndex: number, valueToInsert: number, metaClass: org.kevoree.modeling.meta.KMetaClass): void {
+                            }
+
+                            public extendDoubleArray(index: number, newSize: number, metaClass: org.kevoree.modeling.meta.KMetaClass): void {
+                            }
+
+                            public clearDoubleArray(index: number, metaClass: org.kevoree.modeling.meta.KMetaClass): void {
+                            }
+
+                            public counter(): number {
+                                return this._counter.get();
+                            }
+
+                            public inc(): number {
+                                return this._counter.incrementAndGet();
+                            }
+
+                            public dec(): number {
+                                return this._counter.decrementAndGet();
+                            }
+
+                            public clear(): void {
+                                if (this.elementCount > 0) {
+                                    this.elementCount = 0;
+                                    this.droppedCount = 0;
+                                    var newstate: org.kevoree.modeling.memory.chunk.impl.HeapObjectIndexChunk.InternalState = new org.kevoree.modeling.memory.chunk.impl.HeapObjectIndexChunk.InternalState(this.initialCapacity, new Array(), new Float64Array(this.initialCapacity), new Int32Array(this.initialCapacity), new Int32Array(this.initialCapacity));
+                                    for (var i: number = 0; i < this.initialCapacity; i++) {
+                                        newstate.elementNext[i] = -1;
+                                        newstate.elementHash[i] = -1;
+                                    }
+                                    this.state = newstate;
+                                    this.threshold = <number>(newstate.elementDataSize * HeapObjectIndexChunk.loadFactor);
+                                }
+                            }
+
+                            public rehashCapacity(capacity: number): void {
+                                var length: number = (capacity == 0 ? 1 : capacity << 1);
+                                var newElementK: string[] = new Array();
+                                var newElementV: Float64Array = new Float64Array(length * 2);
+                                java.lang.System.arraycopy(this.state.elementK, 0, newElementK, 0, this.state.elementK.length);
+                                java.lang.System.arraycopy(this.state.elementV, 0, newElementV, 0, this.state.elementV.length);
+                                var newElementNext: Int32Array = new Int32Array(length);
+                                var newElementHash: Int32Array = new Int32Array(length);
+                                for (var i: number = 0; i < length; i++) {
+                                    newElementNext[i] = -1;
+                                    newElementHash[i] = -1;
+                                }
+                                for (var i: number = 0; i < this.state.elementNext.length; i++) {
+                                    if (this.state.elementNext[i] != -1) {
+                                        var index: number = (org.kevoree.modeling.util.PrimitiveHelper.stringHash(this.state.elementK[i]) & 0x7FFFFFFF) % length;
+                                        var currentHashedIndex: number = newElementHash[index];
+                                        if (currentHashedIndex != -1) {
+                                            newElementNext[i] = currentHashedIndex;
+                                        } else {
+                                            newElementNext[i] = -2;
+                                        }
+                                        newElementHash[index] = i;
+                                    }
+                                }
+                                this.state = new org.kevoree.modeling.memory.chunk.impl.HeapObjectIndexChunk.InternalState(length, newElementK, newElementV, newElementNext, newElementHash);
+                                this.threshold = <number>(length * HeapObjectIndexChunk.loadFactor);
+                            }
+
+                            public each(callback: org.kevoree.modeling.memory.chunk.KStringLongMapCallBack): void {
+                                var internalState: org.kevoree.modeling.memory.chunk.impl.HeapObjectIndexChunk.InternalState = this.state;
+                                for (var i: number = 0; i < internalState.elementNext.length; i++) {
+                                    if (internalState.elementNext[i] != -1) {
+                                        callback(internalState.elementK[i], internalState.elementV[i]);
+                                    }
+                                }
+                            }
+
+                            public contains(key: string): boolean {
+                                var internalState: org.kevoree.modeling.memory.chunk.impl.HeapObjectIndexChunk.InternalState = this.state;
+                                if (this.state.elementDataSize == 0) {
+                                    return false;
+                                }
+                                var hash: number = org.kevoree.modeling.util.PrimitiveHelper.stringHash(key);
+                                var index: number = (hash & 0x7FFFFFFF) % internalState.elementDataSize;
+                                var m: number = internalState.elementHash[index];
+                                while (m >= 0){
+                                    if (key == internalState.elementK[m * 2]) {
+                                        return true;
+                                    }
+                                    m = internalState.elementNext[m];
+                                }
+                                return false;
+                            }
+
+                            public get(key: string): number {
+                                var internalState: org.kevoree.modeling.memory.chunk.impl.HeapObjectIndexChunk.InternalState = this.state;
+                                if (this.state.elementDataSize == 0) {
+                                    return org.kevoree.modeling.KConfig.NULL_LONG;
+                                }
+                                var index: number = (org.kevoree.modeling.util.PrimitiveHelper.stringHash(key) & 0x7FFFFFFF) % internalState.elementDataSize;
+                                var m: number = internalState.elementHash[index];
+                                while (m >= 0){
+                                    if (org.kevoree.modeling.util.PrimitiveHelper.equals(key, internalState.elementK[m])) {
+                                        return internalState.elementV[m];
+                                    } else {
+                                        m = internalState.elementNext[m];
+                                    }
+                                }
+                                return org.kevoree.modeling.KConfig.NULL_LONG;
+                            }
+
+                            public put(key: string, value: number): void {
+                                var entry: number = -1;
+                                var index: number = -1;
+                                var hash: number = org.kevoree.modeling.util.PrimitiveHelper.stringHash(key);
+                                if (this.state.elementDataSize != 0) {
+                                    index = (hash & 0x7FFFFFFF) % this.state.elementDataSize;
+                                    entry = this.findNonNullKeyEntry(key, index);
+                                }
+                                if (entry == -1) {
+                                    if (++this.elementCount > this.threshold) {
+                                        this.rehashCapacity(this.state.elementDataSize);
+                                        index = (hash & 0x7FFFFFFF) % this.state.elementDataSize;
+                                    }
+                                    var newIndex: number = (this.elementCount + this.droppedCount - 1);
+                                    this.state.elementK[newIndex] = key;
+                                    this.state.elementV[newIndex] = value;
+                                    var currentHashedIndex: number = this.state.elementHash[index];
+                                    if (currentHashedIndex != -1) {
+                                        this.state.elementNext[newIndex] = currentHashedIndex;
+                                    } else {
+                                        this.state.elementNext[newIndex] = -2;
+                                    }
+                                    this.state.elementHash[index] = newIndex;
+                                } else {
+                                    this.state.elementV[entry] = value;
+                                }
+                                this.internal_set_dirty();
+                            }
+
+                            public findNonNullKeyEntry(key: string, index: number): number {
+                                var m: number = this.state.elementHash[index];
+                                while (m >= 0){
+                                    if (org.kevoree.modeling.util.PrimitiveHelper.equals(key, this.state.elementK[m])) {
+                                        return m;
+                                    }
+                                    m = this.state.elementNext[m];
+                                }
+                                return -1;
+                            }
+
+                            public remove(key: string): void {
+                                var internalState: org.kevoree.modeling.memory.chunk.impl.HeapObjectIndexChunk.InternalState = this.state;
+                                if (this.state.elementDataSize == 0) {
+                                    return;
+                                }
+                                var index: number = (org.kevoree.modeling.util.PrimitiveHelper.stringHash(key) & 0x7FFFFFFF) % internalState.elementDataSize;
+                                var m: number = this.state.elementHash[index];
+                                var last: number = -1;
+                                while (m >= 0){
+                                    if (org.kevoree.modeling.util.PrimitiveHelper.equals(key, this.state.elementK[m])) {
+                                        break;
+                                    }
+                                    last = m;
+                                    m = this.state.elementNext[m];
+                                }
+                                if (m == -1) {
+                                    return;
+                                }
+                                if (last == -1) {
+                                    if (this.state.elementNext[m] > 0) {
+                                        this.state.elementHash[index] = m;
+                                    } else {
+                                        this.state.elementHash[index] = -1;
+                                    }
+                                } else {
+                                    this.state.elementNext[last] = this.state.elementNext[m];
+                                }
+                                this.state.elementNext[m] = -1;
+                                this.elementCount--;
+                                this.droppedCount++;
+                            }
+
+                            public size(): number {
+                                return this.elementCount;
+                            }
+
+                            public init(payload: string, metaModel: org.kevoree.modeling.meta.KMetaModel, metaClassIndex: number): void {
+                                if (this._metaClassIndex == -1) {
+                                    this._metaClassIndex = metaClassIndex;
+                                }
+                                if (payload == null || payload.length == 0) {
+                                    return;
+                                }
+                                var initPos: number = 1;
+                                var cursor: number = 0;
+                                while (cursor < payload.length && payload.charAt(cursor) != '/'){
+                                    cursor++;
+                                }
+                                var nbElement: number = org.kevoree.modeling.util.Base64.decodeToIntWithBounds(payload, initPos, cursor);
+                                var length: number = (nbElement == 0 ? 1 : nbElement << 1);
+                                var newElementK: string[] = new Array();
+                                var newElementV: Float64Array = new Float64Array(length);
+                                var newElementNext: Int32Array = new Int32Array(length);
+                                var newElementHash: Int32Array = new Int32Array(length);
+                                for (var i: number = 0; i < length; i++) {
+                                    newElementNext[i] = -1;
+                                    newElementHash[i] = -1;
+                                }
+                                var temp_state: org.kevoree.modeling.memory.chunk.impl.HeapObjectIndexChunk.InternalState = new org.kevoree.modeling.memory.chunk.impl.HeapObjectIndexChunk.InternalState(length, newElementK, newElementV, newElementNext, newElementHash);
+                                while (cursor < payload.length){
+                                    cursor++;
+                                    var beginChunk: number = cursor;
+                                    while (cursor < payload.length && payload.charAt(cursor) != ':'){
+                                        cursor++;
+                                    }
+                                    var middleChunk: number = cursor;
+                                    while (cursor < payload.length && payload.charAt(cursor) != ','){
+                                        cursor++;
+                                    }
+                                    var loopKey: string = org.kevoree.modeling.util.Base64.decodeToStringWithBounds(payload, beginChunk, middleChunk);
+                                    var loopVal: number = org.kevoree.modeling.util.Base64.decodeToLongWithBounds(payload, middleChunk + 1, cursor);
+                                    var index: number = (org.kevoree.modeling.util.PrimitiveHelper.stringHash(loopKey) & 0x7FFFFFFF) % temp_state.elementDataSize;
+                                    var newIndex: number = this.elementCount;
+                                    temp_state.elementK[newIndex] = loopKey;
+                                    temp_state.elementV[newIndex] = loopVal;
+                                    var currentHashedIndex: number = temp_state.elementHash[index];
+                                    if (currentHashedIndex != -1) {
+                                        temp_state.elementNext[newIndex] = currentHashedIndex;
+                                    } else {
+                                        temp_state.elementNext[newIndex] = -2;
+                                    }
+                                    temp_state.elementHash[index] = newIndex;
+                                    this.elementCount++;
+                                }
+                                this.elementCount = nbElement;
+                                this.droppedCount = 0;
+                                this.state = temp_state;
+                                this.threshold = <number>(length * HeapObjectIndexChunk.loadFactor);
+                            }
+
+                            public serialize(metaModel: org.kevoree.modeling.meta.KMetaModel): string {
+                                var buffer: java.lang.StringBuilder = new java.lang.StringBuilder();
+                                buffer.append("#");
+                                org.kevoree.modeling.util.Base64.encodeIntToBuffer(this.elementCount, buffer);
+                                buffer.append('/');
+                                var isFirst: boolean = true;
+                                var internalState: org.kevoree.modeling.memory.chunk.impl.HeapObjectIndexChunk.InternalState = this.state;
+                                for (var i: number = 0; i < internalState.elementNext.length; i++) {
+                                    if (internalState.elementNext[i] != -1) {
+                                        var loopKey: string = internalState.elementK[i];
+                                        var loopValue: number = internalState.elementV[i];
+                                        if (!isFirst) {
+                                            buffer.append(",");
+                                        }
+                                        isFirst = false;
+                                        org.kevoree.modeling.util.Base64.encodeStringToBuffer(loopKey, buffer);
+                                        buffer.append(":");
+                                        org.kevoree.modeling.util.Base64.encodeLongToBuffer(loopValue, buffer);
+                                    }
+                                }
+                                return buffer.toString();
+                            }
+
+                            public free(metaModel: org.kevoree.modeling.meta.KMetaModel): void {
+                                this.clear();
+                            }
+
+                            public type(): number {
+                                return org.kevoree.modeling.memory.space.KChunkTypes.LONG_LONG_MAP;
+                            }
+
+                            public space(): org.kevoree.modeling.memory.space.KChunkSpace {
+                                return this._space;
+                            }
+
+                            private internal_set_dirty(): void {
+                                if (this._space != null) {
+                                    if ((this._flags.get() & org.kevoree.modeling.memory.KChunkFlags.DIRTY_BIT) != org.kevoree.modeling.memory.KChunkFlags.DIRTY_BIT) {
+                                        this._space.declareDirty(this);
+                                        this.setFlags(org.kevoree.modeling.memory.KChunkFlags.DIRTY_BIT, 0);
+                                    }
+                                } else {
+                                    this.setFlags(org.kevoree.modeling.memory.KChunkFlags.DIRTY_BIT, 0);
+                                }
+                            }
+
+                            public getFlags(): number {
+                                return this._flags.get();
+                            }
+
+                            public setFlags(bitsToEnable: number, bitsToDisable: number): void {
+                                var val: number;
+                                var nval: number;
+                                do {
+                                    val = this._flags.get();
+                                    nval = val & ~bitsToDisable | bitsToEnable;
+                                } while (!this._flags.compareAndSet(val, nval))
+                            }
+
+                            public universe(): number {
+                                return this._universe;
+                            }
+
+                            public time(): number {
+                                return this._time;
+                            }
+
+                            public obj(): number {
+                                return this._obj;
+                            }
+
+                            public dependencies(): Float64Array {
+                                return this._dependencies.get();
+                            }
+
+                            public addDependency(universe: number, time: number, uuid: number): void {
+                                var previousVal: Float64Array;
+                                var newVal: Float64Array;
+                                do {
+                                    previousVal = this._dependencies.get();
+                                    if (previousVal == null) {
+                                        newVal = new Float64Array([universe, time, uuid]);
+                                    } else {
+                                        newVal = new Float64Array(previousVal.length + 3);
+                                        var previousLength: number = previousVal.length;
+                                        java.lang.System.arraycopy(previousVal, 0, newVal, 0, previousLength);
+                                        newVal[previousLength] = universe;
+                                        newVal[previousLength + 1] = time;
+                                        newVal[previousLength + 2] = uuid;
+                                    }
+                                } while (!this._dependencies.compareAndSet(previousVal, newVal))
+                            }
+
+                        }
+
+                        export module HeapObjectIndexChunk {
+                            export class InternalState {
+
+                                public elementDataSize: number;
+                                public elementK: string[];
+                                public elementV: Float64Array;
+                                public elementNext: Int32Array;
+                                public elementHash: Int32Array;
+                                constructor(elementDataSize: number, elementK: string[], elementV: Float64Array, elementNext: Int32Array, elementHash: Int32Array) {
+                                    this.elementDataSize = elementDataSize;
+                                    this.elementK = elementK;
+                                    this.elementV = elementV;
+                                    this.elementNext = elementNext;
+                                    this.elementHash = elementHash;
+                                }
+
+                                public clone(): org.kevoree.modeling.memory.chunk.impl.HeapObjectIndexChunk.InternalState {
+                                    var clonedElementK: string[] = new Array();
+                                    java.lang.System.arraycopy(this.elementK, 0, clonedElementK, 0, this.elementK.length);
+                                    var clonedElementV: Float64Array = new Float64Array(this.elementV.length);
+                                    java.lang.System.arraycopy(this.elementV, 0, clonedElementV, 0, this.elementV.length);
+                                    var clonedElementNext: Int32Array = new Int32Array(this.elementNext.length);
+                                    java.lang.System.arraycopy(this.elementNext, 0, clonedElementNext, 0, this.elementNext.length);
+                                    var clonedElementHash: Int32Array = new Int32Array(this.elementHash.length);
+                                    java.lang.System.arraycopy(this.elementHash, 0, clonedElementHash, 0, this.elementHash.length);
+                                    return new org.kevoree.modeling.memory.chunk.impl.HeapObjectIndexChunk.InternalState(this.elementDataSize, clonedElementK, clonedElementV, clonedElementNext, clonedElementHash);
+                                }
+
+                            }
+
+
+                        }
                     }
                 }
                 export module manager {
@@ -5938,6 +6747,8 @@ export module org {
 
                     export interface KDataManager {
 
+                        index(universe: number, time: number, indexName: string, callback: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObjectIndex>): void;
+
                         lookup(universe: number, time: number, uuid: number, callback: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObject>): void;
 
                         lookupAllObjects(universe: number, time: number, uuids: Float64Array, callback: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObject[]>): void;
@@ -5949,10 +6760,6 @@ export module org {
                         lookupPrepared(prepared: org.kevoree.modeling.KPreparedLookup, callback: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObject[]>): void;
 
                         save(callback: org.kevoree.modeling.KCallback<Error>): void;
-
-                        getRoot(universe: number, time: number, callback: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObject>): void;
-
-                        setRoot(newRoot: org.kevoree.modeling.KObject, callback: org.kevoree.modeling.KCallback<Error>): void;
 
                         model(): org.kevoree.modeling.KModel<any>;
 
@@ -6237,14 +7044,6 @@ export module org {
                                 this._scheduler.dispatch(this._resolver.lookupPrepared(prepared, callback));
                             }
 
-                            public getRoot(universe: number, time: number, callback: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObject>): void {
-                                this._resolver.getRoot(universe, time, callback);
-                            }
-
-                            public setRoot(newRoot: org.kevoree.modeling.KObject, callback: org.kevoree.modeling.KCallback<Error>): void {
-                                this._resolver.setRoot(newRoot, callback);
-                            }
-
                             public cdn(): org.kevoree.modeling.cdn.KContentDeliveryDriver {
                                 return this._db;
                             }
@@ -6326,6 +7125,33 @@ export module org {
                                 this._space.printDebug(this._model.metaModel());
                             }
 
+                            public index(universe: number, time: number, indexName: string, callback: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObjectIndex>): void {
+                                var selfPointer: org.kevoree.modeling.memory.manager.impl.DataManager = this;
+                                selfPointer._scheduler.dispatch(selfPointer._resolver.lookup(universe, time, org.kevoree.modeling.KConfig.END_OF_TIME,  (kObject : org.kevoree.modeling.KObject) => {
+                                    var globalIndex: org.kevoree.modeling.KObjectIndex = <org.kevoree.modeling.KObjectIndex>kObject;
+                                    if (globalIndex == null) {
+                                        globalIndex = new org.kevoree.modeling.meta.impl.GenericObjectIndex(universe, time, org.kevoree.modeling.KConfig.END_OF_TIME, selfPointer, universe, time);
+                                        this.initKObject(globalIndex);
+                                    }
+                                    var indexUUID: number = globalIndex.getIndex(indexName);
+                                    if (indexUUID == org.kevoree.modeling.KConfig.NULL_LONG) {
+                                        var nextKey: number = this.nextObjectKey();
+                                        var namedIndex: org.kevoree.modeling.KObjectIndex = new org.kevoree.modeling.meta.impl.GenericObjectIndex(universe, time, nextKey, selfPointer, universe, time);
+                                        this.initKObject(namedIndex);
+                                        globalIndex.setIndex(indexName, nextKey);
+                                        if (org.kevoree.modeling.util.Checker.isDefined(callback)) {
+                                            callback(namedIndex);
+                                        }
+                                    } else {
+                                        selfPointer._scheduler.dispatch(selfPointer._resolver.lookup(universe, time, indexUUID,  (namedIndex : org.kevoree.modeling.KObject) => {
+                                            if (org.kevoree.modeling.util.Checker.isDefined(callback)) {
+                                                callback(<org.kevoree.modeling.KObjectIndex>namedIndex);
+                                            }
+                                        }));
+                                    }
+                                }));
+                            }
+
                         }
 
                         export class HeapListener implements org.kevoree.modeling.KListener {
@@ -6360,7 +7186,7 @@ export module org {
                                 this._listenerManager.manageRegistration(this._id, null);
                             }
 
-                            public then(p_cb: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObject>): void {
+                            public then(p_cb: org.kevoree.modeling.KCallback<any>): void {
                                 this.cb = p_cb;
                             }
 
@@ -6589,13 +7415,7 @@ export module org {
 
                         indexObject(obj: org.kevoree.modeling.KObject): void;
 
-                        typeFromKey(universe: number, time: number, uuid: number): number;
-
                         resolveTimes(currentUniverse: number, currentUuid: number, startTime: number, endTime: number, callback: org.kevoree.modeling.KCallback<Float64Array>): void;
-
-                        getRoot(universe: number, time: number, callback: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObject>): void;
-
-                        setRoot(newRoot: org.kevoree.modeling.KObject, callback: org.kevoree.modeling.KCallback<Error>): void;
 
                         getRelatedKeysResultSize(): number;
 
@@ -6648,8 +7468,14 @@ export module org {
                                                                         selfPointer._spaceManager.unmarkMemoryElement(theGlobalUniverseOrderElement);
                                                                         callback(null);
                                                                     } else {
-                                                                        var resolvedMetaClass: org.kevoree.modeling.meta.KMetaClass = selfPointer._manager.model().metaModel().metaClass((<org.kevoree.modeling.memory.chunk.KObjectChunk>theObjectChunk).metaClassIndex());
-                                                                        var newProxy: org.kevoree.modeling.KObject = (<org.kevoree.modeling.abs.AbstractKModel<any>>selfPointer._manager.model()).createProxy(universe, time, uuid, resolvedMetaClass, closestUniverse, closestTime);
+                                                                        var metaClassIndex: number = (<org.kevoree.modeling.memory.chunk.KObjectChunk>theObjectChunk).metaClassIndex();
+                                                                        var newProxy: org.kevoree.modeling.KObject;
+                                                                        if (metaClassIndex == org.kevoree.modeling.meta.impl.MetaClassIndex.INSTANCE.index()) {
+                                                                            newProxy = new org.kevoree.modeling.meta.impl.GenericObjectIndex(universe, time, uuid, selfPointer._manager, closestUniverse, closestTime);
+                                                                        } else {
+                                                                            var resolvedMetaClass: org.kevoree.modeling.meta.KMetaClass = selfPointer._manager.model().metaModel().metaClass((<org.kevoree.modeling.memory.chunk.KObjectChunk>theObjectChunk).metaClassIndex());
+                                                                            newProxy = (<org.kevoree.modeling.abs.AbstractKModel<any>>selfPointer._manager.model()).createProxy(universe, time, uuid, resolvedMetaClass, closestUniverse, closestTime);
+                                                                        }
                                                                         selfPointer._spaceManager.register(newProxy);
                                                                         callback(newProxy);
                                                                     }
@@ -6658,6 +7484,8 @@ export module org {
                                                         });
                                                     }
                                                 });
+                                            } else {
+                                                callback(null);
                                             }
                                         });
                                     } catch ($ex$) {
@@ -7132,7 +7960,11 @@ export module org {
 
                             public indexObject(obj: org.kevoree.modeling.KObject): void {
                                 var metaClassIndex: number = obj.metaClass().index();
-                                var cacheEntry: org.kevoree.modeling.memory.chunk.KObjectChunk = <org.kevoree.modeling.memory.chunk.KObjectChunk>this._spaceManager.createAndMark(obj.universe(), obj.now(), obj.uuid(), org.kevoree.modeling.memory.space.KChunkTypes.OBJECT_CHUNK);
+                                var chunkType: number = org.kevoree.modeling.memory.space.KChunkTypes.OBJECT_CHUNK;
+                                if (metaClassIndex == org.kevoree.modeling.meta.impl.MetaClassIndex.INSTANCE.index()) {
+                                    chunkType = org.kevoree.modeling.memory.space.KChunkTypes.OBJECT_CHUNK_INDEX;
+                                }
+                                var cacheEntry: org.kevoree.modeling.memory.chunk.KObjectChunk = <org.kevoree.modeling.memory.chunk.KObjectChunk>this._spaceManager.createAndMark(obj.universe(), obj.now(), obj.uuid(), chunkType);
                                 cacheEntry.init(null, this._manager.model().metaModel(), metaClassIndex);
                                 cacheEntry.setFlags(org.kevoree.modeling.memory.KChunkFlags.DIRTY_BIT, 0);
                                 cacheEntry.space().declareDirty(cacheEntry);
@@ -7143,31 +7975,6 @@ export module org {
                                 universeTree.init(null, this._manager.model().metaModel(), metaClassIndex);
                                 universeTree.put(obj.universe(), obj.now());
                                 this._spaceManager.register(obj);
-                            }
-
-                            public typeFromKey(universe: number, time: number, uuid: number): number {
-                                var isUniverseNotNull: boolean = universe != org.kevoree.modeling.KConfig.NULL_LONG;
-                                var result: number;
-                                if (org.kevoree.modeling.KConfig.END_OF_TIME == uuid) {
-                                    if (isUniverseNotNull) {
-                                        result = org.kevoree.modeling.memory.space.KChunkTypes.LONG_LONG_TREE;
-                                    } else {
-                                        result = org.kevoree.modeling.memory.space.KChunkTypes.LONG_LONG_MAP;
-                                    }
-                                } else {
-                                    var isTimeNotNull: boolean = time != org.kevoree.modeling.KConfig.NULL_LONG;
-                                    var isObjNotNull: boolean = uuid != org.kevoree.modeling.KConfig.NULL_LONG;
-                                    if (isUniverseNotNull && isTimeNotNull && isObjNotNull) {
-                                        result = org.kevoree.modeling.memory.space.KChunkTypes.OBJECT_CHUNK;
-                                    } else {
-                                        if (isUniverseNotNull && !isTimeNotNull && isObjNotNull) {
-                                            result = org.kevoree.modeling.memory.space.KChunkTypes.LONG_TREE;
-                                        } else {
-                                            result = org.kevoree.modeling.memory.space.KChunkTypes.LONG_LONG_MAP;
-                                        }
-                                    }
-                                }
-                                return result;
                             }
 
                             public getOrLoadAndMark(universe: number, time: number, uuid: number, callback: org.kevoree.modeling.KCallback<org.kevoree.modeling.memory.KChunk>): void {
@@ -7230,77 +8037,6 @@ export module org {
                                         callback(result);
                                     });
                                 }
-                            }
-
-                            public getRoot(universe: number, time: number, callback: org.kevoree.modeling.KCallback<org.kevoree.modeling.KObject>): void {
-                                var rootFixedKey: number = org.kevoree.modeling.KConfig.END_OF_TIME;
-                                this.getOrLoadAndMark(org.kevoree.modeling.KConfig.NULL_LONG, org.kevoree.modeling.KConfig.NULL_LONG, org.kevoree.modeling.KConfig.NULL_LONG,  (theGlobalUniverseOrderElement : org.kevoree.modeling.memory.KChunk) => {
-                                    if (theGlobalUniverseOrderElement == null) {
-                                        callback(null);
-                                        return;
-                                    }
-                                    this.getOrLoadAndMark(org.kevoree.modeling.KConfig.NULL_LONG, org.kevoree.modeling.KConfig.NULL_LONG, rootFixedKey,  (rootGlobalUniverseOrderElement : org.kevoree.modeling.memory.KChunk) => {
-                                        if (rootGlobalUniverseOrderElement == null) {
-                                            this._spaceManager.unmarkMemoryElement(theGlobalUniverseOrderElement);
-                                            callback(null);
-                                            return;
-                                        }
-                                        var closestUniverse: number = org.kevoree.modeling.memory.resolver.impl.DistortedTimeResolver.resolve_universe(<org.kevoree.modeling.memory.chunk.KLongLongMap>theGlobalUniverseOrderElement, <org.kevoree.modeling.memory.chunk.KLongLongMap>rootGlobalUniverseOrderElement, time, universe);
-                                        this.getOrLoadAndMark(closestUniverse, org.kevoree.modeling.KConfig.NULL_LONG, rootFixedKey,  (theRootTimeTree : org.kevoree.modeling.memory.KChunk) => {
-                                            var resolvedCurrentRootUUID: number = (<org.kevoree.modeling.memory.chunk.KLongLongTree>theRootTimeTree).previousOrEqualValue(time);
-                                            this._spaceManager.unmarkMemoryElement(theRootTimeTree);
-                                            this._spaceManager.unmarkMemoryElement(rootGlobalUniverseOrderElement);
-                                            this._spaceManager.unmarkMemoryElement(theGlobalUniverseOrderElement);
-                                            if (resolvedCurrentRootUUID == org.kevoree.modeling.KConfig.NULL_LONG) {
-                                                callback(null);
-                                            } else {
-                                                this._manager.lookup(universe, time, resolvedCurrentRootUUID, callback);
-                                            }
-                                        });
-                                    });
-                                });
-                            }
-
-                            public setRoot(newRoot: org.kevoree.modeling.KObject, callback: org.kevoree.modeling.KCallback<Error>): void {
-                                var rootFixedKey: number = org.kevoree.modeling.KConfig.END_OF_TIME;
-                                this.getOrLoadAndMark(org.kevoree.modeling.KConfig.NULL_LONG, org.kevoree.modeling.KConfig.NULL_LONG, org.kevoree.modeling.KConfig.NULL_LONG,  (theGlobalUniverseOrderElement : org.kevoree.modeling.memory.KChunk) => {
-                                    if (theGlobalUniverseOrderElement == null) {
-                                        callback(null);
-                                        return;
-                                    }
-                                    this.getOrLoadAndMark(org.kevoree.modeling.KConfig.NULL_LONG, org.kevoree.modeling.KConfig.NULL_LONG, rootFixedKey,  (rootGlobalUniverseOrderElement : org.kevoree.modeling.memory.KChunk) => {
-                                        var rootGlobalUniverseOrder: org.kevoree.modeling.memory.chunk.KLongLongMap = <org.kevoree.modeling.memory.chunk.KLongLongMap>rootGlobalUniverseOrderElement;
-                                        if (rootGlobalUniverseOrderElement == null) {
-                                            rootGlobalUniverseOrder = <org.kevoree.modeling.memory.chunk.KLongLongMap>this._spaceManager.createAndMark(org.kevoree.modeling.KConfig.NULL_LONG, org.kevoree.modeling.KConfig.NULL_LONG, org.kevoree.modeling.KConfig.END_OF_TIME, org.kevoree.modeling.memory.space.KChunkTypes.LONG_LONG_MAP);
-                                        }
-                                        var closestUniverse: number = org.kevoree.modeling.memory.resolver.impl.DistortedTimeResolver.resolve_universe(<org.kevoree.modeling.memory.chunk.KLongLongMap>theGlobalUniverseOrderElement, <org.kevoree.modeling.memory.chunk.KLongLongMap>rootGlobalUniverseOrderElement, newRoot.now(), newRoot.universe());
-                                        rootGlobalUniverseOrder.put(newRoot.universe(), newRoot.now());
-                                        if (closestUniverse != newRoot.universe()) {
-                                            var newTimeTree: org.kevoree.modeling.memory.chunk.KLongLongTree = <org.kevoree.modeling.memory.chunk.KLongLongTree>this._spaceManager.createAndMark(newRoot.universe(), org.kevoree.modeling.KConfig.NULL_LONG, org.kevoree.modeling.KConfig.END_OF_TIME, org.kevoree.modeling.memory.space.KChunkTypes.LONG_LONG_TREE);
-                                            newTimeTree.insert(newRoot.now(), newRoot.uuid());
-                                            this._spaceManager.unmarkMemoryElement(newTimeTree);
-                                            this._spaceManager.unmarkMemoryElement(rootGlobalUniverseOrderElement);
-                                            this._spaceManager.unmarkMemoryElement(theGlobalUniverseOrderElement);
-                                            if (callback != null) {
-                                                callback(null);
-                                            }
-                                        } else {
-                                            this.getOrLoadAndMark(closestUniverse, org.kevoree.modeling.KConfig.NULL_LONG, org.kevoree.modeling.KConfig.END_OF_TIME,  (resolvedRootTimeTree : org.kevoree.modeling.memory.KChunk) => {
-                                                var initializedTree: org.kevoree.modeling.memory.chunk.KLongLongTree = <org.kevoree.modeling.memory.chunk.KLongLongTree>resolvedRootTimeTree;
-                                                if (initializedTree == null) {
-                                                    initializedTree = <org.kevoree.modeling.memory.chunk.KLongLongTree>this._spaceManager.createAndMark(closestUniverse, org.kevoree.modeling.KConfig.NULL_LONG, org.kevoree.modeling.KConfig.END_OF_TIME, org.kevoree.modeling.memory.space.KChunkTypes.LONG_LONG_TREE);
-                                                }
-                                                initializedTree.insert(newRoot.now(), newRoot.uuid());
-                                                this._spaceManager.unmarkMemoryElement(resolvedRootTimeTree);
-                                                this._spaceManager.unmarkMemoryElement(rootGlobalUniverseOrderElement);
-                                                this._spaceManager.unmarkMemoryElement(theGlobalUniverseOrderElement);
-                                                if (callback != null) {
-                                                    callback(null);
-                                                }
-                                            });
-                                        }
-                                    });
-                                });
                             }
 
                             public resolveTimes(currentUniverse: number, currentUuid: number, startTime: number, endTime: number, callback: org.kevoree.modeling.KCallback<Float64Array>): void {
@@ -7408,7 +8144,26 @@ export module org {
                                         var loopUniverse: number = keys[i * 3];
                                         var loopTime: number = keys[i * 3 + 1];
                                         var loopUuid: number = keys[i * 3 + 2];
-                                        results[i] = this._spaceManager.createAndMark(loopUniverse, loopTime, loopUuid, this.typeFromKey(loopUniverse, loopTime, loopUuid));
+                                        var elemType: number;
+                                        if (loopUniverse == org.kevoree.modeling.KConfig.NULL_LONG) {
+                                            elemType = org.kevoree.modeling.memory.space.KChunkTypes.LONG_LONG_MAP;
+                                        } else {
+                                            if (loopTime == org.kevoree.modeling.KConfig.NULL_LONG) {
+                                                elemType = org.kevoree.modeling.memory.space.KChunkTypes.LONG_TREE;
+                                            } else {
+                                                if (payloads[i] == null || payloads[i].length < 1) {
+                                                    elemType = org.kevoree.modeling.memory.space.KChunkTypes.OBJECT_CHUNK;
+                                                } else {
+                                                    var flag: string = payloads[i].charAt(0);
+                                                    if (flag == '#') {
+                                                        elemType = org.kevoree.modeling.memory.space.KChunkTypes.OBJECT_CHUNK_INDEX;
+                                                    } else {
+                                                        elemType = org.kevoree.modeling.memory.space.KChunkTypes.OBJECT_CHUNK;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        results[i] = this._spaceManager.createAndMark(loopUniverse, loopTime, loopUuid, elemType);
                                         var classIndex: number = -1;
                                         if (loopUniverse != org.kevoree.modeling.KConfig.NULL_LONG && loopTime != org.kevoree.modeling.KConfig.NULL_LONG && loopUuid != org.kevoree.modeling.KConfig.NULL_LONG) {
                                             var alreadyLoadedOrder: org.kevoree.modeling.memory.chunk.KLongLongMap = <org.kevoree.modeling.memory.chunk.KLongLongMap>this._spaceManager.getAndMark(org.kevoree.modeling.KConfig.NULL_LONG, org.kevoree.modeling.KConfig.NULL_LONG, loopUuid);
@@ -7510,8 +8265,8 @@ export module org {
                     export class KChunkTypes {
 
                         public static OBJECT_CHUNK: number = 0;
-                        public static LONG_TREE: number = 1;
-                        public static LONG_LONG_TREE: number = 2;
+                        public static OBJECT_CHUNK_INDEX: number = 1;
+                        public static LONG_TREE: number = 2;
                         public static LONG_LONG_MAP: number = 3;
                     }
 
@@ -7688,15 +8443,15 @@ export module org {
 
                             private internal_createElement(p_universe: number, p_time: number, p_obj: number, type: number): org.kevoree.modeling.memory.KChunk {
                                 switch (type) {
-                                    case org.kevoree.modeling.memory.space.KChunkTypes.OBJECT_CHUNK: 
+                                    case org.kevoree.modeling.memory.space.KChunkTypes.OBJECT_CHUNK:
                                     return new org.kevoree.modeling.memory.chunk.impl.HeapObjectChunk(p_universe, p_time, p_obj, this);
-                                    case org.kevoree.modeling.memory.space.KChunkTypes.LONG_LONG_MAP: 
+                                    case org.kevoree.modeling.memory.space.KChunkTypes.LONG_LONG_MAP:
                                     return new org.kevoree.modeling.memory.chunk.impl.ArrayLongLongMap(p_universe, p_time, p_obj, this);
-                                    case org.kevoree.modeling.memory.space.KChunkTypes.LONG_TREE: 
+                                    case org.kevoree.modeling.memory.space.KChunkTypes.LONG_TREE:
                                     return new org.kevoree.modeling.memory.chunk.impl.ArrayLongTree(p_universe, p_time, p_obj, this);
-                                    case org.kevoree.modeling.memory.space.KChunkTypes.LONG_LONG_TREE: 
-                                    return new org.kevoree.modeling.memory.chunk.impl.ArrayLongLongTree(p_universe, p_time, p_obj, this);
-                                    default: 
+                                    case org.kevoree.modeling.memory.space.KChunkTypes.OBJECT_CHUNK_INDEX:
+                                    return new org.kevoree.modeling.memory.chunk.impl.HeapObjectIndexChunk(p_universe, p_time, p_obj, this);
+                                    default:
                                     return null;
                                 }
                             }
@@ -7940,7 +8695,7 @@ export module org {
 
                         }
 
-                        export module HeapChunkSpace { 
+                        export module HeapChunkSpace {
                             export class InternalState {
 
                                 public sparse: boolean = false;
@@ -8212,22 +8967,22 @@ export module org {
                                     buffer.append(Message.KEYS_NAME[i]);
                                     buffer.append(org.kevoree.modeling.KConfig.VAL_SEP);
                                     switch (i) {
-                                        case 0: 
+                                        case 0:
                                         org.kevoree.modeling.util.Base64.encodeIntToBuffer(<number>this.internal[i], buffer);
                                         break;
-                                        case 1: 
+                                        case 1:
                                         org.kevoree.modeling.util.Base64.encodeIntToBuffer(<number>this.internal[i], buffer);
                                         break;
-                                        case 2: 
+                                        case 2:
                                         org.kevoree.modeling.util.Base64.encodeStringToBuffer(<string>this.internal[i], buffer);
                                         break;
-                                        case 3: 
+                                        case 3:
                                         org.kevoree.modeling.util.Base64.encodeStringToBuffer(<string>this.internal[i], buffer);
                                         break;
-                                        case 4: 
+                                        case 4:
                                         org.kevoree.modeling.util.Base64.encodeStringToBuffer(<string>this.internal[i], buffer);
                                         break;
-                                        case 5: 
+                                        case 5:
                                         var lkeys: Float64Array = <Float64Array>this.internal[i];
                                         org.kevoree.modeling.util.Base64.encodeIntToBuffer(lkeys.length, buffer);
                                         for (var j: number = 0; j < lkeys.length; j++) {
@@ -8235,7 +8990,7 @@ export module org {
                                             org.kevoree.modeling.util.Base64.encodeLongToBuffer(lkeys[j], buffer);
                                         }
                                         break;
-                                        case 6: 
+                                        case 6:
                                         var lvalues: string[] = <string[]>this.internal[i];
                                         org.kevoree.modeling.util.Base64.encodeIntToBuffer(lvalues.length, buffer);
                                         for (var j: number = 0; j < lvalues.length; j++) {
@@ -8245,7 +9000,7 @@ export module org {
                                             }
                                         }
                                         break;
-                                        case 7: 
+                                        case 7:
                                         var lvalues2: string[] = <string[]>this.internal[i];
                                         org.kevoree.modeling.util.Base64.encodeIntToBuffer(lvalues2.length, buffer);
                                         for (var j: number = 0; j < lvalues2.length; j++) {
@@ -8386,6 +9141,8 @@ export module org {
 
                     setPrecision(precision: number): void;
 
+                    setKey(key: boolean): void;
+
                 }
 
                 export interface KMetaClass extends org.kevoree.modeling.meta.KMeta {
@@ -8410,7 +9167,7 @@ export module org {
 
                     addDependency(dependencyName: string, referredMetaClassIndex: number): org.kevoree.modeling.meta.KMetaDependency;
 
-                    addInput(name: string, extractor: string): org.kevoree.modeling.meta.KMetaInferInput;
+                    addInput(dependencyName: string, extractor: string): org.kevoree.modeling.meta.KMetaInferInput;
 
                     addOutput(name: string, metaClass: org.kevoree.modeling.KType): org.kevoree.modeling.meta.KMetaInferOutput;
 
@@ -8604,10 +9361,14 @@ export module org {
                         }
 
                         public internalCreateObject(universe: number, time: number, uuid: number, clazz: org.kevoree.modeling.meta.KMetaClass, previousUniverse: number, previousTime: number): org.kevoree.modeling.KObject {
-                            if (clazz.inferAlg() != null) {
-                                return new org.kevoree.modeling.meta.impl.GenericObjectInfer(universe, time, uuid, clazz, this._manager, previousUniverse, previousTime);
+                            if (clazz.index() == org.kevoree.modeling.meta.impl.MetaClassIndex.INSTANCE.index()) {
+                                return new org.kevoree.modeling.meta.impl.GenericObjectIndex(universe, time, uuid, this._manager, previousUniverse, previousTime);
                             } else {
-                                return new org.kevoree.modeling.meta.impl.GenericObject(universe, time, uuid, clazz, this._manager, previousUniverse, previousTime);
+                                if (clazz.inferAlg() != null) {
+                                    return new org.kevoree.modeling.meta.impl.GenericObjectInfer(universe, time, uuid, clazz, this._manager, previousUniverse, previousTime);
+                                } else {
+                                    return new org.kevoree.modeling.meta.impl.GenericObject(universe, time, uuid, clazz, this._manager, previousUniverse, previousTime);
+                                }
                             }
                         }
 
@@ -8617,6 +9378,14 @@ export module org {
 
                         constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, currentUniverse: number, currentTime: number) {
                             super(p_universe, p_time, p_uuid, p_metaClass, p_manager, currentUniverse, currentTime);
+                        }
+
+                    }
+
+                    export class GenericObjectIndex extends org.kevoree.modeling.abs.AbstractKObjectIndex {
+
+                        constructor(p_universe: number, p_time: number, p_uuid: number, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, currentUniverse: number, currentTime: number) {
+                            super(p_universe, p_time, p_uuid, p_manager, currentUniverse, currentTime);
                         }
 
                     }
@@ -8691,6 +9460,10 @@ export module org {
 
                         public setPrecision(p_precision: number): void {
                             this._precision = p_precision;
+                        }
+
+                        public setKey(p_key: boolean): void {
+                            this._key = p_key;
                         }
 
                         constructor(p_name: string, p_index: number, p_precision: number, p_key: boolean, p_attributeTypeId: number, p_extrapolation: org.kevoree.modeling.extrapolation.Extrapolation) {
@@ -8869,7 +9642,7 @@ export module org {
 
                         public addInput(p_name: string, p_extractor: string): org.kevoree.modeling.meta.KMetaInferInput {
                             var newInput: org.kevoree.modeling.meta.KMetaInferInput = new org.kevoree.modeling.meta.impl.MetaInferInput(p_name, this._meta.length, p_extractor);
-                            this.internal_add_meta(newInput);
+                            this.internal_add_meta_noindex(newInput);
                             return newInput;
                         }
 
@@ -8950,6 +9723,11 @@ export module org {
                              this._indexes.put(p_new_meta.metaName(), p_new_meta.index());
                         }
 
+                        private internal_add_meta_noindex(p_new_meta: org.kevoree.modeling.meta.KMeta): void {
+                             this.clearCached();
+                             this._meta[p_new_meta.index()] = p_new_meta;
+                        }
+
                         public addParent(parentMetaClass: org.kevoree.modeling.meta.KMeta): void {
                             var newParents: Int32Array = new Int32Array(this._parents.length + 1);
                             java.lang.System.arraycopy(this._parents, 0, newParents, 0, this._parents.length);
@@ -8957,6 +9735,11 @@ export module org {
                             this._parents = newParents;
                         }
 
+                    }
+
+                    export class MetaClassIndex {
+
+                        public static INSTANCE: org.kevoree.modeling.meta.KMetaClass = new org.kevoree.modeling.meta.impl.MetaClass("index", -3, null, new Int32Array([]));
                     }
 
                     export class MetaDependencies implements org.kevoree.modeling.meta.KMetaDependencies {
@@ -9268,13 +10051,20 @@ export module org {
                             }
                             var resolved: number = this._metaClasses_indexes.get(name);
                             if (resolved == null) {
-                                return null;
+                                if (org.kevoree.modeling.util.PrimitiveHelper.equals(name, org.kevoree.modeling.meta.impl.MetaClassIndex.INSTANCE.metaName())) {
+                                    return org.kevoree.modeling.meta.impl.MetaClassIndex.INSTANCE;
+                                } else {
+                                    return null;
+                                }
                             } else {
                                 return this._metaClasses[resolved];
                             }
                         }
 
                         public metaClass(index: number): org.kevoree.modeling.meta.KMetaClass {
+                            if (index == org.kevoree.modeling.meta.impl.MetaClassIndex.INSTANCE.index()) {
+                                return org.kevoree.modeling.meta.impl.MetaClassIndex.INSTANCE;
+                            }
                             if (index >= 0 && index < this._metaClasses.length) {
                                 return this._metaClasses[index];
                             }
@@ -9522,21 +10312,21 @@ export module org {
                             return builder.toString();
                         } else {
                             switch (type) {
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID: 
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID:
                                 if (<boolean>elem) {
                                     return "1";
                                 } else {
                                     return "0";
                                 }
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID: 
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID:
                                 return org.kevoree.modeling.format.json.JsonString.encode(elem.toString());
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
                                 return org.kevoree.modeling.util.Base64.encodeDouble(<number>elem);
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID: 
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID:
                                 return org.kevoree.modeling.util.Base64.encodeInt(<number>elem);
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID: 
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID:
                                 return org.kevoree.modeling.util.Base64.encodeLong(<number>elem);
-                                default: 
+                                default:
                                 return org.kevoree.modeling.util.Base64.encodeInt((<org.kevoree.modeling.meta.KLiteral>elem).index());
                             }
                         }
@@ -9575,22 +10365,22 @@ export module org {
                             }
                             var result: any[];
                             switch (type) {
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID: 
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID:
                                 result = new Array();
                                 break;
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID: 
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID:
                                 result = new Array();
                                 break;
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
                                 result = new Array();
                                 break;
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID: 
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID:
                                 result = new Array();
                                 break;
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID: 
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID:
                                 result = new Array();
                                 break;
-                                default: 
+                                default:
                                 result = new Array();
                             }
                             for (var j: number = 0; j < params.size(); j++) {
@@ -9599,17 +10389,17 @@ export module org {
                             return result;
                         } else {
                             switch (type) {
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID: 
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.BOOL_ID:
                                 return org.kevoree.modeling.util.PrimitiveHelper.equals(payload, "1");
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID: 
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.STRING_ID:
                                 return org.kevoree.modeling.format.json.JsonString.unescape(payload);
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID: 
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.DOUBLE_ID:
                                 return org.kevoree.modeling.util.Base64.decodeToDouble(payload);
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID: 
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.INT_ID:
                                 return org.kevoree.modeling.util.Base64.decodeToInt(payload);
-                                case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID: 
+                                case org.kevoree.modeling.meta.KPrimitiveTypes.LONG_ID:
                                 return org.kevoree.modeling.util.Base64.decodeToLong(payload);
-                                default: 
+                                default:
                                 var literalIndex: number = org.kevoree.modeling.util.Base64.decodeToInt(payload);
                                 return metaModel.metaTypes()[type].literal(literalIndex);
                             }
@@ -9873,9 +10663,9 @@ export module org {
 
                     traverseUniverse(universeOffset: number, continueCondition: org.kevoree.modeling.traversal.KTraversalFilter): org.kevoree.modeling.traversal.KTraversal;
 
-                    traverseIndex(indexName: string): org.kevoree.modeling.traversal.KTraversal;
+                    traverseIndex(indexName: string, attributes: string): org.kevoree.modeling.traversal.KTraversal;
 
-                    exec(origins: org.kevoree.modeling.KObject[], resolver: org.kevoree.modeling.traversal.KTraversalIndexResolver, callback: org.kevoree.modeling.KCallback<any[]>): void;
+                    exec(origins: org.kevoree.modeling.KObject[], view: org.kevoree.modeling.KView, callback: org.kevoree.modeling.KCallback<any[]>): void;
 
                 }
 
@@ -9893,21 +10683,15 @@ export module org {
 
                     setInputObjects(newSet: org.kevoree.modeling.KObject[]): void;
 
-                    indexResolver(): org.kevoree.modeling.traversal.KTraversalIndexResolver;
-
                     finalCallback(): org.kevoree.modeling.KCallback<any[]>;
+
+                    baseView(): org.kevoree.modeling.KView;
 
                 }
 
                 export interface KTraversalFilter {
 
                     (obj: org.kevoree.modeling.KObject): boolean;
-
-                }
-
-                export interface KTraversalIndexResolver {
-
-                    (indexName: string): org.kevoree.modeling.KObject[];
 
                 }
 
@@ -9965,8 +10749,8 @@ export module org {
                             return this.internal_chain_action(new org.kevoree.modeling.traversal.impl.actions.DeepCollectAction(metaReference, continueCondition));
                         }
 
-                        public traverseIndex(p_indexName: string): org.kevoree.modeling.traversal.KTraversal {
-                            return this.internal_chain_action(new org.kevoree.modeling.traversal.impl.actions.TraverseIndexAction(p_indexName));
+                        public traverseIndex(p_indexName: string, p_attributes: string): org.kevoree.modeling.traversal.KTraversal {
+                            return this.internal_chain_action(new org.kevoree.modeling.traversal.impl.actions.TraverseIndexAction(p_indexName, p_attributes));
                         }
 
                         public traverseTime(timeOffset: number, steps: number, continueCondition: org.kevoree.modeling.traversal.KTraversalFilter): org.kevoree.modeling.traversal.KTraversal {
@@ -10001,9 +10785,9 @@ export module org {
                             }
                         }
 
-                        public exec(origins: org.kevoree.modeling.KObject[], resolver: org.kevoree.modeling.traversal.KTraversalIndexResolver, callback: org.kevoree.modeling.KCallback<any[]>): void {
+                        public exec(origins: org.kevoree.modeling.KObject[], review: org.kevoree.modeling.KView, callback: org.kevoree.modeling.KCallback<any[]>): void {
                             if (this._initObjs == null) {
-                                this._initAction.execute(new org.kevoree.modeling.traversal.impl.TraversalContext(origins, resolver, callback));
+                                this._initAction.execute(new org.kevoree.modeling.traversal.impl.TraversalContext(origins, review, callback));
                             }
                         }
 
@@ -10012,11 +10796,11 @@ export module org {
                     export class TraversalContext implements org.kevoree.modeling.traversal.KTraversalActionContext {
 
                         private _inputs: org.kevoree.modeling.KObject[];
-                        private _resolver: org.kevoree.modeling.traversal.KTraversalIndexResolver;
+                        private _view: org.kevoree.modeling.KView;
                         private _finalCallback: org.kevoree.modeling.KCallback<any[]>;
-                        constructor(_inputs: org.kevoree.modeling.KObject[], _resolver: org.kevoree.modeling.traversal.KTraversalIndexResolver, p_finalCallback: org.kevoree.modeling.KCallback<any[]>) {
-                            this._inputs = _inputs;
-                            this._resolver = _resolver;
+                        constructor(p_inputs: org.kevoree.modeling.KObject[], p_view: org.kevoree.modeling.KView, p_finalCallback: org.kevoree.modeling.KCallback<any[]>) {
+                            this._inputs = p_inputs;
+                            this._view = p_view;
                             this._finalCallback = p_finalCallback;
                         }
 
@@ -10028,8 +10812,8 @@ export module org {
                             this._inputs = p_newSet;
                         }
 
-                        public indexResolver(): org.kevoree.modeling.traversal.KTraversalIndexResolver {
-                            return this._resolver;
+                        public baseView(): org.kevoree.modeling.KView {
+                            return this._view;
                         }
 
                         public finalCallback(): org.kevoree.modeling.KCallback<any[]> {
@@ -10468,7 +11252,7 @@ export module org {
 
                         }
 
-                        export module FilterAttributeQueryAction { 
+                        export module FilterAttributeQueryAction {
                             export class QueryParam {
 
                                 private _name: string;
@@ -10791,8 +11575,10 @@ export module org {
 
                             private _next: org.kevoree.modeling.traversal.KTraversalAction;
                             private _indexName: string;
-                            constructor(p_indexName: string) {
+                            private _attributes: string;
+                            constructor(p_indexName: string, p_attributes: string) {
                                 this._indexName = p_indexName;
+                                this._attributes = p_attributes;
                             }
 
                             public chain(p_next: org.kevoree.modeling.traversal.KTraversalAction): void {
@@ -10800,11 +11586,37 @@ export module org {
                             }
 
                             public execute(context: org.kevoree.modeling.traversal.KTraversalActionContext): void {
-                                if (org.kevoree.modeling.util.PrimitiveHelper.equals(this._indexName, "root")) {
-                                    if (context.inputObjects().length > 0) {
-                                        context.inputObjects()[0].manager().getRoot(context.inputObjects()[0].universe(), context.inputObjects()[0].now(),  (root : org.kevoree.modeling.KObject) => {
-                                            var selectedElems: org.kevoree.modeling.KObject[] = new Array();
-                                            selectedElems[0] = root;
+                                var originView: org.kevoree.modeling.KView = context.baseView();
+                                if (originView != null) {
+                                    if (this._attributes == null && this._indexName != null) {
+                                        originView.model().indexByName(originView.universe(), originView.now(), this._indexName,  (index : org.kevoree.modeling.KObjectIndex) => {
+                                            if (index == null) {
+                                                if (this._next == null) {
+                                                    context.finalCallback()(new Array());
+                                                } else {
+                                                    context.setInputObjects(new Array());
+                                                    this._next.execute(context);
+                                                }
+                                            } else {
+                                                originView.model().lookupAllObjects(originView.universe(), originView.now(), index.values(),  (selectedElems : org.kevoree.modeling.KObject[]) => {
+                                                    if (this._next == null) {
+                                                        context.finalCallback()(selectedElems);
+                                                    } else {
+                                                        context.setInputObjects(selectedElems);
+                                                        this._next.execute(context);
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        originView.model().findByName(this._indexName, originView.universe(), originView.now(), this._attributes,  (indexedObject : org.kevoree.modeling.KObject) => {
+                                            var selectedElems: org.kevoree.modeling.KObject[];
+                                            if (indexedObject == null) {
+                                                selectedElems = new Array();
+                                            } else {
+                                                selectedElems = new Array();
+                                                selectedElems[0] = indexedObject;
+                                            }
                                             if (this._next == null) {
                                                 context.finalCallback()(selectedElems);
                                             } else {
@@ -10814,27 +11626,7 @@ export module org {
                                         });
                                     }
                                 } else {
-                                    var resolver: org.kevoree.modeling.traversal.KTraversalIndexResolver = context.indexResolver();
-                                    if (resolver != null) {
-                                        var resolved: org.kevoree.modeling.KObject[] = resolver(this._indexName);
-                                        if (resolved != null) {
-                                            if (this._next == null) {
-                                                context.finalCallback()(resolved);
-                                            } else {
-                                                context.setInputObjects(resolved);
-                                                this._next.execute(context);
-                                            }
-                                        } else {
-                                            context.setInputObjects(new Array());
-                                            this._next.execute(context);
-                                        }
-                                    } else {
-                                        if (this._next == null) {
-                                            context.finalCallback()(context.inputObjects());
-                                        } else {
-                                            this._next.execute(context);
-                                        }
-                                    }
+                                    throw new Error("Not implemented yet!");
                                 }
                             }
 
@@ -10970,7 +11762,7 @@ export module org {
                 export module query {
                     export interface KQueryEngine {
 
-                        eval(query: string, origins: org.kevoree.modeling.KObject[], callback: org.kevoree.modeling.KCallback<any[]>): void;
+                        eval(query: string, origins: org.kevoree.modeling.KObject[], view: org.kevoree.modeling.KView, callback: org.kevoree.modeling.KCallback<any[]>): void;
 
                         buildTraversal(query: string): org.kevoree.modeling.traversal.KTraversal;
 
@@ -10983,6 +11775,8 @@ export module org {
                             public static OPEN_BRACKET: string = '[';
                             public static CLOSE_BRACKET: string = ']';
                             public static PIPE_SEP: string = '|';
+                            public static VAL_SEP: string = "=";
+                            public static VALS_SEP: string = ',';
                             public static getINSTANCE(): org.kevoree.modeling.traversal.query.KQueryEngine {
                                 if (QueryEngine.INSTANCE == null) {
                                     QueryEngine.INSTANCE = new org.kevoree.modeling.traversal.query.impl.QueryEngine();
@@ -10990,9 +11784,9 @@ export module org {
                                 return QueryEngine.INSTANCE;
                             }
 
-                            public eval(query: string, origins: org.kevoree.modeling.KObject[], callback: org.kevoree.modeling.KCallback<any[]>): void {
+                            public eval(query: string, origins: org.kevoree.modeling.KObject[], p_view: org.kevoree.modeling.KView, callback: org.kevoree.modeling.KCallback<any[]>): void {
                                 if (callback != null) {
-                                    this.buildTraversal(query).exec(origins, null, callback);
+                                    this.buildTraversal(query).exec(origins, p_view, callback);
                                 }
                             }
 
@@ -11050,7 +11844,7 @@ export module org {
                                                             }
                                                             relationName = query.substring(previousKQueryStart, previousKQueryNameEnd).trim();
                                                             if (org.kevoree.modeling.util.PrimitiveHelper.startsWith(relationName, "@")) {
-                                                                traversal = traversal.traverseIndex(relationName.substring(1));
+                                                                traversal = traversal.traverseIndex(relationName.substring(1), atts);
                                                             } else {
                                                                 if (org.kevoree.modeling.util.PrimitiveHelper.startsWith(relationName, "=")) {
                                                                     traversal.eval(relationName.substring(1), null);
@@ -11321,15 +12115,15 @@ export module org {
                      }
                      return resultTmp;
                      }
-                    
-                    
+
+
                      public static encodeString(s : string) {
                      var result = "";
                      var sLength = s.length;
                      var currentSourceChar;
                      var currentEncodedChar = 0;
                      var freeBitsInCurrentChar = 6;
-                    
+
                      for(var charIdx = 0; charIdx < sLength; charIdx++) {
                        currentSourceChar = s.charCodeAt(charIdx);
                        if(freeBitsInCurrentChar == 6) {
@@ -11346,7 +12140,7 @@ export module org {
                          freeBitsInCurrentChar = 6;
                        }
                      }
-                    
+
                      if(freeBitsInCurrentChar != 6) {
                        result += Base64.encodeArray[currentEncodedChar];
                      }
@@ -11357,7 +12151,7 @@ export module org {
                      var currentSourceChar;
                      var currentEncodedChar = 0;
                      var freeBitsInCurrentChar = 6;
-                    
+
                      for(var charIdx = 0; charIdx < sLength; charIdx++) {
                        currentSourceChar = s.charCodeAt(charIdx);
                        if(freeBitsInCurrentChar == 6) {
@@ -11374,7 +12168,7 @@ export module org {
                          freeBitsInCurrentChar = 6;
                        }
                      }
-                    
+
                      if(freeBitsInCurrentChar != 6) {
                        buffer.append(Base64.encodeArray[currentEncodedChar]);
                      }
@@ -11387,7 +12181,7 @@ export module org {
                      var currentSourceChar;
                      var currentDecodedChar = 0;
                      var freeBitsInCurrentChar = 8;
-                    
+
                      for(var charIdx = offsetBegin; charIdx < offsetEnd; charIdx++) {
                       currentSourceChar = Base64.decodeArray[s.charAt(charIdx)];
                       if(freeBitsInCurrentChar == 8) {
@@ -11474,6 +12268,17 @@ export module org {
 
                     public static DOUBLE_MAX_VALUE(): number {
                          return Number.MAX_VALUE;
+                    }
+
+                    public static stringHash(target: string): number {
+                         var hash = 0;
+                         if (target.length == 0) return hash;
+                         for (var i = 0; i < target.length; i++) {
+                         var charC = target.charCodeAt(i);
+                         hash = ((hash << 5) - hash) + charC;
+                         hash = hash & hash; // Convert to 32bit integer
+                         }
+                         return hash;
                     }
 
                 }
@@ -11880,13 +12685,13 @@ export module org {
                                     for (var ii: number = 0; ii < this._cacheAST.length; ii++) {
                                         var mathToken: org.kevoree.modeling.util.maths.expression.impl.MathToken = this._cacheAST[ii];
                                         switch (mathToken.type()) {
-                                            case 0: 
+                                            case 0:
                                             var v1: number = stack.pop();
                                             var v2: number = stack.pop();
                                             var castedOp: org.kevoree.modeling.util.maths.expression.impl.MathOperation = <org.kevoree.modeling.util.maths.expression.impl.MathOperation>mathToken;
                                             stack.push(castedOp.eval(v2, v1));
                                             break;
-                                            case 1: 
+                                            case 1:
                                             var castedFunction: org.kevoree.modeling.util.maths.expression.impl.MathFunction = <org.kevoree.modeling.util.maths.expression.impl.MathFunction>mathToken;
                                             var p: Float64Array = new Float64Array(castedFunction.getNumParams());
                                             for (var i: number = castedFunction.getNumParams() - 1; i >= 0; i--) {
@@ -11894,11 +12699,11 @@ export module org {
                                             }
                                             stack.push(castedFunction.eval(p));
                                             break;
-                                            case 2: 
+                                            case 2:
                                             var castedDouble: org.kevoree.modeling.util.maths.expression.impl.MathDoubleToken = <org.kevoree.modeling.util.maths.expression.impl.MathDoubleToken>mathToken;
                                             stack.push(castedDouble.content());
                                             break;
-                                            case 3: 
+                                            case 3:
                                             var castedFreeToken: org.kevoree.modeling.util.maths.expression.impl.MathFreeToken = <org.kevoree.modeling.util.maths.expression.impl.MathFreeToken>mathToken;
                                             if (this.varResolver(castedFreeToken.content()) != null) {
                                                 stack.push(this.varResolver(castedFreeToken.content()));
@@ -20770,38 +21575,46 @@ export module org {
             super(p_manager);
             this._metaModel = new org.kevoree.modeling.meta.impl.MetaModel("Kevoree");
             var tempMetaClasses: org.kevoree.modeling.meta.KMetaClass[] = new Array();
-            tempMetaClasses[9] = org.kevoree.meta.MetaMetric.getInstance();
-            tempMetaClasses[14] = org.kevoree.meta.MetaPortType.getInstance();
+            tempMetaClasses[24] = org.kevoree.meta.MetaParam.getInstance();
+            tempMetaClasses[15] = org.kevoree.meta.MetaPortType.getInstance();
             tempMetaClasses[1] = org.kevoree.meta.MetaNode.getInstance();
-            tempMetaClasses[13] = org.kevoree.meta.MetaPort.getInstance();
-            tempMetaClasses[17] = org.kevoree.meta.MetaNodeType.getInstance();
-            tempMetaClasses[18] = org.kevoree.meta.MetaGroupType.getInstance();
+            tempMetaClasses[14] = org.kevoree.meta.MetaPort.getInstance();
+            tempMetaClasses[35] = org.kevoree.meta.MetaMinConstraint.getInstance();
+            tempMetaClasses[18] = org.kevoree.meta.MetaNodeType.getInstance();
+            tempMetaClasses[19] = org.kevoree.meta.MetaGroupType.getInstance();
             tempMetaClasses[12] = org.kevoree.meta.MetaOutputPort.getInstance();
-            tempMetaClasses[25] = org.kevoree.meta.MetaIntDataType.getInstance();
             tempMetaClasses[7] = org.kevoree.meta.MetaInstance.getInstance();
+            tempMetaClasses[34] = org.kevoree.meta.MetaListParamType.getInstance();
             tempMetaClasses[6] = org.kevoree.meta.MetaValue.getInstance();
+            tempMetaClasses[37] = org.kevoree.meta.MetaMultilineConstraint.getInstance();
             tempMetaClasses[4] = org.kevoree.meta.MetaNamespace.getInstance();
-            tempMetaClasses[16] = org.kevoree.meta.MetaDeployUnit.getInstance();
+            tempMetaClasses[26] = org.kevoree.meta.MetaNumberParam.getInstance();
+            tempMetaClasses[17] = org.kevoree.meta.MetaDeployUnit.getInstance();
+            tempMetaClasses[30] = org.kevoree.meta.MetaStringParamType.getInstance();
             tempMetaClasses[2] = org.kevoree.meta.MetaChannel.getInstance();
-            tempMetaClasses[15] = org.kevoree.meta.MetaDictionaryType.getInstance();
+            tempMetaClasses[16] = org.kevoree.meta.MetaDictionaryType.getInstance();
             tempMetaClasses[3] = org.kevoree.meta.MetaGroup.getInstance();
             tempMetaClasses[10] = org.kevoree.meta.MetaComponent.getInstance();
+            tempMetaClasses[25] = org.kevoree.meta.MetaStringParam.getInstance();
+            tempMetaClasses[36] = org.kevoree.meta.MetaMaxConstraint.getInstance();
             tempMetaClasses[0] = org.kevoree.meta.MetaModel.getInstance();
-            tempMetaClasses[26] = org.kevoree.meta.MetaLongDataType.getInstance();
+            tempMetaClasses[9] = org.kevoree.meta.MetaDictionary.getInstance();
+            tempMetaClasses[13] = org.kevoree.meta.MetaFragmentDictionary.getInstance();
+            tempMetaClasses[22] = org.kevoree.meta.MetaParamType.getInstance();
             tempMetaClasses[5] = org.kevoree.meta.MetaElement.getInstance();
-            tempMetaClasses[24] = org.kevoree.meta.MetaDoubleDataType.getInstance();
-            tempMetaClasses[28] = org.kevoree.meta.MetaChoiceDataType.getInstance();
+            tempMetaClasses[23] = org.kevoree.meta.MetaAbstractConstraint.getInstance();
+            tempMetaClasses[28] = org.kevoree.meta.MetaListParam.getInstance();
             tempMetaClasses[29] = org.kevoree.meta.MetaItem.getInstance();
-            tempMetaClasses[22] = org.kevoree.meta.MetaDataType.getInstance();
-            tempMetaClasses[30] = org.kevoree.meta.MetaListDataType.getInstance();
             tempMetaClasses[8] = org.kevoree.meta.MetaTypeDefinition.getInstance();
-            tempMetaClasses[21] = org.kevoree.meta.MetaAttributeType.getInstance();
-            tempMetaClasses[27] = org.kevoree.meta.MetaBooleanDataType.getInstance();
-            tempMetaClasses[19] = org.kevoree.meta.MetaChannelType.getInstance();
-            tempMetaClasses[23] = org.kevoree.meta.MetaStringDataType.getInstance();
-            tempMetaClasses[20] = org.kevoree.meta.MetaComponentType.getInstance();
+            tempMetaClasses[32] = org.kevoree.meta.MetaBooleanParamType.getInstance();
+            tempMetaClasses[33] = org.kevoree.meta.MetaChoiceParamType.getInstance();
+            tempMetaClasses[31] = org.kevoree.meta.MetaNumberParamType.getInstance();
+            tempMetaClasses[27] = org.kevoree.meta.MetaBooleanParam.getInstance();
+            tempMetaClasses[20] = org.kevoree.meta.MetaChannelType.getInstance();
+            tempMetaClasses[21] = org.kevoree.meta.MetaComponentType.getInstance();
             tempMetaClasses[11] = org.kevoree.meta.MetaInputPort.getInstance();
             var tempEnums: org.kevoree.modeling.meta.KMetaEnum[] = new Array();
+            tempEnums[0] = org.kevoree.meta.MetaNumberType.getInstance();
             (<org.kevoree.modeling.meta.impl.MetaModel>this._metaModel).init(tempMetaClasses, tempEnums);
         }
 
@@ -20818,75 +21631,75 @@ export module org {
                 return null;
             }
             switch (p_clazz.index()) {
-                case 9: 
-                return new org.kevoree.impl.MetricImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 14: 
+                case 15:
                 return new org.kevoree.impl.PortTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 1: 
+                case 1:
                 return new org.kevoree.impl.NodeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 13: 
+                case 14:
                 return new org.kevoree.impl.PortImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 17: 
+                case 35:
+                return new org.kevoree.impl.MinConstraintImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
+                case 18:
                 return new org.kevoree.impl.NodeTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 18: 
+                case 19:
                 return new org.kevoree.impl.GroupTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 12: 
+                case 12:
                 return new org.kevoree.impl.OutputPortImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 25: 
-                return new org.kevoree.impl.IntDataTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 7: 
-                return new org.kevoree.impl.InstanceImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 6: 
+                case 34:
+                return new org.kevoree.impl.ListParamTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
+                case 6:
                 return new org.kevoree.impl.ValueImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 4: 
+                case 37:
+                return new org.kevoree.impl.MultilineConstraintImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
+                case 4:
                 return new org.kevoree.impl.NamespaceImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 16: 
+                case 26:
+                return new org.kevoree.impl.NumberParamImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
+                case 17:
                 return new org.kevoree.impl.DeployUnitImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 2: 
+                case 30:
+                return new org.kevoree.impl.StringParamTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
+                case 2:
                 return new org.kevoree.impl.ChannelImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 15: 
+                case 16:
                 return new org.kevoree.impl.DictionaryTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 3: 
+                case 3:
                 return new org.kevoree.impl.GroupImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 10: 
+                case 10:
                 return new org.kevoree.impl.ComponentImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 0: 
+                case 25:
+                return new org.kevoree.impl.StringParamImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
+                case 36:
+                return new org.kevoree.impl.MaxConstraintImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
+                case 0:
                 return new org.kevoree.impl.ModelImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 26: 
-                return new org.kevoree.impl.LongDataTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 5: 
+                case 9:
+                return new org.kevoree.impl.DictionaryImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
+                case 13:
+                return new org.kevoree.impl.FragmentDictionaryImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
+                case 5:
                 return new org.kevoree.impl.ElementImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 24: 
-                return new org.kevoree.impl.DoubleDataTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 28: 
-                return new org.kevoree.impl.ChoiceDataTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 29: 
+                case 28:
+                return new org.kevoree.impl.ListParamImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
+                case 29:
                 return new org.kevoree.impl.ItemImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 22: 
-                return new org.kevoree.impl.DataTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 30: 
-                return new org.kevoree.impl.ListDataTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 8: 
-                return new org.kevoree.impl.TypeDefinitionImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 21: 
-                return new org.kevoree.impl.AttributeTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 27: 
-                return new org.kevoree.impl.BooleanDataTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 19: 
+                case 32:
+                return new org.kevoree.impl.BooleanParamTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
+                case 33:
+                return new org.kevoree.impl.ChoiceParamTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
+                case 31:
+                return new org.kevoree.impl.NumberParamTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
+                case 27:
+                return new org.kevoree.impl.BooleanParamImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
+                case 20:
                 return new org.kevoree.impl.ChannelTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 23: 
-                return new org.kevoree.impl.StringDataTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 20: 
+                case 21:
                 return new org.kevoree.impl.ComponentTypeImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                case 11: 
+                case 11:
                 return new org.kevoree.impl.InputPortImpl(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
-                default: 
+                default:
                 return new org.kevoree.modeling.meta.impl.GenericObject(universe, time, uuid, p_clazz, this._manager, previousUniverse, previousTime);
             }
-        }
-
-        public createMetric(universe: number, time: number): org.kevoree.Metric {
-            return <org.kevoree.Metric>this.create(org.kevoree.meta.MetaMetric.getInstance(), universe, time);
         }
 
         public createPortType(universe: number, time: number): org.kevoree.PortType {
@@ -20901,6 +21714,10 @@ export module org {
             return <org.kevoree.Port>this.create(org.kevoree.meta.MetaPort.getInstance(), universe, time);
         }
 
+        public createMinConstraint(universe: number, time: number): org.kevoree.MinConstraint {
+            return <org.kevoree.MinConstraint>this.create(org.kevoree.meta.MetaMinConstraint.getInstance(), universe, time);
+        }
+
         public createNodeType(universe: number, time: number): org.kevoree.NodeType {
             return <org.kevoree.NodeType>this.create(org.kevoree.meta.MetaNodeType.getInstance(), universe, time);
         }
@@ -20913,24 +21730,32 @@ export module org {
             return <org.kevoree.OutputPort>this.create(org.kevoree.meta.MetaOutputPort.getInstance(), universe, time);
         }
 
-        public createIntDataType(universe: number, time: number): org.kevoree.IntDataType {
-            return <org.kevoree.IntDataType>this.create(org.kevoree.meta.MetaIntDataType.getInstance(), universe, time);
-        }
-
-        public createInstance(universe: number, time: number): org.kevoree.Instance {
-            return <org.kevoree.Instance>this.create(org.kevoree.meta.MetaInstance.getInstance(), universe, time);
+        public createListParamType(universe: number, time: number): org.kevoree.ListParamType {
+            return <org.kevoree.ListParamType>this.create(org.kevoree.meta.MetaListParamType.getInstance(), universe, time);
         }
 
         public createValue(universe: number, time: number): org.kevoree.Value {
             return <org.kevoree.Value>this.create(org.kevoree.meta.MetaValue.getInstance(), universe, time);
         }
 
+        public createMultilineConstraint(universe: number, time: number): org.kevoree.MultilineConstraint {
+            return <org.kevoree.MultilineConstraint>this.create(org.kevoree.meta.MetaMultilineConstraint.getInstance(), universe, time);
+        }
+
         public createNamespace(universe: number, time: number): org.kevoree.Namespace {
             return <org.kevoree.Namespace>this.create(org.kevoree.meta.MetaNamespace.getInstance(), universe, time);
         }
 
+        public createNumberParam(universe: number, time: number): org.kevoree.NumberParam {
+            return <org.kevoree.NumberParam>this.create(org.kevoree.meta.MetaNumberParam.getInstance(), universe, time);
+        }
+
         public createDeployUnit(universe: number, time: number): org.kevoree.DeployUnit {
             return <org.kevoree.DeployUnit>this.create(org.kevoree.meta.MetaDeployUnit.getInstance(), universe, time);
+        }
+
+        public createStringParamType(universe: number, time: number): org.kevoree.StringParamType {
+            return <org.kevoree.StringParamType>this.create(org.kevoree.meta.MetaStringParamType.getInstance(), universe, time);
         }
 
         public createChannel(universe: number, time: number): org.kevoree.Channel {
@@ -20949,56 +21774,56 @@ export module org {
             return <org.kevoree.Component>this.create(org.kevoree.meta.MetaComponent.getInstance(), universe, time);
         }
 
+        public createStringParam(universe: number, time: number): org.kevoree.StringParam {
+            return <org.kevoree.StringParam>this.create(org.kevoree.meta.MetaStringParam.getInstance(), universe, time);
+        }
+
+        public createMaxConstraint(universe: number, time: number): org.kevoree.MaxConstraint {
+            return <org.kevoree.MaxConstraint>this.create(org.kevoree.meta.MetaMaxConstraint.getInstance(), universe, time);
+        }
+
         public createModel(universe: number, time: number): org.kevoree.Model {
             return <org.kevoree.Model>this.create(org.kevoree.meta.MetaModel.getInstance(), universe, time);
         }
 
-        public createLongDataType(universe: number, time: number): org.kevoree.LongDataType {
-            return <org.kevoree.LongDataType>this.create(org.kevoree.meta.MetaLongDataType.getInstance(), universe, time);
+        public createDictionary(universe: number, time: number): org.kevoree.Dictionary {
+            return <org.kevoree.Dictionary>this.create(org.kevoree.meta.MetaDictionary.getInstance(), universe, time);
+        }
+
+        public createFragmentDictionary(universe: number, time: number): org.kevoree.FragmentDictionary {
+            return <org.kevoree.FragmentDictionary>this.create(org.kevoree.meta.MetaFragmentDictionary.getInstance(), universe, time);
         }
 
         public createElement(universe: number, time: number): org.kevoree.Element {
             return <org.kevoree.Element>this.create(org.kevoree.meta.MetaElement.getInstance(), universe, time);
         }
 
-        public createDoubleDataType(universe: number, time: number): org.kevoree.DoubleDataType {
-            return <org.kevoree.DoubleDataType>this.create(org.kevoree.meta.MetaDoubleDataType.getInstance(), universe, time);
-        }
-
-        public createChoiceDataType(universe: number, time: number): org.kevoree.ChoiceDataType {
-            return <org.kevoree.ChoiceDataType>this.create(org.kevoree.meta.MetaChoiceDataType.getInstance(), universe, time);
+        public createListParam(universe: number, time: number): org.kevoree.ListParam {
+            return <org.kevoree.ListParam>this.create(org.kevoree.meta.MetaListParam.getInstance(), universe, time);
         }
 
         public createItem(universe: number, time: number): org.kevoree.Item {
             return <org.kevoree.Item>this.create(org.kevoree.meta.MetaItem.getInstance(), universe, time);
         }
 
-        public createDataType(universe: number, time: number): org.kevoree.DataType {
-            return <org.kevoree.DataType>this.create(org.kevoree.meta.MetaDataType.getInstance(), universe, time);
+        public createBooleanParamType(universe: number, time: number): org.kevoree.BooleanParamType {
+            return <org.kevoree.BooleanParamType>this.create(org.kevoree.meta.MetaBooleanParamType.getInstance(), universe, time);
         }
 
-        public createListDataType(universe: number, time: number): org.kevoree.ListDataType {
-            return <org.kevoree.ListDataType>this.create(org.kevoree.meta.MetaListDataType.getInstance(), universe, time);
+        public createChoiceParamType(universe: number, time: number): org.kevoree.ChoiceParamType {
+            return <org.kevoree.ChoiceParamType>this.create(org.kevoree.meta.MetaChoiceParamType.getInstance(), universe, time);
         }
 
-        public createTypeDefinition(universe: number, time: number): org.kevoree.TypeDefinition {
-            return <org.kevoree.TypeDefinition>this.create(org.kevoree.meta.MetaTypeDefinition.getInstance(), universe, time);
+        public createNumberParamType(universe: number, time: number): org.kevoree.NumberParamType {
+            return <org.kevoree.NumberParamType>this.create(org.kevoree.meta.MetaNumberParamType.getInstance(), universe, time);
         }
 
-        public createAttributeType(universe: number, time: number): org.kevoree.AttributeType {
-            return <org.kevoree.AttributeType>this.create(org.kevoree.meta.MetaAttributeType.getInstance(), universe, time);
-        }
-
-        public createBooleanDataType(universe: number, time: number): org.kevoree.BooleanDataType {
-            return <org.kevoree.BooleanDataType>this.create(org.kevoree.meta.MetaBooleanDataType.getInstance(), universe, time);
+        public createBooleanParam(universe: number, time: number): org.kevoree.BooleanParam {
+            return <org.kevoree.BooleanParam>this.create(org.kevoree.meta.MetaBooleanParam.getInstance(), universe, time);
         }
 
         public createChannelType(universe: number, time: number): org.kevoree.ChannelType {
             return <org.kevoree.ChannelType>this.create(org.kevoree.meta.MetaChannelType.getInstance(), universe, time);
-        }
-
-        public createStringDataType(universe: number, time: number): org.kevoree.StringDataType {
-            return <org.kevoree.StringDataType>this.create(org.kevoree.meta.MetaStringDataType.getInstance(), universe, time);
         }
 
         public createComponentType(universe: number, time: number): org.kevoree.ComponentType {
@@ -21025,13 +21850,13 @@ export module org {
 
     export interface KevoreeView extends org.kevoree.modeling.KView {
 
-        createMetric(): org.kevoree.Metric;
-
         createPortType(): org.kevoree.PortType;
 
         createNode(): org.kevoree.Node;
 
         createPort(): org.kevoree.Port;
+
+        createMinConstraint(): org.kevoree.MinConstraint;
 
         createNodeType(): org.kevoree.NodeType;
 
@@ -21039,15 +21864,19 @@ export module org {
 
         createOutputPort(): org.kevoree.OutputPort;
 
-        createIntDataType(): org.kevoree.IntDataType;
-
-        createInstance(): org.kevoree.Instance;
+        createListParamType(): org.kevoree.ListParamType;
 
         createValue(): org.kevoree.Value;
 
+        createMultilineConstraint(): org.kevoree.MultilineConstraint;
+
         createNamespace(): org.kevoree.Namespace;
 
+        createNumberParam(): org.kevoree.NumberParam;
+
         createDeployUnit(): org.kevoree.DeployUnit;
+
+        createStringParamType(): org.kevoree.StringParamType;
 
         createChannel(): org.kevoree.Channel;
 
@@ -21057,31 +21886,31 @@ export module org {
 
         createComponent(): org.kevoree.Component;
 
+        createStringParam(): org.kevoree.StringParam;
+
+        createMaxConstraint(): org.kevoree.MaxConstraint;
+
         createModel(): org.kevoree.Model;
 
-        createLongDataType(): org.kevoree.LongDataType;
+        createDictionary(): org.kevoree.Dictionary;
+
+        createFragmentDictionary(): org.kevoree.FragmentDictionary;
 
         createElement(): org.kevoree.Element;
 
-        createDoubleDataType(): org.kevoree.DoubleDataType;
-
-        createChoiceDataType(): org.kevoree.ChoiceDataType;
+        createListParam(): org.kevoree.ListParam;
 
         createItem(): org.kevoree.Item;
 
-        createDataType(): org.kevoree.DataType;
+        createBooleanParamType(): org.kevoree.BooleanParamType;
 
-        createListDataType(): org.kevoree.ListDataType;
+        createChoiceParamType(): org.kevoree.ChoiceParamType;
 
-        createTypeDefinition(): org.kevoree.TypeDefinition;
+        createNumberParamType(): org.kevoree.NumberParamType;
 
-        createAttributeType(): org.kevoree.AttributeType;
-
-        createBooleanDataType(): org.kevoree.BooleanDataType;
+        createBooleanParam(): org.kevoree.BooleanParam;
 
         createChannelType(): org.kevoree.ChannelType;
-
-        createStringDataType(): org.kevoree.StringDataType;
 
         createComponentType(): org.kevoree.ComponentType;
 
@@ -21096,10 +21925,6 @@ export module org {
                 super(p_universe, _time, p_manager);
             }
 
-            public createMetric(): org.kevoree.Metric {
-                return <org.kevoree.Metric>this.create(org.kevoree.meta.MetaMetric.getInstance());
-            }
-
             public createPortType(): org.kevoree.PortType {
                 return <org.kevoree.PortType>this.create(org.kevoree.meta.MetaPortType.getInstance());
             }
@@ -21110,6 +21935,10 @@ export module org {
 
             public createPort(): org.kevoree.Port {
                 return <org.kevoree.Port>this.create(org.kevoree.meta.MetaPort.getInstance());
+            }
+
+            public createMinConstraint(): org.kevoree.MinConstraint {
+                return <org.kevoree.MinConstraint>this.create(org.kevoree.meta.MetaMinConstraint.getInstance());
             }
 
             public createNodeType(): org.kevoree.NodeType {
@@ -21124,24 +21953,32 @@ export module org {
                 return <org.kevoree.OutputPort>this.create(org.kevoree.meta.MetaOutputPort.getInstance());
             }
 
-            public createIntDataType(): org.kevoree.IntDataType {
-                return <org.kevoree.IntDataType>this.create(org.kevoree.meta.MetaIntDataType.getInstance());
-            }
-
-            public createInstance(): org.kevoree.Instance {
-                return <org.kevoree.Instance>this.create(org.kevoree.meta.MetaInstance.getInstance());
+            public createListParamType(): org.kevoree.ListParamType {
+                return <org.kevoree.ListParamType>this.create(org.kevoree.meta.MetaListParamType.getInstance());
             }
 
             public createValue(): org.kevoree.Value {
                 return <org.kevoree.Value>this.create(org.kevoree.meta.MetaValue.getInstance());
             }
 
+            public createMultilineConstraint(): org.kevoree.MultilineConstraint {
+                return <org.kevoree.MultilineConstraint>this.create(org.kevoree.meta.MetaMultilineConstraint.getInstance());
+            }
+
             public createNamespace(): org.kevoree.Namespace {
                 return <org.kevoree.Namespace>this.create(org.kevoree.meta.MetaNamespace.getInstance());
             }
 
+            public createNumberParam(): org.kevoree.NumberParam {
+                return <org.kevoree.NumberParam>this.create(org.kevoree.meta.MetaNumberParam.getInstance());
+            }
+
             public createDeployUnit(): org.kevoree.DeployUnit {
                 return <org.kevoree.DeployUnit>this.create(org.kevoree.meta.MetaDeployUnit.getInstance());
+            }
+
+            public createStringParamType(): org.kevoree.StringParamType {
+                return <org.kevoree.StringParamType>this.create(org.kevoree.meta.MetaStringParamType.getInstance());
             }
 
             public createChannel(): org.kevoree.Channel {
@@ -21160,56 +21997,56 @@ export module org {
                 return <org.kevoree.Component>this.create(org.kevoree.meta.MetaComponent.getInstance());
             }
 
+            public createStringParam(): org.kevoree.StringParam {
+                return <org.kevoree.StringParam>this.create(org.kevoree.meta.MetaStringParam.getInstance());
+            }
+
+            public createMaxConstraint(): org.kevoree.MaxConstraint {
+                return <org.kevoree.MaxConstraint>this.create(org.kevoree.meta.MetaMaxConstraint.getInstance());
+            }
+
             public createModel(): org.kevoree.Model {
                 return <org.kevoree.Model>this.create(org.kevoree.meta.MetaModel.getInstance());
             }
 
-            public createLongDataType(): org.kevoree.LongDataType {
-                return <org.kevoree.LongDataType>this.create(org.kevoree.meta.MetaLongDataType.getInstance());
+            public createDictionary(): org.kevoree.Dictionary {
+                return <org.kevoree.Dictionary>this.create(org.kevoree.meta.MetaDictionary.getInstance());
+            }
+
+            public createFragmentDictionary(): org.kevoree.FragmentDictionary {
+                return <org.kevoree.FragmentDictionary>this.create(org.kevoree.meta.MetaFragmentDictionary.getInstance());
             }
 
             public createElement(): org.kevoree.Element {
                 return <org.kevoree.Element>this.create(org.kevoree.meta.MetaElement.getInstance());
             }
 
-            public createDoubleDataType(): org.kevoree.DoubleDataType {
-                return <org.kevoree.DoubleDataType>this.create(org.kevoree.meta.MetaDoubleDataType.getInstance());
-            }
-
-            public createChoiceDataType(): org.kevoree.ChoiceDataType {
-                return <org.kevoree.ChoiceDataType>this.create(org.kevoree.meta.MetaChoiceDataType.getInstance());
+            public createListParam(): org.kevoree.ListParam {
+                return <org.kevoree.ListParam>this.create(org.kevoree.meta.MetaListParam.getInstance());
             }
 
             public createItem(): org.kevoree.Item {
                 return <org.kevoree.Item>this.create(org.kevoree.meta.MetaItem.getInstance());
             }
 
-            public createDataType(): org.kevoree.DataType {
-                return <org.kevoree.DataType>this.create(org.kevoree.meta.MetaDataType.getInstance());
+            public createBooleanParamType(): org.kevoree.BooleanParamType {
+                return <org.kevoree.BooleanParamType>this.create(org.kevoree.meta.MetaBooleanParamType.getInstance());
             }
 
-            public createListDataType(): org.kevoree.ListDataType {
-                return <org.kevoree.ListDataType>this.create(org.kevoree.meta.MetaListDataType.getInstance());
+            public createChoiceParamType(): org.kevoree.ChoiceParamType {
+                return <org.kevoree.ChoiceParamType>this.create(org.kevoree.meta.MetaChoiceParamType.getInstance());
             }
 
-            public createTypeDefinition(): org.kevoree.TypeDefinition {
-                return <org.kevoree.TypeDefinition>this.create(org.kevoree.meta.MetaTypeDefinition.getInstance());
+            public createNumberParamType(): org.kevoree.NumberParamType {
+                return <org.kevoree.NumberParamType>this.create(org.kevoree.meta.MetaNumberParamType.getInstance());
             }
 
-            public createAttributeType(): org.kevoree.AttributeType {
-                return <org.kevoree.AttributeType>this.create(org.kevoree.meta.MetaAttributeType.getInstance());
-            }
-
-            public createBooleanDataType(): org.kevoree.BooleanDataType {
-                return <org.kevoree.BooleanDataType>this.create(org.kevoree.meta.MetaBooleanDataType.getInstance());
+            public createBooleanParam(): org.kevoree.BooleanParam {
+                return <org.kevoree.BooleanParam>this.create(org.kevoree.meta.MetaBooleanParam.getInstance());
             }
 
             public createChannelType(): org.kevoree.ChannelType {
                 return <org.kevoree.ChannelType>this.create(org.kevoree.meta.MetaChannelType.getInstance());
-            }
-
-            public createStringDataType(): org.kevoree.StringDataType {
-                return <org.kevoree.StringDataType>this.create(org.kevoree.meta.MetaStringDataType.getInstance());
             }
 
             public createComponentType(): org.kevoree.ComponentType {
@@ -21224,51 +22061,79 @@ export module org {
 
     }
     export module kevoree {
-        export interface AttributeType extends org.kevoree.modeling.KObject, org.kevoree.Element {
+        export interface AbstractConstraint extends org.kevoree.modeling.KObject, org.kevoree.Element {
 
-            getFragment(): boolean;
+            addMetaData(p_obj: org.kevoree.Value): org.kevoree.AbstractConstraint;
 
-            setFragment(p_obj: boolean): org.kevoree.AttributeType;
-
-            getName(): string;
-
-            setName(p_obj: string): org.kevoree.AttributeType;
-
-            getOptional(): boolean;
-
-            setOptional(p_obj: boolean): org.kevoree.AttributeType;
-
-            addMetaData(p_obj: org.kevoree.Value): org.kevoree.AttributeType;
-
-            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.AttributeType;
+            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.AbstractConstraint;
 
             getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
 
             sizeOfMetaData(): number;
-
-            addDatatype(p_obj: org.kevoree.DataType): org.kevoree.AttributeType;
-
-            removeDatatype(p_obj: org.kevoree.DataType): org.kevoree.AttributeType;
-
-            getDatatype(cb: org.kevoree.modeling.KCallback<org.kevoree.DataType[]>): void;
-
-            sizeOfDatatype(): number;
 
         }
 
-        export interface BooleanDataType extends org.kevoree.modeling.KObject, org.kevoree.DataType {
+        export interface BooleanParam extends org.kevoree.modeling.KObject, org.kevoree.Param {
 
-            getDefault(): boolean;
+            getName(): string;
 
-            setDefault(p_obj: boolean): org.kevoree.BooleanDataType;
+            setName(p_obj: string): org.kevoree.BooleanParam;
 
-            addMetaData(p_obj: org.kevoree.Value): org.kevoree.BooleanDataType;
+            getValue(): boolean;
 
-            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.BooleanDataType;
+            setValue(p_obj: boolean): org.kevoree.BooleanParam;
+
+            addMetaData(p_obj: org.kevoree.Value): org.kevoree.BooleanParam;
+
+            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.BooleanParam;
 
             getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
 
             sizeOfMetaData(): number;
+
+            addType(p_obj: org.kevoree.ParamType): org.kevoree.BooleanParam;
+
+            removeType(p_obj: org.kevoree.ParamType): org.kevoree.BooleanParam;
+
+            getType(cb: org.kevoree.modeling.KCallback<org.kevoree.ParamType[]>): void;
+
+            sizeOfType(): number;
+
+        }
+
+        export interface BooleanParamType extends org.kevoree.modeling.KObject, org.kevoree.ParamType {
+
+            getDefault(): boolean;
+
+            setDefault(p_obj: boolean): org.kevoree.BooleanParamType;
+
+            getFragment(): boolean;
+
+            setFragment(p_obj: boolean): org.kevoree.BooleanParamType;
+
+            getName(): string;
+
+            setName(p_obj: string): org.kevoree.BooleanParamType;
+
+            getRequired(): boolean;
+
+            setRequired(p_obj: boolean): org.kevoree.BooleanParamType;
+
+            addMetaData(p_obj: org.kevoree.Value): org.kevoree.BooleanParamType;
+
+            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.BooleanParamType;
+
+            getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
+
+            sizeOfMetaData(): number;
+
+            addConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.BooleanParamType;
+
+            removeConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.BooleanParamType;
+
+            getConstraints(cb: org.kevoree.modeling.KCallback<org.kevoree.AbstractConstraint[]>): void;
+
+            sizeOfConstraints(): number;
 
         }
 
@@ -21294,6 +22159,14 @@ export module org {
 
             sizeOfMetaData(): number;
 
+            addDictionary(p_obj: org.kevoree.Dictionary): org.kevoree.Channel;
+
+            removeDictionary(p_obj: org.kevoree.Dictionary): org.kevoree.Channel;
+
+            getDictionary(cb: org.kevoree.modeling.KCallback<org.kevoree.Dictionary[]>): void;
+
+            sizeOfDictionary(): number;
+
             addInputs(p_obj: org.kevoree.InputPort): org.kevoree.Channel;
 
             removeInputs(p_obj: org.kevoree.InputPort): org.kevoree.Channel;
@@ -21310,13 +22183,13 @@ export module org {
 
             sizeOfTypeDefinition(): number;
 
-            addMetrics(p_obj: org.kevoree.Metric): org.kevoree.Channel;
+            addFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Channel;
 
-            removeMetrics(p_obj: org.kevoree.Metric): org.kevoree.Channel;
+            removeFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Channel;
 
-            getMetrics(cb: org.kevoree.modeling.KCallback<org.kevoree.Metric[]>): void;
+            getFragmentDictionary(cb: org.kevoree.modeling.KCallback<org.kevoree.FragmentDictionary[]>): void;
 
-            sizeOfMetrics(): number;
+            sizeOfFragmentDictionary(): number;
 
         }
 
@@ -21326,6 +22199,10 @@ export module org {
 
             setName(p_obj: string): org.kevoree.ChannelType;
 
+            getDescription(): string;
+
+            setDescription(p_obj: string): org.kevoree.ChannelType;
+
             getRemote(): boolean;
 
             setRemote(p_obj: boolean): org.kevoree.ChannelType;
@@ -21334,9 +22211,9 @@ export module org {
 
             setFragmentable(p_obj: boolean): org.kevoree.ChannelType;
 
-            getVersion(): string;
+            getVersion(): number;
 
-            setVersion(p_obj: string): org.kevoree.ChannelType;
+            setVersion(p_obj: number): org.kevoree.ChannelType;
 
             addMetaData(p_obj: org.kevoree.Value): org.kevoree.ChannelType;
 
@@ -21364,27 +22241,47 @@ export module org {
 
         }
 
-        export interface ChoiceDataType extends org.kevoree.modeling.KObject, org.kevoree.DataType {
+        export interface ChoiceParamType extends org.kevoree.modeling.KObject, org.kevoree.ParamType {
 
-            getDefaultIndex(): number;
+            getDefault(): string;
 
-            setDefaultIndex(p_obj: number): org.kevoree.ChoiceDataType;
+            setDefault(p_obj: string): org.kevoree.ChoiceParamType;
 
-            addMetaData(p_obj: org.kevoree.Value): org.kevoree.ChoiceDataType;
+            getFragment(): boolean;
 
-            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.ChoiceDataType;
+            setFragment(p_obj: boolean): org.kevoree.ChoiceParamType;
+
+            getName(): string;
+
+            setName(p_obj: string): org.kevoree.ChoiceParamType;
+
+            getRequired(): boolean;
+
+            setRequired(p_obj: boolean): org.kevoree.ChoiceParamType;
+
+            addMetaData(p_obj: org.kevoree.Value): org.kevoree.ChoiceParamType;
+
+            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.ChoiceParamType;
 
             getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
 
             sizeOfMetaData(): number;
 
-            addChoices(p_obj: org.kevoree.Item): org.kevoree.ChoiceDataType;
+            addChoices(p_obj: org.kevoree.Item): org.kevoree.ChoiceParamType;
 
-            removeChoices(p_obj: org.kevoree.Item): org.kevoree.ChoiceDataType;
+            removeChoices(p_obj: org.kevoree.Item): org.kevoree.ChoiceParamType;
 
             getChoices(cb: org.kevoree.modeling.KCallback<org.kevoree.Item[]>): void;
 
             sizeOfChoices(): number;
+
+            addConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.ChoiceParamType;
+
+            removeConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.ChoiceParamType;
+
+            getConstraints(cb: org.kevoree.modeling.KCallback<org.kevoree.AbstractConstraint[]>): void;
+
+            sizeOfConstraints(): number;
 
         }
 
@@ -21410,6 +22307,14 @@ export module org {
 
             sizeOfMetaData(): number;
 
+            addDictionary(p_obj: org.kevoree.Dictionary): org.kevoree.Component;
+
+            removeDictionary(p_obj: org.kevoree.Dictionary): org.kevoree.Component;
+
+            getDictionary(cb: org.kevoree.modeling.KCallback<org.kevoree.Dictionary[]>): void;
+
+            sizeOfDictionary(): number;
+
             addInputs(p_obj: org.kevoree.InputPort): org.kevoree.Component;
 
             removeInputs(p_obj: org.kevoree.InputPort): org.kevoree.Component;
@@ -21434,14 +22339,6 @@ export module org {
 
             sizeOfHost(): number;
 
-            addMetrics(p_obj: org.kevoree.Metric): org.kevoree.Component;
-
-            removeMetrics(p_obj: org.kevoree.Metric): org.kevoree.Component;
-
-            getMetrics(cb: org.kevoree.modeling.KCallback<org.kevoree.Metric[]>): void;
-
-            sizeOfMetrics(): number;
-
         }
 
         export interface ComponentType extends org.kevoree.modeling.KObject, org.kevoree.TypeDefinition {
@@ -21450,13 +22347,17 @@ export module org {
 
             setName(p_obj: string): org.kevoree.ComponentType;
 
+            getDescription(): string;
+
+            setDescription(p_obj: string): org.kevoree.ComponentType;
+
             getRemote(): boolean;
 
             setRemote(p_obj: boolean): org.kevoree.ComponentType;
 
-            getVersion(): string;
+            getVersion(): number;
 
-            setVersion(p_obj: string): org.kevoree.ComponentType;
+            setVersion(p_obj: number): org.kevoree.ComponentType;
 
             addInputTypes(p_obj: org.kevoree.PortType): org.kevoree.ComponentType;
 
@@ -21500,18 +22401,6 @@ export module org {
 
         }
 
-        export interface DataType extends org.kevoree.modeling.KObject, org.kevoree.Element {
-
-            addMetaData(p_obj: org.kevoree.Value): org.kevoree.DataType;
-
-            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.DataType;
-
-            getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
-
-            sizeOfMetaData(): number;
-
-        }
-
         export interface DeployUnit extends org.kevoree.modeling.KObject, org.kevoree.Element {
 
             getName(): string;
@@ -21534,13 +22423,25 @@ export module org {
 
             sizeOfMetaData(): number;
 
-            addDependencies(p_obj: org.kevoree.DeployUnit): org.kevoree.DeployUnit;
+        }
 
-            removeDependencies(p_obj: org.kevoree.DeployUnit): org.kevoree.DeployUnit;
+        export interface Dictionary extends org.kevoree.modeling.KObject, org.kevoree.Element {
 
-            getDependencies(cb: org.kevoree.modeling.KCallback<org.kevoree.DeployUnit[]>): void;
+            addMetaData(p_obj: org.kevoree.Value): org.kevoree.Dictionary;
 
-            sizeOfDependencies(): number;
+            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.Dictionary;
+
+            getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
+
+            sizeOfMetaData(): number;
+
+            addParams(p_obj: org.kevoree.Param): org.kevoree.Dictionary;
+
+            removeParams(p_obj: org.kevoree.Param): org.kevoree.Dictionary;
+
+            getParams(cb: org.kevoree.modeling.KCallback<org.kevoree.Param[]>): void;
+
+            sizeOfParams(): number;
 
         }
 
@@ -21554,37 +22455,13 @@ export module org {
 
             sizeOfMetaData(): number;
 
-            addAttributes(p_obj: org.kevoree.AttributeType): org.kevoree.DictionaryType;
+            addParams(p_obj: org.kevoree.ParamType): org.kevoree.DictionaryType;
 
-            removeAttributes(p_obj: org.kevoree.AttributeType): org.kevoree.DictionaryType;
+            removeParams(p_obj: org.kevoree.ParamType): org.kevoree.DictionaryType;
 
-            getAttributes(cb: org.kevoree.modeling.KCallback<org.kevoree.AttributeType[]>): void;
+            getParams(cb: org.kevoree.modeling.KCallback<org.kevoree.ParamType[]>): void;
 
-            sizeOfAttributes(): number;
-
-        }
-
-        export interface DoubleDataType extends org.kevoree.modeling.KObject, org.kevoree.DataType {
-
-            getDefault(): number;
-
-            setDefault(p_obj: number): org.kevoree.DoubleDataType;
-
-            getMin(): number;
-
-            setMin(p_obj: number): org.kevoree.DoubleDataType;
-
-            getMax(): number;
-
-            setMax(p_obj: number): org.kevoree.DoubleDataType;
-
-            addMetaData(p_obj: org.kevoree.Value): org.kevoree.DoubleDataType;
-
-            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.DoubleDataType;
-
-            getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
-
-            sizeOfMetaData(): number;
+            sizeOfParams(): number;
 
         }
 
@@ -21597,6 +22474,30 @@ export module org {
             getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
 
             sizeOfMetaData(): number;
+
+        }
+
+        export interface FragmentDictionary extends org.kevoree.modeling.KObject, org.kevoree.Dictionary {
+
+            getName(): string;
+
+            setName(p_obj: string): org.kevoree.FragmentDictionary;
+
+            addMetaData(p_obj: org.kevoree.Value): org.kevoree.FragmentDictionary;
+
+            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.FragmentDictionary;
+
+            getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
+
+            sizeOfMetaData(): number;
+
+            addParams(p_obj: org.kevoree.Param): org.kevoree.FragmentDictionary;
+
+            removeParams(p_obj: org.kevoree.Param): org.kevoree.FragmentDictionary;
+
+            getParams(cb: org.kevoree.modeling.KCallback<org.kevoree.Param[]>): void;
+
+            sizeOfParams(): number;
 
         }
 
@@ -21622,6 +22523,14 @@ export module org {
 
             sizeOfNodes(): number;
 
+            addDictionary(p_obj: org.kevoree.Dictionary): org.kevoree.Group;
+
+            removeDictionary(p_obj: org.kevoree.Dictionary): org.kevoree.Group;
+
+            getDictionary(cb: org.kevoree.modeling.KCallback<org.kevoree.Dictionary[]>): void;
+
+            sizeOfDictionary(): number;
+
             addTypeDefinition(p_obj: org.kevoree.TypeDefinition): org.kevoree.Group;
 
             removeTypeDefinition(p_obj: org.kevoree.TypeDefinition): org.kevoree.Group;
@@ -21630,13 +22539,13 @@ export module org {
 
             sizeOfTypeDefinition(): number;
 
-            addMetrics(p_obj: org.kevoree.Metric): org.kevoree.Group;
+            addFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Group;
 
-            removeMetrics(p_obj: org.kevoree.Metric): org.kevoree.Group;
+            removeFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Group;
 
-            getMetrics(cb: org.kevoree.modeling.KCallback<org.kevoree.Metric[]>): void;
+            getFragmentDictionary(cb: org.kevoree.modeling.KCallback<org.kevoree.FragmentDictionary[]>): void;
 
-            sizeOfMetrics(): number;
+            sizeOfFragmentDictionary(): number;
 
         }
 
@@ -21646,13 +22555,17 @@ export module org {
 
             setName(p_obj: string): org.kevoree.GroupType;
 
+            getDescription(): string;
+
+            setDescription(p_obj: string): org.kevoree.GroupType;
+
             getRemote(): boolean;
 
             setRemote(p_obj: boolean): org.kevoree.GroupType;
 
-            getVersion(): string;
+            getVersion(): number;
 
-            setVersion(p_obj: string): org.kevoree.GroupType;
+            setVersion(p_obj: number): org.kevoree.GroupType;
 
             addMetaData(p_obj: org.kevoree.Value): org.kevoree.GroupType;
 
@@ -21726,6 +22639,14 @@ export module org {
 
             sizeOfMetaData(): number;
 
+            addDictionary(p_obj: org.kevoree.Dictionary): org.kevoree.Instance;
+
+            removeDictionary(p_obj: org.kevoree.Dictionary): org.kevoree.Instance;
+
+            getDictionary(cb: org.kevoree.modeling.KCallback<org.kevoree.Dictionary[]>): void;
+
+            sizeOfDictionary(): number;
+
             addTypeDefinition(p_obj: org.kevoree.TypeDefinition): org.kevoree.Instance;
 
             removeTypeDefinition(p_obj: org.kevoree.TypeDefinition): org.kevoree.Instance;
@@ -21733,38 +22654,6 @@ export module org {
             getTypeDefinition(cb: org.kevoree.modeling.KCallback<org.kevoree.TypeDefinition[]>): void;
 
             sizeOfTypeDefinition(): number;
-
-            addMetrics(p_obj: org.kevoree.Metric): org.kevoree.Instance;
-
-            removeMetrics(p_obj: org.kevoree.Metric): org.kevoree.Instance;
-
-            getMetrics(cb: org.kevoree.modeling.KCallback<org.kevoree.Metric[]>): void;
-
-            sizeOfMetrics(): number;
-
-        }
-
-        export interface IntDataType extends org.kevoree.modeling.KObject, org.kevoree.DataType {
-
-            getDefault(): number;
-
-            setDefault(p_obj: number): org.kevoree.IntDataType;
-
-            getMin(): number;
-
-            setMin(p_obj: number): org.kevoree.IntDataType;
-
-            getMax(): number;
-
-            setMax(p_obj: number): org.kevoree.IntDataType;
-
-            addMetaData(p_obj: org.kevoree.Value): org.kevoree.IntDataType;
-
-            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.IntDataType;
-
-            getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
-
-            sizeOfMetaData(): number;
 
         }
 
@@ -21776,43 +22665,91 @@ export module org {
 
         }
 
-        export interface ListDataType extends org.kevoree.modeling.KObject, org.kevoree.DataType {
+        export interface ListParam extends org.kevoree.modeling.KObject, org.kevoree.Param {
 
-            addMetaData(p_obj: org.kevoree.Value): org.kevoree.ListDataType;
+            getName(): string;
 
-            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.ListDataType;
+            setName(p_obj: string): org.kevoree.ListParam;
+
+            addMetaData(p_obj: org.kevoree.Value): org.kevoree.ListParam;
+
+            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.ListParam;
 
             getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
 
             sizeOfMetaData(): number;
 
-            addDefault(p_obj: org.kevoree.Item): org.kevoree.ListDataType;
+            addValues(p_obj: org.kevoree.Item): org.kevoree.ListParam;
 
-            removeDefault(p_obj: org.kevoree.Item): org.kevoree.ListDataType;
+            removeValues(p_obj: org.kevoree.Item): org.kevoree.ListParam;
+
+            getValues(cb: org.kevoree.modeling.KCallback<org.kevoree.Item[]>): void;
+
+            sizeOfValues(): number;
+
+            addType(p_obj: org.kevoree.ParamType): org.kevoree.ListParam;
+
+            removeType(p_obj: org.kevoree.ParamType): org.kevoree.ListParam;
+
+            getType(cb: org.kevoree.modeling.KCallback<org.kevoree.ParamType[]>): void;
+
+            sizeOfType(): number;
+
+        }
+
+        export interface ListParamType extends org.kevoree.modeling.KObject, org.kevoree.ParamType {
+
+            getFragment(): boolean;
+
+            setFragment(p_obj: boolean): org.kevoree.ListParamType;
+
+            getName(): string;
+
+            setName(p_obj: string): org.kevoree.ListParamType;
+
+            getRequired(): boolean;
+
+            setRequired(p_obj: boolean): org.kevoree.ListParamType;
+
+            addMetaData(p_obj: org.kevoree.Value): org.kevoree.ListParamType;
+
+            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.ListParamType;
+
+            getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
+
+            sizeOfMetaData(): number;
+
+            addDefault(p_obj: org.kevoree.Item): org.kevoree.ListParamType;
+
+            removeDefault(p_obj: org.kevoree.Item): org.kevoree.ListParamType;
 
             getDefault(cb: org.kevoree.modeling.KCallback<org.kevoree.Item[]>): void;
 
             sizeOfDefault(): number;
 
+            addConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.ListParamType;
+
+            removeConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.ListParamType;
+
+            getConstraints(cb: org.kevoree.modeling.KCallback<org.kevoree.AbstractConstraint[]>): void;
+
+            sizeOfConstraints(): number;
+
         }
 
-        export interface LongDataType extends org.kevoree.modeling.KObject, org.kevoree.DataType {
+        export interface MaxConstraint extends org.kevoree.modeling.KObject, org.kevoree.AbstractConstraint {
 
-            getDefault(): number;
+            getExclusive(): boolean;
 
-            setDefault(p_obj: number): org.kevoree.LongDataType;
+            setExclusive(p_obj: boolean): org.kevoree.MaxConstraint;
 
-            getMin(): number;
+            getValue(): number;
 
-            setMin(p_obj: number): org.kevoree.LongDataType;
+            setValue(p_obj: number): org.kevoree.MaxConstraint;
 
-            getMax(): number;
+            addMetaData(p_obj: org.kevoree.Value): org.kevoree.MaxConstraint;
 
-            setMax(p_obj: number): org.kevoree.LongDataType;
-
-            addMetaData(p_obj: org.kevoree.Value): org.kevoree.LongDataType;
-
-            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.LongDataType;
+            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.MaxConstraint;
 
             getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
 
@@ -21820,19 +22757,19 @@ export module org {
 
         }
 
-        export interface Metric extends org.kevoree.modeling.KObject, org.kevoree.Element {
+        export interface MinConstraint extends org.kevoree.modeling.KObject, org.kevoree.AbstractConstraint {
 
-            getName(): string;
+            getExclusive(): boolean;
 
-            setName(p_obj: string): org.kevoree.Metric;
+            setExclusive(p_obj: boolean): org.kevoree.MinConstraint;
 
             getValue(): number;
 
-            setValue(p_obj: number): org.kevoree.Metric;
+            setValue(p_obj: number): org.kevoree.MinConstraint;
 
-            addMetaData(p_obj: org.kevoree.Value): org.kevoree.Metric;
+            addMetaData(p_obj: org.kevoree.Value): org.kevoree.MinConstraint;
 
-            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.Metric;
+            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.MinConstraint;
 
             getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
 
@@ -21884,6 +22821,22 @@ export module org {
 
         }
 
+        export interface MultilineConstraint extends org.kevoree.modeling.KObject, org.kevoree.AbstractConstraint {
+
+            getValue(): boolean;
+
+            setValue(p_obj: boolean): org.kevoree.MultilineConstraint;
+
+            addMetaData(p_obj: org.kevoree.Value): org.kevoree.MultilineConstraint;
+
+            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.MultilineConstraint;
+
+            getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
+
+            sizeOfMetaData(): number;
+
+        }
+
         export interface Namespace extends org.kevoree.modeling.KObject, org.kevoree.Element {
 
             getName(): string;
@@ -21930,6 +22883,14 @@ export module org {
 
             sizeOfComponents(): number;
 
+            addDictionary(p_obj: org.kevoree.Dictionary): org.kevoree.Node;
+
+            removeDictionary(p_obj: org.kevoree.Dictionary): org.kevoree.Node;
+
+            getDictionary(cb: org.kevoree.modeling.KCallback<org.kevoree.Dictionary[]>): void;
+
+            sizeOfDictionary(): number;
+
             addTypeDefinition(p_obj: org.kevoree.TypeDefinition): org.kevoree.Node;
 
             removeTypeDefinition(p_obj: org.kevoree.TypeDefinition): org.kevoree.Node;
@@ -21962,14 +22923,6 @@ export module org {
 
             sizeOfSubNodes(): number;
 
-            addMetrics(p_obj: org.kevoree.Metric): org.kevoree.Node;
-
-            removeMetrics(p_obj: org.kevoree.Metric): org.kevoree.Node;
-
-            getMetrics(cb: org.kevoree.modeling.KCallback<org.kevoree.Metric[]>): void;
-
-            sizeOfMetrics(): number;
-
         }
 
         export interface NodeType extends org.kevoree.modeling.KObject, org.kevoree.TypeDefinition {
@@ -21978,9 +22931,13 @@ export module org {
 
             setName(p_obj: string): org.kevoree.NodeType;
 
-            getVersion(): string;
+            getDescription(): string;
 
-            setVersion(p_obj: string): org.kevoree.NodeType;
+            setDescription(p_obj: string): org.kevoree.NodeType;
+
+            getVersion(): number;
+
+            setVersion(p_obj: number): org.kevoree.NodeType;
 
             addMetaData(p_obj: org.kevoree.Value): org.kevoree.NodeType;
 
@@ -22005,6 +22962,78 @@ export module org {
             getDeployUnits(cb: org.kevoree.modeling.KCallback<org.kevoree.DeployUnit[]>): void;
 
             sizeOfDeployUnits(): number;
+
+        }
+
+        export interface NumberParam extends org.kevoree.modeling.KObject, org.kevoree.Param {
+
+            getName(): string;
+
+            setName(p_obj: string): org.kevoree.NumberParam;
+
+            getValue(): string;
+
+            setValue(p_obj: string): org.kevoree.NumberParam;
+
+            addMetaData(p_obj: org.kevoree.Value): org.kevoree.NumberParam;
+
+            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.NumberParam;
+
+            getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
+
+            sizeOfMetaData(): number;
+
+            addType(p_obj: org.kevoree.ParamType): org.kevoree.NumberParam;
+
+            removeType(p_obj: org.kevoree.ParamType): org.kevoree.NumberParam;
+
+            getType(cb: org.kevoree.modeling.KCallback<org.kevoree.ParamType[]>): void;
+
+            sizeOfType(): number;
+
+        }
+
+        export interface NumberParamType extends org.kevoree.modeling.KObject, org.kevoree.ParamType {
+
+            getDefault(): string;
+
+            setDefault(p_obj: string): org.kevoree.NumberParamType;
+
+            getFragment(): boolean;
+
+            setFragment(p_obj: boolean): org.kevoree.NumberParamType;
+
+            getName(): string;
+
+            setName(p_obj: string): org.kevoree.NumberParamType;
+
+            getType(): org.kevoree.NumberType;
+
+            setType(p_obj: org.kevoree.NumberType): org.kevoree.NumberParamType;
+
+            getRequired(): boolean;
+
+            setRequired(p_obj: boolean): org.kevoree.NumberParamType;
+
+            addMetaData(p_obj: org.kevoree.Value): org.kevoree.NumberParamType;
+
+            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.NumberParamType;
+
+            getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
+
+            sizeOfMetaData(): number;
+
+            addConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.NumberParamType;
+
+            removeConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.NumberParamType;
+
+            getConstraints(cb: org.kevoree.modeling.KCallback<org.kevoree.AbstractConstraint[]>): void;
+
+            sizeOfConstraints(): number;
+
+        }
+
+        export interface NumberType extends org.kevoree.modeling.meta.KLiteral {
 
         }
 
@@ -22037,6 +23066,62 @@ export module org {
             getType(cb: org.kevoree.modeling.KCallback<org.kevoree.PortType[]>): void;
 
             sizeOfType(): number;
+
+        }
+
+        export interface Param extends org.kevoree.modeling.KObject, org.kevoree.Element {
+
+            getName(): string;
+
+            setName(p_obj: string): org.kevoree.Param;
+
+            addMetaData(p_obj: org.kevoree.Value): org.kevoree.Param;
+
+            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.Param;
+
+            getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
+
+            sizeOfMetaData(): number;
+
+            addType(p_obj: org.kevoree.ParamType): org.kevoree.Param;
+
+            removeType(p_obj: org.kevoree.ParamType): org.kevoree.Param;
+
+            getType(cb: org.kevoree.modeling.KCallback<org.kevoree.ParamType[]>): void;
+
+            sizeOfType(): number;
+
+        }
+
+        export interface ParamType extends org.kevoree.modeling.KObject, org.kevoree.Element {
+
+            getFragment(): boolean;
+
+            setFragment(p_obj: boolean): org.kevoree.ParamType;
+
+            getName(): string;
+
+            setName(p_obj: string): org.kevoree.ParamType;
+
+            getRequired(): boolean;
+
+            setRequired(p_obj: boolean): org.kevoree.ParamType;
+
+            addMetaData(p_obj: org.kevoree.Value): org.kevoree.ParamType;
+
+            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.ParamType;
+
+            getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
+
+            sizeOfMetaData(): number;
+
+            addConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.ParamType;
+
+            removeConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.ParamType;
+
+            getConstraints(cb: org.kevoree.modeling.KCallback<org.kevoree.AbstractConstraint[]>): void;
+
+            sizeOfConstraints(): number;
 
         }
 
@@ -22096,23 +23181,67 @@ export module org {
 
         }
 
-        export interface StringDataType extends org.kevoree.modeling.KObject, org.kevoree.DataType {
+        export interface StringParam extends org.kevoree.modeling.KObject, org.kevoree.Param {
 
-            getDefault(): string;
+            getName(): string;
 
-            setDefault(p_obj: string): org.kevoree.StringDataType;
+            setName(p_obj: string): org.kevoree.StringParam;
 
-            getMultiline(): boolean;
+            getValue(): string;
 
-            setMultiline(p_obj: boolean): org.kevoree.StringDataType;
+            setValue(p_obj: string): org.kevoree.StringParam;
 
-            addMetaData(p_obj: org.kevoree.Value): org.kevoree.StringDataType;
+            addMetaData(p_obj: org.kevoree.Value): org.kevoree.StringParam;
 
-            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.StringDataType;
+            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.StringParam;
 
             getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
 
             sizeOfMetaData(): number;
+
+            addType(p_obj: org.kevoree.ParamType): org.kevoree.StringParam;
+
+            removeType(p_obj: org.kevoree.ParamType): org.kevoree.StringParam;
+
+            getType(cb: org.kevoree.modeling.KCallback<org.kevoree.ParamType[]>): void;
+
+            sizeOfType(): number;
+
+        }
+
+        export interface StringParamType extends org.kevoree.modeling.KObject, org.kevoree.ParamType {
+
+            getDefault(): string;
+
+            setDefault(p_obj: string): org.kevoree.StringParamType;
+
+            getFragment(): boolean;
+
+            setFragment(p_obj: boolean): org.kevoree.StringParamType;
+
+            getName(): string;
+
+            setName(p_obj: string): org.kevoree.StringParamType;
+
+            getRequired(): boolean;
+
+            setRequired(p_obj: boolean): org.kevoree.StringParamType;
+
+            addMetaData(p_obj: org.kevoree.Value): org.kevoree.StringParamType;
+
+            removeMetaData(p_obj: org.kevoree.Value): org.kevoree.StringParamType;
+
+            getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void;
+
+            sizeOfMetaData(): number;
+
+            addConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.StringParamType;
+
+            removeConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.StringParamType;
+
+            getConstraints(cb: org.kevoree.modeling.KCallback<org.kevoree.AbstractConstraint[]>): void;
+
+            sizeOfConstraints(): number;
 
         }
 
@@ -22122,9 +23251,13 @@ export module org {
 
             setName(p_obj: string): org.kevoree.TypeDefinition;
 
-            getVersion(): string;
+            getDescription(): string;
 
-            setVersion(p_obj: string): org.kevoree.TypeDefinition;
+            setDescription(p_obj: string): org.kevoree.TypeDefinition;
+
+            getVersion(): number;
+
+            setVersion(p_obj: number): org.kevoree.TypeDefinition;
 
             addMetaData(p_obj: org.kevoree.Value): org.kevoree.TypeDefinition;
 
@@ -22173,46 +23306,19 @@ export module org {
         }
 
         export module impl {
-            export class AttributeTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.AttributeType {
+            export class AbstractConstraintImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.AbstractConstraint {
 
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
                     super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
                 }
 
-                public getFragment(): boolean {
-                    return <boolean>this.get(org.kevoree.meta.MetaAttributeType.ATT_FRAGMENT);
-                }
-
-                public setFragment(p_obj: boolean): org.kevoree.AttributeType {
-                    this.set(org.kevoree.meta.MetaAttributeType.ATT_FRAGMENT, p_obj);
+                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.AbstractConstraint {
+                    this.add(org.kevoree.meta.MetaAbstractConstraint.REL_METADATA, p_obj);
                     return this;
                 }
 
-                public getName(): string {
-                    return <string>this.get(org.kevoree.meta.MetaAttributeType.ATT_NAME);
-                }
-
-                public setName(p_obj: string): org.kevoree.AttributeType {
-                    this.set(org.kevoree.meta.MetaAttributeType.ATT_NAME, p_obj);
-                    return this;
-                }
-
-                public getOptional(): boolean {
-                    return <boolean>this.get(org.kevoree.meta.MetaAttributeType.ATT_OPTIONAL);
-                }
-
-                public setOptional(p_obj: boolean): org.kevoree.AttributeType {
-                    this.set(org.kevoree.meta.MetaAttributeType.ATT_OPTIONAL, p_obj);
-                    return this;
-                }
-
-                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.AttributeType {
-                    this.add(org.kevoree.meta.MetaAttributeType.REL_METADATA, p_obj);
-                    return this;
-                }
-
-                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.AttributeType {
-                    this.remove(org.kevoree.meta.MetaAttributeType.REL_METADATA, p_obj);
+                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.AbstractConstraint {
+                    this.remove(org.kevoree.meta.MetaAbstractConstraint.REL_METADATA, p_obj);
                     return this;
                 }
 
@@ -22220,7 +23326,7 @@ export module org {
                     if (cb == null) {
                         return;
                     }
-                    this.getRelation(org.kevoree.meta.MetaAttributeType.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                    this.getRelation(org.kevoree.meta.MetaAbstractConstraint.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
                         var casted: org.kevoree.Value[] = new Array();
                         for (var i: number = 0; i < kObjects.length; i++) {
                             casted[i] = <org.kevoree.Value>kObjects[i];
@@ -22230,60 +23336,140 @@ export module org {
                 }
 
                 public sizeOfMetaData(): number {
-                    return this.size(org.kevoree.meta.MetaAttributeType.REL_METADATA);
+                    return this.size(org.kevoree.meta.MetaAbstractConstraint.REL_METADATA);
                 }
 
-                public addDatatype(p_obj: org.kevoree.DataType): org.kevoree.AttributeType {
-                    this.add(org.kevoree.meta.MetaAttributeType.REL_DATATYPE, p_obj);
+            }
+
+            export class BooleanParamImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.BooleanParam {
+
+                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
+                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
+                }
+
+                public getName(): string {
+                    return <string>this.get(org.kevoree.meta.MetaBooleanParam.ATT_NAME);
+                }
+
+                public setName(p_obj: string): org.kevoree.BooleanParam {
+                    this.set(org.kevoree.meta.MetaBooleanParam.ATT_NAME, p_obj);
                     return this;
                 }
 
-                public removeDatatype(p_obj: org.kevoree.DataType): org.kevoree.AttributeType {
-                    this.remove(org.kevoree.meta.MetaAttributeType.REL_DATATYPE, p_obj);
+                public getValue(): boolean {
+                    return <boolean>this.get(org.kevoree.meta.MetaBooleanParam.ATT_VALUE);
+                }
+
+                public setValue(p_obj: boolean): org.kevoree.BooleanParam {
+                    this.set(org.kevoree.meta.MetaBooleanParam.ATT_VALUE, p_obj);
                     return this;
                 }
 
-                public getDatatype(cb: org.kevoree.modeling.KCallback<org.kevoree.DataType[]>): void {
+                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.BooleanParam {
+                    this.add(org.kevoree.meta.MetaBooleanParam.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.BooleanParam {
+                    this.remove(org.kevoree.meta.MetaBooleanParam.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void {
                     if (cb == null) {
                         return;
                     }
-                    this.getRelation(org.kevoree.meta.MetaAttributeType.REL_DATATYPE,  (kObjects : org.kevoree.modeling.KObject[]) => {
-                        var casted: org.kevoree.DataType[] = new Array();
+                    this.getRelation(org.kevoree.meta.MetaBooleanParam.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Value[] = new Array();
                         for (var i: number = 0; i < kObjects.length; i++) {
-                            casted[i] = <org.kevoree.DataType>kObjects[i];
+                            casted[i] = <org.kevoree.Value>kObjects[i];
                         }
                         cb(casted);
                     });
                 }
 
-                public sizeOfDatatype(): number {
-                    return this.size(org.kevoree.meta.MetaAttributeType.REL_DATATYPE);
+                public sizeOfMetaData(): number {
+                    return this.size(org.kevoree.meta.MetaBooleanParam.REL_METADATA);
+                }
+
+                public addType(p_obj: org.kevoree.ParamType): org.kevoree.BooleanParam {
+                    this.add(org.kevoree.meta.MetaBooleanParam.REL_TYPE, p_obj);
+                    return this;
+                }
+
+                public removeType(p_obj: org.kevoree.ParamType): org.kevoree.BooleanParam {
+                    this.remove(org.kevoree.meta.MetaBooleanParam.REL_TYPE, p_obj);
+                    return this;
+                }
+
+                public getType(cb: org.kevoree.modeling.KCallback<org.kevoree.ParamType[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaBooleanParam.REL_TYPE,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.ParamType[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.ParamType>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfType(): number {
+                    return this.size(org.kevoree.meta.MetaBooleanParam.REL_TYPE);
                 }
 
             }
 
-            export class BooleanDataTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.BooleanDataType {
+            export class BooleanParamTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.BooleanParamType {
 
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
                     super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
                 }
 
                 public getDefault(): boolean {
-                    return <boolean>this.get(org.kevoree.meta.MetaBooleanDataType.ATT_DEFAULT);
+                    return <boolean>this.get(org.kevoree.meta.MetaBooleanParamType.ATT_DEFAULT);
                 }
 
-                public setDefault(p_obj: boolean): org.kevoree.BooleanDataType {
-                    this.set(org.kevoree.meta.MetaBooleanDataType.ATT_DEFAULT, p_obj);
+                public setDefault(p_obj: boolean): org.kevoree.BooleanParamType {
+                    this.set(org.kevoree.meta.MetaBooleanParamType.ATT_DEFAULT, p_obj);
                     return this;
                 }
 
-                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.BooleanDataType {
-                    this.add(org.kevoree.meta.MetaBooleanDataType.REL_METADATA, p_obj);
+                public getFragment(): boolean {
+                    return <boolean>this.get(org.kevoree.meta.MetaBooleanParamType.ATT_FRAGMENT);
+                }
+
+                public setFragment(p_obj: boolean): org.kevoree.BooleanParamType {
+                    this.set(org.kevoree.meta.MetaBooleanParamType.ATT_FRAGMENT, p_obj);
                     return this;
                 }
 
-                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.BooleanDataType {
-                    this.remove(org.kevoree.meta.MetaBooleanDataType.REL_METADATA, p_obj);
+                public getName(): string {
+                    return <string>this.get(org.kevoree.meta.MetaBooleanParamType.ATT_NAME);
+                }
+
+                public setName(p_obj: string): org.kevoree.BooleanParamType {
+                    this.set(org.kevoree.meta.MetaBooleanParamType.ATT_NAME, p_obj);
+                    return this;
+                }
+
+                public getRequired(): boolean {
+                    return <boolean>this.get(org.kevoree.meta.MetaBooleanParamType.ATT_REQUIRED);
+                }
+
+                public setRequired(p_obj: boolean): org.kevoree.BooleanParamType {
+                    this.set(org.kevoree.meta.MetaBooleanParamType.ATT_REQUIRED, p_obj);
+                    return this;
+                }
+
+                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.BooleanParamType {
+                    this.add(org.kevoree.meta.MetaBooleanParamType.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.BooleanParamType {
+                    this.remove(org.kevoree.meta.MetaBooleanParamType.REL_METADATA, p_obj);
                     return this;
                 }
 
@@ -22291,7 +23477,7 @@ export module org {
                     if (cb == null) {
                         return;
                     }
-                    this.getRelation(org.kevoree.meta.MetaBooleanDataType.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                    this.getRelation(org.kevoree.meta.MetaBooleanParamType.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
                         var casted: org.kevoree.Value[] = new Array();
                         for (var i: number = 0; i < kObjects.length; i++) {
                             casted[i] = <org.kevoree.Value>kObjects[i];
@@ -22301,7 +23487,34 @@ export module org {
                 }
 
                 public sizeOfMetaData(): number {
-                    return this.size(org.kevoree.meta.MetaBooleanDataType.REL_METADATA);
+                    return this.size(org.kevoree.meta.MetaBooleanParamType.REL_METADATA);
+                }
+
+                public addConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.BooleanParamType {
+                    this.add(org.kevoree.meta.MetaBooleanParamType.REL_CONSTRAINTS, p_obj);
+                    return this;
+                }
+
+                public removeConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.BooleanParamType {
+                    this.remove(org.kevoree.meta.MetaBooleanParamType.REL_CONSTRAINTS, p_obj);
+                    return this;
+                }
+
+                public getConstraints(cb: org.kevoree.modeling.KCallback<org.kevoree.AbstractConstraint[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaBooleanParamType.REL_CONSTRAINTS,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.AbstractConstraint[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.AbstractConstraint>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfConstraints(): number {
+                    return this.size(org.kevoree.meta.MetaBooleanParamType.REL_CONSTRAINTS);
                 }
 
             }
@@ -22375,6 +23588,33 @@ export module org {
                     return this.size(org.kevoree.meta.MetaChannel.REL_METADATA);
                 }
 
+                public addDictionary(p_obj: org.kevoree.Dictionary): org.kevoree.Channel {
+                    this.add(org.kevoree.meta.MetaChannel.REL_DICTIONARY, p_obj);
+                    return this;
+                }
+
+                public removeDictionary(p_obj: org.kevoree.Dictionary): org.kevoree.Channel {
+                    this.remove(org.kevoree.meta.MetaChannel.REL_DICTIONARY, p_obj);
+                    return this;
+                }
+
+                public getDictionary(cb: org.kevoree.modeling.KCallback<org.kevoree.Dictionary[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaChannel.REL_DICTIONARY,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Dictionary[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.Dictionary>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfDictionary(): number {
+                    return this.size(org.kevoree.meta.MetaChannel.REL_DICTIONARY);
+                }
+
                 public addInputs(p_obj: org.kevoree.InputPort): org.kevoree.Channel {
                     this.add(org.kevoree.meta.MetaChannel.REL_INPUTS, p_obj);
                     return this;
@@ -22429,31 +23669,31 @@ export module org {
                     return this.size(org.kevoree.meta.MetaChannel.REL_TYPEDEFINITION);
                 }
 
-                public addMetrics(p_obj: org.kevoree.Metric): org.kevoree.Channel {
-                    this.add(org.kevoree.meta.MetaChannel.REL_METRICS, p_obj);
+                public addFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Channel {
+                    this.add(org.kevoree.meta.MetaChannel.REL_FRAGMENTDICTIONARY, p_obj);
                     return this;
                 }
 
-                public removeMetrics(p_obj: org.kevoree.Metric): org.kevoree.Channel {
-                    this.remove(org.kevoree.meta.MetaChannel.REL_METRICS, p_obj);
+                public removeFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Channel {
+                    this.remove(org.kevoree.meta.MetaChannel.REL_FRAGMENTDICTIONARY, p_obj);
                     return this;
                 }
 
-                public getMetrics(cb: org.kevoree.modeling.KCallback<org.kevoree.Metric[]>): void {
+                public getFragmentDictionary(cb: org.kevoree.modeling.KCallback<org.kevoree.FragmentDictionary[]>): void {
                     if (cb == null) {
                         return;
                     }
-                    this.getRelation(org.kevoree.meta.MetaChannel.REL_METRICS,  (kObjects : org.kevoree.modeling.KObject[]) => {
-                        var casted: org.kevoree.Metric[] = new Array();
+                    this.getRelation(org.kevoree.meta.MetaChannel.REL_FRAGMENTDICTIONARY,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.FragmentDictionary[] = new Array();
                         for (var i: number = 0; i < kObjects.length; i++) {
-                            casted[i] = <org.kevoree.Metric>kObjects[i];
+                            casted[i] = <org.kevoree.FragmentDictionary>kObjects[i];
                         }
                         cb(casted);
                     });
                 }
 
-                public sizeOfMetrics(): number {
-                    return this.size(org.kevoree.meta.MetaChannel.REL_METRICS);
+                public sizeOfFragmentDictionary(): number {
+                    return this.size(org.kevoree.meta.MetaChannel.REL_FRAGMENTDICTIONARY);
                 }
 
             }
@@ -22470,6 +23710,15 @@ export module org {
 
                 public setName(p_obj: string): org.kevoree.ChannelType {
                     this.set(org.kevoree.meta.MetaChannelType.ATT_NAME, p_obj);
+                    return this;
+                }
+
+                public getDescription(): string {
+                    return <string>this.get(org.kevoree.meta.MetaChannelType.ATT_DESCRIPTION);
+                }
+
+                public setDescription(p_obj: string): org.kevoree.ChannelType {
+                    this.set(org.kevoree.meta.MetaChannelType.ATT_DESCRIPTION, p_obj);
                     return this;
                 }
 
@@ -22491,11 +23740,11 @@ export module org {
                     return this;
                 }
 
-                public getVersion(): string {
-                    return <string>this.get(org.kevoree.meta.MetaChannelType.ATT_VERSION);
+                public getVersion(): number {
+                    return <number>this.get(org.kevoree.meta.MetaChannelType.ATT_VERSION);
                 }
 
-                public setVersion(p_obj: string): org.kevoree.ChannelType {
+                public setVersion(p_obj: number): org.kevoree.ChannelType {
                     this.set(org.kevoree.meta.MetaChannelType.ATT_VERSION, p_obj);
                     return this;
                 }
@@ -22583,28 +23832,55 @@ export module org {
 
             }
 
-            export class ChoiceDataTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.ChoiceDataType {
+            export class ChoiceParamTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.ChoiceParamType {
 
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
                     super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
                 }
 
-                public getDefaultIndex(): number {
-                    return <number>this.get(org.kevoree.meta.MetaChoiceDataType.ATT_DEFAULTINDEX);
+                public getDefault(): string {
+                    return <string>this.get(org.kevoree.meta.MetaChoiceParamType.ATT_DEFAULT);
                 }
 
-                public setDefaultIndex(p_obj: number): org.kevoree.ChoiceDataType {
-                    this.set(org.kevoree.meta.MetaChoiceDataType.ATT_DEFAULTINDEX, p_obj);
+                public setDefault(p_obj: string): org.kevoree.ChoiceParamType {
+                    this.set(org.kevoree.meta.MetaChoiceParamType.ATT_DEFAULT, p_obj);
                     return this;
                 }
 
-                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.ChoiceDataType {
-                    this.add(org.kevoree.meta.MetaChoiceDataType.REL_METADATA, p_obj);
+                public getFragment(): boolean {
+                    return <boolean>this.get(org.kevoree.meta.MetaChoiceParamType.ATT_FRAGMENT);
+                }
+
+                public setFragment(p_obj: boolean): org.kevoree.ChoiceParamType {
+                    this.set(org.kevoree.meta.MetaChoiceParamType.ATT_FRAGMENT, p_obj);
                     return this;
                 }
 
-                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.ChoiceDataType {
-                    this.remove(org.kevoree.meta.MetaChoiceDataType.REL_METADATA, p_obj);
+                public getName(): string {
+                    return <string>this.get(org.kevoree.meta.MetaChoiceParamType.ATT_NAME);
+                }
+
+                public setName(p_obj: string): org.kevoree.ChoiceParamType {
+                    this.set(org.kevoree.meta.MetaChoiceParamType.ATT_NAME, p_obj);
+                    return this;
+                }
+
+                public getRequired(): boolean {
+                    return <boolean>this.get(org.kevoree.meta.MetaChoiceParamType.ATT_REQUIRED);
+                }
+
+                public setRequired(p_obj: boolean): org.kevoree.ChoiceParamType {
+                    this.set(org.kevoree.meta.MetaChoiceParamType.ATT_REQUIRED, p_obj);
+                    return this;
+                }
+
+                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.ChoiceParamType {
+                    this.add(org.kevoree.meta.MetaChoiceParamType.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.ChoiceParamType {
+                    this.remove(org.kevoree.meta.MetaChoiceParamType.REL_METADATA, p_obj);
                     return this;
                 }
 
@@ -22612,7 +23888,7 @@ export module org {
                     if (cb == null) {
                         return;
                     }
-                    this.getRelation(org.kevoree.meta.MetaChoiceDataType.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                    this.getRelation(org.kevoree.meta.MetaChoiceParamType.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
                         var casted: org.kevoree.Value[] = new Array();
                         for (var i: number = 0; i < kObjects.length; i++) {
                             casted[i] = <org.kevoree.Value>kObjects[i];
@@ -22622,16 +23898,16 @@ export module org {
                 }
 
                 public sizeOfMetaData(): number {
-                    return this.size(org.kevoree.meta.MetaChoiceDataType.REL_METADATA);
+                    return this.size(org.kevoree.meta.MetaChoiceParamType.REL_METADATA);
                 }
 
-                public addChoices(p_obj: org.kevoree.Item): org.kevoree.ChoiceDataType {
-                    this.add(org.kevoree.meta.MetaChoiceDataType.REL_CHOICES, p_obj);
+                public addChoices(p_obj: org.kevoree.Item): org.kevoree.ChoiceParamType {
+                    this.add(org.kevoree.meta.MetaChoiceParamType.REL_CHOICES, p_obj);
                     return this;
                 }
 
-                public removeChoices(p_obj: org.kevoree.Item): org.kevoree.ChoiceDataType {
-                    this.remove(org.kevoree.meta.MetaChoiceDataType.REL_CHOICES, p_obj);
+                public removeChoices(p_obj: org.kevoree.Item): org.kevoree.ChoiceParamType {
+                    this.remove(org.kevoree.meta.MetaChoiceParamType.REL_CHOICES, p_obj);
                     return this;
                 }
 
@@ -22639,7 +23915,7 @@ export module org {
                     if (cb == null) {
                         return;
                     }
-                    this.getRelation(org.kevoree.meta.MetaChoiceDataType.REL_CHOICES,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                    this.getRelation(org.kevoree.meta.MetaChoiceParamType.REL_CHOICES,  (kObjects : org.kevoree.modeling.KObject[]) => {
                         var casted: org.kevoree.Item[] = new Array();
                         for (var i: number = 0; i < kObjects.length; i++) {
                             casted[i] = <org.kevoree.Item>kObjects[i];
@@ -22649,7 +23925,34 @@ export module org {
                 }
 
                 public sizeOfChoices(): number {
-                    return this.size(org.kevoree.meta.MetaChoiceDataType.REL_CHOICES);
+                    return this.size(org.kevoree.meta.MetaChoiceParamType.REL_CHOICES);
+                }
+
+                public addConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.ChoiceParamType {
+                    this.add(org.kevoree.meta.MetaChoiceParamType.REL_CONSTRAINTS, p_obj);
+                    return this;
+                }
+
+                public removeConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.ChoiceParamType {
+                    this.remove(org.kevoree.meta.MetaChoiceParamType.REL_CONSTRAINTS, p_obj);
+                    return this;
+                }
+
+                public getConstraints(cb: org.kevoree.modeling.KCallback<org.kevoree.AbstractConstraint[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaChoiceParamType.REL_CONSTRAINTS,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.AbstractConstraint[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.AbstractConstraint>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfConstraints(): number {
+                    return this.size(org.kevoree.meta.MetaChoiceParamType.REL_CONSTRAINTS);
                 }
 
             }
@@ -22721,6 +24024,33 @@ export module org {
 
                 public sizeOfMetaData(): number {
                     return this.size(org.kevoree.meta.MetaComponent.REL_METADATA);
+                }
+
+                public addDictionary(p_obj: org.kevoree.Dictionary): org.kevoree.Component {
+                    this.add(org.kevoree.meta.MetaComponent.REL_DICTIONARY, p_obj);
+                    return this;
+                }
+
+                public removeDictionary(p_obj: org.kevoree.Dictionary): org.kevoree.Component {
+                    this.remove(org.kevoree.meta.MetaComponent.REL_DICTIONARY, p_obj);
+                    return this;
+                }
+
+                public getDictionary(cb: org.kevoree.modeling.KCallback<org.kevoree.Dictionary[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaComponent.REL_DICTIONARY,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Dictionary[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.Dictionary>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfDictionary(): number {
+                    return this.size(org.kevoree.meta.MetaComponent.REL_DICTIONARY);
                 }
 
                 public addInputs(p_obj: org.kevoree.InputPort): org.kevoree.Component {
@@ -22804,33 +24134,6 @@ export module org {
                     return this.size(org.kevoree.meta.MetaComponent.REL_HOST);
                 }
 
-                public addMetrics(p_obj: org.kevoree.Metric): org.kevoree.Component {
-                    this.add(org.kevoree.meta.MetaComponent.REL_METRICS, p_obj);
-                    return this;
-                }
-
-                public removeMetrics(p_obj: org.kevoree.Metric): org.kevoree.Component {
-                    this.remove(org.kevoree.meta.MetaComponent.REL_METRICS, p_obj);
-                    return this;
-                }
-
-                public getMetrics(cb: org.kevoree.modeling.KCallback<org.kevoree.Metric[]>): void {
-                    if (cb == null) {
-                        return;
-                    }
-                    this.getRelation(org.kevoree.meta.MetaComponent.REL_METRICS,  (kObjects : org.kevoree.modeling.KObject[]) => {
-                        var casted: org.kevoree.Metric[] = new Array();
-                        for (var i: number = 0; i < kObjects.length; i++) {
-                            casted[i] = <org.kevoree.Metric>kObjects[i];
-                        }
-                        cb(casted);
-                    });
-                }
-
-                public sizeOfMetrics(): number {
-                    return this.size(org.kevoree.meta.MetaComponent.REL_METRICS);
-                }
-
             }
 
             export class ComponentTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.ComponentType {
@@ -22848,6 +24151,15 @@ export module org {
                     return this;
                 }
 
+                public getDescription(): string {
+                    return <string>this.get(org.kevoree.meta.MetaComponentType.ATT_DESCRIPTION);
+                }
+
+                public setDescription(p_obj: string): org.kevoree.ComponentType {
+                    this.set(org.kevoree.meta.MetaComponentType.ATT_DESCRIPTION, p_obj);
+                    return this;
+                }
+
                 public getRemote(): boolean {
                     return <boolean>this.get(org.kevoree.meta.MetaComponentType.ATT_REMOTE);
                 }
@@ -22857,11 +24169,11 @@ export module org {
                     return this;
                 }
 
-                public getVersion(): string {
-                    return <string>this.get(org.kevoree.meta.MetaComponentType.ATT_VERSION);
+                public getVersion(): number {
+                    return <number>this.get(org.kevoree.meta.MetaComponentType.ATT_VERSION);
                 }
 
-                public setVersion(p_obj: string): org.kevoree.ComponentType {
+                public setVersion(p_obj: number): org.kevoree.ComponentType {
                     this.set(org.kevoree.meta.MetaComponentType.ATT_VERSION, p_obj);
                     return this;
                 }
@@ -23003,41 +24315,6 @@ export module org {
 
             }
 
-            export class DataTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.DataType {
-
-                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
-                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
-                }
-
-                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.DataType {
-                    this.add(org.kevoree.meta.MetaDataType.REL_METADATA, p_obj);
-                    return this;
-                }
-
-                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.DataType {
-                    this.remove(org.kevoree.meta.MetaDataType.REL_METADATA, p_obj);
-                    return this;
-                }
-
-                public getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void {
-                    if (cb == null) {
-                        return;
-                    }
-                    this.getRelation(org.kevoree.meta.MetaDataType.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
-                        var casted: org.kevoree.Value[] = new Array();
-                        for (var i: number = 0; i < kObjects.length; i++) {
-                            casted[i] = <org.kevoree.Value>kObjects[i];
-                        }
-                        cb(casted);
-                    });
-                }
-
-                public sizeOfMetaData(): number {
-                    return this.size(org.kevoree.meta.MetaDataType.REL_METADATA);
-                }
-
-            }
-
             export class DeployUnitImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.DeployUnit {
 
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
@@ -23098,31 +24375,66 @@ export module org {
                     return this.size(org.kevoree.meta.MetaDeployUnit.REL_METADATA);
                 }
 
-                public addDependencies(p_obj: org.kevoree.DeployUnit): org.kevoree.DeployUnit {
-                    this.add(org.kevoree.meta.MetaDeployUnit.REL_DEPENDENCIES, p_obj);
+            }
+
+            export class DictionaryImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.Dictionary {
+
+                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
+                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
+                }
+
+                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.Dictionary {
+                    this.add(org.kevoree.meta.MetaDictionary.REL_METADATA, p_obj);
                     return this;
                 }
 
-                public removeDependencies(p_obj: org.kevoree.DeployUnit): org.kevoree.DeployUnit {
-                    this.remove(org.kevoree.meta.MetaDeployUnit.REL_DEPENDENCIES, p_obj);
+                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.Dictionary {
+                    this.remove(org.kevoree.meta.MetaDictionary.REL_METADATA, p_obj);
                     return this;
                 }
 
-                public getDependencies(cb: org.kevoree.modeling.KCallback<org.kevoree.DeployUnit[]>): void {
+                public getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void {
                     if (cb == null) {
                         return;
                     }
-                    this.getRelation(org.kevoree.meta.MetaDeployUnit.REL_DEPENDENCIES,  (kObjects : org.kevoree.modeling.KObject[]) => {
-                        var casted: org.kevoree.DeployUnit[] = new Array();
+                    this.getRelation(org.kevoree.meta.MetaDictionary.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Value[] = new Array();
                         for (var i: number = 0; i < kObjects.length; i++) {
-                            casted[i] = <org.kevoree.DeployUnit>kObjects[i];
+                            casted[i] = <org.kevoree.Value>kObjects[i];
                         }
                         cb(casted);
                     });
                 }
 
-                public sizeOfDependencies(): number {
-                    return this.size(org.kevoree.meta.MetaDeployUnit.REL_DEPENDENCIES);
+                public sizeOfMetaData(): number {
+                    return this.size(org.kevoree.meta.MetaDictionary.REL_METADATA);
+                }
+
+                public addParams(p_obj: org.kevoree.Param): org.kevoree.Dictionary {
+                    this.add(org.kevoree.meta.MetaDictionary.REL_PARAMS, p_obj);
+                    return this;
+                }
+
+                public removeParams(p_obj: org.kevoree.Param): org.kevoree.Dictionary {
+                    this.remove(org.kevoree.meta.MetaDictionary.REL_PARAMS, p_obj);
+                    return this;
+                }
+
+                public getParams(cb: org.kevoree.modeling.KCallback<org.kevoree.Param[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaDictionary.REL_PARAMS,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Param[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.Param>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfParams(): number {
+                    return this.size(org.kevoree.meta.MetaDictionary.REL_PARAMS);
                 }
 
             }
@@ -23160,93 +24472,31 @@ export module org {
                     return this.size(org.kevoree.meta.MetaDictionaryType.REL_METADATA);
                 }
 
-                public addAttributes(p_obj: org.kevoree.AttributeType): org.kevoree.DictionaryType {
-                    this.add(org.kevoree.meta.MetaDictionaryType.REL_ATTRIBUTES, p_obj);
+                public addParams(p_obj: org.kevoree.ParamType): org.kevoree.DictionaryType {
+                    this.add(org.kevoree.meta.MetaDictionaryType.REL_PARAMS, p_obj);
                     return this;
                 }
 
-                public removeAttributes(p_obj: org.kevoree.AttributeType): org.kevoree.DictionaryType {
-                    this.remove(org.kevoree.meta.MetaDictionaryType.REL_ATTRIBUTES, p_obj);
+                public removeParams(p_obj: org.kevoree.ParamType): org.kevoree.DictionaryType {
+                    this.remove(org.kevoree.meta.MetaDictionaryType.REL_PARAMS, p_obj);
                     return this;
                 }
 
-                public getAttributes(cb: org.kevoree.modeling.KCallback<org.kevoree.AttributeType[]>): void {
+                public getParams(cb: org.kevoree.modeling.KCallback<org.kevoree.ParamType[]>): void {
                     if (cb == null) {
                         return;
                     }
-                    this.getRelation(org.kevoree.meta.MetaDictionaryType.REL_ATTRIBUTES,  (kObjects : org.kevoree.modeling.KObject[]) => {
-                        var casted: org.kevoree.AttributeType[] = new Array();
+                    this.getRelation(org.kevoree.meta.MetaDictionaryType.REL_PARAMS,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.ParamType[] = new Array();
                         for (var i: number = 0; i < kObjects.length; i++) {
-                            casted[i] = <org.kevoree.AttributeType>kObjects[i];
+                            casted[i] = <org.kevoree.ParamType>kObjects[i];
                         }
                         cb(casted);
                     });
                 }
 
-                public sizeOfAttributes(): number {
-                    return this.size(org.kevoree.meta.MetaDictionaryType.REL_ATTRIBUTES);
-                }
-
-            }
-
-            export class DoubleDataTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.DoubleDataType {
-
-                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
-                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
-                }
-
-                public getDefault(): number {
-                    return <number>this.get(org.kevoree.meta.MetaDoubleDataType.ATT_DEFAULT);
-                }
-
-                public setDefault(p_obj: number): org.kevoree.DoubleDataType {
-                    this.set(org.kevoree.meta.MetaDoubleDataType.ATT_DEFAULT, p_obj);
-                    return this;
-                }
-
-                public getMin(): number {
-                    return <number>this.get(org.kevoree.meta.MetaDoubleDataType.ATT_MIN);
-                }
-
-                public setMin(p_obj: number): org.kevoree.DoubleDataType {
-                    this.set(org.kevoree.meta.MetaDoubleDataType.ATT_MIN, p_obj);
-                    return this;
-                }
-
-                public getMax(): number {
-                    return <number>this.get(org.kevoree.meta.MetaDoubleDataType.ATT_MAX);
-                }
-
-                public setMax(p_obj: number): org.kevoree.DoubleDataType {
-                    this.set(org.kevoree.meta.MetaDoubleDataType.ATT_MAX, p_obj);
-                    return this;
-                }
-
-                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.DoubleDataType {
-                    this.add(org.kevoree.meta.MetaDoubleDataType.REL_METADATA, p_obj);
-                    return this;
-                }
-
-                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.DoubleDataType {
-                    this.remove(org.kevoree.meta.MetaDoubleDataType.REL_METADATA, p_obj);
-                    return this;
-                }
-
-                public getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void {
-                    if (cb == null) {
-                        return;
-                    }
-                    this.getRelation(org.kevoree.meta.MetaDoubleDataType.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
-                        var casted: org.kevoree.Value[] = new Array();
-                        for (var i: number = 0; i < kObjects.length; i++) {
-                            casted[i] = <org.kevoree.Value>kObjects[i];
-                        }
-                        cb(casted);
-                    });
-                }
-
-                public sizeOfMetaData(): number {
-                    return this.size(org.kevoree.meta.MetaDoubleDataType.REL_METADATA);
+                public sizeOfParams(): number {
+                    return this.size(org.kevoree.meta.MetaDictionaryType.REL_PARAMS);
                 }
 
             }
@@ -23282,6 +24532,77 @@ export module org {
 
                 public sizeOfMetaData(): number {
                     return this.size(org.kevoree.meta.MetaElement.REL_METADATA);
+                }
+
+            }
+
+            export class FragmentDictionaryImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.FragmentDictionary {
+
+                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
+                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
+                }
+
+                public getName(): string {
+                    return <string>this.get(org.kevoree.meta.MetaFragmentDictionary.ATT_NAME);
+                }
+
+                public setName(p_obj: string): org.kevoree.FragmentDictionary {
+                    this.set(org.kevoree.meta.MetaFragmentDictionary.ATT_NAME, p_obj);
+                    return this;
+                }
+
+                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.FragmentDictionary {
+                    this.add(org.kevoree.meta.MetaFragmentDictionary.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.FragmentDictionary {
+                    this.remove(org.kevoree.meta.MetaFragmentDictionary.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaFragmentDictionary.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Value[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.Value>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfMetaData(): number {
+                    return this.size(org.kevoree.meta.MetaFragmentDictionary.REL_METADATA);
+                }
+
+                public addParams(p_obj: org.kevoree.Param): org.kevoree.FragmentDictionary {
+                    this.add(org.kevoree.meta.MetaFragmentDictionary.REL_PARAMS, p_obj);
+                    return this;
+                }
+
+                public removeParams(p_obj: org.kevoree.Param): org.kevoree.FragmentDictionary {
+                    this.remove(org.kevoree.meta.MetaFragmentDictionary.REL_PARAMS, p_obj);
+                    return this;
+                }
+
+                public getParams(cb: org.kevoree.modeling.KCallback<org.kevoree.Param[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaFragmentDictionary.REL_PARAMS,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Param[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.Param>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfParams(): number {
+                    return this.size(org.kevoree.meta.MetaFragmentDictionary.REL_PARAMS);
                 }
 
             }
@@ -23355,6 +24676,33 @@ export module org {
                     return this.size(org.kevoree.meta.MetaGroup.REL_NODES);
                 }
 
+                public addDictionary(p_obj: org.kevoree.Dictionary): org.kevoree.Group {
+                    this.add(org.kevoree.meta.MetaGroup.REL_DICTIONARY, p_obj);
+                    return this;
+                }
+
+                public removeDictionary(p_obj: org.kevoree.Dictionary): org.kevoree.Group {
+                    this.remove(org.kevoree.meta.MetaGroup.REL_DICTIONARY, p_obj);
+                    return this;
+                }
+
+                public getDictionary(cb: org.kevoree.modeling.KCallback<org.kevoree.Dictionary[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaGroup.REL_DICTIONARY,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Dictionary[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.Dictionary>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfDictionary(): number {
+                    return this.size(org.kevoree.meta.MetaGroup.REL_DICTIONARY);
+                }
+
                 public addTypeDefinition(p_obj: org.kevoree.TypeDefinition): org.kevoree.Group {
                     this.add(org.kevoree.meta.MetaGroup.REL_TYPEDEFINITION, p_obj);
                     return this;
@@ -23382,31 +24730,31 @@ export module org {
                     return this.size(org.kevoree.meta.MetaGroup.REL_TYPEDEFINITION);
                 }
 
-                public addMetrics(p_obj: org.kevoree.Metric): org.kevoree.Group {
-                    this.add(org.kevoree.meta.MetaGroup.REL_METRICS, p_obj);
+                public addFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Group {
+                    this.add(org.kevoree.meta.MetaGroup.REL_FRAGMENTDICTIONARY, p_obj);
                     return this;
                 }
 
-                public removeMetrics(p_obj: org.kevoree.Metric): org.kevoree.Group {
-                    this.remove(org.kevoree.meta.MetaGroup.REL_METRICS, p_obj);
+                public removeFragmentDictionary(p_obj: org.kevoree.FragmentDictionary): org.kevoree.Group {
+                    this.remove(org.kevoree.meta.MetaGroup.REL_FRAGMENTDICTIONARY, p_obj);
                     return this;
                 }
 
-                public getMetrics(cb: org.kevoree.modeling.KCallback<org.kevoree.Metric[]>): void {
+                public getFragmentDictionary(cb: org.kevoree.modeling.KCallback<org.kevoree.FragmentDictionary[]>): void {
                     if (cb == null) {
                         return;
                     }
-                    this.getRelation(org.kevoree.meta.MetaGroup.REL_METRICS,  (kObjects : org.kevoree.modeling.KObject[]) => {
-                        var casted: org.kevoree.Metric[] = new Array();
+                    this.getRelation(org.kevoree.meta.MetaGroup.REL_FRAGMENTDICTIONARY,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.FragmentDictionary[] = new Array();
                         for (var i: number = 0; i < kObjects.length; i++) {
-                            casted[i] = <org.kevoree.Metric>kObjects[i];
+                            casted[i] = <org.kevoree.FragmentDictionary>kObjects[i];
                         }
                         cb(casted);
                     });
                 }
 
-                public sizeOfMetrics(): number {
-                    return this.size(org.kevoree.meta.MetaGroup.REL_METRICS);
+                public sizeOfFragmentDictionary(): number {
+                    return this.size(org.kevoree.meta.MetaGroup.REL_FRAGMENTDICTIONARY);
                 }
 
             }
@@ -23426,6 +24774,15 @@ export module org {
                     return this;
                 }
 
+                public getDescription(): string {
+                    return <string>this.get(org.kevoree.meta.MetaGroupType.ATT_DESCRIPTION);
+                }
+
+                public setDescription(p_obj: string): org.kevoree.GroupType {
+                    this.set(org.kevoree.meta.MetaGroupType.ATT_DESCRIPTION, p_obj);
+                    return this;
+                }
+
                 public getRemote(): boolean {
                     return <boolean>this.get(org.kevoree.meta.MetaGroupType.ATT_REMOTE);
                 }
@@ -23435,11 +24792,11 @@ export module org {
                     return this;
                 }
 
-                public getVersion(): string {
-                    return <string>this.get(org.kevoree.meta.MetaGroupType.ATT_VERSION);
+                public getVersion(): number {
+                    return <number>this.get(org.kevoree.meta.MetaGroupType.ATT_VERSION);
                 }
 
-                public setVersion(p_obj: string): org.kevoree.GroupType {
+                public setVersion(p_obj: number): org.kevoree.GroupType {
                     this.set(org.kevoree.meta.MetaGroupType.ATT_VERSION, p_obj);
                     return this;
                 }
@@ -23667,6 +25024,33 @@ export module org {
                     return this.size(org.kevoree.meta.MetaInstance.REL_METADATA);
                 }
 
+                public addDictionary(p_obj: org.kevoree.Dictionary): org.kevoree.Instance {
+                    this.add(org.kevoree.meta.MetaInstance.REL_DICTIONARY, p_obj);
+                    return this;
+                }
+
+                public removeDictionary(p_obj: org.kevoree.Dictionary): org.kevoree.Instance {
+                    this.remove(org.kevoree.meta.MetaInstance.REL_DICTIONARY, p_obj);
+                    return this;
+                }
+
+                public getDictionary(cb: org.kevoree.modeling.KCallback<org.kevoree.Dictionary[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaInstance.REL_DICTIONARY,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Dictionary[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.Dictionary>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfDictionary(): number {
+                    return this.size(org.kevoree.meta.MetaInstance.REL_DICTIONARY);
+                }
+
                 public addTypeDefinition(p_obj: org.kevoree.TypeDefinition): org.kevoree.Instance {
                     this.add(org.kevoree.meta.MetaInstance.REL_TYPEDEFINITION, p_obj);
                     return this;
@@ -23694,95 +25078,6 @@ export module org {
                     return this.size(org.kevoree.meta.MetaInstance.REL_TYPEDEFINITION);
                 }
 
-                public addMetrics(p_obj: org.kevoree.Metric): org.kevoree.Instance {
-                    this.add(org.kevoree.meta.MetaInstance.REL_METRICS, p_obj);
-                    return this;
-                }
-
-                public removeMetrics(p_obj: org.kevoree.Metric): org.kevoree.Instance {
-                    this.remove(org.kevoree.meta.MetaInstance.REL_METRICS, p_obj);
-                    return this;
-                }
-
-                public getMetrics(cb: org.kevoree.modeling.KCallback<org.kevoree.Metric[]>): void {
-                    if (cb == null) {
-                        return;
-                    }
-                    this.getRelation(org.kevoree.meta.MetaInstance.REL_METRICS,  (kObjects : org.kevoree.modeling.KObject[]) => {
-                        var casted: org.kevoree.Metric[] = new Array();
-                        for (var i: number = 0; i < kObjects.length; i++) {
-                            casted[i] = <org.kevoree.Metric>kObjects[i];
-                        }
-                        cb(casted);
-                    });
-                }
-
-                public sizeOfMetrics(): number {
-                    return this.size(org.kevoree.meta.MetaInstance.REL_METRICS);
-                }
-
-            }
-
-            export class IntDataTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.IntDataType {
-
-                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
-                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
-                }
-
-                public getDefault(): number {
-                    return <number>this.get(org.kevoree.meta.MetaIntDataType.ATT_DEFAULT);
-                }
-
-                public setDefault(p_obj: number): org.kevoree.IntDataType {
-                    this.set(org.kevoree.meta.MetaIntDataType.ATT_DEFAULT, p_obj);
-                    return this;
-                }
-
-                public getMin(): number {
-                    return <number>this.get(org.kevoree.meta.MetaIntDataType.ATT_MIN);
-                }
-
-                public setMin(p_obj: number): org.kevoree.IntDataType {
-                    this.set(org.kevoree.meta.MetaIntDataType.ATT_MIN, p_obj);
-                    return this;
-                }
-
-                public getMax(): number {
-                    return <number>this.get(org.kevoree.meta.MetaIntDataType.ATT_MAX);
-                }
-
-                public setMax(p_obj: number): org.kevoree.IntDataType {
-                    this.set(org.kevoree.meta.MetaIntDataType.ATT_MAX, p_obj);
-                    return this;
-                }
-
-                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.IntDataType {
-                    this.add(org.kevoree.meta.MetaIntDataType.REL_METADATA, p_obj);
-                    return this;
-                }
-
-                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.IntDataType {
-                    this.remove(org.kevoree.meta.MetaIntDataType.REL_METADATA, p_obj);
-                    return this;
-                }
-
-                public getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void {
-                    if (cb == null) {
-                        return;
-                    }
-                    this.getRelation(org.kevoree.meta.MetaIntDataType.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
-                        var casted: org.kevoree.Value[] = new Array();
-                        for (var i: number = 0; i < kObjects.length; i++) {
-                            casted[i] = <org.kevoree.Value>kObjects[i];
-                        }
-                        cb(casted);
-                    });
-                }
-
-                public sizeOfMetaData(): number {
-                    return this.size(org.kevoree.meta.MetaIntDataType.REL_METADATA);
-                }
-
             }
 
             export class ItemImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.Item {
@@ -23802,19 +25097,28 @@ export module org {
 
             }
 
-            export class ListDataTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.ListDataType {
+            export class ListParamImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.ListParam {
 
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
                     super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
                 }
 
-                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.ListDataType {
-                    this.add(org.kevoree.meta.MetaListDataType.REL_METADATA, p_obj);
+                public getName(): string {
+                    return <string>this.get(org.kevoree.meta.MetaListParam.ATT_NAME);
+                }
+
+                public setName(p_obj: string): org.kevoree.ListParam {
+                    this.set(org.kevoree.meta.MetaListParam.ATT_NAME, p_obj);
                     return this;
                 }
 
-                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.ListDataType {
-                    this.remove(org.kevoree.meta.MetaListDataType.REL_METADATA, p_obj);
+                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.ListParam {
+                    this.add(org.kevoree.meta.MetaListParam.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.ListParam {
+                    this.remove(org.kevoree.meta.MetaListParam.REL_METADATA, p_obj);
                     return this;
                 }
 
@@ -23822,7 +25126,7 @@ export module org {
                     if (cb == null) {
                         return;
                     }
-                    this.getRelation(org.kevoree.meta.MetaListDataType.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                    this.getRelation(org.kevoree.meta.MetaListParam.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
                         var casted: org.kevoree.Value[] = new Array();
                         for (var i: number = 0; i < kObjects.length; i++) {
                             casted[i] = <org.kevoree.Value>kObjects[i];
@@ -23832,16 +25136,132 @@ export module org {
                 }
 
                 public sizeOfMetaData(): number {
-                    return this.size(org.kevoree.meta.MetaListDataType.REL_METADATA);
+                    return this.size(org.kevoree.meta.MetaListParam.REL_METADATA);
                 }
 
-                public addDefault(p_obj: org.kevoree.Item): org.kevoree.ListDataType {
-                    this.add(org.kevoree.meta.MetaListDataType.REL_DEFAULT, p_obj);
+                public addValues(p_obj: org.kevoree.Item): org.kevoree.ListParam {
+                    this.add(org.kevoree.meta.MetaListParam.REL_VALUES, p_obj);
                     return this;
                 }
 
-                public removeDefault(p_obj: org.kevoree.Item): org.kevoree.ListDataType {
-                    this.remove(org.kevoree.meta.MetaListDataType.REL_DEFAULT, p_obj);
+                public removeValues(p_obj: org.kevoree.Item): org.kevoree.ListParam {
+                    this.remove(org.kevoree.meta.MetaListParam.REL_VALUES, p_obj);
+                    return this;
+                }
+
+                public getValues(cb: org.kevoree.modeling.KCallback<org.kevoree.Item[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaListParam.REL_VALUES,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Item[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.Item>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfValues(): number {
+                    return this.size(org.kevoree.meta.MetaListParam.REL_VALUES);
+                }
+
+                public addType(p_obj: org.kevoree.ParamType): org.kevoree.ListParam {
+                    this.add(org.kevoree.meta.MetaListParam.REL_TYPE, p_obj);
+                    return this;
+                }
+
+                public removeType(p_obj: org.kevoree.ParamType): org.kevoree.ListParam {
+                    this.remove(org.kevoree.meta.MetaListParam.REL_TYPE, p_obj);
+                    return this;
+                }
+
+                public getType(cb: org.kevoree.modeling.KCallback<org.kevoree.ParamType[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaListParam.REL_TYPE,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.ParamType[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.ParamType>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfType(): number {
+                    return this.size(org.kevoree.meta.MetaListParam.REL_TYPE);
+                }
+
+            }
+
+            export class ListParamTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.ListParamType {
+
+                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
+                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
+                }
+
+                public getFragment(): boolean {
+                    return <boolean>this.get(org.kevoree.meta.MetaListParamType.ATT_FRAGMENT);
+                }
+
+                public setFragment(p_obj: boolean): org.kevoree.ListParamType {
+                    this.set(org.kevoree.meta.MetaListParamType.ATT_FRAGMENT, p_obj);
+                    return this;
+                }
+
+                public getName(): string {
+                    return <string>this.get(org.kevoree.meta.MetaListParamType.ATT_NAME);
+                }
+
+                public setName(p_obj: string): org.kevoree.ListParamType {
+                    this.set(org.kevoree.meta.MetaListParamType.ATT_NAME, p_obj);
+                    return this;
+                }
+
+                public getRequired(): boolean {
+                    return <boolean>this.get(org.kevoree.meta.MetaListParamType.ATT_REQUIRED);
+                }
+
+                public setRequired(p_obj: boolean): org.kevoree.ListParamType {
+                    this.set(org.kevoree.meta.MetaListParamType.ATT_REQUIRED, p_obj);
+                    return this;
+                }
+
+                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.ListParamType {
+                    this.add(org.kevoree.meta.MetaListParamType.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.ListParamType {
+                    this.remove(org.kevoree.meta.MetaListParamType.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaListParamType.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Value[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.Value>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfMetaData(): number {
+                    return this.size(org.kevoree.meta.MetaListParamType.REL_METADATA);
+                }
+
+                public addDefault(p_obj: org.kevoree.Item): org.kevoree.ListParamType {
+                    this.add(org.kevoree.meta.MetaListParamType.REL_DEFAULT, p_obj);
+                    return this;
+                }
+
+                public removeDefault(p_obj: org.kevoree.Item): org.kevoree.ListParamType {
+                    this.remove(org.kevoree.meta.MetaListParamType.REL_DEFAULT, p_obj);
                     return this;
                 }
 
@@ -23849,7 +25269,7 @@ export module org {
                     if (cb == null) {
                         return;
                     }
-                    this.getRelation(org.kevoree.meta.MetaListDataType.REL_DEFAULT,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                    this.getRelation(org.kevoree.meta.MetaListParamType.REL_DEFAULT,  (kObjects : org.kevoree.modeling.KObject[]) => {
                         var casted: org.kevoree.Item[] = new Array();
                         for (var i: number = 0; i < kObjects.length; i++) {
                             casted[i] = <org.kevoree.Item>kObjects[i];
@@ -23859,104 +25279,69 @@ export module org {
                 }
 
                 public sizeOfDefault(): number {
-                    return this.size(org.kevoree.meta.MetaListDataType.REL_DEFAULT);
+                    return this.size(org.kevoree.meta.MetaListParamType.REL_DEFAULT);
                 }
 
-            }
-
-            export class LongDataTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.LongDataType {
-
-                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
-                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
-                }
-
-                public getDefault(): number {
-                    return <number>this.get(org.kevoree.meta.MetaLongDataType.ATT_DEFAULT);
-                }
-
-                public setDefault(p_obj: number): org.kevoree.LongDataType {
-                    this.set(org.kevoree.meta.MetaLongDataType.ATT_DEFAULT, p_obj);
+                public addConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.ListParamType {
+                    this.add(org.kevoree.meta.MetaListParamType.REL_CONSTRAINTS, p_obj);
                     return this;
                 }
 
-                public getMin(): number {
-                    return <number>this.get(org.kevoree.meta.MetaLongDataType.ATT_MIN);
-                }
-
-                public setMin(p_obj: number): org.kevoree.LongDataType {
-                    this.set(org.kevoree.meta.MetaLongDataType.ATT_MIN, p_obj);
+                public removeConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.ListParamType {
+                    this.remove(org.kevoree.meta.MetaListParamType.REL_CONSTRAINTS, p_obj);
                     return this;
                 }
 
-                public getMax(): number {
-                    return <number>this.get(org.kevoree.meta.MetaLongDataType.ATT_MAX);
-                }
-
-                public setMax(p_obj: number): org.kevoree.LongDataType {
-                    this.set(org.kevoree.meta.MetaLongDataType.ATT_MAX, p_obj);
-                    return this;
-                }
-
-                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.LongDataType {
-                    this.add(org.kevoree.meta.MetaLongDataType.REL_METADATA, p_obj);
-                    return this;
-                }
-
-                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.LongDataType {
-                    this.remove(org.kevoree.meta.MetaLongDataType.REL_METADATA, p_obj);
-                    return this;
-                }
-
-                public getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void {
+                public getConstraints(cb: org.kevoree.modeling.KCallback<org.kevoree.AbstractConstraint[]>): void {
                     if (cb == null) {
                         return;
                     }
-                    this.getRelation(org.kevoree.meta.MetaLongDataType.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
-                        var casted: org.kevoree.Value[] = new Array();
+                    this.getRelation(org.kevoree.meta.MetaListParamType.REL_CONSTRAINTS,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.AbstractConstraint[] = new Array();
                         for (var i: number = 0; i < kObjects.length; i++) {
-                            casted[i] = <org.kevoree.Value>kObjects[i];
+                            casted[i] = <org.kevoree.AbstractConstraint>kObjects[i];
                         }
                         cb(casted);
                     });
                 }
 
-                public sizeOfMetaData(): number {
-                    return this.size(org.kevoree.meta.MetaLongDataType.REL_METADATA);
+                public sizeOfConstraints(): number {
+                    return this.size(org.kevoree.meta.MetaListParamType.REL_CONSTRAINTS);
                 }
 
             }
 
-            export class MetricImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.Metric {
+            export class MaxConstraintImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.MaxConstraint {
 
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
                     super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
                 }
 
-                public getName(): string {
-                    return <string>this.get(org.kevoree.meta.MetaMetric.ATT_NAME);
+                public getExclusive(): boolean {
+                    return <boolean>this.get(org.kevoree.meta.MetaMaxConstraint.ATT_EXCLUSIVE);
                 }
 
-                public setName(p_obj: string): org.kevoree.Metric {
-                    this.set(org.kevoree.meta.MetaMetric.ATT_NAME, p_obj);
+                public setExclusive(p_obj: boolean): org.kevoree.MaxConstraint {
+                    this.set(org.kevoree.meta.MetaMaxConstraint.ATT_EXCLUSIVE, p_obj);
                     return this;
                 }
 
                 public getValue(): number {
-                    return <number>this.get(org.kevoree.meta.MetaMetric.ATT_VALUE);
+                    return <number>this.get(org.kevoree.meta.MetaMaxConstraint.ATT_VALUE);
                 }
 
-                public setValue(p_obj: number): org.kevoree.Metric {
-                    this.set(org.kevoree.meta.MetaMetric.ATT_VALUE, p_obj);
+                public setValue(p_obj: number): org.kevoree.MaxConstraint {
+                    this.set(org.kevoree.meta.MetaMaxConstraint.ATT_VALUE, p_obj);
                     return this;
                 }
 
-                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.Metric {
-                    this.add(org.kevoree.meta.MetaMetric.REL_METADATA, p_obj);
+                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.MaxConstraint {
+                    this.add(org.kevoree.meta.MetaMaxConstraint.REL_METADATA, p_obj);
                     return this;
                 }
 
-                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.Metric {
-                    this.remove(org.kevoree.meta.MetaMetric.REL_METADATA, p_obj);
+                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.MaxConstraint {
+                    this.remove(org.kevoree.meta.MetaMaxConstraint.REL_METADATA, p_obj);
                     return this;
                 }
 
@@ -23964,7 +25349,7 @@ export module org {
                     if (cb == null) {
                         return;
                     }
-                    this.getRelation(org.kevoree.meta.MetaMetric.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                    this.getRelation(org.kevoree.meta.MetaMaxConstraint.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
                         var casted: org.kevoree.Value[] = new Array();
                         for (var i: number = 0; i < kObjects.length; i++) {
                             casted[i] = <org.kevoree.Value>kObjects[i];
@@ -23974,7 +25359,60 @@ export module org {
                 }
 
                 public sizeOfMetaData(): number {
-                    return this.size(org.kevoree.meta.MetaMetric.REL_METADATA);
+                    return this.size(org.kevoree.meta.MetaMaxConstraint.REL_METADATA);
+                }
+
+            }
+
+            export class MinConstraintImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.MinConstraint {
+
+                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
+                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
+                }
+
+                public getExclusive(): boolean {
+                    return <boolean>this.get(org.kevoree.meta.MetaMinConstraint.ATT_EXCLUSIVE);
+                }
+
+                public setExclusive(p_obj: boolean): org.kevoree.MinConstraint {
+                    this.set(org.kevoree.meta.MetaMinConstraint.ATT_EXCLUSIVE, p_obj);
+                    return this;
+                }
+
+                public getValue(): number {
+                    return <number>this.get(org.kevoree.meta.MetaMinConstraint.ATT_VALUE);
+                }
+
+                public setValue(p_obj: number): org.kevoree.MinConstraint {
+                    this.set(org.kevoree.meta.MetaMinConstraint.ATT_VALUE, p_obj);
+                    return this;
+                }
+
+                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.MinConstraint {
+                    this.add(org.kevoree.meta.MetaMinConstraint.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.MinConstraint {
+                    this.remove(org.kevoree.meta.MetaMinConstraint.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaMinConstraint.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Value[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.Value>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfMetaData(): number {
+                    return this.size(org.kevoree.meta.MetaMinConstraint.REL_METADATA);
                 }
 
             }
@@ -24122,6 +25560,50 @@ export module org {
 
             }
 
+            export class MultilineConstraintImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.MultilineConstraint {
+
+                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
+                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
+                }
+
+                public getValue(): boolean {
+                    return <boolean>this.get(org.kevoree.meta.MetaMultilineConstraint.ATT_VALUE);
+                }
+
+                public setValue(p_obj: boolean): org.kevoree.MultilineConstraint {
+                    this.set(org.kevoree.meta.MetaMultilineConstraint.ATT_VALUE, p_obj);
+                    return this;
+                }
+
+                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.MultilineConstraint {
+                    this.add(org.kevoree.meta.MetaMultilineConstraint.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.MultilineConstraint {
+                    this.remove(org.kevoree.meta.MetaMultilineConstraint.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaMultilineConstraint.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Value[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.Value>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfMetaData(): number {
+                    return this.size(org.kevoree.meta.MetaMultilineConstraint.REL_METADATA);
+                }
+
+            }
+
             export class NamespaceImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.Namespace {
 
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
@@ -24262,6 +25744,33 @@ export module org {
                     return this.size(org.kevoree.meta.MetaNode.REL_COMPONENTS);
                 }
 
+                public addDictionary(p_obj: org.kevoree.Dictionary): org.kevoree.Node {
+                    this.add(org.kevoree.meta.MetaNode.REL_DICTIONARY, p_obj);
+                    return this;
+                }
+
+                public removeDictionary(p_obj: org.kevoree.Dictionary): org.kevoree.Node {
+                    this.remove(org.kevoree.meta.MetaNode.REL_DICTIONARY, p_obj);
+                    return this;
+                }
+
+                public getDictionary(cb: org.kevoree.modeling.KCallback<org.kevoree.Dictionary[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaNode.REL_DICTIONARY,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Dictionary[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.Dictionary>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfDictionary(): number {
+                    return this.size(org.kevoree.meta.MetaNode.REL_DICTIONARY);
+                }
+
                 public addTypeDefinition(p_obj: org.kevoree.TypeDefinition): org.kevoree.Node {
                     this.add(org.kevoree.meta.MetaNode.REL_TYPEDEFINITION, p_obj);
                     return this;
@@ -24370,33 +25879,6 @@ export module org {
                     return this.size(org.kevoree.meta.MetaNode.REL_SUBNODES);
                 }
 
-                public addMetrics(p_obj: org.kevoree.Metric): org.kevoree.Node {
-                    this.add(org.kevoree.meta.MetaNode.REL_METRICS, p_obj);
-                    return this;
-                }
-
-                public removeMetrics(p_obj: org.kevoree.Metric): org.kevoree.Node {
-                    this.remove(org.kevoree.meta.MetaNode.REL_METRICS, p_obj);
-                    return this;
-                }
-
-                public getMetrics(cb: org.kevoree.modeling.KCallback<org.kevoree.Metric[]>): void {
-                    if (cb == null) {
-                        return;
-                    }
-                    this.getRelation(org.kevoree.meta.MetaNode.REL_METRICS,  (kObjects : org.kevoree.modeling.KObject[]) => {
-                        var casted: org.kevoree.Metric[] = new Array();
-                        for (var i: number = 0; i < kObjects.length; i++) {
-                            casted[i] = <org.kevoree.Metric>kObjects[i];
-                        }
-                        cb(casted);
-                    });
-                }
-
-                public sizeOfMetrics(): number {
-                    return this.size(org.kevoree.meta.MetaNode.REL_METRICS);
-                }
-
             }
 
             export class NodeTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.NodeType {
@@ -24414,11 +25896,20 @@ export module org {
                     return this;
                 }
 
-                public getVersion(): string {
-                    return <string>this.get(org.kevoree.meta.MetaNodeType.ATT_VERSION);
+                public getDescription(): string {
+                    return <string>this.get(org.kevoree.meta.MetaNodeType.ATT_DESCRIPTION);
                 }
 
-                public setVersion(p_obj: string): org.kevoree.NodeType {
+                public setDescription(p_obj: string): org.kevoree.NodeType {
+                    this.set(org.kevoree.meta.MetaNodeType.ATT_DESCRIPTION, p_obj);
+                    return this;
+                }
+
+                public getVersion(): number {
+                    return <number>this.get(org.kevoree.meta.MetaNodeType.ATT_VERSION);
+                }
+
+                public setVersion(p_obj: number): org.kevoree.NodeType {
                     this.set(org.kevoree.meta.MetaNodeType.ATT_VERSION, p_obj);
                     return this;
                 }
@@ -24502,6 +25993,201 @@ export module org {
 
                 public sizeOfDeployUnits(): number {
                     return this.size(org.kevoree.meta.MetaNodeType.REL_DEPLOYUNITS);
+                }
+
+            }
+
+            export class NumberParamImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.NumberParam {
+
+                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
+                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
+                }
+
+                public getName(): string {
+                    return <string>this.get(org.kevoree.meta.MetaNumberParam.ATT_NAME);
+                }
+
+                public setName(p_obj: string): org.kevoree.NumberParam {
+                    this.set(org.kevoree.meta.MetaNumberParam.ATT_NAME, p_obj);
+                    return this;
+                }
+
+                public getValue(): string {
+                    return <string>this.get(org.kevoree.meta.MetaNumberParam.ATT_VALUE);
+                }
+
+                public setValue(p_obj: string): org.kevoree.NumberParam {
+                    this.set(org.kevoree.meta.MetaNumberParam.ATT_VALUE, p_obj);
+                    return this;
+                }
+
+                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.NumberParam {
+                    this.add(org.kevoree.meta.MetaNumberParam.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.NumberParam {
+                    this.remove(org.kevoree.meta.MetaNumberParam.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaNumberParam.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Value[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.Value>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfMetaData(): number {
+                    return this.size(org.kevoree.meta.MetaNumberParam.REL_METADATA);
+                }
+
+                public addType(p_obj: org.kevoree.ParamType): org.kevoree.NumberParam {
+                    this.add(org.kevoree.meta.MetaNumberParam.REL_TYPE, p_obj);
+                    return this;
+                }
+
+                public removeType(p_obj: org.kevoree.ParamType): org.kevoree.NumberParam {
+                    this.remove(org.kevoree.meta.MetaNumberParam.REL_TYPE, p_obj);
+                    return this;
+                }
+
+                public getType(cb: org.kevoree.modeling.KCallback<org.kevoree.ParamType[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaNumberParam.REL_TYPE,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.ParamType[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.ParamType>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfType(): number {
+                    return this.size(org.kevoree.meta.MetaNumberParam.REL_TYPE);
+                }
+
+            }
+
+            export class NumberParamTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.NumberParamType {
+
+                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
+                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
+                }
+
+                public getDefault(): string {
+                    return <string>this.get(org.kevoree.meta.MetaNumberParamType.ATT_DEFAULT);
+                }
+
+                public setDefault(p_obj: string): org.kevoree.NumberParamType {
+                    this.set(org.kevoree.meta.MetaNumberParamType.ATT_DEFAULT, p_obj);
+                    return this;
+                }
+
+                public getFragment(): boolean {
+                    return <boolean>this.get(org.kevoree.meta.MetaNumberParamType.ATT_FRAGMENT);
+                }
+
+                public setFragment(p_obj: boolean): org.kevoree.NumberParamType {
+                    this.set(org.kevoree.meta.MetaNumberParamType.ATT_FRAGMENT, p_obj);
+                    return this;
+                }
+
+                public getName(): string {
+                    return <string>this.get(org.kevoree.meta.MetaNumberParamType.ATT_NAME);
+                }
+
+                public setName(p_obj: string): org.kevoree.NumberParamType {
+                    this.set(org.kevoree.meta.MetaNumberParamType.ATT_NAME, p_obj);
+                    return this;
+                }
+
+                public getType(): org.kevoree.NumberType {
+                    return <org.kevoree.NumberType>this.get(org.kevoree.meta.MetaNumberParamType.ATT_TYPE);
+                }
+
+                public setType(p_obj: org.kevoree.NumberType): org.kevoree.NumberParamType {
+                    this.set(org.kevoree.meta.MetaNumberParamType.ATT_TYPE, p_obj);
+                    return this;
+                }
+
+                public getRequired(): boolean {
+                    return <boolean>this.get(org.kevoree.meta.MetaNumberParamType.ATT_REQUIRED);
+                }
+
+                public setRequired(p_obj: boolean): org.kevoree.NumberParamType {
+                    this.set(org.kevoree.meta.MetaNumberParamType.ATT_REQUIRED, p_obj);
+                    return this;
+                }
+
+                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.NumberParamType {
+                    this.add(org.kevoree.meta.MetaNumberParamType.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.NumberParamType {
+                    this.remove(org.kevoree.meta.MetaNumberParamType.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaNumberParamType.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Value[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.Value>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfMetaData(): number {
+                    return this.size(org.kevoree.meta.MetaNumberParamType.REL_METADATA);
+                }
+
+                public addConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.NumberParamType {
+                    this.add(org.kevoree.meta.MetaNumberParamType.REL_CONSTRAINTS, p_obj);
+                    return this;
+                }
+
+                public removeConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.NumberParamType {
+                    this.remove(org.kevoree.meta.MetaNumberParamType.REL_CONSTRAINTS, p_obj);
+                    return this;
+                }
+
+                public getConstraints(cb: org.kevoree.modeling.KCallback<org.kevoree.AbstractConstraint[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaNumberParamType.REL_CONSTRAINTS,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.AbstractConstraint[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.AbstractConstraint>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfConstraints(): number {
+                    return this.size(org.kevoree.meta.MetaNumberParamType.REL_CONSTRAINTS);
+                }
+
+            }
+
+            export class NumberTypeLiteral extends org.kevoree.modeling.meta.impl.MetaLiteral implements org.kevoree.NumberType {
+
+                constructor(p_name: string, p_index: number, p_className: string) {
+                    super(p_name, p_index, p_className);
                 }
 
             }
@@ -24600,6 +26286,166 @@ export module org {
 
                 public sizeOfType(): number {
                     return this.size(org.kevoree.meta.MetaOutputPort.REL_TYPE);
+                }
+
+            }
+
+            export class ParamImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.Param {
+
+                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
+                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
+                }
+
+                public getName(): string {
+                    return <string>this.get(org.kevoree.meta.MetaParam.ATT_NAME);
+                }
+
+                public setName(p_obj: string): org.kevoree.Param {
+                    this.set(org.kevoree.meta.MetaParam.ATT_NAME, p_obj);
+                    return this;
+                }
+
+                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.Param {
+                    this.add(org.kevoree.meta.MetaParam.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.Param {
+                    this.remove(org.kevoree.meta.MetaParam.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaParam.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Value[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.Value>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfMetaData(): number {
+                    return this.size(org.kevoree.meta.MetaParam.REL_METADATA);
+                }
+
+                public addType(p_obj: org.kevoree.ParamType): org.kevoree.Param {
+                    this.add(org.kevoree.meta.MetaParam.REL_TYPE, p_obj);
+                    return this;
+                }
+
+                public removeType(p_obj: org.kevoree.ParamType): org.kevoree.Param {
+                    this.remove(org.kevoree.meta.MetaParam.REL_TYPE, p_obj);
+                    return this;
+                }
+
+                public getType(cb: org.kevoree.modeling.KCallback<org.kevoree.ParamType[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaParam.REL_TYPE,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.ParamType[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.ParamType>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfType(): number {
+                    return this.size(org.kevoree.meta.MetaParam.REL_TYPE);
+                }
+
+            }
+
+            export class ParamTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.ParamType {
+
+                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
+                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
+                }
+
+                public getFragment(): boolean {
+                    return <boolean>this.get(org.kevoree.meta.MetaParamType.ATT_FRAGMENT);
+                }
+
+                public setFragment(p_obj: boolean): org.kevoree.ParamType {
+                    this.set(org.kevoree.meta.MetaParamType.ATT_FRAGMENT, p_obj);
+                    return this;
+                }
+
+                public getName(): string {
+                    return <string>this.get(org.kevoree.meta.MetaParamType.ATT_NAME);
+                }
+
+                public setName(p_obj: string): org.kevoree.ParamType {
+                    this.set(org.kevoree.meta.MetaParamType.ATT_NAME, p_obj);
+                    return this;
+                }
+
+                public getRequired(): boolean {
+                    return <boolean>this.get(org.kevoree.meta.MetaParamType.ATT_REQUIRED);
+                }
+
+                public setRequired(p_obj: boolean): org.kevoree.ParamType {
+                    this.set(org.kevoree.meta.MetaParamType.ATT_REQUIRED, p_obj);
+                    return this;
+                }
+
+                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.ParamType {
+                    this.add(org.kevoree.meta.MetaParamType.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.ParamType {
+                    this.remove(org.kevoree.meta.MetaParamType.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaParamType.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Value[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.Value>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfMetaData(): number {
+                    return this.size(org.kevoree.meta.MetaParamType.REL_METADATA);
+                }
+
+                public addConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.ParamType {
+                    this.add(org.kevoree.meta.MetaParamType.REL_CONSTRAINTS, p_obj);
+                    return this;
+                }
+
+                public removeConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.ParamType {
+                    this.remove(org.kevoree.meta.MetaParamType.REL_CONSTRAINTS, p_obj);
+                    return this;
+                }
+
+                public getConstraints(cb: org.kevoree.modeling.KCallback<org.kevoree.AbstractConstraint[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaParamType.REL_CONSTRAINTS,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.AbstractConstraint[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.AbstractConstraint>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfConstraints(): number {
+                    return this.size(org.kevoree.meta.MetaParamType.REL_CONSTRAINTS);
                 }
 
             }
@@ -24773,37 +26619,37 @@ export module org {
 
             }
 
-            export class StringDataTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.StringDataType {
+            export class StringParamImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.StringParam {
 
                 constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
                     super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
                 }
 
-                public getDefault(): string {
-                    return <string>this.get(org.kevoree.meta.MetaStringDataType.ATT_DEFAULT);
+                public getName(): string {
+                    return <string>this.get(org.kevoree.meta.MetaStringParam.ATT_NAME);
                 }
 
-                public setDefault(p_obj: string): org.kevoree.StringDataType {
-                    this.set(org.kevoree.meta.MetaStringDataType.ATT_DEFAULT, p_obj);
+                public setName(p_obj: string): org.kevoree.StringParam {
+                    this.set(org.kevoree.meta.MetaStringParam.ATT_NAME, p_obj);
                     return this;
                 }
 
-                public getMultiline(): boolean {
-                    return <boolean>this.get(org.kevoree.meta.MetaStringDataType.ATT_MULTILINE);
+                public getValue(): string {
+                    return <string>this.get(org.kevoree.meta.MetaStringParam.ATT_VALUE);
                 }
 
-                public setMultiline(p_obj: boolean): org.kevoree.StringDataType {
-                    this.set(org.kevoree.meta.MetaStringDataType.ATT_MULTILINE, p_obj);
+                public setValue(p_obj: string): org.kevoree.StringParam {
+                    this.set(org.kevoree.meta.MetaStringParam.ATT_VALUE, p_obj);
                     return this;
                 }
 
-                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.StringDataType {
-                    this.add(org.kevoree.meta.MetaStringDataType.REL_METADATA, p_obj);
+                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.StringParam {
+                    this.add(org.kevoree.meta.MetaStringParam.REL_METADATA, p_obj);
                     return this;
                 }
 
-                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.StringDataType {
-                    this.remove(org.kevoree.meta.MetaStringDataType.REL_METADATA, p_obj);
+                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.StringParam {
+                    this.remove(org.kevoree.meta.MetaStringParam.REL_METADATA, p_obj);
                     return this;
                 }
 
@@ -24811,7 +26657,7 @@ export module org {
                     if (cb == null) {
                         return;
                     }
-                    this.getRelation(org.kevoree.meta.MetaStringDataType.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                    this.getRelation(org.kevoree.meta.MetaStringParam.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
                         var casted: org.kevoree.Value[] = new Array();
                         for (var i: number = 0; i < kObjects.length; i++) {
                             casted[i] = <org.kevoree.Value>kObjects[i];
@@ -24821,7 +26667,132 @@ export module org {
                 }
 
                 public sizeOfMetaData(): number {
-                    return this.size(org.kevoree.meta.MetaStringDataType.REL_METADATA);
+                    return this.size(org.kevoree.meta.MetaStringParam.REL_METADATA);
+                }
+
+                public addType(p_obj: org.kevoree.ParamType): org.kevoree.StringParam {
+                    this.add(org.kevoree.meta.MetaStringParam.REL_TYPE, p_obj);
+                    return this;
+                }
+
+                public removeType(p_obj: org.kevoree.ParamType): org.kevoree.StringParam {
+                    this.remove(org.kevoree.meta.MetaStringParam.REL_TYPE, p_obj);
+                    return this;
+                }
+
+                public getType(cb: org.kevoree.modeling.KCallback<org.kevoree.ParamType[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaStringParam.REL_TYPE,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.ParamType[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.ParamType>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfType(): number {
+                    return this.size(org.kevoree.meta.MetaStringParam.REL_TYPE);
+                }
+
+            }
+
+            export class StringParamTypeImpl extends org.kevoree.modeling.abs.AbstractKObject implements org.kevoree.StringParamType {
+
+                constructor(p_universe: number, p_time: number, p_uuid: number, p_metaClass: org.kevoree.modeling.meta.KMetaClass, p_manager: org.kevoree.modeling.memory.manager.internal.KInternalDataManager, p_previousUniverse: number, p_previoustTime: number) {
+                    super(p_universe, p_time, p_uuid, p_metaClass, p_manager, p_previousUniverse, p_previoustTime);
+                }
+
+                public getDefault(): string {
+                    return <string>this.get(org.kevoree.meta.MetaStringParamType.ATT_DEFAULT);
+                }
+
+                public setDefault(p_obj: string): org.kevoree.StringParamType {
+                    this.set(org.kevoree.meta.MetaStringParamType.ATT_DEFAULT, p_obj);
+                    return this;
+                }
+
+                public getFragment(): boolean {
+                    return <boolean>this.get(org.kevoree.meta.MetaStringParamType.ATT_FRAGMENT);
+                }
+
+                public setFragment(p_obj: boolean): org.kevoree.StringParamType {
+                    this.set(org.kevoree.meta.MetaStringParamType.ATT_FRAGMENT, p_obj);
+                    return this;
+                }
+
+                public getName(): string {
+                    return <string>this.get(org.kevoree.meta.MetaStringParamType.ATT_NAME);
+                }
+
+                public setName(p_obj: string): org.kevoree.StringParamType {
+                    this.set(org.kevoree.meta.MetaStringParamType.ATT_NAME, p_obj);
+                    return this;
+                }
+
+                public getRequired(): boolean {
+                    return <boolean>this.get(org.kevoree.meta.MetaStringParamType.ATT_REQUIRED);
+                }
+
+                public setRequired(p_obj: boolean): org.kevoree.StringParamType {
+                    this.set(org.kevoree.meta.MetaStringParamType.ATT_REQUIRED, p_obj);
+                    return this;
+                }
+
+                public addMetaData(p_obj: org.kevoree.Value): org.kevoree.StringParamType {
+                    this.add(org.kevoree.meta.MetaStringParamType.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public removeMetaData(p_obj: org.kevoree.Value): org.kevoree.StringParamType {
+                    this.remove(org.kevoree.meta.MetaStringParamType.REL_METADATA, p_obj);
+                    return this;
+                }
+
+                public getMetaData(cb: org.kevoree.modeling.KCallback<org.kevoree.Value[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaStringParamType.REL_METADATA,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.Value[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.Value>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfMetaData(): number {
+                    return this.size(org.kevoree.meta.MetaStringParamType.REL_METADATA);
+                }
+
+                public addConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.StringParamType {
+                    this.add(org.kevoree.meta.MetaStringParamType.REL_CONSTRAINTS, p_obj);
+                    return this;
+                }
+
+                public removeConstraints(p_obj: org.kevoree.AbstractConstraint): org.kevoree.StringParamType {
+                    this.remove(org.kevoree.meta.MetaStringParamType.REL_CONSTRAINTS, p_obj);
+                    return this;
+                }
+
+                public getConstraints(cb: org.kevoree.modeling.KCallback<org.kevoree.AbstractConstraint[]>): void {
+                    if (cb == null) {
+                        return;
+                    }
+                    this.getRelation(org.kevoree.meta.MetaStringParamType.REL_CONSTRAINTS,  (kObjects : org.kevoree.modeling.KObject[]) => {
+                        var casted: org.kevoree.AbstractConstraint[] = new Array();
+                        for (var i: number = 0; i < kObjects.length; i++) {
+                            casted[i] = <org.kevoree.AbstractConstraint>kObjects[i];
+                        }
+                        cb(casted);
+                    });
+                }
+
+                public sizeOfConstraints(): number {
+                    return this.size(org.kevoree.meta.MetaStringParamType.REL_CONSTRAINTS);
                 }
 
             }
@@ -24841,11 +26812,20 @@ export module org {
                     return this;
                 }
 
-                public getVersion(): string {
-                    return <string>this.get(org.kevoree.meta.MetaTypeDefinition.ATT_VERSION);
+                public getDescription(): string {
+                    return <string>this.get(org.kevoree.meta.MetaTypeDefinition.ATT_DESCRIPTION);
                 }
 
-                public setVersion(p_obj: string): org.kevoree.TypeDefinition {
+                public setDescription(p_obj: string): org.kevoree.TypeDefinition {
+                    this.set(org.kevoree.meta.MetaTypeDefinition.ATT_DESCRIPTION, p_obj);
+                    return this;
+                }
+
+                public getVersion(): number {
+                    return <number>this.get(org.kevoree.meta.MetaTypeDefinition.ATT_VERSION);
+                }
+
+                public setVersion(p_obj: number): org.kevoree.TypeDefinition {
                     this.set(org.kevoree.meta.MetaTypeDefinition.ATT_VERSION, p_obj);
                     return this;
                 }
@@ -24988,55 +26968,91 @@ export module org {
 
         }
         export module meta {
-            export class MetaAttributeType extends org.kevoree.modeling.meta.impl.MetaClass {
+            export class MetaAbstractConstraint extends org.kevoree.modeling.meta.impl.MetaClass {
 
-                private static INSTANCE: org.kevoree.meta.MetaAttributeType = null;
-                public static ATT_FRAGMENT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("fragment", 0, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 1, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static ATT_OPTIONAL: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("optional", 2, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 3, true, 6, "op_AttributeType_metaData", 21, -1);
-                public static REL_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("datatype", 4, true, 22, "op_AttributeType_datatype", 21, 1);
-                public static REL_OP_DICTIONARYTYPE_ATTRIBUTES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_DictionaryType_attributes", 5, false, 15, "attributes", 21, -1);
-                public static getInstance(): org.kevoree.meta.MetaAttributeType {
-                    if (MetaAttributeType.INSTANCE == null) {
-                        MetaAttributeType.INSTANCE = new org.kevoree.meta.MetaAttributeType();
+                private static INSTANCE: org.kevoree.meta.MetaAbstractConstraint = null;
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 0, true, 6, "op_AbstractConstraint_metaData", 23, -1);
+                public static REL_OP_LISTPARAMTYPE_CONSTRAINTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ListParamType_constraints", 1, false, 34, "constraints", 23, -1);
+                public static REL_OP_STRINGPARAMTYPE_CONSTRAINTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_StringParamType_constraints", 2, false, 30, "constraints", 23, -1);
+                public static REL_OP_PARAMTYPE_CONSTRAINTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ParamType_constraints", 3, false, 22, "constraints", 23, -1);
+                public static getInstance(): org.kevoree.meta.MetaAbstractConstraint {
+                    if (MetaAbstractConstraint.INSTANCE == null) {
+                        MetaAbstractConstraint.INSTANCE = new org.kevoree.meta.MetaAbstractConstraint();
                     }
-                    return MetaAttributeType.INSTANCE;
+                    return MetaAbstractConstraint.INSTANCE;
                 }
 
                 constructor() {
-                    super("org.kevoree.AttributeType", 21, null, new Int32Array([5]));
+                    super("org.kevoree.AbstractConstraint", 23, null, new Int32Array([5]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
-                    temp_all[0] = MetaAttributeType.ATT_FRAGMENT;
-                    temp_all[1] = MetaAttributeType.ATT_NAME;
-                    temp_all[2] = MetaAttributeType.ATT_OPTIONAL;
-                    temp_all[3] = MetaAttributeType.REL_METADATA;
-                    temp_all[4] = MetaAttributeType.REL_DATATYPE;
-                    temp_all[5] = MetaAttributeType.REL_OP_DICTIONARYTYPE_ATTRIBUTES;
+                    temp_all[0] = MetaAbstractConstraint.REL_METADATA;
+                    temp_all[1] = MetaAbstractConstraint.REL_OP_LISTPARAMTYPE_CONSTRAINTS;
+                    temp_all[2] = MetaAbstractConstraint.REL_OP_STRINGPARAMTYPE_CONSTRAINTS;
+                    temp_all[3] = MetaAbstractConstraint.REL_OP_PARAMTYPE_CONSTRAINTS;
                     this.init(temp_all);
                 }
 
             }
 
-            export class MetaBooleanDataType extends org.kevoree.modeling.meta.impl.MetaClass {
+            export class MetaBooleanParam extends org.kevoree.modeling.meta.impl.MetaClass {
 
-                private static INSTANCE: org.kevoree.meta.MetaBooleanDataType = null;
-                public static ATT_DEFAULT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("default", 0, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_Element_metaData", 27, -1);
-                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 2, false, 21, "datatype", 27, -1);
-                public static getInstance(): org.kevoree.meta.MetaBooleanDataType {
-                    if (MetaBooleanDataType.INSTANCE == null) {
-                        MetaBooleanDataType.INSTANCE = new org.kevoree.meta.MetaBooleanDataType();
+                private static INSTANCE: org.kevoree.meta.MetaBooleanParam = null;
+                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_VALUE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("value", 1, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 2, true, 6, "op_Param_metaData", 27, -1);
+                public static REL_OP_DICTIONARY_PARAMS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Dictionary_params", 3, false, 9, "params", 27, -1);
+                public static REL_OP_FRAGMENTDICTIONARY_PARAMS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_FragmentDictionary_params", 4, false, 13, "params", 27, -1);
+                public static REL_TYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("type", 5, true, 22, "op_Param_type", 27, -1);
+                public static getInstance(): org.kevoree.meta.MetaBooleanParam {
+                    if (MetaBooleanParam.INSTANCE == null) {
+                        MetaBooleanParam.INSTANCE = new org.kevoree.meta.MetaBooleanParam();
                     }
-                    return MetaBooleanDataType.INSTANCE;
+                    return MetaBooleanParam.INSTANCE;
                 }
 
                 constructor() {
-                    super("org.kevoree.BooleanDataType", 27, null, new Int32Array([22]));
+                    super("org.kevoree.BooleanParam", 27, null, new Int32Array([24]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
-                    temp_all[0] = MetaBooleanDataType.ATT_DEFAULT;
-                    temp_all[1] = MetaBooleanDataType.REL_METADATA;
-                    temp_all[2] = MetaBooleanDataType.REL_OP_ATTRIBUTETYPE_DATATYPE;
+                    temp_all[0] = MetaBooleanParam.ATT_NAME;
+                    temp_all[1] = MetaBooleanParam.ATT_VALUE;
+                    temp_all[2] = MetaBooleanParam.REL_METADATA;
+                    temp_all[3] = MetaBooleanParam.REL_OP_DICTIONARY_PARAMS;
+                    temp_all[4] = MetaBooleanParam.REL_OP_FRAGMENTDICTIONARY_PARAMS;
+                    temp_all[5] = MetaBooleanParam.REL_TYPE;
+                    this.init(temp_all);
+                }
+
+            }
+
+            export class MetaBooleanParamType extends org.kevoree.modeling.meta.impl.MetaClass {
+
+                private static INSTANCE: org.kevoree.meta.MetaBooleanParamType = null;
+                public static ATT_DEFAULT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("default", 0, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_FRAGMENT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("fragment", 1, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 2, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_REQUIRED: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("required", 3, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 4, true, 6, "op_ParamType_metaData", 32, -1);
+                public static REL_OP_PARAM_TYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Param_type", 5, false, 24, "type", 32, -1);
+                public static REL_OP_DICTIONARYTYPE_PARAMS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_DictionaryType_params", 6, false, 16, "params", 32, -1);
+                public static REL_CONSTRAINTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("constraints", 7, true, 23, "op_ParamType_constraints", 32, -1);
+                public static getInstance(): org.kevoree.meta.MetaBooleanParamType {
+                    if (MetaBooleanParamType.INSTANCE == null) {
+                        MetaBooleanParamType.INSTANCE = new org.kevoree.meta.MetaBooleanParamType();
+                    }
+                    return MetaBooleanParamType.INSTANCE;
+                }
+
+                constructor() {
+                    super("org.kevoree.BooleanParamType", 32, null, new Int32Array([22]));
+                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
+                    temp_all[0] = MetaBooleanParamType.ATT_DEFAULT;
+                    temp_all[1] = MetaBooleanParamType.ATT_FRAGMENT;
+                    temp_all[2] = MetaBooleanParamType.ATT_NAME;
+                    temp_all[3] = MetaBooleanParamType.ATT_REQUIRED;
+                    temp_all[4] = MetaBooleanParamType.REL_METADATA;
+                    temp_all[5] = MetaBooleanParamType.REL_OP_PARAM_TYPE;
+                    temp_all[6] = MetaBooleanParamType.REL_OP_DICTIONARYTYPE_PARAMS;
+                    temp_all[7] = MetaBooleanParamType.REL_CONSTRAINTS;
                     this.init(temp_all);
                 }
 
@@ -25048,10 +27064,11 @@ export module org {
                 public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static REL_OUTPUTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("outputs", 1, true, 12, "channels", 2, -1);
                 public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 2, true, 6, "op_Channel_metaData", 2, -1);
-                public static REL_INPUTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("inputs", 3, true, 11, "channels", 2, -1);
-                public static REL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("typeDefinition", 4, true, 8, "op_Channel_typeDefinition", 2, 1);
-                public static REL_OP_MODEL_CHANNELS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Model_channels", 5, false, 0, "channels", 2, -1);
-                public static REL_METRICS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metrics", 6, true, 9, "op_Channel_metrics", 2, -1);
+                public static REL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("dictionary", 3, true, 9, "op_Channel_dictionary", 2, 1);
+                public static REL_INPUTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("inputs", 4, true, 11, "channels", 2, -1);
+                public static REL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("typeDefinition", 5, true, 8, "op_Channel_typeDefinition", 2, 1);
+                public static REL_FRAGMENTDICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("fragmentDictionary", 6, true, 13, "op_Channel_fragmentDictionary", 2, -1);
+                public static REL_OP_MODEL_CHANNELS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Model_channels", 7, false, 0, "channels", 2, -1);
                 public static getInstance(): org.kevoree.meta.MetaChannel {
                     if (MetaChannel.INSTANCE == null) {
                         MetaChannel.INSTANCE = new org.kevoree.meta.MetaChannel();
@@ -25065,10 +27082,11 @@ export module org {
                     temp_all[0] = MetaChannel.ATT_NAME;
                     temp_all[1] = MetaChannel.REL_OUTPUTS;
                     temp_all[2] = MetaChannel.REL_METADATA;
-                    temp_all[3] = MetaChannel.REL_INPUTS;
-                    temp_all[4] = MetaChannel.REL_TYPEDEFINITION;
-                    temp_all[5] = MetaChannel.REL_OP_MODEL_CHANNELS;
-                    temp_all[6] = MetaChannel.REL_METRICS;
+                    temp_all[3] = MetaChannel.REL_DICTIONARY;
+                    temp_all[4] = MetaChannel.REL_INPUTS;
+                    temp_all[5] = MetaChannel.REL_TYPEDEFINITION;
+                    temp_all[6] = MetaChannel.REL_FRAGMENTDICTIONARY;
+                    temp_all[7] = MetaChannel.REL_OP_MODEL_CHANNELS;
                     this.init(temp_all);
                 }
 
@@ -25078,17 +27096,18 @@ export module org {
 
                 private static INSTANCE: org.kevoree.meta.MetaChannelType = null;
                 public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static ATT_REMOTE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("remote", 1, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static ATT_FRAGMENTABLE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("fragmentable", 2, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static ATT_VERSION: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("version", 3, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 4, true, 6, "op_TypeDefinition_metaData", 19, -1);
-                public static REL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("dictionary", 5, true, 15, "op_TypeDefinition_dictionary", 19, 1);
-                public static REL_OP_NODE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_typeDefinition", 6, false, 1, "typeDefinition", 19, -1);
-                public static REL_OP_INSTANCE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Instance_typeDefinition", 7, false, 7, "typeDefinition", 19, -1);
-                public static REL_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("deployUnits", 8, true, 16, "op_TypeDefinition_deployUnits", 19, -1);
-                public static REL_OP_NAMESPACE_TYPEDEFINITIONS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Namespace_typeDefinitions", 9, false, 4, "typeDefinitions", 19, -1);
-                public static REL_OP_COMPONENT_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_typeDefinition", 10, false, 10, "typeDefinition", 19, -1);
-                public static REL_OP_CHANNEL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_typeDefinition", 11, false, 2, "typeDefinition", 19, -1);
+                public static ATT_DESCRIPTION: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("description", 1, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_REMOTE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("remote", 2, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_FRAGMENTABLE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("fragmentable", 3, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_VERSION: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("version", 4, 0, false, -4, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 5, true, 6, "op_TypeDefinition_metaData", 20, -1);
+                public static REL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("dictionary", 6, true, 16, "op_TypeDefinition_dictionary", 20, 1);
+                public static REL_OP_NODE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_typeDefinition", 7, false, 1, "typeDefinition", 20, -1);
+                public static REL_OP_INSTANCE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Instance_typeDefinition", 8, false, 7, "typeDefinition", 20, -1);
+                public static REL_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("deployUnits", 9, true, 17, "op_TypeDefinition_deployUnits", 20, -1);
+                public static REL_OP_NAMESPACE_TYPEDEFINITIONS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Namespace_typeDefinitions", 10, false, 4, "typeDefinitions", 20, -1);
+                public static REL_OP_COMPONENT_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_typeDefinition", 11, false, 10, "typeDefinition", 20, -1);
+                public static REL_OP_CHANNEL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_typeDefinition", 12, false, 2, "typeDefinition", 20, -1);
                 public static getInstance(): org.kevoree.meta.MetaChannelType {
                     if (MetaChannelType.INSTANCE == null) {
                         MetaChannelType.INSTANCE = new org.kevoree.meta.MetaChannelType();
@@ -25097,46 +27116,57 @@ export module org {
                 }
 
                 constructor() {
-                    super("org.kevoree.ChannelType", 19, null, new Int32Array([8]));
+                    super("org.kevoree.ChannelType", 20, null, new Int32Array([8]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaChannelType.ATT_NAME;
-                    temp_all[1] = MetaChannelType.ATT_REMOTE;
-                    temp_all[2] = MetaChannelType.ATT_FRAGMENTABLE;
-                    temp_all[3] = MetaChannelType.ATT_VERSION;
-                    temp_all[4] = MetaChannelType.REL_METADATA;
-                    temp_all[5] = MetaChannelType.REL_DICTIONARY;
-                    temp_all[6] = MetaChannelType.REL_OP_NODE_TYPEDEFINITION;
-                    temp_all[7] = MetaChannelType.REL_OP_INSTANCE_TYPEDEFINITION;
-                    temp_all[8] = MetaChannelType.REL_DEPLOYUNITS;
-                    temp_all[9] = MetaChannelType.REL_OP_NAMESPACE_TYPEDEFINITIONS;
-                    temp_all[10] = MetaChannelType.REL_OP_COMPONENT_TYPEDEFINITION;
-                    temp_all[11] = MetaChannelType.REL_OP_CHANNEL_TYPEDEFINITION;
+                    temp_all[1] = MetaChannelType.ATT_DESCRIPTION;
+                    temp_all[2] = MetaChannelType.ATT_REMOTE;
+                    temp_all[3] = MetaChannelType.ATT_FRAGMENTABLE;
+                    temp_all[4] = MetaChannelType.ATT_VERSION;
+                    temp_all[5] = MetaChannelType.REL_METADATA;
+                    temp_all[6] = MetaChannelType.REL_DICTIONARY;
+                    temp_all[7] = MetaChannelType.REL_OP_NODE_TYPEDEFINITION;
+                    temp_all[8] = MetaChannelType.REL_OP_INSTANCE_TYPEDEFINITION;
+                    temp_all[9] = MetaChannelType.REL_DEPLOYUNITS;
+                    temp_all[10] = MetaChannelType.REL_OP_NAMESPACE_TYPEDEFINITIONS;
+                    temp_all[11] = MetaChannelType.REL_OP_COMPONENT_TYPEDEFINITION;
+                    temp_all[12] = MetaChannelType.REL_OP_CHANNEL_TYPEDEFINITION;
                     this.init(temp_all);
                 }
 
             }
 
-            export class MetaChoiceDataType extends org.kevoree.modeling.meta.impl.MetaClass {
+            export class MetaChoiceParamType extends org.kevoree.modeling.meta.impl.MetaClass {
 
-                private static INSTANCE: org.kevoree.meta.MetaChoiceDataType = null;
-                public static ATT_DEFAULTINDEX: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("defaultIndex", 0, 0, false, -4, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_Element_metaData", 28, -1);
-                public static REL_CHOICES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("choices", 2, true, 29, "op_ChoiceDataType_choices", 28, -1);
-                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 3, false, 21, "datatype", 28, -1);
-                public static getInstance(): org.kevoree.meta.MetaChoiceDataType {
-                    if (MetaChoiceDataType.INSTANCE == null) {
-                        MetaChoiceDataType.INSTANCE = new org.kevoree.meta.MetaChoiceDataType();
+                private static INSTANCE: org.kevoree.meta.MetaChoiceParamType = null;
+                public static ATT_DEFAULT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("default", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_FRAGMENT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("fragment", 1, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 2, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_REQUIRED: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("required", 3, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 4, true, 6, "op_ParamType_metaData", 33, -1);
+                public static REL_OP_PARAM_TYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Param_type", 5, false, 24, "type", 33, -1);
+                public static REL_OP_DICTIONARYTYPE_PARAMS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_DictionaryType_params", 6, false, 16, "params", 33, -1);
+                public static REL_CHOICES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("choices", 7, true, 29, "op_ChoiceParamType_choices", 33, -1);
+                public static REL_CONSTRAINTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("constraints", 8, true, 23, "op_ParamType_constraints", 33, -1);
+                public static getInstance(): org.kevoree.meta.MetaChoiceParamType {
+                    if (MetaChoiceParamType.INSTANCE == null) {
+                        MetaChoiceParamType.INSTANCE = new org.kevoree.meta.MetaChoiceParamType();
                     }
-                    return MetaChoiceDataType.INSTANCE;
+                    return MetaChoiceParamType.INSTANCE;
                 }
 
                 constructor() {
-                    super("org.kevoree.ChoiceDataType", 28, null, new Int32Array([22]));
+                    super("org.kevoree.ChoiceParamType", 33, null, new Int32Array([22]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
-                    temp_all[0] = MetaChoiceDataType.ATT_DEFAULTINDEX;
-                    temp_all[1] = MetaChoiceDataType.REL_METADATA;
-                    temp_all[2] = MetaChoiceDataType.REL_CHOICES;
-                    temp_all[3] = MetaChoiceDataType.REL_OP_ATTRIBUTETYPE_DATATYPE;
+                    temp_all[0] = MetaChoiceParamType.ATT_DEFAULT;
+                    temp_all[1] = MetaChoiceParamType.ATT_FRAGMENT;
+                    temp_all[2] = MetaChoiceParamType.ATT_NAME;
+                    temp_all[3] = MetaChoiceParamType.ATT_REQUIRED;
+                    temp_all[4] = MetaChoiceParamType.REL_METADATA;
+                    temp_all[5] = MetaChoiceParamType.REL_OP_PARAM_TYPE;
+                    temp_all[6] = MetaChoiceParamType.REL_OP_DICTIONARYTYPE_PARAMS;
+                    temp_all[7] = MetaChoiceParamType.REL_CHOICES;
+                    temp_all[8] = MetaChoiceParamType.REL_CONSTRAINTS;
                     this.init(temp_all);
                 }
 
@@ -25148,11 +27178,11 @@ export module org {
                 public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static REL_OUTPUTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("outputs", 1, true, 12, "channels", 10, -1);
                 public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 2, true, 6, "op_Component_metaData", 10, -1);
-                public static REL_INPUTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("inputs", 3, true, 11, "channels", 10, -1);
-                public static REL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("typeDefinition", 4, true, 8, "op_Component_typeDefinition", 10, 1);
-                public static REL_HOST: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("host", 5, true, 1, "op_Component_host", 10, 1);
-                public static REL_OP_NODE_COMPONENTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_components", 6, false, 1, "components", 10, -1);
-                public static REL_METRICS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metrics", 7, true, 9, "op_Component_metrics", 10, -1);
+                public static REL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("dictionary", 3, true, 9, "op_Component_dictionary", 10, 1);
+                public static REL_INPUTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("inputs", 4, true, 11, "channels", 10, -1);
+                public static REL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("typeDefinition", 5, true, 8, "op_Component_typeDefinition", 10, 1);
+                public static REL_HOST: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("host", 6, true, 1, "op_Component_host", 10, 1);
+                public static REL_OP_NODE_COMPONENTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_components", 7, false, 1, "components", 10, -1);
                 public static getInstance(): org.kevoree.meta.MetaComponent {
                     if (MetaComponent.INSTANCE == null) {
                         MetaComponent.INSTANCE = new org.kevoree.meta.MetaComponent();
@@ -25166,11 +27196,11 @@ export module org {
                     temp_all[0] = MetaComponent.ATT_NAME;
                     temp_all[1] = MetaComponent.REL_OUTPUTS;
                     temp_all[2] = MetaComponent.REL_METADATA;
-                    temp_all[3] = MetaComponent.REL_INPUTS;
-                    temp_all[4] = MetaComponent.REL_TYPEDEFINITION;
-                    temp_all[5] = MetaComponent.REL_HOST;
-                    temp_all[6] = MetaComponent.REL_OP_NODE_COMPONENTS;
-                    temp_all[7] = MetaComponent.REL_METRICS;
+                    temp_all[3] = MetaComponent.REL_DICTIONARY;
+                    temp_all[4] = MetaComponent.REL_INPUTS;
+                    temp_all[5] = MetaComponent.REL_TYPEDEFINITION;
+                    temp_all[6] = MetaComponent.REL_HOST;
+                    temp_all[7] = MetaComponent.REL_OP_NODE_COMPONENTS;
                     this.init(temp_all);
                 }
 
@@ -25180,18 +27210,19 @@ export module org {
 
                 private static INSTANCE: org.kevoree.meta.MetaComponentType = null;
                 public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static ATT_REMOTE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("remote", 1, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static ATT_VERSION: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("version", 2, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_INPUTTYPES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("inputTypes", 3, true, 14, "op_ComponentType_inputTypes", 20, -1);
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 4, true, 6, "op_TypeDefinition_metaData", 20, -1);
-                public static REL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("dictionary", 5, true, 15, "op_TypeDefinition_dictionary", 20, 1);
-                public static REL_OP_NODE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_typeDefinition", 6, false, 1, "typeDefinition", 20, -1);
-                public static REL_OP_INSTANCE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Instance_typeDefinition", 7, false, 7, "typeDefinition", 20, -1);
-                public static REL_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("deployUnits", 8, true, 16, "op_TypeDefinition_deployUnits", 20, -1);
-                public static REL_OP_NAMESPACE_TYPEDEFINITIONS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Namespace_typeDefinitions", 9, false, 4, "typeDefinitions", 20, -1);
-                public static REL_OP_COMPONENT_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_typeDefinition", 10, false, 10, "typeDefinition", 20, -1);
-                public static REL_OUTPUTTYPES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("outputTypes", 11, true, 14, "op_ComponentType_outputTypes", 20, -1);
-                public static REL_OP_CHANNEL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_typeDefinition", 12, false, 2, "typeDefinition", 20, -1);
+                public static ATT_DESCRIPTION: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("description", 1, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_REMOTE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("remote", 2, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_VERSION: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("version", 3, 0, false, -4, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_INPUTTYPES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("inputTypes", 4, true, 15, "op_ComponentType_inputTypes", 21, -1);
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 5, true, 6, "op_TypeDefinition_metaData", 21, -1);
+                public static REL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("dictionary", 6, true, 16, "op_TypeDefinition_dictionary", 21, 1);
+                public static REL_OP_NODE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_typeDefinition", 7, false, 1, "typeDefinition", 21, -1);
+                public static REL_OP_INSTANCE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Instance_typeDefinition", 8, false, 7, "typeDefinition", 21, -1);
+                public static REL_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("deployUnits", 9, true, 17, "op_TypeDefinition_deployUnits", 21, -1);
+                public static REL_OP_NAMESPACE_TYPEDEFINITIONS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Namespace_typeDefinitions", 10, false, 4, "typeDefinitions", 21, -1);
+                public static REL_OP_COMPONENT_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_typeDefinition", 11, false, 10, "typeDefinition", 21, -1);
+                public static REL_OUTPUTTYPES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("outputTypes", 12, true, 15, "op_ComponentType_outputTypes", 21, -1);
+                public static REL_OP_CHANNEL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_typeDefinition", 13, false, 2, "typeDefinition", 21, -1);
                 public static getInstance(): org.kevoree.meta.MetaComponentType {
                     if (MetaComponentType.INSTANCE == null) {
                         MetaComponentType.INSTANCE = new org.kevoree.meta.MetaComponentType();
@@ -25200,43 +27231,22 @@ export module org {
                 }
 
                 constructor() {
-                    super("org.kevoree.ComponentType", 20, null, new Int32Array([8]));
+                    super("org.kevoree.ComponentType", 21, null, new Int32Array([8]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaComponentType.ATT_NAME;
-                    temp_all[1] = MetaComponentType.ATT_REMOTE;
-                    temp_all[2] = MetaComponentType.ATT_VERSION;
-                    temp_all[3] = MetaComponentType.REL_INPUTTYPES;
-                    temp_all[4] = MetaComponentType.REL_METADATA;
-                    temp_all[5] = MetaComponentType.REL_DICTIONARY;
-                    temp_all[6] = MetaComponentType.REL_OP_NODE_TYPEDEFINITION;
-                    temp_all[7] = MetaComponentType.REL_OP_INSTANCE_TYPEDEFINITION;
-                    temp_all[8] = MetaComponentType.REL_DEPLOYUNITS;
-                    temp_all[9] = MetaComponentType.REL_OP_NAMESPACE_TYPEDEFINITIONS;
-                    temp_all[10] = MetaComponentType.REL_OP_COMPONENT_TYPEDEFINITION;
-                    temp_all[11] = MetaComponentType.REL_OUTPUTTYPES;
-                    temp_all[12] = MetaComponentType.REL_OP_CHANNEL_TYPEDEFINITION;
-                    this.init(temp_all);
-                }
-
-            }
-
-            export class MetaDataType extends org.kevoree.modeling.meta.impl.MetaClass {
-
-                private static INSTANCE: org.kevoree.meta.MetaDataType = null;
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 0, true, 6, "op_Element_metaData", 22, -1);
-                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 1, false, 21, "datatype", 22, -1);
-                public static getInstance(): org.kevoree.meta.MetaDataType {
-                    if (MetaDataType.INSTANCE == null) {
-                        MetaDataType.INSTANCE = new org.kevoree.meta.MetaDataType();
-                    }
-                    return MetaDataType.INSTANCE;
-                }
-
-                constructor() {
-                    super("org.kevoree.DataType", 22, null, new Int32Array([5]));
-                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
-                    temp_all[0] = MetaDataType.REL_METADATA;
-                    temp_all[1] = MetaDataType.REL_OP_ATTRIBUTETYPE_DATATYPE;
+                    temp_all[1] = MetaComponentType.ATT_DESCRIPTION;
+                    temp_all[2] = MetaComponentType.ATT_REMOTE;
+                    temp_all[3] = MetaComponentType.ATT_VERSION;
+                    temp_all[4] = MetaComponentType.REL_INPUTTYPES;
+                    temp_all[5] = MetaComponentType.REL_METADATA;
+                    temp_all[6] = MetaComponentType.REL_DICTIONARY;
+                    temp_all[7] = MetaComponentType.REL_OP_NODE_TYPEDEFINITION;
+                    temp_all[8] = MetaComponentType.REL_OP_INSTANCE_TYPEDEFINITION;
+                    temp_all[9] = MetaComponentType.REL_DEPLOYUNITS;
+                    temp_all[10] = MetaComponentType.REL_OP_NAMESPACE_TYPEDEFINITIONS;
+                    temp_all[11] = MetaComponentType.REL_OP_COMPONENT_TYPEDEFINITION;
+                    temp_all[12] = MetaComponentType.REL_OUTPUTTYPES;
+                    temp_all[13] = MetaComponentType.REL_OP_CHANNEL_TYPEDEFINITION;
                     this.init(temp_all);
                 }
 
@@ -25245,15 +27255,13 @@ export module org {
             export class MetaDeployUnit extends org.kevoree.modeling.meta.impl.MetaClass {
 
                 private static INSTANCE: org.kevoree.meta.MetaDeployUnit = null;
-                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static ATT_VERSION: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("version", 1, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, true, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_VERSION: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("version", 1, 0, true, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static ATT_PLATFORM: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("platform", 2, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 3, true, 6, "op_DeployUnit_metaData", 16, -1);
-                public static REL_OP_DEPLOYUNIT_DEPENDENCIES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_DeployUnit_dependencies", 4, false, 16, "dependencies", 16, -1);
-                public static REL_OP_TYPEDEFINITION_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_TypeDefinition_deployUnits", 5, false, 8, "deployUnits", 16, -1);
-                public static REL_OP_GROUPTYPE_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_GroupType_deployUnits", 6, false, 18, "deployUnits", 16, -1);
-                public static REL_OP_NODETYPE_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_NodeType_deployUnits", 7, false, 17, "deployUnits", 16, -1);
-                public static REL_DEPENDENCIES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("dependencies", 8, true, 16, "op_DeployUnit_dependencies", 16, -1);
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 3, true, 6, "op_DeployUnit_metaData", 17, -1);
+                public static REL_OP_TYPEDEFINITION_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_TypeDefinition_deployUnits", 4, false, 8, "deployUnits", 17, -1);
+                public static REL_OP_GROUPTYPE_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_GroupType_deployUnits", 5, false, 19, "deployUnits", 17, -1);
+                public static REL_OP_NODETYPE_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_NodeType_deployUnits", 6, false, 18, "deployUnits", 17, -1);
                 public static getInstance(): org.kevoree.meta.MetaDeployUnit {
                     if (MetaDeployUnit.INSTANCE == null) {
                         MetaDeployUnit.INSTANCE = new org.kevoree.meta.MetaDeployUnit();
@@ -25262,17 +27270,45 @@ export module org {
                 }
 
                 constructor() {
-                    super("org.kevoree.DeployUnit", 16, null, new Int32Array([5]));
+                    super("org.kevoree.DeployUnit", 17, null, new Int32Array([5]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaDeployUnit.ATT_NAME;
                     temp_all[1] = MetaDeployUnit.ATT_VERSION;
                     temp_all[2] = MetaDeployUnit.ATT_PLATFORM;
                     temp_all[3] = MetaDeployUnit.REL_METADATA;
-                    temp_all[4] = MetaDeployUnit.REL_OP_DEPLOYUNIT_DEPENDENCIES;
-                    temp_all[5] = MetaDeployUnit.REL_OP_TYPEDEFINITION_DEPLOYUNITS;
-                    temp_all[6] = MetaDeployUnit.REL_OP_GROUPTYPE_DEPLOYUNITS;
-                    temp_all[7] = MetaDeployUnit.REL_OP_NODETYPE_DEPLOYUNITS;
-                    temp_all[8] = MetaDeployUnit.REL_DEPENDENCIES;
+                    temp_all[4] = MetaDeployUnit.REL_OP_TYPEDEFINITION_DEPLOYUNITS;
+                    temp_all[5] = MetaDeployUnit.REL_OP_GROUPTYPE_DEPLOYUNITS;
+                    temp_all[6] = MetaDeployUnit.REL_OP_NODETYPE_DEPLOYUNITS;
+                    this.init(temp_all);
+                }
+
+            }
+
+            export class MetaDictionary extends org.kevoree.modeling.meta.impl.MetaClass {
+
+                private static INSTANCE: org.kevoree.meta.MetaDictionary = null;
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 0, true, 6, "op_Dictionary_metaData", 9, -1);
+                public static REL_OP_COMPONENT_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_dictionary", 1, false, 10, "dictionary", 9, -1);
+                public static REL_OP_NODE_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_dictionary", 2, false, 1, "dictionary", 9, -1);
+                public static REL_OP_INSTANCE_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Instance_dictionary", 3, false, 7, "dictionary", 9, -1);
+                public static REL_OP_CHANNEL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_dictionary", 4, false, 2, "dictionary", 9, -1);
+                public static REL_PARAMS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("params", 5, true, 24, "op_Dictionary_params", 9, -1);
+                public static getInstance(): org.kevoree.meta.MetaDictionary {
+                    if (MetaDictionary.INSTANCE == null) {
+                        MetaDictionary.INSTANCE = new org.kevoree.meta.MetaDictionary();
+                    }
+                    return MetaDictionary.INSTANCE;
+                }
+
+                constructor() {
+                    super("org.kevoree.Dictionary", 9, null, new Int32Array([5]));
+                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
+                    temp_all[0] = MetaDictionary.REL_METADATA;
+                    temp_all[1] = MetaDictionary.REL_OP_COMPONENT_DICTIONARY;
+                    temp_all[2] = MetaDictionary.REL_OP_NODE_DICTIONARY;
+                    temp_all[3] = MetaDictionary.REL_OP_INSTANCE_DICTIONARY;
+                    temp_all[4] = MetaDictionary.REL_OP_CHANNEL_DICTIONARY;
+                    temp_all[5] = MetaDictionary.REL_PARAMS;
                     this.init(temp_all);
                 }
 
@@ -25281,11 +27317,11 @@ export module org {
             export class MetaDictionaryType extends org.kevoree.modeling.meta.impl.MetaClass {
 
                 private static INSTANCE: org.kevoree.meta.MetaDictionaryType = null;
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 0, true, 6, "op_DictionaryType_metaData", 15, -1);
-                public static REL_OP_GROUPTYPE_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_GroupType_dictionary", 1, false, 18, "dictionary", 15, -1);
-                public static REL_OP_TYPEDEFINITION_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_TypeDefinition_dictionary", 2, false, 8, "dictionary", 15, -1);
-                public static REL_ATTRIBUTES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("attributes", 3, true, 21, "op_DictionaryType_attributes", 15, -1);
-                public static REL_OP_NODETYPE_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_NodeType_dictionary", 4, false, 17, "dictionary", 15, -1);
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 0, true, 6, "op_DictionaryType_metaData", 16, -1);
+                public static REL_OP_GROUPTYPE_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_GroupType_dictionary", 1, false, 19, "dictionary", 16, -1);
+                public static REL_OP_TYPEDEFINITION_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_TypeDefinition_dictionary", 2, false, 8, "dictionary", 16, -1);
+                public static REL_PARAMS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("params", 3, true, 22, "op_DictionaryType_params", 16, -1);
+                public static REL_OP_NODETYPE_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_NodeType_dictionary", 4, false, 18, "dictionary", 16, -1);
                 public static getInstance(): org.kevoree.meta.MetaDictionaryType {
                     if (MetaDictionaryType.INSTANCE == null) {
                         MetaDictionaryType.INSTANCE = new org.kevoree.meta.MetaDictionaryType();
@@ -25294,41 +27330,13 @@ export module org {
                 }
 
                 constructor() {
-                    super("org.kevoree.DictionaryType", 15, null, new Int32Array([5]));
+                    super("org.kevoree.DictionaryType", 16, null, new Int32Array([5]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaDictionaryType.REL_METADATA;
                     temp_all[1] = MetaDictionaryType.REL_OP_GROUPTYPE_DICTIONARY;
                     temp_all[2] = MetaDictionaryType.REL_OP_TYPEDEFINITION_DICTIONARY;
-                    temp_all[3] = MetaDictionaryType.REL_ATTRIBUTES;
+                    temp_all[3] = MetaDictionaryType.REL_PARAMS;
                     temp_all[4] = MetaDictionaryType.REL_OP_NODETYPE_DICTIONARY;
-                    this.init(temp_all);
-                }
-
-            }
-
-            export class MetaDoubleDataType extends org.kevoree.modeling.meta.impl.MetaClass {
-
-                private static INSTANCE: org.kevoree.meta.MetaDoubleDataType = null;
-                public static ATT_DEFAULT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("default", 0, 0, false, -5, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static ATT_MIN: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("min", 1, 0, false, -5, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static ATT_MAX: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("max", 2, 0, false, -5, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 3, true, 6, "op_Element_metaData", 24, -1);
-                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 4, false, 21, "datatype", 24, -1);
-                public static getInstance(): org.kevoree.meta.MetaDoubleDataType {
-                    if (MetaDoubleDataType.INSTANCE == null) {
-                        MetaDoubleDataType.INSTANCE = new org.kevoree.meta.MetaDoubleDataType();
-                    }
-                    return MetaDoubleDataType.INSTANCE;
-                }
-
-                constructor() {
-                    super("org.kevoree.DoubleDataType", 24, null, new Int32Array([22]));
-                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
-                    temp_all[0] = MetaDoubleDataType.ATT_DEFAULT;
-                    temp_all[1] = MetaDoubleDataType.ATT_MIN;
-                    temp_all[2] = MetaDoubleDataType.ATT_MAX;
-                    temp_all[3] = MetaDoubleDataType.REL_METADATA;
-                    temp_all[4] = MetaDoubleDataType.REL_OP_ATTRIBUTETYPE_DATATYPE;
                     this.init(temp_all);
                 }
 
@@ -25354,15 +27362,52 @@ export module org {
 
             }
 
+            export class MetaFragmentDictionary extends org.kevoree.modeling.meta.impl.MetaClass {
+
+                private static INSTANCE: org.kevoree.meta.MetaFragmentDictionary = null;
+                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, true, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_FragmentDictionary_metaData", 13, -1);
+                public static REL_OP_COMPONENT_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_dictionary", 2, false, 10, "dictionary", 13, -1);
+                public static REL_OP_CHANNEL_FRAGMENTDICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_fragmentDictionary", 3, false, 2, "fragmentDictionary", 13, -1);
+                public static REL_OP_GROUP_FRAGMENTDICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Group_fragmentDictionary", 4, false, 3, "fragmentDictionary", 13, -1);
+                public static REL_OP_NODE_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_dictionary", 5, false, 1, "dictionary", 13, -1);
+                public static REL_OP_INSTANCE_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Instance_dictionary", 6, false, 7, "dictionary", 13, -1);
+                public static REL_OP_CHANNEL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_dictionary", 7, false, 2, "dictionary", 13, -1);
+                public static REL_PARAMS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("params", 8, true, 24, "op_FragmentDictionary_params", 13, -1);
+                public static getInstance(): org.kevoree.meta.MetaFragmentDictionary {
+                    if (MetaFragmentDictionary.INSTANCE == null) {
+                        MetaFragmentDictionary.INSTANCE = new org.kevoree.meta.MetaFragmentDictionary();
+                    }
+                    return MetaFragmentDictionary.INSTANCE;
+                }
+
+                constructor() {
+                    super("org.kevoree.FragmentDictionary", 13, null, new Int32Array([9]));
+                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
+                    temp_all[0] = MetaFragmentDictionary.ATT_NAME;
+                    temp_all[1] = MetaFragmentDictionary.REL_METADATA;
+                    temp_all[2] = MetaFragmentDictionary.REL_OP_COMPONENT_DICTIONARY;
+                    temp_all[3] = MetaFragmentDictionary.REL_OP_CHANNEL_FRAGMENTDICTIONARY;
+                    temp_all[4] = MetaFragmentDictionary.REL_OP_GROUP_FRAGMENTDICTIONARY;
+                    temp_all[5] = MetaFragmentDictionary.REL_OP_NODE_DICTIONARY;
+                    temp_all[6] = MetaFragmentDictionary.REL_OP_INSTANCE_DICTIONARY;
+                    temp_all[7] = MetaFragmentDictionary.REL_OP_CHANNEL_DICTIONARY;
+                    temp_all[8] = MetaFragmentDictionary.REL_PARAMS;
+                    this.init(temp_all);
+                }
+
+            }
+
             export class MetaGroup extends org.kevoree.modeling.meta.impl.MetaClass {
 
                 private static INSTANCE: org.kevoree.meta.MetaGroup = null;
                 public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_Instance_metaData", 3, -1);
                 public static REL_NODES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("nodes", 2, true, 1, "groups", 3, -1);
-                public static REL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("typeDefinition", 3, true, 8, "op_Instance_typeDefinition", 3, 1);
-                public static REL_OP_MODEL_GROUPS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Model_groups", 4, false, 0, "groups", 3, -1);
-                public static REL_METRICS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metrics", 5, true, 9, "op_Instance_metrics", 3, -1);
+                public static REL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("dictionary", 3, true, 9, "op_Instance_dictionary", 3, 1);
+                public static REL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("typeDefinition", 4, true, 8, "op_Instance_typeDefinition", 3, 1);
+                public static REL_OP_MODEL_GROUPS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Model_groups", 5, false, 0, "groups", 3, -1);
+                public static REL_FRAGMENTDICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("fragmentDictionary", 6, true, 13, "op_Group_fragmentDictionary", 3, 1);
                 public static getInstance(): org.kevoree.meta.MetaGroup {
                     if (MetaGroup.INSTANCE == null) {
                         MetaGroup.INSTANCE = new org.kevoree.meta.MetaGroup();
@@ -25376,9 +27421,10 @@ export module org {
                     temp_all[0] = MetaGroup.ATT_NAME;
                     temp_all[1] = MetaGroup.REL_METADATA;
                     temp_all[2] = MetaGroup.REL_NODES;
-                    temp_all[3] = MetaGroup.REL_TYPEDEFINITION;
-                    temp_all[4] = MetaGroup.REL_OP_MODEL_GROUPS;
-                    temp_all[5] = MetaGroup.REL_METRICS;
+                    temp_all[3] = MetaGroup.REL_DICTIONARY;
+                    temp_all[4] = MetaGroup.REL_TYPEDEFINITION;
+                    temp_all[5] = MetaGroup.REL_OP_MODEL_GROUPS;
+                    temp_all[6] = MetaGroup.REL_FRAGMENTDICTIONARY;
                     this.init(temp_all);
                 }
 
@@ -25388,16 +27434,17 @@ export module org {
 
                 private static INSTANCE: org.kevoree.meta.MetaGroupType = null;
                 public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static ATT_REMOTE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("remote", 1, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static ATT_VERSION: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("version", 2, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 3, true, 6, "op_GroupType_metaData", 18, -1);
-                public static REL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("dictionary", 4, true, 15, "op_GroupType_dictionary", 18, 1);
-                public static REL_OP_NODE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_typeDefinition", 5, false, 1, "typeDefinition", 18, -1);
-                public static REL_OP_INSTANCE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Instance_typeDefinition", 6, false, 7, "typeDefinition", 18, -1);
-                public static REL_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("deployUnits", 7, true, 16, "op_GroupType_deployUnits", 18, -1);
-                public static REL_OP_NAMESPACE_TYPEDEFINITIONS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Namespace_typeDefinitions", 8, false, 4, "typeDefinitions", 18, -1);
-                public static REL_OP_COMPONENT_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_typeDefinition", 9, false, 10, "typeDefinition", 18, -1);
-                public static REL_OP_CHANNEL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_typeDefinition", 10, false, 2, "typeDefinition", 18, -1);
+                public static ATT_DESCRIPTION: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("description", 1, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_REMOTE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("remote", 2, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_VERSION: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("version", 3, 0, false, -4, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 4, true, 6, "op_GroupType_metaData", 19, -1);
+                public static REL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("dictionary", 5, true, 16, "op_GroupType_dictionary", 19, 1);
+                public static REL_OP_NODE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_typeDefinition", 6, false, 1, "typeDefinition", 19, -1);
+                public static REL_OP_INSTANCE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Instance_typeDefinition", 7, false, 7, "typeDefinition", 19, -1);
+                public static REL_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("deployUnits", 8, true, 17, "op_GroupType_deployUnits", 19, -1);
+                public static REL_OP_NAMESPACE_TYPEDEFINITIONS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Namespace_typeDefinitions", 9, false, 4, "typeDefinitions", 19, -1);
+                public static REL_OP_COMPONENT_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_typeDefinition", 10, false, 10, "typeDefinition", 19, -1);
+                public static REL_OP_CHANNEL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_typeDefinition", 11, false, 2, "typeDefinition", 19, -1);
                 public static getInstance(): org.kevoree.meta.MetaGroupType {
                     if (MetaGroupType.INSTANCE == null) {
                         MetaGroupType.INSTANCE = new org.kevoree.meta.MetaGroupType();
@@ -25406,19 +27453,20 @@ export module org {
                 }
 
                 constructor() {
-                    super("org.kevoree.GroupType", 18, null, new Int32Array([8]));
+                    super("org.kevoree.GroupType", 19, null, new Int32Array([8]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaGroupType.ATT_NAME;
-                    temp_all[1] = MetaGroupType.ATT_REMOTE;
-                    temp_all[2] = MetaGroupType.ATT_VERSION;
-                    temp_all[3] = MetaGroupType.REL_METADATA;
-                    temp_all[4] = MetaGroupType.REL_DICTIONARY;
-                    temp_all[5] = MetaGroupType.REL_OP_NODE_TYPEDEFINITION;
-                    temp_all[6] = MetaGroupType.REL_OP_INSTANCE_TYPEDEFINITION;
-                    temp_all[7] = MetaGroupType.REL_DEPLOYUNITS;
-                    temp_all[8] = MetaGroupType.REL_OP_NAMESPACE_TYPEDEFINITIONS;
-                    temp_all[9] = MetaGroupType.REL_OP_COMPONENT_TYPEDEFINITION;
-                    temp_all[10] = MetaGroupType.REL_OP_CHANNEL_TYPEDEFINITION;
+                    temp_all[1] = MetaGroupType.ATT_DESCRIPTION;
+                    temp_all[2] = MetaGroupType.ATT_REMOTE;
+                    temp_all[3] = MetaGroupType.ATT_VERSION;
+                    temp_all[4] = MetaGroupType.REL_METADATA;
+                    temp_all[5] = MetaGroupType.REL_DICTIONARY;
+                    temp_all[6] = MetaGroupType.REL_OP_NODE_TYPEDEFINITION;
+                    temp_all[7] = MetaGroupType.REL_OP_INSTANCE_TYPEDEFINITION;
+                    temp_all[8] = MetaGroupType.REL_DEPLOYUNITS;
+                    temp_all[9] = MetaGroupType.REL_OP_NAMESPACE_TYPEDEFINITIONS;
+                    temp_all[10] = MetaGroupType.REL_OP_COMPONENT_TYPEDEFINITION;
+                    temp_all[11] = MetaGroupType.REL_OP_CHANNEL_TYPEDEFINITION;
                     this.init(temp_all);
                 }
 
@@ -25430,7 +27478,7 @@ export module org {
                 public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_Port_metaData", 11, -1);
                 public static REL_CHANNELS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("channels", 2, true, 2, "inputs", 11, -1);
-                public static REL_TYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("type", 3, true, 14, "op_Port_type", 11, -1);
+                public static REL_TYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("type", 3, true, 15, "op_Port_type", 11, -1);
                 public static getInstance(): org.kevoree.meta.MetaInputPort {
                     if (MetaInputPort.INSTANCE == null) {
                         MetaInputPort.INSTANCE = new org.kevoree.meta.MetaInputPort();
@@ -25439,7 +27487,7 @@ export module org {
                 }
 
                 constructor() {
-                    super("org.kevoree.InputPort", 11, null, new Int32Array([13]));
+                    super("org.kevoree.InputPort", 11, null, new Int32Array([14]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaInputPort.ATT_NAME;
                     temp_all[1] = MetaInputPort.REL_METADATA;
@@ -25453,10 +27501,10 @@ export module org {
             export class MetaInstance extends org.kevoree.modeling.meta.impl.MetaClass {
 
                 private static INSTANCE: org.kevoree.meta.MetaInstance = null;
-                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, true, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_Instance_metaData", 7, -1);
-                public static REL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("typeDefinition", 2, true, 8, "op_Instance_typeDefinition", 7, 1);
-                public static REL_METRICS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metrics", 3, true, 9, "op_Instance_metrics", 7, -1);
+                public static REL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("dictionary", 2, true, 9, "op_Instance_dictionary", 7, 1);
+                public static REL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("typeDefinition", 3, true, 8, "op_Instance_typeDefinition", 7, 1);
                 public static getInstance(): org.kevoree.meta.MetaInstance {
                     if (MetaInstance.INSTANCE == null) {
                         MetaInstance.INSTANCE = new org.kevoree.meta.MetaInstance();
@@ -25469,36 +27517,8 @@ export module org {
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaInstance.ATT_NAME;
                     temp_all[1] = MetaInstance.REL_METADATA;
-                    temp_all[2] = MetaInstance.REL_TYPEDEFINITION;
-                    temp_all[3] = MetaInstance.REL_METRICS;
-                    this.init(temp_all);
-                }
-
-            }
-
-            export class MetaIntDataType extends org.kevoree.modeling.meta.impl.MetaClass {
-
-                private static INSTANCE: org.kevoree.meta.MetaIntDataType = null;
-                public static ATT_DEFAULT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("default", 0, 0, false, -4, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static ATT_MIN: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("min", 1, 0, false, -4, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static ATT_MAX: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("max", 2, 0, false, -4, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 3, true, 6, "op_IntDataType_metaData", 25, -1);
-                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 4, false, 21, "datatype", 25, -1);
-                public static getInstance(): org.kevoree.meta.MetaIntDataType {
-                    if (MetaIntDataType.INSTANCE == null) {
-                        MetaIntDataType.INSTANCE = new org.kevoree.meta.MetaIntDataType();
-                    }
-                    return MetaIntDataType.INSTANCE;
-                }
-
-                constructor() {
-                    super("org.kevoree.IntDataType", 25, null, new Int32Array([22]));
-                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
-                    temp_all[0] = MetaIntDataType.ATT_DEFAULT;
-                    temp_all[1] = MetaIntDataType.ATT_MIN;
-                    temp_all[2] = MetaIntDataType.ATT_MAX;
-                    temp_all[3] = MetaIntDataType.REL_METADATA;
-                    temp_all[4] = MetaIntDataType.REL_OP_ATTRIBUTETYPE_DATATYPE;
+                    temp_all[2] = MetaInstance.REL_DICTIONARY;
+                    temp_all[3] = MetaInstance.REL_TYPEDEFINITION;
                     this.init(temp_all);
                 }
 
@@ -25508,8 +27528,9 @@ export module org {
 
                 private static INSTANCE: org.kevoree.meta.MetaItem = null;
                 public static ATT_VALUE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("value", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_OP_LISTDATATYPE_DEFAULT: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ListDataType_default", 1, false, 30, "default", 29, -1);
-                public static REL_OP_CHOICEDATATYPE_CHOICES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ChoiceDataType_choices", 2, false, 28, "choices", 29, -1);
+                public static REL_OP_CHOICEPARAMTYPE_CHOICES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ChoiceParamType_choices", 1, false, 33, "choices", 29, -1);
+                public static REL_OP_LISTPARAMTYPE_DEFAULT: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ListParamType_default", 2, false, 34, "default", 29, -1);
+                public static REL_OP_LISTPARAM_VALUES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ListParam_values", 3, false, 28, "values", 29, -1);
                 public static getInstance(): org.kevoree.meta.MetaItem {
                     if (MetaItem.INSTANCE == null) {
                         MetaItem.INSTANCE = new org.kevoree.meta.MetaItem();
@@ -25521,92 +27542,133 @@ export module org {
                     super("org.kevoree.Item", 29, null, new Int32Array([]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaItem.ATT_VALUE;
-                    temp_all[1] = MetaItem.REL_OP_LISTDATATYPE_DEFAULT;
-                    temp_all[2] = MetaItem.REL_OP_CHOICEDATATYPE_CHOICES;
+                    temp_all[1] = MetaItem.REL_OP_CHOICEPARAMTYPE_CHOICES;
+                    temp_all[2] = MetaItem.REL_OP_LISTPARAMTYPE_DEFAULT;
+                    temp_all[3] = MetaItem.REL_OP_LISTPARAM_VALUES;
                     this.init(temp_all);
                 }
 
             }
 
-            export class MetaListDataType extends org.kevoree.modeling.meta.impl.MetaClass {
+            export class MetaListParam extends org.kevoree.modeling.meta.impl.MetaClass {
 
-                private static INSTANCE: org.kevoree.meta.MetaListDataType = null;
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 0, true, 6, "op_Element_metaData", 30, -1);
-                public static REL_DEFAULT: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("default", 1, true, 29, "op_ListDataType_default", 30, -1);
-                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 2, false, 21, "datatype", 30, -1);
-                public static getInstance(): org.kevoree.meta.MetaListDataType {
-                    if (MetaListDataType.INSTANCE == null) {
-                        MetaListDataType.INSTANCE = new org.kevoree.meta.MetaListDataType();
-                    }
-                    return MetaListDataType.INSTANCE;
-                }
-
-                constructor() {
-                    super("org.kevoree.ListDataType", 30, null, new Int32Array([22]));
-                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
-                    temp_all[0] = MetaListDataType.REL_METADATA;
-                    temp_all[1] = MetaListDataType.REL_DEFAULT;
-                    temp_all[2] = MetaListDataType.REL_OP_ATTRIBUTETYPE_DATATYPE;
-                    this.init(temp_all);
-                }
-
-            }
-
-            export class MetaLongDataType extends org.kevoree.modeling.meta.impl.MetaClass {
-
-                private static INSTANCE: org.kevoree.meta.MetaLongDataType = null;
-                public static ATT_DEFAULT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("default", 0, 0, false, -3, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static ATT_MIN: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("min", 1, 0, false, -3, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static ATT_MAX: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("max", 2, 0, false, -3, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 3, true, 6, "op_LongDataType_metaData", 26, -1);
-                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 4, false, 21, "datatype", 26, -1);
-                public static getInstance(): org.kevoree.meta.MetaLongDataType {
-                    if (MetaLongDataType.INSTANCE == null) {
-                        MetaLongDataType.INSTANCE = new org.kevoree.meta.MetaLongDataType();
-                    }
-                    return MetaLongDataType.INSTANCE;
-                }
-
-                constructor() {
-                    super("org.kevoree.LongDataType", 26, null, new Int32Array([22]));
-                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
-                    temp_all[0] = MetaLongDataType.ATT_DEFAULT;
-                    temp_all[1] = MetaLongDataType.ATT_MIN;
-                    temp_all[2] = MetaLongDataType.ATT_MAX;
-                    temp_all[3] = MetaLongDataType.REL_METADATA;
-                    temp_all[4] = MetaLongDataType.REL_OP_ATTRIBUTETYPE_DATATYPE;
-                    this.init(temp_all);
-                }
-
-            }
-
-            export class MetaMetric extends org.kevoree.modeling.meta.impl.MetaClass {
-
-                private static INSTANCE: org.kevoree.meta.MetaMetric = null;
+                private static INSTANCE: org.kevoree.meta.MetaListParam = null;
                 public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static ATT_VALUE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("value", 1, -1.0, false, -6, org.kevoree.modeling.extrapolation.impl.PolynomialExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 2, true, 6, "op_Metric_metaData", 9, -1);
-                public static REL_OP_CHANNEL_METRICS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_metrics", 3, false, 2, "metrics", 9, -1);
-                public static REL_OP_INSTANCE_METRICS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Instance_metrics", 4, false, 7, "metrics", 9, -1);
-                public static REL_OP_NODE_METRICS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_metrics", 5, false, 1, "metrics", 9, -1);
-                public static REL_OP_COMPONENT_METRICS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_metrics", 6, false, 10, "metrics", 9, -1);
-                public static getInstance(): org.kevoree.meta.MetaMetric {
-                    if (MetaMetric.INSTANCE == null) {
-                        MetaMetric.INSTANCE = new org.kevoree.meta.MetaMetric();
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_Param_metaData", 28, -1);
+                public static REL_OP_DICTIONARY_PARAMS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Dictionary_params", 2, false, 9, "params", 28, -1);
+                public static REL_OP_FRAGMENTDICTIONARY_PARAMS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_FragmentDictionary_params", 3, false, 13, "params", 28, -1);
+                public static REL_VALUES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("values", 4, true, 29, "op_ListParam_values", 28, -1);
+                public static REL_TYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("type", 5, true, 22, "op_Param_type", 28, -1);
+                public static getInstance(): org.kevoree.meta.MetaListParam {
+                    if (MetaListParam.INSTANCE == null) {
+                        MetaListParam.INSTANCE = new org.kevoree.meta.MetaListParam();
                     }
-                    return MetaMetric.INSTANCE;
+                    return MetaListParam.INSTANCE;
                 }
 
                 constructor() {
-                    super("org.kevoree.Metric", 9, null, new Int32Array([5]));
+                    super("org.kevoree.ListParam", 28, null, new Int32Array([24]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
-                    temp_all[0] = MetaMetric.ATT_NAME;
-                    temp_all[1] = MetaMetric.ATT_VALUE;
-                    temp_all[2] = MetaMetric.REL_METADATA;
-                    temp_all[3] = MetaMetric.REL_OP_CHANNEL_METRICS;
-                    temp_all[4] = MetaMetric.REL_OP_INSTANCE_METRICS;
-                    temp_all[5] = MetaMetric.REL_OP_NODE_METRICS;
-                    temp_all[6] = MetaMetric.REL_OP_COMPONENT_METRICS;
+                    temp_all[0] = MetaListParam.ATT_NAME;
+                    temp_all[1] = MetaListParam.REL_METADATA;
+                    temp_all[2] = MetaListParam.REL_OP_DICTIONARY_PARAMS;
+                    temp_all[3] = MetaListParam.REL_OP_FRAGMENTDICTIONARY_PARAMS;
+                    temp_all[4] = MetaListParam.REL_VALUES;
+                    temp_all[5] = MetaListParam.REL_TYPE;
+                    this.init(temp_all);
+                }
+
+            }
+
+            export class MetaListParamType extends org.kevoree.modeling.meta.impl.MetaClass {
+
+                private static INSTANCE: org.kevoree.meta.MetaListParamType = null;
+                public static ATT_FRAGMENT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("fragment", 0, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 1, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_REQUIRED: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("required", 2, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 3, true, 6, "op_ListParamType_metaData", 34, -1);
+                public static REL_OP_PARAM_TYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Param_type", 4, false, 24, "type", 34, -1);
+                public static REL_DEFAULT: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("default", 5, true, 29, "op_ListParamType_default", 34, -1);
+                public static REL_OP_DICTIONARYTYPE_PARAMS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_DictionaryType_params", 6, false, 16, "params", 34, -1);
+                public static REL_CONSTRAINTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("constraints", 7, true, 23, "op_ListParamType_constraints", 34, -1);
+                public static getInstance(): org.kevoree.meta.MetaListParamType {
+                    if (MetaListParamType.INSTANCE == null) {
+                        MetaListParamType.INSTANCE = new org.kevoree.meta.MetaListParamType();
+                    }
+                    return MetaListParamType.INSTANCE;
+                }
+
+                constructor() {
+                    super("org.kevoree.ListParamType", 34, null, new Int32Array([22]));
+                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
+                    temp_all[0] = MetaListParamType.ATT_FRAGMENT;
+                    temp_all[1] = MetaListParamType.ATT_NAME;
+                    temp_all[2] = MetaListParamType.ATT_REQUIRED;
+                    temp_all[3] = MetaListParamType.REL_METADATA;
+                    temp_all[4] = MetaListParamType.REL_OP_PARAM_TYPE;
+                    temp_all[5] = MetaListParamType.REL_DEFAULT;
+                    temp_all[6] = MetaListParamType.REL_OP_DICTIONARYTYPE_PARAMS;
+                    temp_all[7] = MetaListParamType.REL_CONSTRAINTS;
+                    this.init(temp_all);
+                }
+
+            }
+
+            export class MetaMaxConstraint extends org.kevoree.modeling.meta.impl.MetaClass {
+
+                private static INSTANCE: org.kevoree.meta.MetaMaxConstraint = null;
+                public static ATT_EXCLUSIVE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("exclusive", 0, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_VALUE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("value", 1, 0, false, -4, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 2, true, 6, "op_MaxConstraint_metaData", 36, -1);
+                public static REL_OP_LISTPARAMTYPE_CONSTRAINTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ListParamType_constraints", 3, false, 34, "constraints", 36, -1);
+                public static REL_OP_STRINGPARAMTYPE_CONSTRAINTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_StringParamType_constraints", 4, false, 30, "constraints", 36, -1);
+                public static REL_OP_PARAMTYPE_CONSTRAINTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ParamType_constraints", 5, false, 22, "constraints", 36, -1);
+                public static getInstance(): org.kevoree.meta.MetaMaxConstraint {
+                    if (MetaMaxConstraint.INSTANCE == null) {
+                        MetaMaxConstraint.INSTANCE = new org.kevoree.meta.MetaMaxConstraint();
+                    }
+                    return MetaMaxConstraint.INSTANCE;
+                }
+
+                constructor() {
+                    super("org.kevoree.MaxConstraint", 36, null, new Int32Array([23]));
+                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
+                    temp_all[0] = MetaMaxConstraint.ATT_EXCLUSIVE;
+                    temp_all[1] = MetaMaxConstraint.ATT_VALUE;
+                    temp_all[2] = MetaMaxConstraint.REL_METADATA;
+                    temp_all[3] = MetaMaxConstraint.REL_OP_LISTPARAMTYPE_CONSTRAINTS;
+                    temp_all[4] = MetaMaxConstraint.REL_OP_STRINGPARAMTYPE_CONSTRAINTS;
+                    temp_all[5] = MetaMaxConstraint.REL_OP_PARAMTYPE_CONSTRAINTS;
+                    this.init(temp_all);
+                }
+
+            }
+
+            export class MetaMinConstraint extends org.kevoree.modeling.meta.impl.MetaClass {
+
+                private static INSTANCE: org.kevoree.meta.MetaMinConstraint = null;
+                public static ATT_EXCLUSIVE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("exclusive", 0, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_VALUE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("value", 1, 0, false, -4, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 2, true, 6, "op_MinConstraint_metaData", 35, -1);
+                public static REL_OP_LISTPARAMTYPE_CONSTRAINTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ListParamType_constraints", 3, false, 34, "constraints", 35, -1);
+                public static REL_OP_STRINGPARAMTYPE_CONSTRAINTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_StringParamType_constraints", 4, false, 30, "constraints", 35, -1);
+                public static REL_OP_PARAMTYPE_CONSTRAINTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ParamType_constraints", 5, false, 22, "constraints", 35, -1);
+                public static getInstance(): org.kevoree.meta.MetaMinConstraint {
+                    if (MetaMinConstraint.INSTANCE == null) {
+                        MetaMinConstraint.INSTANCE = new org.kevoree.meta.MetaMinConstraint();
+                    }
+                    return MetaMinConstraint.INSTANCE;
+                }
+
+                constructor() {
+                    super("org.kevoree.MinConstraint", 35, null, new Int32Array([23]));
+                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
+                    temp_all[0] = MetaMinConstraint.ATT_EXCLUSIVE;
+                    temp_all[1] = MetaMinConstraint.ATT_VALUE;
+                    temp_all[2] = MetaMinConstraint.REL_METADATA;
+                    temp_all[3] = MetaMinConstraint.REL_OP_LISTPARAMTYPE_CONSTRAINTS;
+                    temp_all[4] = MetaMinConstraint.REL_OP_STRINGPARAMTYPE_CONSTRAINTS;
+                    temp_all[5] = MetaMinConstraint.REL_OP_PARAMTYPE_CONSTRAINTS;
                     this.init(temp_all);
                 }
 
@@ -25640,10 +27702,38 @@ export module org {
 
             }
 
+            export class MetaMultilineConstraint extends org.kevoree.modeling.meta.impl.MetaClass {
+
+                private static INSTANCE: org.kevoree.meta.MetaMultilineConstraint = null;
+                public static ATT_VALUE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("value", 0, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_MultilineConstraint_metaData", 37, -1);
+                public static REL_OP_LISTPARAMTYPE_CONSTRAINTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ListParamType_constraints", 2, false, 34, "constraints", 37, -1);
+                public static REL_OP_STRINGPARAMTYPE_CONSTRAINTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_StringParamType_constraints", 3, false, 30, "constraints", 37, -1);
+                public static REL_OP_PARAMTYPE_CONSTRAINTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ParamType_constraints", 4, false, 22, "constraints", 37, -1);
+                public static getInstance(): org.kevoree.meta.MetaMultilineConstraint {
+                    if (MetaMultilineConstraint.INSTANCE == null) {
+                        MetaMultilineConstraint.INSTANCE = new org.kevoree.meta.MetaMultilineConstraint();
+                    }
+                    return MetaMultilineConstraint.INSTANCE;
+                }
+
+                constructor() {
+                    super("org.kevoree.MultilineConstraint", 37, null, new Int32Array([23]));
+                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
+                    temp_all[0] = MetaMultilineConstraint.ATT_VALUE;
+                    temp_all[1] = MetaMultilineConstraint.REL_METADATA;
+                    temp_all[2] = MetaMultilineConstraint.REL_OP_LISTPARAMTYPE_CONSTRAINTS;
+                    temp_all[3] = MetaMultilineConstraint.REL_OP_STRINGPARAMTYPE_CONSTRAINTS;
+                    temp_all[4] = MetaMultilineConstraint.REL_OP_PARAMTYPE_CONSTRAINTS;
+                    this.init(temp_all);
+                }
+
+            }
+
             export class MetaNamespace extends org.kevoree.modeling.meta.impl.MetaClass {
 
                 private static INSTANCE: org.kevoree.meta.MetaNamespace = null;
-                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, true, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_Namespace_metaData", 4, -1);
                 public static REL_TYPEDEFINITIONS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("typeDefinitions", 2, true, 8, "op_Namespace_typeDefinitions", 4, -1);
                 public static REL_OP_MODEL_NAMESPACES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Model_namespaces", 3, false, 0, "namespaces", 4, -1);
@@ -25674,11 +27764,11 @@ export module org {
                 public static REL_OP_NODE_HOST: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_host", 2, false, 1, "host", 1, -1);
                 public static REL_OP_MODEL_NODES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Model_nodes", 3, false, 0, "nodes", 1, -1);
                 public static REL_COMPONENTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("components", 4, true, 10, "op_Node_components", 1, -1);
-                public static REL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("typeDefinition", 5, true, 8, "op_Node_typeDefinition", 1, 1);
-                public static REL_HOST: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("host", 6, true, 1, "op_Node_host", 1, 1);
-                public static REL_GROUPS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("groups", 7, true, 3, "nodes", 1, -1);
-                public static REL_SUBNODES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("subNodes", 8, true, 1, "op_Node_subNodes", 1, -1);
-                public static REL_METRICS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metrics", 9, true, 9, "op_Node_metrics", 1, -1);
+                public static REL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("dictionary", 5, true, 9, "op_Node_dictionary", 1, 1);
+                public static REL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("typeDefinition", 6, true, 8, "op_Node_typeDefinition", 1, 1);
+                public static REL_HOST: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("host", 7, true, 1, "op_Node_host", 1, 1);
+                public static REL_GROUPS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("groups", 8, true, 3, "nodes", 1, -1);
+                public static REL_SUBNODES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("subNodes", 9, true, 1, "op_Node_subNodes", 1, -1);
                 public static REL_OP_COMPONENT_HOST: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_host", 10, false, 10, "host", 1, -1);
                 public static REL_OP_NODE_SUBNODES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_subNodes", 11, false, 1, "subNodes", 1, -1);
                 public static getInstance(): org.kevoree.meta.MetaNode {
@@ -25696,11 +27786,11 @@ export module org {
                     temp_all[2] = MetaNode.REL_OP_NODE_HOST;
                     temp_all[3] = MetaNode.REL_OP_MODEL_NODES;
                     temp_all[4] = MetaNode.REL_COMPONENTS;
-                    temp_all[5] = MetaNode.REL_TYPEDEFINITION;
-                    temp_all[6] = MetaNode.REL_HOST;
-                    temp_all[7] = MetaNode.REL_GROUPS;
-                    temp_all[8] = MetaNode.REL_SUBNODES;
-                    temp_all[9] = MetaNode.REL_METRICS;
+                    temp_all[5] = MetaNode.REL_DICTIONARY;
+                    temp_all[6] = MetaNode.REL_TYPEDEFINITION;
+                    temp_all[7] = MetaNode.REL_HOST;
+                    temp_all[8] = MetaNode.REL_GROUPS;
+                    temp_all[9] = MetaNode.REL_SUBNODES;
                     temp_all[10] = MetaNode.REL_OP_COMPONENT_HOST;
                     temp_all[11] = MetaNode.REL_OP_NODE_SUBNODES;
                     this.init(temp_all);
@@ -25712,15 +27802,16 @@ export module org {
 
                 private static INSTANCE: org.kevoree.meta.MetaNodeType = null;
                 public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static ATT_VERSION: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("version", 1, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 2, true, 6, "op_NodeType_metaData", 17, -1);
-                public static REL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("dictionary", 3, true, 15, "op_NodeType_dictionary", 17, 1);
-                public static REL_OP_NODE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_typeDefinition", 4, false, 1, "typeDefinition", 17, -1);
-                public static REL_OP_INSTANCE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Instance_typeDefinition", 5, false, 7, "typeDefinition", 17, -1);
-                public static REL_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("deployUnits", 6, true, 16, "op_NodeType_deployUnits", 17, -1);
-                public static REL_OP_NAMESPACE_TYPEDEFINITIONS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Namespace_typeDefinitions", 7, false, 4, "typeDefinitions", 17, -1);
-                public static REL_OP_COMPONENT_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_typeDefinition", 8, false, 10, "typeDefinition", 17, -1);
-                public static REL_OP_CHANNEL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_typeDefinition", 9, false, 2, "typeDefinition", 17, -1);
+                public static ATT_DESCRIPTION: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("description", 1, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_VERSION: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("version", 2, 0, false, -4, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 3, true, 6, "op_NodeType_metaData", 18, -1);
+                public static REL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("dictionary", 4, true, 16, "op_NodeType_dictionary", 18, 1);
+                public static REL_OP_NODE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_typeDefinition", 5, false, 1, "typeDefinition", 18, -1);
+                public static REL_OP_INSTANCE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Instance_typeDefinition", 6, false, 7, "typeDefinition", 18, -1);
+                public static REL_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("deployUnits", 7, true, 17, "op_NodeType_deployUnits", 18, -1);
+                public static REL_OP_NAMESPACE_TYPEDEFINITIONS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Namespace_typeDefinitions", 8, false, 4, "typeDefinitions", 18, -1);
+                public static REL_OP_COMPONENT_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_typeDefinition", 9, false, 10, "typeDefinition", 18, -1);
+                public static REL_OP_CHANNEL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_typeDefinition", 10, false, 2, "typeDefinition", 18, -1);
                 public static getInstance(): org.kevoree.meta.MetaNodeType {
                     if (MetaNodeType.INSTANCE == null) {
                         MetaNodeType.INSTANCE = new org.kevoree.meta.MetaNodeType();
@@ -25729,19 +27820,114 @@ export module org {
                 }
 
                 constructor() {
-                    super("org.kevoree.NodeType", 17, null, new Int32Array([8]));
+                    super("org.kevoree.NodeType", 18, null, new Int32Array([8]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaNodeType.ATT_NAME;
-                    temp_all[1] = MetaNodeType.ATT_VERSION;
-                    temp_all[2] = MetaNodeType.REL_METADATA;
-                    temp_all[3] = MetaNodeType.REL_DICTIONARY;
-                    temp_all[4] = MetaNodeType.REL_OP_NODE_TYPEDEFINITION;
-                    temp_all[5] = MetaNodeType.REL_OP_INSTANCE_TYPEDEFINITION;
-                    temp_all[6] = MetaNodeType.REL_DEPLOYUNITS;
-                    temp_all[7] = MetaNodeType.REL_OP_NAMESPACE_TYPEDEFINITIONS;
-                    temp_all[8] = MetaNodeType.REL_OP_COMPONENT_TYPEDEFINITION;
-                    temp_all[9] = MetaNodeType.REL_OP_CHANNEL_TYPEDEFINITION;
+                    temp_all[1] = MetaNodeType.ATT_DESCRIPTION;
+                    temp_all[2] = MetaNodeType.ATT_VERSION;
+                    temp_all[3] = MetaNodeType.REL_METADATA;
+                    temp_all[4] = MetaNodeType.REL_DICTIONARY;
+                    temp_all[5] = MetaNodeType.REL_OP_NODE_TYPEDEFINITION;
+                    temp_all[6] = MetaNodeType.REL_OP_INSTANCE_TYPEDEFINITION;
+                    temp_all[7] = MetaNodeType.REL_DEPLOYUNITS;
+                    temp_all[8] = MetaNodeType.REL_OP_NAMESPACE_TYPEDEFINITIONS;
+                    temp_all[9] = MetaNodeType.REL_OP_COMPONENT_TYPEDEFINITION;
+                    temp_all[10] = MetaNodeType.REL_OP_CHANNEL_TYPEDEFINITION;
                     this.init(temp_all);
+                }
+
+            }
+
+            export class MetaNumberParam extends org.kevoree.modeling.meta.impl.MetaClass {
+
+                private static INSTANCE: org.kevoree.meta.MetaNumberParam = null;
+                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_VALUE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("value", 1, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 2, true, 6, "op_Param_metaData", 26, -1);
+                public static REL_OP_DICTIONARY_PARAMS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Dictionary_params", 3, false, 9, "params", 26, -1);
+                public static REL_OP_FRAGMENTDICTIONARY_PARAMS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_FragmentDictionary_params", 4, false, 13, "params", 26, -1);
+                public static REL_TYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("type", 5, true, 22, "op_Param_type", 26, -1);
+                public static getInstance(): org.kevoree.meta.MetaNumberParam {
+                    if (MetaNumberParam.INSTANCE == null) {
+                        MetaNumberParam.INSTANCE = new org.kevoree.meta.MetaNumberParam();
+                    }
+                    return MetaNumberParam.INSTANCE;
+                }
+
+                constructor() {
+                    super("org.kevoree.NumberParam", 26, null, new Int32Array([24]));
+                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
+                    temp_all[0] = MetaNumberParam.ATT_NAME;
+                    temp_all[1] = MetaNumberParam.ATT_VALUE;
+                    temp_all[2] = MetaNumberParam.REL_METADATA;
+                    temp_all[3] = MetaNumberParam.REL_OP_DICTIONARY_PARAMS;
+                    temp_all[4] = MetaNumberParam.REL_OP_FRAGMENTDICTIONARY_PARAMS;
+                    temp_all[5] = MetaNumberParam.REL_TYPE;
+                    this.init(temp_all);
+                }
+
+            }
+
+            export class MetaNumberParamType extends org.kevoree.modeling.meta.impl.MetaClass {
+
+                private static INSTANCE: org.kevoree.meta.MetaNumberParamType = null;
+                public static ATT_DEFAULT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("default", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_FRAGMENT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("fragment", 1, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 2, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_TYPE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("type", 3, 0, false, 0, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_REQUIRED: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("required", 4, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 5, true, 6, "op_ParamType_metaData", 31, -1);
+                public static REL_OP_PARAM_TYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Param_type", 6, false, 24, "type", 31, -1);
+                public static REL_OP_DICTIONARYTYPE_PARAMS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_DictionaryType_params", 7, false, 16, "params", 31, -1);
+                public static REL_CONSTRAINTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("constraints", 8, true, 23, "op_ParamType_constraints", 31, -1);
+                public static getInstance(): org.kevoree.meta.MetaNumberParamType {
+                    if (MetaNumberParamType.INSTANCE == null) {
+                        MetaNumberParamType.INSTANCE = new org.kevoree.meta.MetaNumberParamType();
+                    }
+                    return MetaNumberParamType.INSTANCE;
+                }
+
+                constructor() {
+                    super("org.kevoree.NumberParamType", 31, null, new Int32Array([22]));
+                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
+                    temp_all[0] = MetaNumberParamType.ATT_DEFAULT;
+                    temp_all[1] = MetaNumberParamType.ATT_FRAGMENT;
+                    temp_all[2] = MetaNumberParamType.ATT_NAME;
+                    temp_all[3] = MetaNumberParamType.ATT_TYPE;
+                    temp_all[4] = MetaNumberParamType.ATT_REQUIRED;
+                    temp_all[5] = MetaNumberParamType.REL_METADATA;
+                    temp_all[6] = MetaNumberParamType.REL_OP_PARAM_TYPE;
+                    temp_all[7] = MetaNumberParamType.REL_OP_DICTIONARYTYPE_PARAMS;
+                    temp_all[8] = MetaNumberParamType.REL_CONSTRAINTS;
+                    this.init(temp_all);
+                }
+
+            }
+
+            export class MetaNumberType extends org.kevoree.modeling.meta.impl.MetaEnum implements org.kevoree.modeling.KType {
+
+                public static DOUBLE: org.kevoree.NumberType = new org.kevoree.impl.NumberTypeLiteral("DOUBLE", 0, "org.kevoree.NumberType");
+                public static FLOAT: org.kevoree.NumberType = new org.kevoree.impl.NumberTypeLiteral("FLOAT", 1, "org.kevoree.NumberType");
+                public static INT: org.kevoree.NumberType = new org.kevoree.impl.NumberTypeLiteral("INT", 2, "org.kevoree.NumberType");
+                public static LONG: org.kevoree.NumberType = new org.kevoree.impl.NumberTypeLiteral("LONG", 3, "org.kevoree.NumberType");
+                public static SHORT: org.kevoree.NumberType = new org.kevoree.impl.NumberTypeLiteral("SHORT", 4, "org.kevoree.NumberType");
+                private static INSTANCE: org.kevoree.meta.MetaNumberType;
+                public static getInstance(): org.kevoree.meta.MetaNumberType {
+                    if (MetaNumberType.INSTANCE == null) {
+                        MetaNumberType.INSTANCE = new org.kevoree.meta.MetaNumberType();
+                    }
+                    return MetaNumberType.INSTANCE;
+                }
+
+                constructor() {
+                    super("org.kevoree.NumberType", 0);
+                    var p_lits_arr: org.kevoree.modeling.meta.KLiteral[] = new Array();
+                    p_lits_arr[0] = MetaNumberType.DOUBLE;
+                    p_lits_arr[1] = MetaNumberType.FLOAT;
+                    p_lits_arr[2] = MetaNumberType.INT;
+                    p_lits_arr[3] = MetaNumberType.LONG;
+                    p_lits_arr[4] = MetaNumberType.SHORT;
+                    this.init(p_lits_arr);
                 }
 
             }
@@ -25752,7 +27938,7 @@ export module org {
                 public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_Port_metaData", 12, -1);
                 public static REL_CHANNELS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("channels", 2, true, 2, "outputs", 12, -1);
-                public static REL_TYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("type", 3, true, 14, "op_Port_type", 12, -1);
+                public static REL_TYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("type", 3, true, 15, "op_Port_type", 12, -1);
                 public static getInstance(): org.kevoree.meta.MetaOutputPort {
                     if (MetaOutputPort.INSTANCE == null) {
                         MetaOutputPort.INSTANCE = new org.kevoree.meta.MetaOutputPort();
@@ -25761,7 +27947,7 @@ export module org {
                 }
 
                 constructor() {
-                    super("org.kevoree.OutputPort", 12, null, new Int32Array([13]));
+                    super("org.kevoree.OutputPort", 12, null, new Int32Array([14]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaOutputPort.ATT_NAME;
                     temp_all[1] = MetaOutputPort.REL_METADATA;
@@ -25772,13 +27958,73 @@ export module org {
 
             }
 
+            export class MetaParam extends org.kevoree.modeling.meta.impl.MetaClass {
+
+                private static INSTANCE: org.kevoree.meta.MetaParam = null;
+                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, true, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_Param_metaData", 24, -1);
+                public static REL_OP_DICTIONARY_PARAMS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Dictionary_params", 2, false, 9, "params", 24, -1);
+                public static REL_OP_FRAGMENTDICTIONARY_PARAMS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_FragmentDictionary_params", 3, false, 13, "params", 24, -1);
+                public static REL_TYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("type", 4, true, 22, "op_Param_type", 24, -1);
+                public static getInstance(): org.kevoree.meta.MetaParam {
+                    if (MetaParam.INSTANCE == null) {
+                        MetaParam.INSTANCE = new org.kevoree.meta.MetaParam();
+                    }
+                    return MetaParam.INSTANCE;
+                }
+
+                constructor() {
+                    super("org.kevoree.Param", 24, null, new Int32Array([5]));
+                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
+                    temp_all[0] = MetaParam.ATT_NAME;
+                    temp_all[1] = MetaParam.REL_METADATA;
+                    temp_all[2] = MetaParam.REL_OP_DICTIONARY_PARAMS;
+                    temp_all[3] = MetaParam.REL_OP_FRAGMENTDICTIONARY_PARAMS;
+                    temp_all[4] = MetaParam.REL_TYPE;
+                    this.init(temp_all);
+                }
+
+            }
+
+            export class MetaParamType extends org.kevoree.modeling.meta.impl.MetaClass {
+
+                private static INSTANCE: org.kevoree.meta.MetaParamType = null;
+                public static ATT_FRAGMENT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("fragment", 0, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 1, 0, true, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_REQUIRED: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("required", 2, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 3, true, 6, "op_ParamType_metaData", 22, -1);
+                public static REL_OP_PARAM_TYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Param_type", 4, false, 24, "type", 22, -1);
+                public static REL_OP_DICTIONARYTYPE_PARAMS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_DictionaryType_params", 5, false, 16, "params", 22, -1);
+                public static REL_CONSTRAINTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("constraints", 6, true, 23, "op_ParamType_constraints", 22, -1);
+                public static getInstance(): org.kevoree.meta.MetaParamType {
+                    if (MetaParamType.INSTANCE == null) {
+                        MetaParamType.INSTANCE = new org.kevoree.meta.MetaParamType();
+                    }
+                    return MetaParamType.INSTANCE;
+                }
+
+                constructor() {
+                    super("org.kevoree.ParamType", 22, null, new Int32Array([5]));
+                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
+                    temp_all[0] = MetaParamType.ATT_FRAGMENT;
+                    temp_all[1] = MetaParamType.ATT_NAME;
+                    temp_all[2] = MetaParamType.ATT_REQUIRED;
+                    temp_all[3] = MetaParamType.REL_METADATA;
+                    temp_all[4] = MetaParamType.REL_OP_PARAM_TYPE;
+                    temp_all[5] = MetaParamType.REL_OP_DICTIONARYTYPE_PARAMS;
+                    temp_all[6] = MetaParamType.REL_CONSTRAINTS;
+                    this.init(temp_all);
+                }
+
+            }
+
             export class MetaPort extends org.kevoree.modeling.meta.impl.MetaClass {
 
                 private static INSTANCE: org.kevoree.meta.MetaPort = null;
-                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_Port_metaData", 13, -1);
-                public static REL_CHANNELS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("channels", 2, true, 2, "outputs", 13, -1);
-                public static REL_TYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("type", 3, true, 14, "op_Port_type", 13, -1);
+                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, true, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_Port_metaData", 14, -1);
+                public static REL_CHANNELS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("channels", 2, true, 2, "outputs", 14, -1);
+                public static REL_TYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("type", 3, true, 15, "op_Port_type", 14, -1);
                 public static getInstance(): org.kevoree.meta.MetaPort {
                     if (MetaPort.INSTANCE == null) {
                         MetaPort.INSTANCE = new org.kevoree.meta.MetaPort();
@@ -25787,7 +28033,7 @@ export module org {
                 }
 
                 constructor() {
-                    super("org.kevoree.Port", 13, null, new Int32Array([5]));
+                    super("org.kevoree.Port", 14, null, new Int32Array([5]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaPort.ATT_NAME;
                     temp_all[1] = MetaPort.REL_METADATA;
@@ -25801,12 +28047,12 @@ export module org {
             export class MetaPortType extends org.kevoree.modeling.meta.impl.MetaClass {
 
                 private static INSTANCE: org.kevoree.meta.MetaPortType = null;
-                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_PortType_metaData", 14, -1);
-                public static REL_PROTOCOL: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("protocol", 2, true, 6, "op_PortType_protocol", 14, -1);
-                public static REL_OP_COMPONENTTYPE_OUTPUTTYPES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ComponentType_outputTypes", 3, false, 20, "outputTypes", 14, -1);
-                public static REL_OP_PORT_TYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Port_type", 4, false, 13, "type", 14, -1);
-                public static REL_OP_COMPONENTTYPE_INPUTTYPES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ComponentType_inputTypes", 5, false, 20, "inputTypes", 14, -1);
+                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, true, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 1, true, 6, "op_PortType_metaData", 15, -1);
+                public static REL_PROTOCOL: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("protocol", 2, true, 6, "op_PortType_protocol", 15, -1);
+                public static REL_OP_COMPONENTTYPE_OUTPUTTYPES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ComponentType_outputTypes", 3, false, 21, "outputTypes", 15, -1);
+                public static REL_OP_PORT_TYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Port_type", 4, false, 14, "type", 15, -1);
+                public static REL_OP_COMPONENTTYPE_INPUTTYPES: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ComponentType_inputTypes", 5, false, 21, "inputTypes", 15, -1);
                 public static getInstance(): org.kevoree.meta.MetaPortType {
                     if (MetaPortType.INSTANCE == null) {
                         MetaPortType.INSTANCE = new org.kevoree.meta.MetaPortType();
@@ -25815,7 +28061,7 @@ export module org {
                 }
 
                 constructor() {
-                    super("org.kevoree.PortType", 14, null, new Int32Array([5]));
+                    super("org.kevoree.PortType", 15, null, new Int32Array([5]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaPortType.ATT_NAME;
                     temp_all[1] = MetaPortType.REL_METADATA;
@@ -25828,27 +28074,65 @@ export module org {
 
             }
 
-            export class MetaStringDataType extends org.kevoree.modeling.meta.impl.MetaClass {
+            export class MetaStringParam extends org.kevoree.modeling.meta.impl.MetaClass {
 
-                private static INSTANCE: org.kevoree.meta.MetaStringDataType = null;
-                public static ATT_DEFAULT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("default", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static ATT_MULTILINE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("multiline", 1, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 2, true, 6, "op_Element_metaData", 23, -1);
-                public static REL_OP_ATTRIBUTETYPE_DATATYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_datatype", 3, false, 21, "datatype", 23, -1);
-                public static getInstance(): org.kevoree.meta.MetaStringDataType {
-                    if (MetaStringDataType.INSTANCE == null) {
-                        MetaStringDataType.INSTANCE = new org.kevoree.meta.MetaStringDataType();
+                private static INSTANCE: org.kevoree.meta.MetaStringParam = null;
+                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_VALUE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("value", 1, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 2, true, 6, "op_Param_metaData", 25, -1);
+                public static REL_OP_DICTIONARY_PARAMS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Dictionary_params", 3, false, 9, "params", 25, -1);
+                public static REL_OP_FRAGMENTDICTIONARY_PARAMS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_FragmentDictionary_params", 4, false, 13, "params", 25, -1);
+                public static REL_TYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("type", 5, true, 22, "op_Param_type", 25, -1);
+                public static getInstance(): org.kevoree.meta.MetaStringParam {
+                    if (MetaStringParam.INSTANCE == null) {
+                        MetaStringParam.INSTANCE = new org.kevoree.meta.MetaStringParam();
                     }
-                    return MetaStringDataType.INSTANCE;
+                    return MetaStringParam.INSTANCE;
                 }
 
                 constructor() {
-                    super("org.kevoree.StringDataType", 23, null, new Int32Array([22]));
+                    super("org.kevoree.StringParam", 25, null, new Int32Array([24]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
-                    temp_all[0] = MetaStringDataType.ATT_DEFAULT;
-                    temp_all[1] = MetaStringDataType.ATT_MULTILINE;
-                    temp_all[2] = MetaStringDataType.REL_METADATA;
-                    temp_all[3] = MetaStringDataType.REL_OP_ATTRIBUTETYPE_DATATYPE;
+                    temp_all[0] = MetaStringParam.ATT_NAME;
+                    temp_all[1] = MetaStringParam.ATT_VALUE;
+                    temp_all[2] = MetaStringParam.REL_METADATA;
+                    temp_all[3] = MetaStringParam.REL_OP_DICTIONARY_PARAMS;
+                    temp_all[4] = MetaStringParam.REL_OP_FRAGMENTDICTIONARY_PARAMS;
+                    temp_all[5] = MetaStringParam.REL_TYPE;
+                    this.init(temp_all);
+                }
+
+            }
+
+            export class MetaStringParamType extends org.kevoree.modeling.meta.impl.MetaClass {
+
+                private static INSTANCE: org.kevoree.meta.MetaStringParamType = null;
+                public static ATT_DEFAULT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("default", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_FRAGMENT: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("fragment", 1, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 2, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_REQUIRED: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("required", 3, 0, false, -1, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 4, true, 6, "op_StringParamType_metaData", 30, -1);
+                public static REL_OP_PARAM_TYPE: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Param_type", 5, false, 24, "type", 30, -1);
+                public static REL_OP_DICTIONARYTYPE_PARAMS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_DictionaryType_params", 6, false, 16, "params", 30, -1);
+                public static REL_CONSTRAINTS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("constraints", 7, true, 23, "op_StringParamType_constraints", 30, -1);
+                public static getInstance(): org.kevoree.meta.MetaStringParamType {
+                    if (MetaStringParamType.INSTANCE == null) {
+                        MetaStringParamType.INSTANCE = new org.kevoree.meta.MetaStringParamType();
+                    }
+                    return MetaStringParamType.INSTANCE;
+                }
+
+                constructor() {
+                    super("org.kevoree.StringParamType", 30, null, new Int32Array([22]));
+                    var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
+                    temp_all[0] = MetaStringParamType.ATT_DEFAULT;
+                    temp_all[1] = MetaStringParamType.ATT_FRAGMENT;
+                    temp_all[2] = MetaStringParamType.ATT_NAME;
+                    temp_all[3] = MetaStringParamType.ATT_REQUIRED;
+                    temp_all[4] = MetaStringParamType.REL_METADATA;
+                    temp_all[5] = MetaStringParamType.REL_OP_PARAM_TYPE;
+                    temp_all[6] = MetaStringParamType.REL_OP_DICTIONARYTYPE_PARAMS;
+                    temp_all[7] = MetaStringParamType.REL_CONSTRAINTS;
                     this.init(temp_all);
                 }
 
@@ -25857,16 +28141,17 @@ export module org {
             export class MetaTypeDefinition extends org.kevoree.modeling.meta.impl.MetaClass {
 
                 private static INSTANCE: org.kevoree.meta.MetaTypeDefinition = null;
-                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static ATT_VERSION: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("version", 1, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 2, true, 6, "op_TypeDefinition_metaData", 8, -1);
-                public static REL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("dictionary", 3, true, 15, "op_TypeDefinition_dictionary", 8, 1);
-                public static REL_OP_NODE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_typeDefinition", 4, false, 1, "typeDefinition", 8, -1);
-                public static REL_OP_INSTANCE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Instance_typeDefinition", 5, false, 7, "typeDefinition", 8, -1);
-                public static REL_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("deployUnits", 6, true, 16, "op_TypeDefinition_deployUnits", 8, -1);
-                public static REL_OP_NAMESPACE_TYPEDEFINITIONS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Namespace_typeDefinitions", 7, false, 4, "typeDefinitions", 8, -1);
-                public static REL_OP_COMPONENT_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_typeDefinition", 8, false, 10, "typeDefinition", 8, -1);
-                public static REL_OP_CHANNEL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_typeDefinition", 9, false, 2, "typeDefinition", 8, -1);
+                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, true, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_DESCRIPTION: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("description", 1, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_VERSION: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("version", 2, 0, true, -4, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 3, true, 6, "op_TypeDefinition_metaData", 8, -1);
+                public static REL_DICTIONARY: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("dictionary", 4, true, 16, "op_TypeDefinition_dictionary", 8, 1);
+                public static REL_OP_NODE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_typeDefinition", 5, false, 1, "typeDefinition", 8, -1);
+                public static REL_OP_INSTANCE_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Instance_typeDefinition", 6, false, 7, "typeDefinition", 8, -1);
+                public static REL_DEPLOYUNITS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("deployUnits", 7, true, 17, "op_TypeDefinition_deployUnits", 8, -1);
+                public static REL_OP_NAMESPACE_TYPEDEFINITIONS: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Namespace_typeDefinitions", 8, false, 4, "typeDefinitions", 8, -1);
+                public static REL_OP_COMPONENT_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_typeDefinition", 9, false, 10, "typeDefinition", 8, -1);
+                public static REL_OP_CHANNEL_TYPEDEFINITION: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_typeDefinition", 10, false, 2, "typeDefinition", 8, -1);
                 public static getInstance(): org.kevoree.meta.MetaTypeDefinition {
                     if (MetaTypeDefinition.INSTANCE == null) {
                         MetaTypeDefinition.INSTANCE = new org.kevoree.meta.MetaTypeDefinition();
@@ -25878,15 +28163,16 @@ export module org {
                     super("org.kevoree.TypeDefinition", 8, null, new Int32Array([5]));
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaTypeDefinition.ATT_NAME;
-                    temp_all[1] = MetaTypeDefinition.ATT_VERSION;
-                    temp_all[2] = MetaTypeDefinition.REL_METADATA;
-                    temp_all[3] = MetaTypeDefinition.REL_DICTIONARY;
-                    temp_all[4] = MetaTypeDefinition.REL_OP_NODE_TYPEDEFINITION;
-                    temp_all[5] = MetaTypeDefinition.REL_OP_INSTANCE_TYPEDEFINITION;
-                    temp_all[6] = MetaTypeDefinition.REL_DEPLOYUNITS;
-                    temp_all[7] = MetaTypeDefinition.REL_OP_NAMESPACE_TYPEDEFINITIONS;
-                    temp_all[8] = MetaTypeDefinition.REL_OP_COMPONENT_TYPEDEFINITION;
-                    temp_all[9] = MetaTypeDefinition.REL_OP_CHANNEL_TYPEDEFINITION;
+                    temp_all[1] = MetaTypeDefinition.ATT_DESCRIPTION;
+                    temp_all[2] = MetaTypeDefinition.ATT_VERSION;
+                    temp_all[3] = MetaTypeDefinition.REL_METADATA;
+                    temp_all[4] = MetaTypeDefinition.REL_DICTIONARY;
+                    temp_all[5] = MetaTypeDefinition.REL_OP_NODE_TYPEDEFINITION;
+                    temp_all[6] = MetaTypeDefinition.REL_OP_INSTANCE_TYPEDEFINITION;
+                    temp_all[7] = MetaTypeDefinition.REL_DEPLOYUNITS;
+                    temp_all[8] = MetaTypeDefinition.REL_OP_NAMESPACE_TYPEDEFINITIONS;
+                    temp_all[9] = MetaTypeDefinition.REL_OP_COMPONENT_TYPEDEFINITION;
+                    temp_all[10] = MetaTypeDefinition.REL_OP_CHANNEL_TYPEDEFINITION;
                     this.init(temp_all);
                 }
 
@@ -25895,29 +28181,35 @@ export module org {
             export class MetaValue extends org.kevoree.modeling.meta.impl.MetaClass {
 
                 private static INSTANCE: org.kevoree.meta.MetaValue = null;
-                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
+                public static ATT_NAME: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("name", 0, 0, true, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
                 public static ATT_VALUE: org.kevoree.modeling.meta.KMetaAttribute = new org.kevoree.modeling.meta.impl.MetaAttribute("value", 1, 0, false, -2, org.kevoree.modeling.extrapolation.impl.DiscreteExtrapolation.instance());
-                public static REL_OP_DEPLOYUNIT_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_DeployUnit_metaData", 2, false, 16, "metaData", 6, -1);
-                public static REL_OP_DICTIONARYTYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_DictionaryType_metaData", 3, false, 15, "metaData", 6, -1);
-                public static REL_OP_ATTRIBUTETYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AttributeType_metaData", 4, false, 21, "metaData", 6, -1);
-                public static REL_OP_METRIC_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Metric_metaData", 5, false, 9, "metaData", 6, -1);
-                public static REL_OP_NODETYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_NodeType_metaData", 6, false, 17, "metaData", 6, -1);
-                public static REL_OP_LONGDATATYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_LongDataType_metaData", 7, false, 26, "metaData", 6, -1);
-                public static REL_OP_PORT_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Port_metaData", 8, false, 13, "metaData", 6, -1);
-                public static REL_OP_COMPONENT_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_metaData", 9, false, 10, "metaData", 6, -1);
-                public static REL_OP_MODEL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Model_metaData", 10, false, 0, "metaData", 6, -1);
-                public static REL_OP_INSTANCE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Instance_metaData", 11, false, 7, "metaData", 6, -1);
-                public static REL_OP_INTDATATYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_IntDataType_metaData", 12, false, 25, "metaData", 6, -1);
-                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 13, true, 6, "op_Value_metaData", 6, -1);
-                public static REL_OP_PORTTYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_PortType_metaData", 14, false, 14, "metaData", 6, -1);
-                public static REL_OP_PORTTYPE_PROTOCOL: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_PortType_protocol", 15, false, 14, "protocol", 6, -1);
-                public static REL_OP_GROUPTYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_GroupType_metaData", 16, false, 18, "metaData", 6, -1);
-                public static REL_OP_NAMESPACE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Namespace_metaData", 17, false, 4, "metaData", 6, -1);
-                public static REL_OP_TYPEDEFINITION_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_TypeDefinition_metaData", 18, false, 8, "metaData", 6, -1);
-                public static REL_OP_VALUE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Value_metaData", 19, false, 6, "metaData", 6, -1);
-                public static REL_OP_CHANNEL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_metaData", 20, false, 2, "metaData", 6, -1);
-                public static REL_OP_NODE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_metaData", 21, false, 1, "metaData", 6, -1);
-                public static REL_OP_ELEMENT_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Element_metaData", 22, false, 5, "metaData", 6, -1);
+                public static REL_OP_FRAGMENTDICTIONARY_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_FragmentDictionary_metaData", 2, false, 13, "metaData", 6, -1);
+                public static REL_OP_DEPLOYUNIT_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_DeployUnit_metaData", 3, false, 17, "metaData", 6, -1);
+                public static REL_OP_NODETYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_NodeType_metaData", 4, false, 18, "metaData", 6, -1);
+                public static REL_OP_INSTANCE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Instance_metaData", 5, false, 7, "metaData", 6, -1);
+                public static REL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("metaData", 6, true, 6, "op_Value_metaData", 6, -1);
+                public static REL_OP_PORTTYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_PortType_metaData", 7, false, 15, "metaData", 6, -1);
+                public static REL_OP_TYPEDEFINITION_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_TypeDefinition_metaData", 8, false, 8, "metaData", 6, -1);
+                public static REL_OP_PARAM_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Param_metaData", 9, false, 24, "metaData", 6, -1);
+                public static REL_OP_VALUE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Value_metaData", 10, false, 6, "metaData", 6, -1);
+                public static REL_OP_MAXCONSTRAINT_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_MaxConstraint_metaData", 11, false, 36, "metaData", 6, -1);
+                public static REL_OP_MINCONSTRAINT_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_MinConstraint_metaData", 12, false, 35, "metaData", 6, -1);
+                public static REL_OP_ABSTRACTCONSTRAINT_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_AbstractConstraint_metaData", 13, false, 23, "metaData", 6, -1);
+                public static REL_OP_DICTIONARYTYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_DictionaryType_metaData", 14, false, 16, "metaData", 6, -1);
+                public static REL_OP_PORT_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Port_metaData", 15, false, 14, "metaData", 6, -1);
+                public static REL_OP_COMPONENT_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Component_metaData", 16, false, 10, "metaData", 6, -1);
+                public static REL_OP_STRINGPARAMTYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_StringParamType_metaData", 17, false, 30, "metaData", 6, -1);
+                public static REL_OP_MODEL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Model_metaData", 18, false, 0, "metaData", 6, -1);
+                public static REL_OP_PORTTYPE_PROTOCOL: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_PortType_protocol", 19, false, 15, "protocol", 6, -1);
+                public static REL_OP_PARAMTYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ParamType_metaData", 20, false, 22, "metaData", 6, -1);
+                public static REL_OP_DICTIONARY_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Dictionary_metaData", 21, false, 9, "metaData", 6, -1);
+                public static REL_OP_GROUPTYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_GroupType_metaData", 22, false, 19, "metaData", 6, -1);
+                public static REL_OP_LISTPARAMTYPE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_ListParamType_metaData", 23, false, 34, "metaData", 6, -1);
+                public static REL_OP_NAMESPACE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Namespace_metaData", 24, false, 4, "metaData", 6, -1);
+                public static REL_OP_MULTILINECONSTRAINT_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_MultilineConstraint_metaData", 25, false, 37, "metaData", 6, -1);
+                public static REL_OP_CHANNEL_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Channel_metaData", 26, false, 2, "metaData", 6, -1);
+                public static REL_OP_NODE_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Node_metaData", 27, false, 1, "metaData", 6, -1);
+                public static REL_OP_ELEMENT_METADATA: org.kevoree.modeling.meta.KMetaRelation = new org.kevoree.modeling.meta.impl.MetaRelation("op_Element_metaData", 28, false, 5, "metaData", 6, -1);
                 public static getInstance(): org.kevoree.meta.MetaValue {
                     if (MetaValue.INSTANCE == null) {
                         MetaValue.INSTANCE = new org.kevoree.meta.MetaValue();
@@ -25930,27 +28222,33 @@ export module org {
                     var temp_all: org.kevoree.modeling.meta.KMeta[] = new Array();
                     temp_all[0] = MetaValue.ATT_NAME;
                     temp_all[1] = MetaValue.ATT_VALUE;
-                    temp_all[2] = MetaValue.REL_OP_DEPLOYUNIT_METADATA;
-                    temp_all[3] = MetaValue.REL_OP_DICTIONARYTYPE_METADATA;
-                    temp_all[4] = MetaValue.REL_OP_ATTRIBUTETYPE_METADATA;
-                    temp_all[5] = MetaValue.REL_OP_METRIC_METADATA;
-                    temp_all[6] = MetaValue.REL_OP_NODETYPE_METADATA;
-                    temp_all[7] = MetaValue.REL_OP_LONGDATATYPE_METADATA;
-                    temp_all[8] = MetaValue.REL_OP_PORT_METADATA;
-                    temp_all[9] = MetaValue.REL_OP_COMPONENT_METADATA;
-                    temp_all[10] = MetaValue.REL_OP_MODEL_METADATA;
-                    temp_all[11] = MetaValue.REL_OP_INSTANCE_METADATA;
-                    temp_all[12] = MetaValue.REL_OP_INTDATATYPE_METADATA;
-                    temp_all[13] = MetaValue.REL_METADATA;
-                    temp_all[14] = MetaValue.REL_OP_PORTTYPE_METADATA;
-                    temp_all[15] = MetaValue.REL_OP_PORTTYPE_PROTOCOL;
-                    temp_all[16] = MetaValue.REL_OP_GROUPTYPE_METADATA;
-                    temp_all[17] = MetaValue.REL_OP_NAMESPACE_METADATA;
-                    temp_all[18] = MetaValue.REL_OP_TYPEDEFINITION_METADATA;
-                    temp_all[19] = MetaValue.REL_OP_VALUE_METADATA;
-                    temp_all[20] = MetaValue.REL_OP_CHANNEL_METADATA;
-                    temp_all[21] = MetaValue.REL_OP_NODE_METADATA;
-                    temp_all[22] = MetaValue.REL_OP_ELEMENT_METADATA;
+                    temp_all[2] = MetaValue.REL_OP_FRAGMENTDICTIONARY_METADATA;
+                    temp_all[3] = MetaValue.REL_OP_DEPLOYUNIT_METADATA;
+                    temp_all[4] = MetaValue.REL_OP_NODETYPE_METADATA;
+                    temp_all[5] = MetaValue.REL_OP_INSTANCE_METADATA;
+                    temp_all[6] = MetaValue.REL_METADATA;
+                    temp_all[7] = MetaValue.REL_OP_PORTTYPE_METADATA;
+                    temp_all[8] = MetaValue.REL_OP_TYPEDEFINITION_METADATA;
+                    temp_all[9] = MetaValue.REL_OP_PARAM_METADATA;
+                    temp_all[10] = MetaValue.REL_OP_VALUE_METADATA;
+                    temp_all[11] = MetaValue.REL_OP_MAXCONSTRAINT_METADATA;
+                    temp_all[12] = MetaValue.REL_OP_MINCONSTRAINT_METADATA;
+                    temp_all[13] = MetaValue.REL_OP_ABSTRACTCONSTRAINT_METADATA;
+                    temp_all[14] = MetaValue.REL_OP_DICTIONARYTYPE_METADATA;
+                    temp_all[15] = MetaValue.REL_OP_PORT_METADATA;
+                    temp_all[16] = MetaValue.REL_OP_COMPONENT_METADATA;
+                    temp_all[17] = MetaValue.REL_OP_STRINGPARAMTYPE_METADATA;
+                    temp_all[18] = MetaValue.REL_OP_MODEL_METADATA;
+                    temp_all[19] = MetaValue.REL_OP_PORTTYPE_PROTOCOL;
+                    temp_all[20] = MetaValue.REL_OP_PARAMTYPE_METADATA;
+                    temp_all[21] = MetaValue.REL_OP_DICTIONARY_METADATA;
+                    temp_all[22] = MetaValue.REL_OP_GROUPTYPE_METADATA;
+                    temp_all[23] = MetaValue.REL_OP_LISTPARAMTYPE_METADATA;
+                    temp_all[24] = MetaValue.REL_OP_NAMESPACE_METADATA;
+                    temp_all[25] = MetaValue.REL_OP_MULTILINECONSTRAINT_METADATA;
+                    temp_all[26] = MetaValue.REL_OP_CHANNEL_METADATA;
+                    temp_all[27] = MetaValue.REL_OP_NODE_METADATA;
+                    temp_all[28] = MetaValue.REL_OP_ELEMENT_METADATA;
                     this.init(temp_all);
                 }
 

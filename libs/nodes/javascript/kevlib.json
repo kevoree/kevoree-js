@@ -1,0 +1,17 @@
+[
+{"@class":"org.kevoree.Model","@uuid":1,"@root":true,"namespaces":[5]},
+{"@class":"org.kevoree.Namespace","@uuid":5,"name":"kevoree","typeDefinitions":[2],"op_Model_namespaces":[1]},
+{"@class":"org.kevoree.NodeType","@uuid":2,"name":"JavascriptNode","metaData":[6],"dictionary":[7],"deployUnits":[3],"op_Namespace_typeDefinitions":[5]},
+{"@class":"org.kevoree.Value","@uuid":6,"name":"description","value":"<strong>TODO</strong> JavascriptNode description","op_NodeType_metaData":[2]},
+{"@class":"org.kevoree.DictionaryType","@uuid":7,"attributes":[8],"op_NodeType_dictionary":[2]},
+{"@class":"org.kevoree.DeployUnit","@uuid":3,"name":"kevoree-node-javascript","version":"6.0.0-alpha","metaData":[4],"op_NodeType_deployUnits":[2]},
+{"@class":"org.kevoree.AttributeType","@uuid":8,"fragment":"false","name":"logLevel","optional":"true","datatype":[9],"op_DictionaryType_attributes":[7]},
+{"@class":"org.kevoree.ChoiceDataType","@uuid":9,"defaultIndex":"1","choices":[10,11,12,13,14],"op_AttributeType_datatype":[8]},
+{"@class":"org.kevoree.Item","@uuid":10,"value":"DEBUG","op_ChoiceDataType_choices":[9]},
+{"@class":"org.kevoree.Item","@uuid":11,"value":"INFO","op_ChoiceDataType_choices":[9]},
+{"@class":"org.kevoree.Item","@uuid":12,"value":"WARN","op_ChoiceDataType_choices":[9]},
+{"@class":"org.kevoree.Item","@uuid":13,"value":"ERROR","op_ChoiceDataType_choices":[9]},
+{"@class":"org.kevoree.Item","@uuid":14,"value":"QUIET","op_ChoiceDataType_choices":[9]},
+{"@class":"org.kevoree.Value","@uuid":4,"name":"platform","value":"javascript","op_DeployUnit_metaData":[3]}
+]
+

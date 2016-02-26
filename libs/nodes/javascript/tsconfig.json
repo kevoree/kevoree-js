@@ -16,8 +16,12 @@
     ],
     "files": [
         "src/main/JavascriptNode.ts",
+        "src/main/LogLevel.ts",
         "src/test/ContextServiceImpl.ts",
         "src/test/ModelServiceImpl.ts",
         "src/test/test.ts"
-    ]
+    ],
+    "atom": {
+        "rewriteTsconfig": true
+    }
 }

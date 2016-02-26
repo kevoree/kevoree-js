@@ -56,7 +56,7 @@ describe('Kevoree model tests', () => {
             model.getNamespaces(namespaces => {
                 var type = kView.createNodeType();
                 type.setName('JavascriptNode');
-                type.setVersion('1');
+                type.setVersion(1);
                 namespaces[0].addTypeDefinitions(type);
                 done();
             });
@@ -66,7 +66,7 @@ describe('Kevoree model tests', () => {
             model.getNamespaces(namespaces => {
                 var type = kView.createGroupType();
                 type.setName('WSGroup');
-                type.setVersion('1');
+                type.setVersion(1);
                 namespaces[0].addTypeDefinitions(type);
                 done();
             });
@@ -76,7 +76,7 @@ describe('Kevoree model tests', () => {
             model.getNamespaces(namespaces => {
                 var type = kView.createChannelType();
                 type.setName('WSChan');
-                type.setVersion('1');
+                type.setVersion(1);
                 namespaces[0].addTypeDefinitions(type);
                 done();
             });
@@ -86,7 +86,7 @@ describe('Kevoree model tests', () => {
             model.getNamespaces(namespaces => {
                 var type = kView.createComponentType();
                 type.setName('Ticker');
-                type.setVersion('1');
+                type.setVersion(1);
                 namespaces[0].addTypeDefinitions(type);
                 done();
             });

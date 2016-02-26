@@ -1,3 +1,5 @@
+import { org } from 'kevoree-model';
+
 var Add: Statement<void> = (elem: Elem, stmts: Statements, model: org.kevoree.Model, cb: ElemCallback<void>) => {
   var nameList: Statement<string[]> = stmts[elem.children[0].type];
   nameList(elem.children[0], stmts, model, (err, namelist) => {

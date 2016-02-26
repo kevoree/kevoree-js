@@ -1,6 +1,7 @@
-import { Node, Start, Stop, Injectables, ChoiceParam } from 'kevoree-api';
+import { Node, Start, Stop, Injectables, Param } from 'kevoree-api';
 import { Inject } from 'ts-injector';
 import { Logger } from 'kevoree-logger';
+import { LogLevel } from './LogLevel';
 
 @Node({ description: '<strong>TODO</strong> JavascriptNode description' })
 class JavascriptNode {
@@ -8,14 +9,13 @@ class JavascriptNode {
     @Inject(Injectables.LoggerService)
     private logger: Logger;
 
-    @ChoiceParam({
-        choices: ['DEBUG', 'INFO', 'WARN', 'ERROR', 'QUIET'],
-        defaultIndex: 1
-    })
-    private logLevel: string;
+    @Param
+    private logLevel: LogLevel = LogLevel.INFO;
 
     @Start()
-    start(): void {}
+    start(): void {
+        this.logger.info('Node started');
+    }
 
     @Stop()
     stop(): void {

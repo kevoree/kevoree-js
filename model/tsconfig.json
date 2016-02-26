@@ -23,5 +23,8 @@
         "src/test/test.ts",
         "typings/mocha/mocha.d.ts",
         "typings/tsd.d.ts"
-    ]
+    ],
+    "atom": {
+        "rewriteTsconfig": true
+    }
 }

@@ -12,7 +12,7 @@ di.register(Injectables.ModelService, modelService);
 
 // contextual injector for the node
 var ctx = new Context();
-ctx.register(Injectables.LoggerService, LoggerFactory.createLogger('JavascriptNode', 'node0'));
+ctx.register(Injectables.LoggerService, LoggerFactory.createLogger('node0'));
 ctx.register(Injectables.ContextService, new ContextServiceImpl('node0', 'node0'));
 
 // create a node instance

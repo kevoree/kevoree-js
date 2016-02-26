@@ -1,22 +1,12 @@
 import * as async from 'async';
 import { org } from 'kevoree-model';
 import * as shortid from 'shortid';
-var Parser = require('./parser');
-var Statements: Statements = require('./statements');
 
-interface Callback {
-  (err?: Error): void;
-}
-
-export interface ModelCallback {
-  (err: Error, model?: org.kevoree.Model): void;
-}
-
-export interface KevScriptData {
-  kevs: string;
-  ctxModel?: org.kevoree.Model;
-  ctxVars?: Object;
-}
+var Parser = require('./Parser');
+import * as Statements from './statements';
+import { KevScriptData } from './KevScriptData';
+import { ModelCallback } from './ModelCallback';
+import { Callback } from './Callback';
 
 export class KevScript {
 

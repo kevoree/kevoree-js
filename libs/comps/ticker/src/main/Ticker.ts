@@ -1,6 +1,6 @@
 import {
-    Component, Output, IntParam, BooleanParam, Injectables, ModelService,
-    ContextService, Callback, OutputPort
+    Component, Output, Param, Injectables, ModelService, ContextService,
+    Callback, OutputPort, Min
 } from 'kevoree-api';
 import { Inject } from 'ts-injector';
 import { Logger } from 'kevoree-logger';
@@ -14,11 +14,12 @@ import { Logger } from 'kevoree-logger';
 class Ticker {
   private timerId: any;
 
-  @IntParam({ default: 3000, min: 0 })
-  private delay: number;
+  @Param
+  @Min(0)
+  private delay: number = 3000;
 
-  @BooleanParam({ default: false })
-  private random: boolean;
+  @Param
+  private random: boolean = false;
 
   @Output({ type: 'string' })
   private tick: OutputPort;
