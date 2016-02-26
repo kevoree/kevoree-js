@@ -1,6 +1,3 @@
-[submodule "model"]
-	path = model
-	url = git@github.com:kevoree/kevoree-js-model.git
 [submodule "core"]
 	path = core
 	url = git@github.com:kevoree/kevoree-js-core.git
@@ -12,7 +9,7 @@
 	url = git@github.com:kevoree/kevoree-js-commons.git
 [submodule "libraries/node-javascript"]
 	path = libraries/node-javascript
-	url = git@github.com:kevoree/kevoree-js-node-javascript
+	url = git@github.com:kevoree/kevoree-js-node-javascript.git
 [submodule "libraries/comp/ticker"]
 	path = libraries/comp/ticker
 	url = git@github.com:kevoree/kevoree-js-comp-ticker.git
