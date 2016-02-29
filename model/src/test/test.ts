@@ -1,8 +1,8 @@
-import { org } from '../main/model';
+import { KevoreeModel, modeling } from '../main/model';
 
 describe('Kevoree model tests', () => {
-    var dm = org.kevoree.modeling.memory.manager.DataManagerBuilder.buildDefault();
-    var kModel = new org.KevoreeModel(dm);
+    var dm = modeling.memory.manager.DataManagerBuilder.buildDefault();
+    var kModel = new KevoreeModel(dm);
 
     kModel.connect(() => {
         var kView = kModel.universe(0).time(0);

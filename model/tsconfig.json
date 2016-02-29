@@ -16,15 +16,17 @@
     },
     "filesGlob": [
         "src/**/*.ts",
-        "typings/**/*.d.ts"
+        "typings/main.d.ts"
     ],
     "files": [
+        "src/main/java.ts",
+        "src/main/kmf.ts",
         "src/main/model.ts",
         "src/test/test.ts",
-        "typings/mocha/mocha.d.ts",
-        "typings/tsd.d.ts"
+        "typings/main.d.ts"
     ],
     "atom": {
-        "rewriteTsconfig": true
+        "rewriteTsconfig": true,
+        "rewriteOnSave": true
     }
 }
