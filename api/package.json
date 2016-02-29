@@ -4,7 +4,7 @@
   "description": "Kevoree component library",
   "main": "built/main/kevoree-api.js",
   "dependencies": {
-    "reflect-metadata": "^0.1.2"
+    "reflect-metadata": "^0.1.3"
   },
   "typings": "built/main/kevoree-api.d.ts",
   "devDependencies": {},

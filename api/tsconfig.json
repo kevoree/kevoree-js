@@ -14,6 +14,10 @@
         "suppressImplicitAnyIndexErrors": true,
         "outDir": "built"
     },
+    "filesGlob": [
+        "src/**/*.ts",
+        "typings/main.d.ts"
+    ],
     "files": [
         "src/main/annotations/Channel.ts",
         "src/main/annotations/Component.ts",
@@ -52,11 +56,10 @@
         "src/test/outputs.ts",
         "src/test/params.ts",
         "src/test/types.ts",
-        "typings/mocha/mocha.d.ts",
-        "typings/node/node.d.ts",
-        "typings/tsd.d.ts"
+        "typings/main.d.ts"
     ],
     "atom": {
-        "rewriteTsconfig": true
+        "rewriteTsconfig": true,
+        "rewriteOnSave": true
     }
 }
