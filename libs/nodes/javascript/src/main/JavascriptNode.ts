@@ -3,7 +3,10 @@ import { Inject } from 'ts-injector';
 import { Logger } from 'kevoree-logger';
 import { LogLevel } from './LogLevel';
 
-@Node({ description: '<strong>TODO</strong> JavascriptNode description' })
+@Node({
+  version: 1,
+  description: '<strong>TODO</strong> JavascriptNode description'
+})
 class JavascriptNode {
 
     @Inject(Injectables.LoggerService)

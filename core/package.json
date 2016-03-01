@@ -5,14 +5,19 @@
   "main": "built/main/kevoree-core.js",
   "typings": "built/main/kevoree-core.d.ts",
   "scripts": {
-    "test": "mocha built/test/test.js"
+    "test": "node node_modules/.bin/mocha built/test"
   },
-  "typings": "built/main/kevoree-core.d.ts",
   "keywords": [
     "kevoree",
     "core"
   ],
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "license": "LGPL-3.0",
-  "dependencies": {}
+  "dependencies": {
+    "ts-injector": "^1.0.0",
+    "ws": "^1.0.1"
+  },
+  "devDependencies": {
+    "mocha": "^2.4.5"
+  }
 }

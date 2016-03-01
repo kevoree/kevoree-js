@@ -1,5 +1,4 @@
 {
-    "version": "1.5.3",
     "compilerOptions": {
         "target": "es5",
         "module": "commonjs",
@@ -17,17 +16,18 @@
     },
     "filesGlob": [
         "src/**/*.ts",
-        "typings/**/*.ts"
+        "typings/main.d.ts"
     ],
     "files": [
         "src/main/Core.ts",
         "src/main/DeployCallback.ts",
         "src/main/kevoree-core.ts",
-        "src/main/NodeInstance.ts",
+        "src/main/WebSocketClientPlugin.ts",
         "src/test/test.ts",
-        "typings/mocha/mocha.d.ts",
-        "typings/node/node.d.ts",
-        "typings/tsd.d.ts"
+        "typings/main.d.ts"
     ],
-    "exclude": []
+    "atom": {
+        "rewriteTsconfig": true,
+        "rewriteOnSave": true
+    }
 }

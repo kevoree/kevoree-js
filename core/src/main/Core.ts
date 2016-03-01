@@ -1,30 +1,61 @@
 import { EventEmitter } from 'events';
-import { org } from 'kevoree-model';
+import { kevoree, modeling, KevoreeModel } from 'kevoree-model';
 import { Logger, LoggerFactory } from 'kevoree-logger';
 import { Callback } from 'kevoree-api';
-import { DeployCallback } from './DeployCallback';
+import { Injector } from 'ts-injector';
 
-var NAME_PATTERN = /^[\w-]+$/;
+import { DeployCallback } from './DeployCallback';
+import { WebSocketClientPlugin } from './WebSocketClientPlugin';
 
 export class Core extends EventEmitter {
 
-    private logger: Logger;
-    private nodeName: string;
-    private nodeInstance: Object;
-    private currentModel: org.kevoree.Model;
-    private deployingModel: org.kevoree.Model;
-    private emitter: EventEmitter;
-    private isDeploying: boolean;
-    private isStarted: boolean;
+  private nodeName: string;
+  private url: string;
+  private logger: Logger;
+  private isStarted: boolean;
+  private emitter: EventEmitter;
 
-    constructor() {
-        super();
-        this.logger = LoggerFactory.createLogger((<any> Core).name, 'core');
-        this.isStarted = false;
-        this.emitter = new EventEmitter();
-    }
+  private nodeInstance: Object;
+  private kModel: KevoreeModel;
+  private currentModel: kevoree.Model;
+  private deployingModel: kevoree.Model;
+  private isDeploying: boolean;
 
-    start(nodeName: string, url: string, cb: Callback): void {
-        
+  constructor(nodeName: string, url: string) {
+    super();
+    this.nodeName = nodeName;
+    this.url = url;
+    this.logger = LoggerFactory.createLogger(nodeName);
+    this.isStarted = false;
+    this.emitter = new EventEmitter();
+  }
+
+  start(cb: Callback) {
+    this.logger.info(`starting ${this.nodeName} using ${this.url} ...`);
+    const wsPlugin = new WebSocketClientPlugin(`ws://${this.url}`);
+    this.kModel = new KevoreeModel(modeling.memory.manager.DataManagerBuilder.create().withContentDeliveryDriver(wsPlugin).build());
+    this.kModel.connect(ignore => {
+      this.isStarted = true;
+      cb();
+    });
+  }
+
+  stop(cb: Callback) {
+    this.logger.info(`stopping ${this.nodeName} using ${this.url} ...`);
+    if (this.isStarted && this.kModel) {
+      this.kModel.disconnect(ignore => {
+        cb();
+      });
+    } else {
+      cb();
     }
+  }
+
+  getNodeName(): string {
+    return this.nodeName;
+  }
+
+  getUrl(): string {
+    return this.url;
+  }
 }

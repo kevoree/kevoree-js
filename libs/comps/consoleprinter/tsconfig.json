@@ -19,7 +19,8 @@
         "src/test/ContextServiceImpl.ts",
         "src/test/ModelServiceImpl.ts",
         "src/test/OutputPortImpl.ts",
-        "src/test/test.ts"
+        "src/test/test.ts",
+        "src/test/test2.ts"
     ],
     "atom": {
         "rewriteTsconfig": true

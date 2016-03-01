@@ -21,11 +21,12 @@ var argv = minimist(process.argv.slice(2), {
 });
 
 if (argv.h) {
-  var help = 'Usage: kevoree-gen-model [options]\n' +
-  '  Options:' +
-  '    -h, --help      output usage information' +
-  '    -v, --version   output the version number' +
-  '    -p, --path <.>  Where to save the generated file (default: current directory)';
+  var help = '\n' +
+  '  Usage: kevoree-gen-model [options]\n\n' +
+  '  Options:\n\n' +
+  '    -h, --help      output usage information\n' +
+  '    -v, --version   output the version number\n' +
+  '    -p, --path <.>  Where to save the generated file (default: current directory)\n';
   console.log(help);
 } else if (argv.v) {
   console.log(pkg.version);

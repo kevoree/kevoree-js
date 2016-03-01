@@ -1,24 +1,21 @@
 import * as Assert from 'assert';
 import { LoggerFactory, LogLevel } from 'kevoree-logger';
-import { Injector, Context }    from 'ts-injector';
-import { Core }       from '../main/Core';
-import { org }        from 'kevoree-model';
+import { Injector, Context } from 'ts-injector';
+import { kevoree } from 'kevoree-model';
+
+import { Core } from '../main/Core';
 
 describe('Core', () => {
-  var injector = new Injector();
-  var logger = LoggerFactory.createLogger((<any> Core).name, 'core');
-  logger.setLevel(LogLevel.QUIET);
-  var ctx = new Context();
-  ctx.register({ name: 'LoggerService' }, logger);
-  var core = new Core();
-  injector.inject(core, ctx);
+  const name = 'node0';
+  const url = 'localhost:9000';
+  const core = new Core(name, url);
 
   it('should be started with name "node0"', (done) => {
-    core.start('node0', (e) => {
+    core.start(e => {
       if (e) {
         done(e);
       } else {
-        Assert.equal(core['nodeName'], 'node0', 'should be equal');
+        Assert.equal(core.getNodeName(), name, 'should be equal');
         done();
       }
     });
@@ -26,12 +23,5 @@ describe('Core', () => {
 
   it('should stop the core', (done) => {
       core.stop(done);
-  });
-
-  it('should not start with a wrong name "a b"', (done) => {
-      core.start('a b', (e) => {
-          Assert.notEqual(e, null);
-          done();
-      });
   });
 });
