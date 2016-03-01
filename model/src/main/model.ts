@@ -1,6 +1,8 @@
 import * as kmf from './kmf';
 
-export var modeling = kmf;
+export import modeling = kmf;
+
+//export var modeling = kmf;
 
 export class KevoreeModel extends kmf.abs.AbstractKModel<KevoreeUniverse> {
 

@@ -5,8 +5,11 @@
   "main": "built/main/model.js",
   "typings": "built/main/model.d.ts",
   "scripts": {
-    "test": "mocha built/test/test.js"
+    "test": "node node_modules/.bin/mocha built/test"
   },
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
-  "license": "LGPL-3.0"
+  "license": "LGPL-3.0",
+  "devDependencies": {
+    "mocha": "^2.4.5"
+  }
 }
