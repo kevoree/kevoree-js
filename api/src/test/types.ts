@@ -7,16 +7,16 @@ import * as Assert from 'assert';
 describe('TypeDefinition annotations', () => {
     const DESC = "Some description";
 
-    @Component({ description: DESC })
+    @Component({ description: DESC, version: 1 })
     class MyComp {}
 
-    @Node({ description: DESC })
+    @Node({ description: DESC, version: 1 })
     class MyNode {}
 
-    @Group({ description: DESC })
+    @Group({ description: DESC, version: 1 })
     class MyGroup {}
 
-    @Channel({ description: DESC })
+    @Channel({ description: DESC, version: 1 })
     class MyChannel {}
 
     it('@Component', () => {

@@ -3,7 +3,9 @@ import { MetaData } from '../MetaData';
 
 export function typeDefinition(target: any, meta: TypeMeta) {
   Reflect.defineMetadata(MetaData.NAME, target.name, target.prototype);
+  Reflect.defineMetadata(MetaData.VERSION, meta.version, target.prototype);
   Reflect.defineMetadata(MetaData.META, meta || {}, target.prototype);
+  
   if (!Reflect.hasMetadata(MetaData.PARAMS, target.prototype)) {
     Reflect.defineMetadata(MetaData.PARAMS, [], target.prototype)
   }

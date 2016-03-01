@@ -6,6 +6,7 @@ import { Inject } from 'ts-injector';
 import { Logger } from 'kevoree-logger';
 
 @Component({
+  version: 1,
   description: 'By default, the ticker will send the current timestamp in '
 + ' milliseconds once every 3000ms. This can be tweaked using the '
 + ' <strong>delay</strong> parameter. You can also change the output to a '

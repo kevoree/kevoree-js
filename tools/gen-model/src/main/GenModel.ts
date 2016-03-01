@@ -1,10 +1,11 @@
 import 'reflect-metadata';
+
 import { resolve } from 'path';
 import { readFile } from 'fs';
 import * as util from 'util';
 import { TypeEnum, MetaData, TypeMeta, NumberTypeMeta, MinMaxMeta } from 'kevoree-api';
 import { MetaData as InjectMetaData, InjectData } from 'ts-injector';
-import { org } from 'kevoree-model';
+import { KevoreeModel, kevoree, modeling } from 'kevoree-model';
 import { ModelCallback } from './ModelCallback';
 
 var jsonValidator = require('is-my-json-valid');
@@ -13,7 +14,7 @@ var schemaValidator = jsonValidator(metaJsonSchema, { verbose: true, greedy: tru
 
 export class GenModel {
     generate(path: string, done: ModelCallback): void {
-        var kModel = new org.KevoreeModel(org.kevoree.modeling.memory.manager.DataManagerBuilder.buildDefault());
+        var kModel = new KevoreeModel(modeling.memory.manager.DataManagerBuilder.buildDefault());
         var kView = kModel.universe(0).time(0);
         kModel.connect(() => {
             var pkgPath = resolve(path, 'package.json');
@@ -40,7 +41,7 @@ export class GenModel {
 
                     var type = Reflect.getMetadata(MetaData.TYPE, Type.prototype);
                     if (typeof type !== 'undefined') {
-                        var tdef: org.kevoree.TypeDefinition;
+                        var tdef: kevoree.TypeDefinition;
                         switch (type) {
                             case TypeEnum.NODE:
                                 tdef = kView.createNodeType();
@@ -56,15 +57,17 @@ export class GenModel {
                                 break;
                         }
                         tdef.setName(Reflect.getMetadata(MetaData.NAME, Type.prototype));
+                        tdef.setVersion(Reflect.getMetadata(MetaData.VERSION, Type.prototype));
                         if (typeof pkg.version === 'string') {
                             var du = kView.createDeployUnit();
                             du.setVersion(pkg.version);
                             if (typeof pkg.name === 'string') {
                                 du.setName(pkg.name);
-                                var platformMeta = kView.createValue();
-                                platformMeta.setName('platform');
-                                platformMeta.setValue('javascript');
-                                du.addMetaData(platformMeta);
+                                du.setPlatform('javascript');
+                                // var platformMeta = kView.createValue();
+                                // platformMeta.setName('platform');
+                                // platformMeta.setValue('javascript');
+                                // du.addMetaData(platformMeta);
                                 if (typeof pkg.kevoree === 'object') {
                                     if (typeof pkg.kevoree.namespace === 'string') {
                                         var ns = kView.createNamespace();
@@ -83,7 +86,7 @@ export class GenModel {
 
                                         var dicType = kView.createDictionaryType();
                                         Reflect.getMetadata(MetaData.PARAMS, Type.prototype).forEach((name: string) => {
-                                            var param: org.kevoree.ParamType;
+                                            var param: kevoree.ParamType;
 
                                             const type = Reflect.getMetadata('design:type', Type.prototype, name);
                                             const required: boolean = Reflect.getMetadata(MetaData.REQUIRED, Type.prototype, name) || false;
@@ -108,19 +111,19 @@ export class GenModel {
                                                     const numberType: NumberTypeMeta = Reflect.getMetadata(MetaData.NUMBER_TYPE, Type.prototype, name);
                                                     switch (numberType) {
                                                         case NumberTypeMeta.SHORT:
-                                                            (<org.kevoree.NumberParamType> param).setType(org.kevoree.meta.MetaNumberType.SHORT);
+                                                            (<kevoree.NumberParamType> param).setType(kevoree.meta.MetaNumberType.SHORT);
                                                             break;
                                                         case NumberTypeMeta.INT:
-                                                            (<org.kevoree.NumberParamType> param).setType(org.kevoree.meta.MetaNumberType.INT);
+                                                            (<kevoree.NumberParamType> param).setType(kevoree.meta.MetaNumberType.INT);
                                                             break;
                                                         case NumberTypeMeta.LONG:
-                                                            (<org.kevoree.NumberParamType> param).setType(org.kevoree.meta.MetaNumberType.LONG);
+                                                            (<kevoree.NumberParamType> param).setType(kevoree.meta.MetaNumberType.LONG);
                                                             break;
                                                         case NumberTypeMeta.FLOAT:
-                                                            (<org.kevoree.NumberParamType> param).setType(org.kevoree.meta.MetaNumberType.FLOAT);
+                                                            (<kevoree.NumberParamType> param).setType(kevoree.meta.MetaNumberType.FLOAT);
                                                             break;
                                                         case NumberTypeMeta.DOUBLE:
-                                                            (<org.kevoree.NumberParamType> param).setType(org.kevoree.meta.MetaNumberType.DOUBLE);
+                                                            (<kevoree.NumberParamType> param).setType(kevoree.meta.MetaNumberType.DOUBLE);
                                                             break;
                                                     }
                                                     const min: MinMaxMeta = Reflect.getMetadata(MetaData.MIN, Type.prototype, name);
@@ -200,7 +203,7 @@ export class GenModel {
                                                 }
                                             }
 
-                                            (<org.kevoree.ComponentType> tdef).addInputTypes(portType);
+                                            (<kevoree.ComponentType> tdef).addInputTypes(portType);
                                         });
 
                                         Reflect.getMetadata(MetaData.OUTPUTS, Type.prototype).forEach((name: string) => {
@@ -224,7 +227,7 @@ export class GenModel {
                                                 }
                                             }
 
-                                            (<org.kevoree.ComponentType> tdef).addOutputTypes(portType);
+                                            (<kevoree.ComponentType> tdef).addOutputTypes(portType);
                                         });
 
                                         kView.json().save(model, (modelStr: string) => {

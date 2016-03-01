@@ -16,4 +16,4 @@ g.generate(process.cwd(), (err, model) => {
       }
     })
   }
-})
+});

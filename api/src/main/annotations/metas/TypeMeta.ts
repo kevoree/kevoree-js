@@ -1,3 +1,4 @@
 export interface TypeMeta {
-  description?: string
+  description?: string,
+  version: number
 }
