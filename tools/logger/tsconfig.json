@@ -1,5 +1,4 @@
 {
-    "version": "1.5.3",
     "compilerOptions": {
         "target": "es5",
         "module": "commonjs",
@@ -7,7 +6,7 @@
         "isolatedModules": false,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "noImplicitAny": false,
+        "noImplicitAny": true,
         "removeComments": true,
         "declaration": true,
         "noLib": false,
@@ -16,13 +15,11 @@
         "outDir": "built"
     },
     "filesGlob": [
-        "typings/**/*.ts",
-        "src/**/*.ts",
-        "!node_modules/**/*"
+        "typings/main.d.ts",
+        "src/**/*.ts"
     ],
     "files": [
-        "typings/chalk/chalk.d.ts",
-        "typings/tsd.d.ts",
+        "typings/main.d.ts",
         "src/main/kevoree-logger.ts",
         "src/main/Logger.ts",
         "src/main/LoggerFactory.ts",
@@ -31,6 +28,7 @@
         "src/test/test.ts"
     ],
     "atom": {
-        "rewriteTsconfig": true
+        "rewriteTsconfig": true,
+        "rewriteOnSave": true
     }
 }

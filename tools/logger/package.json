@@ -4,7 +4,7 @@
   "description": "Kevoree Logger",
   "main": "built/main/kevoree-logger.js",
   "scripts": {
-    "test": "node built/test/test.js"
+    "test": "node node_modules/.bin/mocha built/test"
   },
   "typings": "built/main/kevoree-logger.d.ts",
   "keywords": [
@@ -16,5 +16,8 @@
   "license": "LGPL-3.0",
   "dependencies": {
     "chalk": "^1.1.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.4.5"
   }
 }

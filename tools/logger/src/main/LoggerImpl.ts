@@ -46,7 +46,7 @@ export class LoggerImpl implements Logger {
             if (error) {
                 error.message = msg;
                 var err = <any> error;
-                err.stack.split(/[\n\r]/g).forEach(split => {
+                err.stack.split(/[\n\r]/g).forEach((split: any) => {
                     console.log(`${prepend}  ${chalk.red(split) }`);
                 });
             } else {

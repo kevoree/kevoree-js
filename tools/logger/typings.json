@@ -1,0 +1,9 @@
+{
+  "name": "kevoree-logger",
+  "dependencies": {},
+  "devDependencies": {},
+  "ambientDependencies": {
+    "chalk": "github:DefinitelyTyped/DefinitelyTyped/chalk/chalk.d.ts#2ed78584e44ade4e4d15b14b7cb00db076434819",
+    "mocha": "github:DefinitelyTyped/DefinitelyTyped/mocha/mocha.d.ts#d6dd320291705694ba8e1a79497a908e9f5e6617"
+  }
+}
