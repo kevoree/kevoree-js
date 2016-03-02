@@ -1,0 +1,30 @@
+{
+  "name": "kevoree-chan-local",
+  "version": "1.0.0",
+  "description": "Kevoree JavaScript Channel: broadcast received messages to bound local ports",
+  "main": "built/main/LocalChannel.js",
+  "dependencies": {
+    "kevoree-api": "^1.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "prepublish": "typings install",
+    "build": "tsc",
+    "test": "mocha built/test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevoree/kevoree-js-chan-local.git"
+  },
+  "keywords": [
+    "kevoree",
+    "channel",
+    "local"
+  ],
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "license": "LGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/kevoree/kevoree-js-chan-local/issues"
+  },
+  "homepage": "https://github.com/kevoree/kevoree-js-chan-local#readme"
+}

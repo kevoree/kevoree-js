@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "isolatedModules": false,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "declaration": true,
+        "noImplicitAny": true,
+        "removeComments": true,
+        "noLib": false,
+        "preserveConstEnums": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "outDir": "built"
+    },
+    "atom": {
+        "rewriteTsconfig": true
+    },
+    "filesGlob": [
+        "src/**/*.ts",
+        "typings/main.d.ts"
+    ],
+    "files": [
+        "src/main/LocalChannel.ts",
+        "src/test/ChannelServiceImpl.ts",
+        "src/test/main.ts",
+        "typings/main.d.ts"
+    ]
+}

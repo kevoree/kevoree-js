@@ -1,5 +1,4 @@
-import { Component, Input, Injectables, ContextService } from 'kevoree-api';
-import { Inject } from 'ts-injector';
+import { Component, Input, Inject, Services, ContextService } from 'kevoree-api';
 
 @Component({
   version: 1,
@@ -7,7 +6,7 @@ import { Inject } from 'ts-injector';
 })
 class ConsolePrinter {
 
-    @Inject(Injectables.ContextService)
+    @Inject(Services.Context)
     private context: ContextService;
 
     @Input({ type: 'string' })

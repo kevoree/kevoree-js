@@ -1,8 +1,7 @@
 import {
-    Component, Output, Param, Injectables, ModelService, ContextService,
+    Component, Output, Param, Inject, Services, ModelService, ContextService,
     Callback, OutputPort, Min, Start, Stop, Update
 } from 'kevoree-api';
-import { Inject } from 'ts-injector';
 import { Logger } from 'kevoree-logger';
 
 @Component({
@@ -25,13 +24,13 @@ class Ticker {
   @Output({ type: 'string' })
   private tick: OutputPort;
 
-  @Inject(Injectables.LoggerService)
+  @Inject(Services.Logger)
   private log: Logger;
 
-  @Inject(Injectables.ModelService)
+  @Inject(Services.Model)
   private modelService: ModelService;
 
-  @Inject(Injectables.ContextService)
+  @Inject(Services.Context)
   private context: ContextService;
 
   @Start()

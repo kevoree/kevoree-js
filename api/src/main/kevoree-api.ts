@@ -1,3 +1,10 @@
+import * as model from 'kevoree-model';
+import * as injector from 'ts-injector';
+
+export import kevoree = model.kevoree;
+export import Inject = injector.Inject;
+export import Injector = injector.Injector;
+
 export * from './MetaData';
 export * from './Callback';
 export * from './TypeEnum';
@@ -28,6 +35,7 @@ export * from './annotations/params/NumberType';
 
 export * from './services/ModelService';
 export * from './services/ContextService';
-export * from './services/Injectables';
+export * from './services/Services';
+export * from './services/ChannelService';
 
 export * from './api/OutputPort';

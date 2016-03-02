@@ -1,3 +1,4 @@
-built
+!built
 node_modules
+src
 typings
