@@ -4,6 +4,7 @@ import * as injector from 'ts-injector';
 export import kevoree = model.kevoree;
 export import Inject = injector.Inject;
 export import Injector = injector.Injector;
+export import Context = injector.Context;
 
 export * from './MetaData';
 export * from './Callback';

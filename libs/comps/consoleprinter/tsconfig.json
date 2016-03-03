@@ -12,7 +12,8 @@
         "outDir": "built"
     },
     "filesGlob": [
-        "src/**/*.ts"
+        "src/**/*.ts",
+        "typings/main.d.ts"
     ],
     "files": [
         "src/main/ConsolePrinter.ts",
@@ -20,7 +21,7 @@
         "src/test/ModelServiceImpl.ts",
         "src/test/OutputPortImpl.ts",
         "src/test/test.ts",
-        "src/test/test2.ts"
+        "typings/main.d.ts"
     ],
     "atom": {
         "rewriteTsconfig": true
