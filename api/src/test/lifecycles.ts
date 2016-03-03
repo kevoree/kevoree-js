@@ -1,119 +1,202 @@
 import 'reflect-metadata';
 import {
-    Component, Start, Stop, Update, MetaData, LifecycleMeta, Callback
+    Component, Channel, OnStart, OnStop, OnUpdate, OnMessage, MetaData,
+    LifecycleMeta, Callback, DispatchCallback
 } from '../main/kevoree-api';
 import * as Assert from 'assert';
 
 describe('Lifecycle annotations', () => {
+  describe('synchronous methods', () => {
+    @Component({ version: 1 })
+    class MyComp {
+        @OnStart()
+        start() {}
 
-    describe('synchronous methods', () => {
-        @Component()
-        class MyComp {
-            @Start()
-            start(): void {}
+        @OnStop()
+        stop() {}
 
-            @Stop()
-            stop(): void {}
+        @OnUpdate()
+        update() {}
 
-            @Update()
-            update(): void {}
+        @OnMessage
+        onMessage(msg: string, cb: DispatchCallback) {}
+    }
+
+    it('@OnStart()', () => {
+        var meta: LifecycleMeta = Reflect.getMetadata(MetaData.ON_START, MyComp.prototype);
+        Assert.equal(meta.name, 'start');
+        Assert.equal(meta.async, false);
+    });
+
+    it('@OnStop()', () => {
+        var meta: LifecycleMeta = Reflect.getMetadata(MetaData.ON_STOP, MyComp.prototype);
+        Assert.equal(meta.name, 'stop');
+        Assert.equal(meta.async, false);
+    });
+
+    it('@OnUpdate()', () => {
+        var meta: LifecycleMeta = Reflect.getMetadata(MetaData.ON_UPDATE, MyComp.prototype);
+        Assert.equal(meta.name, 'update');
+        Assert.equal(meta.async, false);
+    });
+
+    it('@OnMessage', () => {
+        var meta: LifecycleMeta = Reflect.getMetadata(MetaData.ON_MESSAGE, MyComp.prototype);
+        Assert.equal(meta.name, 'onMessage');
+    });
+  });
+
+  describe('asynchronous methods', () => {
+    @Component({ version: 1 })
+    class AsyncComp {
+        @OnStart(true)
+        start(cb: Callback) {
+            cb();
         }
 
-        it('@Start()', () => {
-            var meta: LifecycleMeta = Reflect.getMetadata(MetaData.START, MyComp.prototype);
-            Assert.equal(meta.name, 'start');
-            Assert.equal(meta.async, false);
-        });
-
-        it('@Stop()', () => {
-            var meta: LifecycleMeta = Reflect.getMetadata(MetaData.STOP, MyComp.prototype);
-            Assert.equal(meta.name, 'stop');
-            Assert.equal(meta.async, false);
-        });
-
-        it('@Update()', () => {
-            var meta: LifecycleMeta = Reflect.getMetadata(MetaData.UPDATE, MyComp.prototype);
-            Assert.equal(meta.name, 'update');
-            Assert.equal(meta.async, false);
-        });
-    });
-
-    describe('asynchronous methods', () => {
-        @Component()
-        class AsyncComp {
-            @Start(true)
-            start(cb: Callback): void {
-                cb();
-            }
-
-            @Stop(true)
-            stop(cb: Callback): void {
-                cb();
-            }
-
-            @Update(true)
-            update(cb: Callback): void {
-                cb();
-            }
+        @OnStop(true)
+        stop(cb: Callback) {
+            cb();
         }
 
-        it('@Start(true)', () => {
-            var meta: LifecycleMeta = Reflect.getMetadata(MetaData.START, AsyncComp.prototype);
-            Assert.equal(meta.name, 'start');
-            Assert.equal(meta.async, true);
-        });
+        @OnUpdate(true)
+        update(cb: Callback) {
+            cb();
+        }
+    }
 
-        it('@Stop(true)', () => {
-            var meta: LifecycleMeta = Reflect.getMetadata(MetaData.STOP, AsyncComp.prototype);
-            Assert.equal(meta.name, 'stop');
-            Assert.equal(meta.async, true);
-        });
-
-        it('@Update(true)', () => {
-            var meta: LifecycleMeta = Reflect.getMetadata(MetaData.UPDATE, AsyncComp.prototype);
-            Assert.equal(meta.name, 'update');
-            Assert.equal(meta.async, true);
-        });
+    it('@OnStart(true)', () => {
+        var meta: LifecycleMeta = Reflect.getMetadata(MetaData.ON_START, AsyncComp.prototype);
+        Assert.equal(meta.name, 'start');
+        Assert.equal(meta.async, true);
     });
 
-    describe('error on duplicate', () => {
-        it('@Start() duplicate must throw error', () => {
-            Assert.throws(() => {
-                @Component()
-                class WrongComp {
-                    @Start()
-                    start(): void {}
-
-                    @Start()
-                    start2(): void {}
-                }
-            });
-        });
-
-        it('@Stop() duplicate must throw error', () => {
-            Assert.throws(() => {
-                @Component()
-                class WrongComp {
-                    @Stop()
-                    stop(): void {}
-
-                    @Stop()
-                    stop2(): void {}
-                }
-            });
-        });
-
-        it('@Update() duplicate must throw error', () => {
-            Assert.throws(() => {
-                @Component()
-                class WrongComp {
-                    @Update()
-                    update(): void {}
-
-                    @Update()
-                    update2(): void {}
-                }
-            });
-        });
+    it('@OnStop(true)', () => {
+        var meta: LifecycleMeta = Reflect.getMetadata(MetaData.ON_STOP, AsyncComp.prototype);
+        Assert.equal(meta.name, 'stop');
+        Assert.equal(meta.async, true);
     });
+
+    it('@OnUpdate(true)', () => {
+        var meta: LifecycleMeta = Reflect.getMetadata(MetaData.ON_UPDATE, AsyncComp.prototype);
+        Assert.equal(meta.name, 'update');
+        Assert.equal(meta.async, true);
+    });
+  });
+
+  describe('error on wrong signature', () => {
+    it('@OnStart(true) without callback must throw error', () => {
+      Assert.throws(() => {
+          @Component({ version: 1 })
+          class WrongComp {
+              @OnStart(true)
+              start() {}
+          }
+      });
+    });
+
+    it('@OnStop(true) without callback must throw error', () => {
+      Assert.throws(() => {
+          @Component({ version: 1 })
+          class WrongComp {
+              @OnStop(true)
+              stop() {}
+          }
+      });
+    });
+
+    it('@OnUpdate(true) without callback must throw error', () => {
+      Assert.throws(() => {
+          @Component({ version: 1 })
+          class WrongComp {
+              @OnUpdate(true)
+              update() {}
+          }
+      });
+    });
+
+    it('@OnStart() with callback must throw error', () => {
+      Assert.throws(() => {
+          @Component({ version: 1 })
+          class WrongComp {
+              @OnStart()
+              start(cb: Callback) {}
+          }
+      });
+    });
+
+    it('@OnStop() with callback must throw error', () => {
+      Assert.throws(() => {
+          @Component({ version: 1 })
+          class WrongComp {
+              @OnStop()
+              stop(cb: Callback) {}
+          }
+      });
+    });
+
+    it('@OnUpdate() with callback must throw error', () => {
+      Assert.throws(() => {
+          @Component({ version: 1 })
+          class WrongComp {
+              @OnUpdate()
+              update(cb: Callback) {}
+          }
+      });
+    });
+  });
+
+  describe('error on duplicate', () => {
+    it('@OnStart() duplicate must throw error', () => {
+      Assert.throws(() => {
+          @Component({ version: 1 })
+          class WrongComp {
+              @OnStart()
+              start() {}
+
+              @OnStart()
+              start2() {}
+          }
+      });
+    });
+
+    it('@OnStop() duplicate must throw error', () => {
+      Assert.throws(() => {
+          @Component({ version: 1 })
+          class WrongComp {
+              @OnStop()
+              stop() {}
+
+              @OnStop()
+              stop2() {}
+          }
+      });
+    });
+
+    it('@OnUpdate() duplicate must throw error', () => {
+      Assert.throws(() => {
+          @Component({ version: 1 })
+          class WrongComp {
+              @OnUpdate()
+              update() {}
+
+              @OnUpdate()
+              update2() {}
+          }OnStop
+      });
+    });
+
+    it('@OnMessage() duplicate must throw error', () => {
+      Assert.throws(() => {
+          @Channel({ version: 1 })
+          class WrongComp {
+              @OnMessage
+              onMessage() {}
+
+              @OnMessage
+              onMessage1() {}
+          }
+      });
+    });
+  });
 });

@@ -9,15 +9,18 @@ export * from './MetaData';
 export * from './Callback';
 export * from './TypeEnum';
 
-export * from './annotations/Channel';
-export * from './annotations/Component';
-export * from './annotations/Group';
-export * from './annotations/Input';
-export * from './annotations/Node';
-export * from './annotations/Output';
-export * from './annotations/Start';
-export * from './annotations/Stop';
-export * from './annotations/Update';
+export * from './annotations/types/Channel';
+export * from './annotations/types/Component';
+export * from './annotations/types/Group';
+export * from './annotations/types/Node';
+
+export * from './annotations/ports/Input';
+export * from './annotations/ports/Output';
+
+export * from './annotations/lifecycles/OnStart';
+export * from './annotations/lifecycles/OnStop';
+export * from './annotations/lifecycles/OnUpdate';
+export * from './annotations/lifecycles/OnMessage';
 
 export * from './annotations/metas/TypeMeta';
 export * from './annotations/metas/LifecycleMeta';

@@ -7,7 +7,7 @@ import * as Assert from 'assert';
 
 describe('Params annotations', () => {
     describe('MetaData.PARAMS', () => {
-        @Component()
+        @Component({ version: 1 })
         class MyComp {
             @Param private foo: string;
             @Param private bar: string;
@@ -24,7 +24,7 @@ describe('Params annotations', () => {
     });
 
     describe('String param', () => {
-        @Component()
+        @Component({ version: 1 })
         class MyComp {
             @Param
             private foo: string;
@@ -46,7 +46,7 @@ describe('Params annotations', () => {
     });
 
     describe('Int @Param', () => {
-        @Component()
+        @Component({ version: 1 })
         class MyComp {
 
             @Param
@@ -76,7 +76,7 @@ describe('Params annotations', () => {
         enum Foo { ONE = 1, TWO = 2, THREE = 3 }
         enum Bar { ONE, TWO, THREE }
 
-        @Component()
+        @Component({ version: 1 })
         class MyComp {
             @Param
             private foo: Foo;
@@ -93,7 +93,7 @@ describe('Params annotations', () => {
     });
 
     describe('@ListParam', () => {
-        @Component()
+        @Component({ version: 1 })
         class MyComp {
             @Param
             private attrs: string[];

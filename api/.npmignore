@@ -1,5 +1,4 @@
-.idea
+!built
+src
 node_modules
-*.iml
-built
 typings

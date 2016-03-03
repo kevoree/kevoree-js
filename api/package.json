@@ -1,7 +1,7 @@
 {
   "name": "kevoree-api",
   "version": "1.0.0",
-  "description": "Kevoree component library",
+  "description": "Kevoree v6 API",
   "main": "built/main/kevoree-api.js",
   "dependencies": {
     "reflect-metadata": "^0.1.3",
@@ -10,6 +10,7 @@
   "typings": "built/main/kevoree-api.d.ts",
   "devDependencies": {},
   "scripts": {
+    "build": "tsc",
     "test": "mocha built/test"
   },
   "keywords": [

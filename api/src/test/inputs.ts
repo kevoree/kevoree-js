@@ -6,7 +6,7 @@ import * as Assert from 'assert';
 
 describe('Inputs annotations', () => {
     it('contains every method name', () => {
-        @Component()
+        @Component({ version: 1 })
         class MyComp {
             @Input()
             in(msg: string): void {}
@@ -27,7 +27,7 @@ describe('Inputs annotations', () => {
     });
 
     it('MetaData.MSG_SCHEMA contains defined schema for specific method', () => {
-        @Component()
+        @Component({ version: 1 })
         class MyComp {
             @Input({ type: 'string' })
             in(msg: string): void {}
@@ -39,7 +39,7 @@ describe('Inputs annotations', () => {
 
     it('missing string parameter in signature must throw', () => {
         Assert.throws(() => {
-            @Component()
+            @Component({ version: 1 })
             class MyComp {
                 @Input()
                 in(): void {}

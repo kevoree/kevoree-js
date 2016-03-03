@@ -1,8 +1,9 @@
 export class MetaData {
   static TYPE:        string = 'kevoree:type';
-  static START:       string = 'kevoree:start';
-  static STOP:        string = 'kevoree:stop';
-  static UPDATE:      string = 'kevoree:update';
+  static ON_START:    string = 'kevoree:on_start';
+  static ON_STOP:     string = 'kevoree:on_stop';
+  static ON_UPDATE:   string = 'kevoree:on_update';
+  static ON_MESSAGE:  string = 'kevoree:on_message';
   static META:        string = 'kevoree:meta';
   static NAME:        string = 'kevoree:name';
   static VERSION:     string = 'kevoree:version';

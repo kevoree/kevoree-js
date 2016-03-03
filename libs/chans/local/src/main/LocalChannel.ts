@@ -1,5 +1,5 @@
 import {
-	Channel, ChannelService, Inject, Services, DispatchCallback
+	Channel, ChannelService, Inject, Services, DispatchCallback, OnMessage
 } from 'kevoree-api';
 
 @Channel({
@@ -11,6 +11,7 @@ class LocalChannel {
 	@Inject(Services.Channel)
 	private chanService: ChannelService;
 
+	@OnMessage
 	onSend(msg: string, callback: DispatchCallback) {
 		this.chanService.localDispatch(msg, callback);
 	}

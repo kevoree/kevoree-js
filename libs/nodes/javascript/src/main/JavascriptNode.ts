@@ -1,4 +1,4 @@
-import { Node, Start, Stop, Inject, Services, Param } from 'kevoree-api';
+import { Node, OnStart, OnStop, Inject, Services, Param } from 'kevoree-api';
 import { Logger } from 'kevoree-logger';
 import { LogLevel } from './LogLevel';
 
@@ -14,12 +14,12 @@ class JavascriptNode {
     @Param
     private logLevel: LogLevel = LogLevel.INFO;
 
-    @Start()
+    @OnStart()
     start(): void {
         this.logger.info('Node started');
     }
 
-    @Stop()
+    @OnStop()
     stop(): void {
         this.logger.info('Node stopped');
     }

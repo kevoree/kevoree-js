@@ -1,6 +1,6 @@
 import {
     Component, Output, Param, Inject, Services, ModelService, ContextService,
-    Callback, OutputPort, Min, Start, Stop, Update
+    Callback, OutputPort, Min, OnStart, OnStop, OnUpdate
 } from 'kevoree-api';
 import { Logger } from 'kevoree-logger';
 
@@ -33,7 +33,7 @@ class Ticker {
   @Inject(Services.Context)
   private context: ContextService;
 
-  @Start()
+  @OnStart()
   start(): void {
     this.log.info('Starting');
     this.timerId = setInterval(() => {
@@ -47,13 +47,13 @@ class Ticker {
     }, this.delay);
   }
 
-  @Stop()
+  @OnStop()
   stop(): void {
     this.log.info('Stopping');
     clearInterval(this.timerId);
   }
 
-  @Update()
+  @OnUpdate()
   update(): void {
     this.log.info('Updating');
     this.stop();

@@ -6,7 +6,7 @@ import * as Assert from 'assert';
 
 describe('Outputs annotations', () => {
     it('contains every attribute name', () => {
-        @Component()
+        @Component({ version: 1 })
         class MyComp {
             @Output()
             private out: OutputPort;
@@ -27,7 +27,7 @@ describe('Outputs annotations', () => {
     });
 
     it('MetaData.MSG_SCHEMA contains defined schema for specific method', () => {
-        @Component()
+        @Component({ version: 1 })
         class MyComp {
             @Output({ type: 'string' })
             private out: OutputPort;
