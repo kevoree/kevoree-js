@@ -1,10 +1,5 @@
-import * as model from 'kevoree-model';
-import * as injector from 'ts-injector';
-
-export import kevoree = model.kevoree;
-export import Inject = injector.Inject;
-export import Injector = injector.Injector;
-export import Context = injector.Context;
+export { kevoree } from 'kevoree-model';
+export { Inject, Injector, Context } from 'ts-injector';
 
 export * from './MetaData';
 export * from './Callback';
