@@ -5,7 +5,7 @@ import { OutputPortImpl } from './OutputPortImpl';
 import { LoggerImpl, LoggerFactory } from 'kevoree-logger';
 import ConsolePrinter = require('../main/ConsolePrinter');
 
-describe('', function () {
+describe('ConsolePrinter', function () {
   this.timeout(5000);
 
   it('', (done: MochaDone) => {

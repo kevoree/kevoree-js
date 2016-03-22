@@ -4,7 +4,8 @@
   "description": "Kevoree JavaScript Node platform written in TypeScript",
   "main": "built/main/JavascriptNode.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "test": "mocha built/test"
   },
   "kevoree": {
     "namespace": "kevoree"
@@ -19,7 +20,6 @@
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "license": "LGPL-3.0",
   "dependencies": {
-    "kevoree-api": "^1.0.0",
-    "ts-injector": "^1.0.0"
+    "reflect-metadata": "0.1.3"
   }
 }

@@ -6,6 +6,7 @@
     "namespace": "kevoree"
   },
   "scripts": {
+    "build": "tsc",
     "test": "mocha built/test"
   },
   "dependencies": {},

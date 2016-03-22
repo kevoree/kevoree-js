@@ -12,14 +12,16 @@
         "outDir": "built"
     },
     "filesGlob": [
-        "src/**/*.ts"
+        "src/**/*.ts",
+        "typings/main.d.ts"
     ],
     "files": [
         "src/main/JavascriptNode.ts",
         "src/main/LogLevel.ts",
         "src/test/ContextServiceImpl.ts",
         "src/test/ModelServiceImpl.ts",
-        "src/test/test.ts"
+        "src/test/test.ts",
+        "typings/main.d.ts"
     ],
     "atom": {
         "rewriteTsconfig": true

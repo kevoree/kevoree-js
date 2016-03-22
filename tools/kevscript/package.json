@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "async": "^1.4.2",
-    "kevoree-model": "^6.0.0-alpha",
+    "kevoree-model": "6.0.0-alpha",
     "shortid": "^2.2.2",
     "waxeye": "^0.8.1"
   },

@@ -1,5 +1,4 @@
-import { Node, OnStart, OnStop, Inject, Services, Param } from 'kevoree-api';
-import { Logger } from 'kevoree-logger';
+import { Node, OnStart, OnStop, Inject, Services, Param, LoggerService } from 'kevoree-api';
 import { LogLevel } from './LogLevel';
 
 @Node({
@@ -9,7 +8,7 @@ import { LogLevel } from './LogLevel';
 class JavascriptNode {
 
     @Inject(Services.Logger)
-    private logger: Logger;
+    private logger: LoggerService;
 
     @Param
     private logLevel: LogLevel = LogLevel.INFO;

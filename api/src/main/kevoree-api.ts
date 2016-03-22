@@ -1,4 +1,4 @@
-export { kevoree } from 'kevoree-model';
+export { org } from 'kevoree-model';
 export { Inject, Injector, Context } from 'ts-injector';
 
 export * from './MetaData';
@@ -7,7 +7,7 @@ export * from './TypeEnum';
 
 export * from './annotations/types/Channel';
 export * from './annotations/types/Component';
-export * from './annotations/types/Group';
+export * from './annotations/types/Cdn';
 export * from './annotations/types/Node';
 
 export * from './annotations/ports/Input';
@@ -32,9 +32,10 @@ export * from './annotations/params/Length';
 export * from './annotations/params/Multiline';
 export * from './annotations/params/NumberType';
 
+export * from './services/Services';
 export * from './services/ModelService';
 export * from './services/ContextService';
-export * from './services/Services';
+export { Logger as LoggerService, LoggerImpl, LoggerFactory } from 'kevoree-logger';
 export * from './services/ChannelService';
 
 export * from './api/OutputPort';

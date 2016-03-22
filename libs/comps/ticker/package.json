@@ -5,8 +5,6 @@
   "kevoree": {
     "namespace": "kevoree"
   },
-  "dependencies": {
-    "ts-injector": "^1.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {}
 }

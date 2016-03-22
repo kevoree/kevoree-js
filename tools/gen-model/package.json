@@ -17,6 +17,8 @@
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "license": "LGPL-3.0",
   "dependencies": {
+    "kevoree-api": "file:../../api",
+    "kevoree-model": "file:../../model",
     "is-my-json-valid": "^2.12.1",
     "minimist": "^1.2.0",
     "reflect-metadata": "^0.1.3",

@@ -1,6 +1,6 @@
 export enum TypeEnum {
   NODE,
-  GROUP,
+  CDN,
   CHANNEL,
   COMPONENT
 }

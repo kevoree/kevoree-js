@@ -1,0 +1,18 @@
+{
+  "name": "kevoree-cdn-ws",
+  "version": "1.0.0",
+  "description": "Kevoree CDN that connects to the storage using WebSockets",
+  "main": "built/main/WSCDN",
+  "scripts": {
+    "test": "node node_modules/.bin/mocha built/test"
+  },
+  "dependencies": {},
+  "keywords": [
+    "kevoree",
+    "cdn",
+    "websocket",
+    "ws"
+  ],
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "license": "LGPL-3.0"
+}

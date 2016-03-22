@@ -4,9 +4,9 @@ import { MetaData } from '../../MetaData';
 import { typeDefinition } from '../../util/typeDefinition';
 import { TypeEnum } from '../../TypeEnum';
 
-export function Group(meta: TypeMeta) {
+export function Cdn(meta: TypeMeta) {
   return function (target: any) {
-    Reflect.defineMetadata(MetaData.TYPE, TypeEnum.GROUP, target.prototype);
+    Reflect.defineMetadata(MetaData.TYPE, TypeEnum.CDN, target.prototype);
     typeDefinition(target, meta);
     return target;
   };

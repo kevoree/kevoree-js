@@ -1,8 +1,8 @@
-import { KevoreeModel, modeling } from '../main/model';
+import { org } from '../main/model';
 
 describe('Kevoree model tests', () => {
-    var dm = modeling.memory.manager.DataManagerBuilder.buildDefault();
-    var kModel = new KevoreeModel(dm);
+    var dm = org.kevoree.modeling.memory.manager.DataManagerBuilder.buildDefault();
+    var kModel = new org.KevoreeModel(dm);
 
     kModel.connect(() => {
         var kView = kModel.universe(0).time(0);
@@ -24,21 +24,21 @@ describe('Kevoree model tests', () => {
             });
         });
 
-        it('create and add subNode inside the node', (done: MochaDone) => {
-            model.getNodes(nodes => {
-                var subNode = kView.createNode();
-                subNode.setName('mySubNode');
-                subNode.addHost(nodes[0]);
-                nodes[0].addSubNodes(subNode);
-                done();
-            });
-        });
+        // it('create and add subNode inside the node', (done: MochaDone) => {
+        //     model.getNodes(nodes => {
+        //         var subNode = kView.createNode();
+        //         subNode.setName('mySubNode');
+        //         subNode.addHost(nodes[0]);
+        //         nodes[0].addSubNodes(subNode);
+        //         done();
+        //     });
+        // });
 
-        it('create and add group', () => {
-            var group = kView.createGroup();
-            group.setName('myGroup');
-            model.addGroups(group);
-        });
+        // it('create and add group', () => {
+        //     var group = kView.createConnector();
+        //     group.setName('myGroup');
+        //     node.addC(group);
+        // });
 
         it('create and add channel', () => {
             var channel = kView.createChannel();
@@ -62,15 +62,15 @@ describe('Kevoree model tests', () => {
             });
         });
 
-        it('create and add a group typeDef inside the namespace', (done: MochaDone) => {
-            model.getNamespaces(namespaces => {
-                var type = kView.createGroupType();
-                type.setName('WSGroup');
-                type.setVersion(1);
-                namespaces[0].addTypeDefinitions(type);
-                done();
-            });
-        });
+        // it('create and add a group typeDef inside the namespace', (done: MochaDone) => {
+        //     model.getNamespaces(namespaces => {
+        //         var type = kView.createGroupType();
+        //         type.setName('WSGroup');
+        //         type.setVersion(1);
+        //         namespaces[0].addTypeDefinitions(type);
+        //         done();
+        //     });
+        // });
 
         it('create and add a channel typeDef inside the namespace', (done: MochaDone) => {
             model.getNamespaces(namespaces => {

@@ -9,6 +9,7 @@
   },
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "license": "LGPL-3.0",
+  "dependencies": {},
   "devDependencies": {
     "mocha": "^2.4.5"
   }

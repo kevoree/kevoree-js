@@ -10,7 +10,8 @@ import { Logger } from 'kevoree-logger';
 + ' milliseconds once every 3000ms. This can be tweaked using the '
 + ' <strong>delay</strong> parameter. You can also change the output to a '
 + ' random number between [0, 100[ by setting the attribute <strong>random'
-+ '</strong> to <strong>true</strong>'})
++ '</strong> to <strong>true</strong>'
+})
 class Ticker {
   private timerId: any;
 

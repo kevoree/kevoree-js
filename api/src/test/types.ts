@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import {
-    Node, Group, Channel, Component, MetaData, TypeEnum, TypeMeta
+    Node, Cdn, Channel, Component, MetaData, TypeEnum, TypeMeta
 } from '../main/kevoree-api';
 import * as Assert from 'assert';
 
@@ -13,7 +13,7 @@ describe('TypeDefinition annotations', () => {
     @Node({ description: DESC, version: 1 })
     class MyNode {}
 
-    @Group({ description: DESC, version: 1 })
+    @Cdn({ description: DESC, version: 1 })
     class MyGroup {}
 
     @Channel({ description: DESC, version: 1 })
@@ -44,7 +44,7 @@ describe('TypeDefinition annotations', () => {
         var meta: TypeMeta = Reflect.getMetadata(MetaData.META, MyGroup.prototype);
         var name = Reflect.getMetadata(MetaData.NAME, MyGroup.prototype);
 
-        Assert.equal(type, TypeEnum.GROUP);
+        Assert.equal(type, TypeEnum.CDN);
         Assert.equal(meta.description, DESC);
         Assert.equal(name, (<any> MyGroup).name);
     });

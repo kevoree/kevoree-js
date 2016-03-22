@@ -6,26 +6,28 @@
         "isolatedModules": false,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "noImplicitAny": true,
+        "declaration": false,
+        "noImplicitAny": false,
         "removeComments": true,
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
         "outDir": "built"
     },
+    "exclude": [
+        "node_modules",
+        "typings/browser",
+        "typings/browser.d.ts"
+    ],
     "filesGlob": [
-        "src/**/*.ts",
-        "typings/**/*.ts"
+        "src/**/*.ts"
     ],
     "files": [
-        "src/bin/cli.ts",
-        "src/main/runtime.ts",
-        "src/test/test.ts",
-        "typings/chalk/chalk.d.ts",
-        "typings/commander/commander.d.ts",
-        "typings/node/node.d.ts",
-        "typings/tsd.d.ts"
+        "src/main/WSCDN.ts",
+        "src/test/test.ts"
     ],
+    "compileOnSave": true,
+    "buildOnSave": true,
     "atom": {
         "rewriteTsconfig": true
     }

@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "Kevoree JavaScript Channel: broadcast received messages to bound local ports",
   "main": "built/main/LocalChannel.js",
-  "dependencies": {
-    "kevoree-api": "^1.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {},
   "scripts": {
     "prepublish": "typings install",
