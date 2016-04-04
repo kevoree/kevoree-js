@@ -19,8 +19,6 @@
         "typings/main.d.ts"
     ],
     "files": [
-        "src/main/java.ts",
-        "src/main/kmf.ts",
         "src/main/model.ts",
         "src/test/test.ts",
         "typings/main.d.ts"

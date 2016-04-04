@@ -1,8 +1,7 @@
-import { Services, Injector, Context } from 'kevoree-api';
+import { Services, Injector, Context, LoggerFactory } from 'kevoree-api';
 import { ModelServiceImpl } from './ModelServiceImpl';
 import { ContextServiceImpl } from './ContextServiceImpl';
 import { OutputPortImpl } from './OutputPortImpl';
-import { LoggerImpl, LoggerFactory } from 'kevoree-logger';
 import ConsolePrinter = require('../main/ConsolePrinter');
 
 describe('ConsolePrinter', function () {

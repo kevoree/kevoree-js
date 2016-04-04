@@ -1,14 +1,17 @@
 {
   "name": "kevoree-comp-consoleprinter",
   "version": "6.0.0-alpha",
-  "main": "build/main/ConsolePrinter.js",
+  "main": "built/main/ConsolePrinter.js",
   "kevoree": {
     "namespace": "kevoree"
   },
   "scripts": {
     "build": "tsc",
+    "gen-model": "node node_modules/.bin/kevoree-gen-model",
     "test": "mocha built/test"
   },
-  "dependencies": {},
+  "dependencies": {
+    "react": "^0.14.8"
+  },
   "devDependencies": {}
 }

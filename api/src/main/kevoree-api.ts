@@ -39,3 +39,4 @@ export { Logger as LoggerService, LoggerImpl, LoggerFactory } from 'kevoree-logg
 export * from './services/ChannelService';
 
 export * from './api/OutputPort';
+export * from './es5/factory';

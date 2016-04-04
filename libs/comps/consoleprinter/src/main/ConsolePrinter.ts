@@ -1,4 +1,5 @@
 import { Component, Input, Inject, Services, ContextService } from 'kevoree-api';
+import React = require('react');
 
 @Component({
   version: 1,
@@ -11,7 +12,6 @@ class ConsolePrinter {
 
     @Input({ type: 'string' })
     input(msg: string): void {
-        msg = msg + ''; // forces string
         console.log(`${this.context.getInstanceName()}> ${msg}`);
     }
 }

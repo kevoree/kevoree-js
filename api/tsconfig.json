@@ -44,6 +44,7 @@
         "src/main/annotations/types/Node.ts",
         "src/main/api/OutputPort.ts",
         "src/main/Callback.ts",
+        "src/main/es5/factory.ts",
         "src/main/kevoree-api.ts",
         "src/main/MetaData.ts",
         "src/main/services/ChannelService.ts",

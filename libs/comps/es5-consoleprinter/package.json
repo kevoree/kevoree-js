@@ -1,0 +1,24 @@
+{
+  "name": "kevoree-comp-es5-consoleprinter",
+  "version": "6.0.0-alpha",
+  "description": "Kevoree component ConsolePrinter written in ES5",
+  "main": "ConsolePrinter.js",
+  "kevoree": {
+    "namespace": "kevoree"
+  },
+  "dependencies": {
+    "kevoree-api": "^1.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "kevoree",
+    "component",
+    "es5",
+    "printer"
+  ],
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "license": "LGPL-3.0"
+}

@@ -1,0 +1,11 @@
+[
+{"@class":"org.kevoree.Model","@uuid":1,"namespaces":[5]},
+{"@class":"org.kevoree.Namespace","@uuid":5,"name":"kevoree","typeDefinitions":[2],"op_Model_namespaces":[1]},
+{"@class":"org.kevoree.ComponentType","@uuid":2,"name":"ConsolePrinter","version":"1","inputTypes":[10],"metaData":[7],"dictionary":[9],"deployUnits":[3],"op_Namespace_typeDefinitions":[5]},
+{"@class":"org.kevoree.PortType","@uuid":10,"name":"input","protocol":[12],"op_ComponentType_inputTypes":[2]},
+{"@class":"org.kevoree.Value","@uuid":7,"name":"description","value":"Prints out incoming messages to the terminal console","op_TypeDefinition_metaData":[2]},
+{"@class":"org.kevoree.DictionaryType","@uuid":9,"op_TypeDefinition_dictionary":[2]},
+{"@class":"org.kevoree.DeployUnit","@uuid":3,"name":"kevoree-comp-es5-consoleprinter","version":"6.0.0-alpha","platform":"javascript","op_TypeDefinition_deployUnits":[2]},
+{"@class":"org.kevoree.Value","@uuid":12,"name":"jsonschema","value":"{\"type\":\"string\"}","op_PortType_protocol":[10]}
+]
+
