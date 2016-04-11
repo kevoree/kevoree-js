@@ -7,7 +7,8 @@ import * as ReactDOM from 'react-dom';
 import Ticker = require('../main/Ticker');
 
 interface UIState {
-  instance: Ticker
+  instance?: Ticker;
+  started?: boolean;
 }
 
 class Browser extends React.Component<{}, UIState> {
@@ -18,7 +19,7 @@ class Browser extends React.Component<{}, UIState> {
 
   constructor() {
     super();
-    this.state = { instance: null };
+    this.state = { instance: null, started: false };
 
     // create an injector
     this.injector = new Injector();
@@ -45,19 +46,21 @@ class Browser extends React.Component<{}, UIState> {
       // inject services in instance
       this.injector.inject(instance, ctx);
 
-      this.setState({ instance: instance });
+      this.setState({ instance: instance, started: false });
     }
   }
 
   startInstance() {
-    if (this.state.instance !== null) {
+    if (this.state.instance !== null && !this.state.started) {
       this.state.instance.start();
+      this.setState({ started: true });
     }
   }
 
   stopInstance() {
-    if (this.state.instance !== null) {
+    if (this.state.instance !== null && this.state.started) {
       this.state.instance.stop();
+      this.setState({ started: false });
     }
   }
 
@@ -77,8 +80,8 @@ class Browser extends React.Component<{}, UIState> {
         <h2>Browser test: Ticker</h2>
         <div>
           <button onClick={this.createInstance.bind(this)} disabled={this.state.instance !== null}>Create instance</button>
-          <button onClick={this.startInstance.bind(this)} disabled={this.state.instance === null}>Start instance</button>
-          <button onClick={this.stopInstance.bind(this)} disabled={this.state.instance === null}>Stop instance</button>
+          <button onClick={this.startInstance.bind(this)} disabled={this.state.instance === null || this.state.started === true}>Start instance</button>
+          <button onClick={this.stopInstance.bind(this)} disabled={this.state.instance === null || this.state.started === false}>Stop instance</button>
           <button onClick={this.removeInstance.bind(this)} disabled={this.state.instance === null}>Remove instance</button>
         </div>
         <div style={{ marginTop: '10px', padding: '3px', border: '1px solid', width: '200px' }}>
