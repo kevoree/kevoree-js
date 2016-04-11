@@ -53,7 +53,6 @@
         "src/main/services/Services.ts",
         "src/main/TypeEnum.ts",
         "src/main/util/lifecycleMethod.ts",
-        "src/main/util/Observer.ts",
         "src/main/util/typeDefinition.ts",
         "src/test/inputs.ts",
         "src/test/lifecycles.ts",

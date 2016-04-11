@@ -1,0 +1,36 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "isolatedModules": false,
+        "jsx": "react",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "noImplicitAny": true,
+        "removeComments": true,
+        "declaration": true,
+        "noLib": false,
+        "preserveConstEnums": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "outDir": "built"
+    },
+    "filesGlob": [
+        "src/**/*.ts",
+        "typings/main.d.ts"
+    ],
+    "files": [
+        "src/main/annotations/ComponentUI.ts",
+        "src/main/annotations/MetaData.ts",
+        "src/main/annotations/UIProp.ts",
+        "src/main/api/Observer.ts",
+        "src/main/internal/UIProcessor.ts",
+        "src/main/kevoree-ui.ts",
+        "src/test/test.ts",
+        "typings/main.d.ts"
+    ],
+    "atom": {
+        "rewriteTsconfig": true,
+        "rewriteOnSave": true
+    }
+}

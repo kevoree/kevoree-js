@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Observer } from 'kevoree-api';
+import { Observer } from 'kevoree-ui';
 
 export interface UIProps {
   onTick: Observer<string>;

@@ -1,4 +1,5 @@
 import { Services, Injector, Context, LoggerFactory } from 'kevoree-api';
+import { UIProcessor } from 'kevoree-ui';
 import { ModelServiceImpl } from './ModelServiceImpl';
 import { ContextServiceImpl } from './ContextServiceImpl';
 import { OutputPortImpl } from './OutputPortImpl';
@@ -77,7 +78,7 @@ class Browser extends React.Component<{}, UIState> {
   render(): JSX.Element {
     var instance = <em>Not loaded yet</em>;
     if (this.state.instance) {
-      instance = this.state.instance.render();
+      instance = UIProcessor.render(this.state.instance);
     }
 
     return (

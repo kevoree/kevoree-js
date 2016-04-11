@@ -1,4 +1,5 @@
-import { Component, Input, Inject, Services, ContextService, Observer } from 'kevoree-api';
+import { Component, Input, Inject, Services, ContextService } from 'kevoree-api';
+import { Observer, ComponentUI, UIProp } from 'kevoree-ui';
 import * as React from 'react';
 import { ConsolePrinterUI, UIProps } from './ConsolePrinterUI';
 
@@ -6,25 +7,19 @@ import { ConsolePrinterUI, UIProps } from './ConsolePrinterUI';
   version: 1,
   description: 'Prints out incoming messages to the terminal console'
 })
+@ComponentUI(ConsolePrinterUI)
 class ConsolePrinter {
 
-  private onMessage: Observer<string>;
+  @UIProp
+  private onMessage = new Observer<string>();
 
   @Inject(Services.Context)
   private ctx: ContextService;
-
-  constructor() {
-    this.onMessage = new Observer<string>();
-  }
 
   @Input({ type: 'string' })
   input(msg: string): void {
     console.log(`${this.ctx.getInstanceName()}> ${msg}`);
     this.onMessage.dispatch(msg);
-  }
-
-  render(): React.ReactElement<any> {
-    return <ConsolePrinterUI onMessage={this.onMessage} />;
   }
 }
 

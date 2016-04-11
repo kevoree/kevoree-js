@@ -1,0 +1,24 @@
+{
+  "name": "kevoree-ui",
+  "version": "1.0.0",
+  "description": "Kevoree UI API",
+  "main": "built/main/kevoree-ui.js",
+  "dependencies": {
+    "react": "^15.0.1",
+    "reflect-metadata": "^0.1.3",
+    "ts-injector": "^1.0.0"
+  },
+  "typings": "built/main/kevoree-ui.d.ts",
+  "devDependencies": {},
+  "scripts": {
+    "build": "tsc",
+    "test": "mocha built/test"
+  },
+  "keywords": [
+    "kevoree",
+    "ui",
+    "api"
+  ],
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "license": "LGPL-3.0"
+}

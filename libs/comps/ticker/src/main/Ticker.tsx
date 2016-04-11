@@ -1,7 +1,8 @@
 import {
     Component, Output, Param, Inject, Services, ModelService, ContextService,
-    Callback, OutputPort, Min, OnStart, OnStop, OnUpdate, Observer
+    Callback, OutputPort, Min, OnStart, OnStop, OnUpdate
 } from 'kevoree-api';
+import { Observer, ComponentUI, UIProp } from 'kevoree-ui';
 import { Logger } from 'kevoree-logger';
 import * as React from 'react';
 import { TickerUI } from './TickerUI';
@@ -14,8 +15,11 @@ import { TickerUI } from './TickerUI';
 + ' random number between [0, 100[ by setting the attribute <strong>random'
 + '</strong> to <strong>true</strong>'
 })
+@ComponentUI(TickerUI)
 class Ticker {
   private timerId: any;
+
+  @UIProp
   private onTick: Observer<string> = new Observer<string>();
 
   @Param
@@ -63,10 +67,6 @@ class Ticker {
     this.log.info('Updating');
     this.stop();
     this.start();
-  }
-
-  render(): React.ReactElement<any> {
-    return <TickerUI onTick={this.onTick} />;
   }
 }
 
