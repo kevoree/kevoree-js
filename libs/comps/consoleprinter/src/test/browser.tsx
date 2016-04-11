@@ -7,7 +7,8 @@ import * as ReactDOM from 'react-dom';
 import ConsolePrinter = require('../main/ConsolePrinter');
 
 interface UIState {
-  instance: ConsolePrinter
+  instance?: ConsolePrinter,
+  started?: boolean;
 }
 
 class Browser extends React.Component<{}, UIState> {
@@ -18,7 +19,7 @@ class Browser extends React.Component<{}, UIState> {
 
   constructor() {
     super();
-    this.state = { instance: null };
+    this.state = { instance: null, started: false };
 
     // create an injector
     this.injector = new Injector();
@@ -44,18 +45,31 @@ class Browser extends React.Component<{}, UIState> {
     }
   }
 
+  startInstance() {
+    if (this.state.instance !== null && !this.state.started) {
+      this.setState({ started: true });
+    }
+  }
+
+  stopInstance() {
+    if (this.state.instance !== null && this.state.started) {
+      this.setState({ started: false });
+    }
+  }
+
   removeInstance() {
+    this.stopInstance();
     this.setState({ instance: null });
   }
 
   sendMsg() {
-    if (this.state.instance) {
+    if (this.state.instance && this.state.started) {
       this.state.instance.input(`${parseInt(`${Math.random()*100}`, 10)}`);
     }
   }
 
   sendIncMsg() {
-    if (this.state.instance) {
+    if (this.state.instance && this.state.started) {
       this.state.instance.input(`${this.msgCount++}`);
     }
   }
@@ -71,9 +85,11 @@ class Browser extends React.Component<{}, UIState> {
         <h2>Browser test: ConsolePrinter</h2>
         <div>
           <button onClick={this.createInstance.bind(this)} disabled={this.state.instance !== null}>Create instance</button>
+          <button onClick={this.startInstance.bind(this)} disabled={this.state.instance === null || this.state.started === true}>Start instance</button>
+          <button onClick={this.stopInstance.bind(this)} disabled={this.state.instance === null || this.state.started === false}>Stop instance</button>
           <button onClick={this.removeInstance.bind(this)} disabled={this.state.instance === null}>Remove instance</button>
-          <button onClick={this.sendMsg.bind(this)} disabled={this.state.instance === null}>Send random msg</button>
-          <button onClick={this.sendIncMsg.bind(this)} disabled={this.state.instance === null}>Send inc msg</button>
+          <button onClick={this.sendMsg.bind(this)} disabled={this.state.instance === null || this.state.started === false}>Send random msg</button>
+          <button onClick={this.sendIncMsg.bind(this)} disabled={this.state.instance === null || this.state.started === false}>Send inc msg</button>
         </div>
         <div style={{ marginTop: '10px', padding: '3px', border: '1px solid', width: '200px' }}>
           {instance}
