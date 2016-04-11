@@ -1,8 +1,10 @@
 import {
     Component, Output, Param, Inject, Services, ModelService, ContextService,
-    Callback, OutputPort, Min, OnStart, OnStop, OnUpdate
+    Callback, OutputPort, Min, OnStart, OnStop, OnUpdate, Observer
 } from 'kevoree-api';
 import { Logger } from 'kevoree-logger';
+import * as React from 'react';
+import { TickerUI } from './TickerUI';
 
 @Component({
   version: 1,
@@ -14,6 +16,7 @@ import { Logger } from 'kevoree-logger';
 })
 class Ticker {
   private timerId: any;
+  private onTick: Observer<string> = new Observer<string>();
 
   @Param
   @Min(0)
@@ -44,6 +47,7 @@ class Ticker {
       } else {
         val = new Date().getTime()+'';
       }
+      this.onTick.dispatch(val);
       this.tick.send(val);
     }, this.delay);
   }
@@ -59,6 +63,10 @@ class Ticker {
     this.log.info('Updating');
     this.stop();
     this.start();
+  }
+
+  render(): React.ReactElement<any> {
+    return <TickerUI onTick={this.onTick} />;
   }
 }
 

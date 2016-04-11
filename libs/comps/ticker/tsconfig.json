@@ -3,6 +3,7 @@
         "target": "es5",
         "module": "commonjs",
         "moduleResolution": "node",
+        "jsx": "react",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "noImplicitAny": true,
@@ -12,14 +13,19 @@
         "outDir": "built"
     },
     "filesGlob": [
-        "src/**/*.ts"
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "typings/main.d.ts"
     ],
     "files": [
-        "src/main/Ticker.ts",
         "src/test/ContextServiceImpl.ts",
         "src/test/ModelServiceImpl.ts",
         "src/test/OutputPortImpl.ts",
-        "src/test/test.ts"
+        "src/test/test.ts",
+        "src/main/Ticker.tsx",
+        "src/main/TickerUI.tsx",
+        "src/test/browser.tsx",
+        "typings/main.d.ts"
     ],
     "atom": {
         "rewriteTsconfig": true

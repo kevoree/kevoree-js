@@ -40,3 +40,5 @@ export * from './services/ChannelService';
 
 export * from './api/OutputPort';
 export * from './es5/factory';
+
+export * from './util/Observer';

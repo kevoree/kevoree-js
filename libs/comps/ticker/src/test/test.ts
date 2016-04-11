@@ -16,7 +16,7 @@ var ctx = new Context();
 ctx.register(Services.Logger, LoggerFactory.createLogger('comp'));
 ctx.register(Services.Context, new ContextServiceImpl('comp', 'node0'));
 
-// create a node instance
+// create an instance
 var comp = new Ticker();
 comp['delay'] = 500;
 comp['random'] = true;
