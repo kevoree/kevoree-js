@@ -1,4 +1,5 @@
 var path = require('path');
+var webpack = require('webpack');
 
 module.exports = {
   resolve: {
@@ -14,5 +15,9 @@ module.exports = {
   },
   entry: {
     app: './src/test/browser.tsx'
+  },
+  externals: {
+    "react": "React",
+    "react-dom": "ReactDOM"
   }
 };

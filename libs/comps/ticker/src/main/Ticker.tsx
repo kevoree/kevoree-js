@@ -19,7 +19,7 @@ import { TickerUI } from './TickerUI';
 class Ticker {
   private timerId: any;
 
-  @UIProp
+  @UIProp()
   private onTick: Observer<string> = new Observer<string>();
 
   @Param
