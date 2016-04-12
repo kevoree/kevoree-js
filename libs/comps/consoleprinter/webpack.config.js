@@ -1,5 +1,4 @@
 var path = require('path');
-var webpack = require('webpack');
 
 module.exports = {
   resolve: {
@@ -14,10 +13,17 @@ module.exports = {
     }]
   },
   entry: {
-    app: './src/test/browser.tsx'
+    main: ['./src/main/ConsolePrinter.ts'],
+    test: './src/test/browser.tsx'
   },
   externals: {
-    "react": "React",
-    "react-dom": "ReactDOM"
+    'react': 'React',
+    'react-dom': 'ReactDOM'
+  },
+  output: {
+    libraryTarget: 'var',
+    library: 'ConsolePrinter',
+    path: path.join(__dirname, 'built', 'browser'),
+    filename: '[name]-bundle.js'
   }
 };

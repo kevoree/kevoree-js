@@ -13,10 +13,17 @@ module.exports = {
     }]
   },
   entry: {
-    app: './src/test/browser.tsx'
+    main: ['./src/main/Ticker.ts'],
+    test: './src/test/browser.tsx'
   },
   externals: {
-    "react": "React",
-    "react-dom": "ReactDOM"
+    'react': 'React',
+    'react-dom': 'ReactDOM'
+  },
+  output: {
+    libraryTarget: 'var',
+    library: 'Ticker',
+    path: path.join(__dirname, 'built', 'browser'),
+    filename: '[name]-bundle.js'
   }
 };

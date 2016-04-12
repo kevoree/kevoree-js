@@ -1,10 +1,9 @@
 import {
     Component, Output, Param, Inject, Services, ModelService, ContextService,
-    Callback, OutputPort, Min, OnStart, OnStop, OnUpdate
+    OutputPort, Min, OnStart, OnStop, OnUpdate
 } from 'kevoree-api';
 import { Observer, ComponentUI, UIProp } from 'kevoree-ui';
 import { Logger } from 'kevoree-logger';
-import * as React from 'react';
 import { TickerUI } from './TickerUI';
 
 @Component({

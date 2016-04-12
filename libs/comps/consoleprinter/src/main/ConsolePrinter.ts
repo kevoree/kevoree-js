@@ -1,6 +1,5 @@
 import { Component, Input, Inject, Services, ContextService } from 'kevoree-api';
 import { Observer, ComponentUI, UIProp } from 'kevoree-ui';
-import * as React from 'react';
 import { ConsolePrinterUI } from './ConsolePrinterUI';
 
 
