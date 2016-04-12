@@ -1,0 +1,7 @@
+.menu a {
+  padding-right: 10px;
+}
+
+.menu a.active {
+  color: #2F4F4F;
+}

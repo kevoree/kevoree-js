@@ -1,0 +1,48 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "isolatedModules": false,
+        "jsx": "react",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "declaration": false,
+        "noImplicitAny": true,
+        "noImplicitUseStrict": false,
+        "removeComments": true,
+        "noLib": false,
+        "preserveConstEnums": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "outDir": "built"
+    },
+    "exclude": [
+        "node_modules",
+        "typings/browser",
+        "typings/browser.d.ts"
+    ],
+    "filesGlob": [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "typings/main.d.ts",
+        "!node_modules/**"
+    ],
+    "compileOnSave": true,
+    "buildOnSave": true,
+    "atom": {
+        "rewriteTsconfig": true
+    },
+    "files": [
+        "src/test/test.ts",
+        "src/typings/react-grid-layout.d.ts",
+        "src/main/app/App.tsx",
+        "src/main/app/components/Component.tsx",
+        "src/main/app/components/Components.tsx",
+        "src/main/app/dashboard/Dashboard.tsx",
+        "src/main/app/home/Home.tsx",
+        "src/main/app/settings/Settings.tsx",
+        "src/main/app/util/NavLink.tsx",
+        "src/main/index.tsx",
+        "typings/main.d.ts"
+    ]
+}
