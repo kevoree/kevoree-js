@@ -1,22 +1,18 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
-import { Home } from './home/Home';
-import { NavLink } from './util/NavLink';
+import { Home } from './routes/home/Home';
+import { AppBar } from './components/AppBar';
 
 export interface RouteParams {}
 
 export class App extends React.Component<RouteComponentProps<RouteParams, {}>, {}> {
   render() {
     return (
-      <div>
-        <h3>Kevoree Browser Runtime</h3>
-        <div className="menu">
-          <NavLink to="/" onlyActiveOnIndex={true}>Home</NavLink>
-          <NavLink to="/dashboard">Dashboard</NavLink>
-          <NavLink to="/components">Components</NavLink>
-          <NavLink to="/settings">Settings</NavLink>
+      <div className="app-container">
+        <AppBar />
+        <div className="route-container">
+          {this.props.children || <Home />}
         </div>
-        {this.props.children || <Home />}
       </div>
     );
   }
