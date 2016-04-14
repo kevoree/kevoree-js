@@ -2,88 +2,10 @@ html, body, #app, .app-container {
   height: 100%;
 }
 
-.route-container {
-  background-color: #f6f6f6;
-  position: absolute;
-  top: 50px;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-
-.app-bar {
-  height: 50px;
-  line-height: 50px;
+.tile .header {
+  padding-left: 5px;
   background-color: #333;
-}
-
-.app-bar .menu {
-  float: left;
-  margin: 0;
-}
-
-.app-bar .menu * {
-  margin: 0;
-}
-
-.app-bar .menu.menu-right {
-  float: right;
-}
-
-.app-bar .menu > * {
-  float: left;
-  width: 120px;
-  text-align: center;
-  border-left: 1px solid #999;
-}
-
-.app-bar .menu > *.logo {
-  width: 60px;
-}
-
-.app-bar .menu > *.logo > img {
-  vertical-align: middle;
-}
-
-.app-bar .menu > *:first-child {
-  border-left: none;
-}
-
-.app-bar .menu.menu-right > *:first-child {
-  border-left: 1px solid #999;
-}
-.app-bar .menu.menu-right > *:last-child {
-  border-right: none;
-}
-
-.app-bar .menu > *:last-child {
-  border-right: 1px solid #999;
-}
-
-.app-bar .menu a,
-.app-bar .menu a:hover,
-.app-bar .menu a:focus,
-.app-bar .menu a:active {
-  display: block;
-  color: #9d9d9d;
-  text-decoration: none;
-}
-
-.app-bar .menu a.active {
-  color: #fff;
-  background-color: #222;
-}
-
-.app-bar .menu-responsive {
-  display: none;
-}
-
-.app-bar .menu-responsive button {
-  color: #9d9d9d;
-}
-
-.react-grid-item {
-  background-color: #ccc;
+  color: #eee;
 }
 
 button.small {
@@ -92,43 +14,12 @@ button.small {
   padding: 0 10px;
 }
 
-@media (max-width: 768px) {
-  .app-bar {
-    height: auto;
-  }
+button.medium {
+  height: 30px;
+  line-height: 30px;
+  padding: 0 12px;
+}
 
-  .app-bar .menu {
-    float: none;
-  }
-
-  .app-bar .menu.menu-right {
-    float: none;
-  }
-
-  .app-bar .menu > *,
-  .app-bar .menu.menu-right > *,
-  .app-bar .menu.menu-right > *:first-child,
-  .app-bar .menu.menu-right > *:last-child {
-    float: none;
-    width: 100%;
-    text-align: left;
-    border: none;
-  }
-
-  .app-bar .menu a {
-    padding-left: 5px;
-  }
-
-  .app-bar .menu-responsive {
-    position: absolute;
-    top: 0;
-    right: 15px;
-    display: inline-block;
-    color: #9d9d9d;
-  }
-
-  .route-container {
-    position: relative;
-    top: auto;
-  }
+.hide {
+  display: none;
 }

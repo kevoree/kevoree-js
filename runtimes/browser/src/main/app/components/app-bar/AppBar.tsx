@@ -1,5 +1,8 @@
+import './app-bar.css';
+
 import * as React from 'react';
-import { NavLink } from './NavLink';
+import { NavLink } from '../NavLink';
+import * as classnames from 'classnames';
 
 interface UIState {
   open: boolean;
@@ -12,18 +15,34 @@ export class AppBar extends React.Component<{}, UIState> {
     this.state = { open: false };
   }
 
+  toggleMenuClick(event: MouseEvent) {
+    event.preventDefault();
+    this.setState({ open: !this.state.open });
+  }
+
+  toggleMenuKey(event: KeyboardEvent) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      this.setState({ open: !this.state.open });
+    }
+  }
+
   render(): JSX.Element {
-    const respName = this.state.open ? 'Close' : 'Open';
+    const btnLabel = this.state.open ? 'Close' : 'Open';
 
     return (
       <div className="app-bar">
-        <div className="menu-responsive">
-            <button className="small"><span className="fa fa-bars"></span>&nbsp;{respName}</button>
+        <div className="logo">
+          <img src="images/logo.png" />
         </div>
-        <div className="menu">
-          <div className="logo">
-            <img src="images/logo.png" />
-          </div>
+        <div className="menu-responsive">
+            <button className="medium" onClick={this.toggleMenuClick.bind(this)}
+                onKeyDown={this.toggleMenuKey.bind(this)}>
+              <span className="fa fa-bars"></span>
+              &nbsp;{btnLabel}
+            </button>
+        </div>
+        <div className={classnames('menu', { open: this.state.open })}>
           <div>
             <NavLink to="/" onlyActiveOnIndex={true}>
               <span className="fa fa-home"></span>
@@ -37,7 +56,7 @@ export class AppBar extends React.Component<{}, UIState> {
             </NavLink>
           </div>
         </div>
-        <div className="menu menu-right">
+        <div className={classnames('menu', 'menu-right', { open: this.state.open })}>
           <div>
             <NavLink to="/settings">
               <span className="fa fa-cog"></span>
