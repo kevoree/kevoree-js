@@ -28,15 +28,15 @@
   width: 25px;
   cursor: pointer;
   text-align: center;
+  border-top: 1px solid var(--bg);
+  border-right: 1px solid var(--bg);
+  border-top-right-radius: var(--header-radius);
 }
 
 .tile .header .menu.open {
   z-index: 100;
   background-color: var(--color);
   color: var(--bg);
-  border-top: 1px solid var(--bg);
-  border-right: 1px solid var(--bg);
-  border-top-right-radius: var(--header-radius);
 }
 
 .tile .header .name {
