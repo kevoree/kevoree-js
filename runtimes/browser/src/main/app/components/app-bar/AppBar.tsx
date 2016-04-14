@@ -4,13 +4,14 @@ import * as React from 'react';
 import { NavLink } from '../NavLink';
 import * as classnames from 'classnames';
 
+export interface UIProps {}
 interface UIState {
   open: boolean;
 }
 
-export class AppBar extends React.Component<{}, UIState> {
+export class AppBar extends React.Component<UIProps, UIState> {
 
-  constructor(props: {}) {
+  constructor(props: UIProps) {
     super(props);
     this.state = { open: false };
   }

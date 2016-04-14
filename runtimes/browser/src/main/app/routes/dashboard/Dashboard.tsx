@@ -40,6 +40,20 @@ export class Dashboard extends React.Component<DashboardProps, DashboardState> {
     this.forceUpdate();
   }
 
+  onReset() {}
+
+  onResetClick(event: MouseEvent) {
+    event.preventDefault();
+    this.onReset();
+  }
+
+  onResetKey(event: KeyboardEvent) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      this.onReset();
+    }
+  }
+
   render() {
     const components = this.props.components.filter(comp => {
       return !comp.hide;
