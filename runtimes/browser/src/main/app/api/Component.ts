@@ -1,3 +1,5 @@
 export interface Component {
-  name: string
+  name: string;
+  type: string;
+  hide: boolean;
 }

@@ -10,10 +10,10 @@
   "license": "LGPL-3.0",
   "dependencies": {
     "font-awesome": "^4.5.0",
-    "react": "^0.14.7",
-    "react-dom": "^0.14.7",
+    "react": "^0.14.8",
+    "react-dom": "^15.0.1",
     "react-grid-layout": "^0.11.3",
-    "react-router": "^2.0.0",
+    "react-router": "^2.2.1",
     "skeleton-css": "^2.0.4"
   },
   "devDependencies": {

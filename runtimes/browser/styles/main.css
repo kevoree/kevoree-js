@@ -2,12 +2,6 @@ html, body, #app, .app-container {
   height: 100%;
 }
 
-.tile .header {
-  padding-left: 5px;
-  background-color: #333;
-  color: #eee;
-}
-
 button.small {
   height: 24px;
   line-height: 24px;
