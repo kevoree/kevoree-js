@@ -2,7 +2,7 @@ import './tile.css';
 
 import * as React from 'react';
 import * as classnames from 'classnames';
-import { Component } from '../../api/Component';
+import { Component } from '../../api';
 
 export interface UIProps extends Component {
   onHide: () => void;

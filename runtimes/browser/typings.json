@@ -4,6 +4,7 @@
   "dependencies": {},
   "ambientDependencies": {
     "classnames": "registry:dt/classnames#0.0.0+20160316155526",
+    "es6-shim": "registry:dt/es6-shim#0.31.2+20160317120654",
     "react": "registry:dt/react#0.14.0+20160412154040",
     "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
     "react-router": "registry:dt/react-router#2.0.0+20160330124659",

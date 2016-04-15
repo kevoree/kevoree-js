@@ -9,11 +9,14 @@
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "license": "LGPL-3.0",
   "dependencies": {
+    "es6-shim": "^0.35.0",
     "font-awesome": "^4.5.0",
     "react": "^0.14.8",
     "react-dom": "^15.0.1",
     "react-grid-layout": "^0.11.3",
+    "react-redux": "^4.4.5",
     "react-router": "^2.2.1",
+    "redux": "^3.4.0",
     "skeleton-css": "^2.0.4"
   },
   "devDependencies": {

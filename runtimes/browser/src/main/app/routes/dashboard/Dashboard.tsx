@@ -1,46 +1,32 @@
 import * as React from 'react';
+import { ReactComponent } from '../../util/ReactComponent';
 import { Link, RouteComponentProps } from 'react-router';
 import { Layout } from 'react-grid-layout';
 import { GridLayout } from '../../components/GridLayout';
 import { Tile } from '../../components/tile/Tile';
-import { Component } from '../../api/Component';
-import { LayoutDesc } from '../../api/LayoutDesc';
+import { Component, LayoutDesc } from '../../api';
+import {
+  Actions, ActionLayoutChange, ActionToggleComponent
+} from '../../actions';
 
-export interface RouteParams {}
-export interface DashboardProps extends RouteComponentProps<RouteParams, {}> {
-  layouts: LayoutDesc<Layout[]>
-  onLayoutChange: (layout: Layout, layouts: LayoutDesc<Layout[]>) => void;
-  components: Component[];
-}
-interface DashboardState {
-  layouts: LayoutDesc<Layout[]>
-}
+interface UIProps extends RouteComponentProps<{}, {}> {}
 
-export class Dashboard extends React.Component<DashboardProps, DashboardState> {
+export class Dashboard extends ReactComponent<UIProps, {}> {
 
-  constructor(props: DashboardProps, ctx: any) {
-    super(props, ctx);
-    this.state = { layouts: this.props.layouts };
-  }
-
-  resetLayout() {
-    this.setState({
-      layouts: { lg: [], md: [], sm: [], xs: [], xxs: [] }
+  onHide(comp: Component) {
+    this.context.store.dispatch<ActionToggleComponent>({
+      type: Actions.TOGGLE_COMP,
+      name: comp.name,
+      hidden: comp.hide
     });
   }
 
-  onLayoutChange(layout: Layout, layouts: LayoutDesc<Layout[]>) {
-    this.setState({ layouts: layouts });
-    this.props.onLayoutChange(layout, layouts);
+  onReset() {
+    this.context.store.dispatch<ActionLayoutChange>({
+      type: Actions.LAYOUT_CHANGE,
+      layouts: { lg: [], md: [], sm: [], xs: [], xxs: [] }
+    });
   }
-
-  onHide(comp: Component) {
-    console.log('hide', comp);
-    comp.hide = true;
-    this.forceUpdate();
-  }
-
-  onReset() {}
 
   onResetClick(event: MouseEvent) {
     event.preventDefault();
@@ -54,19 +40,55 @@ export class Dashboard extends React.Component<DashboardProps, DashboardState> {
     }
   }
 
+  onLayoutChange(layout: Layout, layouts: LayoutDesc<Layout[]>) {
+    this.context.store.dispatch({
+      type: Actions.LAYOUT_CHANGE,
+      layout: layout,
+      layouts: layouts
+    });
+  }
+
   render() {
-    const components = this.props.components.filter(comp => {
+    const state = this.context.store.getState();
+    let currentX = 0, currentY = 0;
+
+    const components = Object.keys(state.components).map(name => {
+      return state.components[name];
+    }).filter(comp => {
       return !comp.hide;
     });
 
     return (
       <div>
+        <button className="small" onClick={this.onResetClick.bind(this)}>Reset layout</button>
         <GridLayout
-            layouts={this.state.layouts}
+            layouts={state.layouts}
+            cols={state.cols}
             onLayoutChange={this.onLayoutChange.bind(this)}
             draggableCancel=".tile .content">
           {components.map((comp, i) => {
-            const layout: Layout = {i: i+'', x: i%6, y: 0, w: 1, h: 1};
+            if ((currentX + (comp.layout.w || 1)) > 6) {
+              currentY += 1;
+              currentX = 0;
+            }
+
+            const layout: Layout = {
+              i: comp.name,
+              x: currentX,
+              y: currentY,
+              w: comp.layout.w || 1,
+              h: comp.layout.h || 1,
+              minW: comp.layout.minW || 1,
+              minH: comp.layout.minH || 1,
+              maxW: comp.layout.maxW,
+              maxH: comp.layout.maxH
+            };
+
+            currentX += comp.layout.w;
+            if (currentX >= 6) {
+              currentY += 1;
+              currentX = 0;
+            }
             return (
               <div key={i} _grid={layout}>
                 <Tile {...comp} onHide={this.onHide.bind(this, comp)} />
