@@ -8,6 +8,7 @@
   height: 50px;
   line-height: 50px;
   background-color: var(--bg);
+  border-bottom: 1px solid var(--border);
 }
 
 .app-bar .menu {
@@ -28,6 +29,7 @@
   width: 120px;
   text-align: center;
   border-left: 1px solid var(--border);
+  height: 50px;
 }
 
 .app-bar .logo {
@@ -53,8 +55,7 @@
 
 .app-bar .menu a,
 .app-bar .menu a:hover,
-.app-bar .menu a:focus,
-.app-bar .menu a:active {
+.app-bar .menu a:focus {
   display: block;
   color: var(--color);
   text-decoration: none;

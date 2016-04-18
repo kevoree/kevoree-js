@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
-import { ReactComponent } from '../../util/ReactComponent';
+import { AbstractComponent } from '../../components/AbstractComponent';
 
 export interface RouteParams {}
 interface UIProps extends RouteComponentProps<RouteParams, {}> {}
-export class Home extends ReactComponent<UIProps, {}> {
+export class Home extends AbstractComponent<UIProps, {}> {
   render(): JSX.Element {
     return (
       <div className="container"></div>

@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
-import { ReactComponent } from '../../util/ReactComponent';
+import { AbstractComponent } from '../../components/AbstractComponent';
 import { LayoutDesc, Context } from '../../api';
 import { Actions, ActionColsChange } from '../../actions';
 
 export interface RouteParams {}
 interface UIProps extends RouteComponentProps<RouteParams, {}> {}
-export class Settings extends ReactComponent<UIProps, {}> {
+export class Settings extends AbstractComponent<UIProps, {}> {
 
   onColsChange(key: string, event: Event) {
     const val: number = parseInt((event.target as any).value, 10);

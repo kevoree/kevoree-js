@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Context, State } from '../api';
 
-export class ReactComponent<P, S> extends React.Component<P, S> {
+export abstract class AbstractComponent<P, S> extends React.Component<P, S> {
   static contextTypes: React.ValidationMap<any> = {
     store: React.PropTypes.object.isRequired
   }
@@ -15,9 +15,7 @@ export class ReactComponent<P, S> extends React.Component<P, S> {
   }
 
   componentDidMount() {
-    this.unsubscribe = this.context.store.subscribe(() => {
-      this.forceUpdate();
-    });
+    this.unsubscribe = this.context.store.subscribe(() => this.forceUpdate());
   }
 
   componentWillUnmount() {

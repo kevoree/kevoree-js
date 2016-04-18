@@ -1,35 +1,37 @@
 import './app-bar.css';
 
 import * as React from 'react';
-import { NavLink } from '../NavLink';
 import * as classnames from 'classnames';
+import { AbstractComponent } from '../AbstractComponent';
+import { NavLink } from '../NavLink';
+import { Actions, ActionToggleAppBar } from '../../actions';
 
 export interface UIProps {}
-interface UIState {
-  open: boolean;
-}
 
-export class AppBar extends React.Component<UIProps, UIState> {
+export class AppBar extends AbstractComponent<UIProps, {}> {
 
-  constructor(props: UIProps) {
-    super(props);
-    this.state = { open: false };
+  toggle() {
+    const newState = !this.context.store.getState().appbar.open;
+    this.context.store.dispatch<ActionToggleAppBar>({
+      type: Actions.TOGGLE_APP_BAR, open: newState
+    });
   }
 
   toggleMenuClick(event: MouseEvent) {
     event.preventDefault();
-    this.setState({ open: !this.state.open });
+    this.toggle();
   }
 
   toggleMenuKey(event: KeyboardEvent) {
     if (event.keyCode === 13) {
       event.preventDefault();
-      this.setState({ open: !this.state.open });
+      this.toggle();
     }
   }
 
   render(): JSX.Element {
-    const btnLabel = this.state.open ? 'Close' : 'Open';
+    const appBar = this.context.store.getState().appbar;
+    const btnLabel = appBar.open ? 'Close' : 'Open';
 
     return (
       <div className="app-bar">
@@ -43,7 +45,7 @@ export class AppBar extends React.Component<UIProps, UIState> {
               &nbsp;{btnLabel}
             </button>
         </div>
-        <div className={classnames('menu', { open: this.state.open })}>
+        <div className={classnames('menu', { open: appBar.open })}>
           <div>
             <NavLink to="/" onlyActiveOnIndex={true}>
               <span className="fa fa-home"></span>
@@ -57,7 +59,7 @@ export class AppBar extends React.Component<UIProps, UIState> {
             </NavLink>
           </div>
         </div>
-        <div className={classnames('menu', 'menu-right', { open: this.state.open })}>
+        <div className={classnames('menu', 'menu-right', { open: appBar.open })}>
           <div>
             <NavLink to="/settings">
               <span className="fa fa-cog"></span>

@@ -2,7 +2,7 @@ import './tile.css';
 
 import * as React from 'react';
 import * as classnames from 'classnames';
-import { ReactComponent } from '../../util/ReactComponent';
+import { AbstractComponent } from '../../components/AbstractComponent';
 import { Component } from '../../api';
 import {
   Actions, ActionToggleComponent, ActionToggleComponentMenu
@@ -12,7 +12,7 @@ export interface UIProps {
   name: string;
 }
 
-export class Tile extends ReactComponent<UIProps, {}> {
+export class Tile extends AbstractComponent<UIProps, {}> {
   private globalClickHandler: EventListener;
   private globalKeyPressHandler: EventListener;
 
