@@ -14,7 +14,7 @@ export class GridLayout extends React.Component<any, any> {
       <ResponsiveGridLayout
           {...this.props} breakpoints={brkpts} cols={this.props.cols}
           useCSSTransforms={true} rowHeight={250} autoSize={true}
-          verticalCompact={true}>
+          verticalCompact={true} margin={[5, 5]}>
       </ResponsiveGridLayout>
     );
   }

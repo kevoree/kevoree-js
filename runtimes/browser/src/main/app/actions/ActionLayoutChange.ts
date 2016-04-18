@@ -3,7 +3,6 @@ import { Action } from './Action';
 import { Actions } from './Actions';
 import { LayoutDesc } from '../api';
 
-export class ActionLayoutChange implements Action {
-  type = Actions.LAYOUT_CHANGE;
+export interface ActionLayoutChange extends Action {
   layouts: LayoutDesc<Layout[]>;
 }

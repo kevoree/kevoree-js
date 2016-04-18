@@ -1,8 +1,7 @@
 import { Action } from './Action';
 import { Actions } from './Actions';
 
-export class ActionColsChange implements Action {
-  type = Actions.COLS_CHANGE;
+export interface ActionColsChange extends Action {
   key: string;
   value: number;
 }

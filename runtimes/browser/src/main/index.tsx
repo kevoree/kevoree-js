@@ -11,6 +11,7 @@ import * as ReactDOM from 'react-dom';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import { Layout } from 'react-grid-layout';
 import { Provider } from 'react-redux';
+import { syncHistoryWithStore } from 'react-router-redux';
 import { App } from './app/App';
 import { Home } from './app/routes/home/Home';
 import { Dashboard } from './app/routes/dashboard/Dashboard';

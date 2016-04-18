@@ -2,42 +2,43 @@ import './tile.css';
 
 import * as React from 'react';
 import * as classnames from 'classnames';
+import { ReactComponent } from '../../util/ReactComponent';
 import { Component } from '../../api';
+import {
+  Actions, ActionToggleComponent, ActionToggleComponentMenu
+} from '../../actions';
 
-export interface UIProps extends Component {
-  onHide: () => void;
-}
-interface UIState {
-  menuOpen: boolean
+export interface UIProps {
+  name: string;
 }
 
-export class Tile extends React.Component<UIProps, UIState> {
+export class Tile extends ReactComponent<UIProps, {}> {
   private globalClickHandler: EventListener;
   private globalKeyPressHandler: EventListener;
 
-  constructor(props: UIProps) {
-    super(props);
-    this.state = { menuOpen: false };
-    this.globalClickHandler = (event) => {
-      event.preventDefault();
-      this.toggleMenu();
-    };
-    this.globalKeyPressHandler = (event: KeyboardEvent) => {
-      if (event.keyCode === 27) {
-        event.preventDefault();
-        this.toggleMenu();
-      }
-    };
-  }
-
   toggleMenu() {
-    const newState = !this.state.menuOpen;
-    this.setState({ menuOpen: newState });
+    const comp = this.context.store.getState().components[this.props.name];
+    const newState = !comp.menuOpen;
+    this.context.store.dispatch<ActionToggleComponentMenu>({
+      type: Actions.TOGGLE_COMP_MENU,
+      name: comp.name,
+      open: newState
+    });
+
     if (newState) {
       this.onOpen();
     } else {
       this.onClose();
     }
+  }
+
+  toggleComponent() {
+    const comp = this.context.store.getState().components[this.props.name];
+    this.context.store.dispatch<ActionToggleComponent>({
+      type: Actions.TOGGLE_COMP,
+      name: comp.name,
+      hidden: !comp.hide
+    });
   }
 
   menuBtnClickHandler(event: MouseEvent) {
@@ -52,7 +53,20 @@ export class Tile extends React.Component<UIProps, UIState> {
     }
   }
 
+  onHideClick(event: MouseEvent) {
+    event.preventDefault();
+    this.toggleComponent();
+  }
+
+  onHideKey(event: KeyboardEvent) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      this.toggleComponent();
+    }
+  }
+
   componentWillUnmount() {
+    super.componentWillUnmount();
     document.removeEventListener('click', this.globalClickHandler);
     document.removeEventListener('keyup', this.globalKeyPressHandler);
   }
@@ -68,21 +82,24 @@ export class Tile extends React.Component<UIProps, UIState> {
   }
 
   render(): JSX.Element {
+    const comp = this.context.store.getState().components[this.props.name];
+
     return (
       <div className="tile">
         <div className="header row">
           <div className="description">
             <span className="name">{this.props.name}</span>
             <span>&nbsp;-&nbsp;</span>
-            <span className="type">{this.props.type}</span>
+            <span className="type">{comp.type}</span>
           </div>
           <div
-              className={classnames('menu', { open: this.state.menuOpen })}
+              className={classnames('menu', { open: comp.menuOpen })}
               onClick={this.menuBtnClickHandler.bind(this)}
               onKeyDown={this.menuBtnKeyHandler.bind(this)}>
             <span className="fa fa-caret-square-o-down"></span>
-            <ul className="items" style={{ display: (this.state.menuOpen ? 'block' : 'none') }}>
-              <li onClick={this.props.onHide.bind(this)}>Hide</li>
+            <ul className="items" style={{ display: (comp.menuOpen ? 'block' : 'none') }}>
+              <li onClick={this.onHideClick.bind(this)}
+                  onKeyDown={this.onHideKey.bind(this)}>Hide</li>
             </ul>
           </div>
         </div>
