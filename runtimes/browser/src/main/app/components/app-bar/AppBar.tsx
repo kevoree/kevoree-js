@@ -1,14 +1,12 @@
-import './app-bar.css';
-
 import * as React from 'react';
-import * as classnames from 'classnames';
+import * as Radium from 'radium';
 import { AbstractComponent } from '../AbstractComponent';
 import { NavLink } from '../NavLink';
 import { Actions, ActionToggleAppBar } from '../../actions';
+import styles from './styles';
 
-export interface UIProps {}
-
-export class AppBar extends AbstractComponent<UIProps, {}> {
+@Radium
+export class AppBar extends AbstractComponent<void, void> {
 
   toggle() {
     const newState = !this.context.store.getState().appbar.open;
@@ -20,12 +18,14 @@ export class AppBar extends AbstractComponent<UIProps, {}> {
   toggleMenuClick(event: MouseEvent) {
     event.preventDefault();
     this.toggle();
+    (event.target as any).blur();
   }
 
   toggleMenuKey(event: KeyboardEvent) {
     if (event.keyCode === 13) {
       event.preventDefault();
       this.toggle();
+      (event.target as any).blur();
     }
   }
 
@@ -34,34 +34,52 @@ export class AppBar extends AbstractComponent<UIProps, {}> {
     const btnLabel = appBar.open ? 'Close' : 'Open';
 
     return (
-      <div className="app-bar">
-        <div className="logo">
-          <img src="images/logo.png" />
+      <div style={styles.bar}>
+        <div style={styles.logo}>
+          <img src="images/logo.png" style={styles.logoImg} />
         </div>
-        <div className="menu-responsive">
-            <button className="medium" onClick={this.toggleMenuClick.bind(this)}
+        <div style={styles.menuResponsive}>
+            <button
+                style={styles.menuResponsiveBtn}
+                onClick={this.toggleMenuClick.bind(this)}
                 onKeyDown={this.toggleMenuKey.bind(this)}>
               <span className="fa fa-bars"></span>
               &nbsp;{btnLabel}
             </button>
         </div>
-        <div className={classnames('menu', { open: appBar.open })}>
-          <div>
-            <NavLink to="/" onlyActiveOnIndex={true}>
+        <div style={[styles.menu, appBar.open && styles.open]}>
+          <div style={styles.menuChild}>
+            <NavLink
+                to="/"
+                onlyActiveOnIndex={true}
+                style={styles.link}
+                activeStyle={styles.activeLink}>
               <span className="fa fa-home"></span>
               &nbsp;Home
             </NavLink>
           </div>
-          <div>
-            <NavLink to="/dashboard">
+          <div style={styles.menuChild}>
+            <NavLink
+                to="/dashboard"
+                onlyActiveOnIndex={true}
+                style={styles.link}
+                activeStyle={styles.activeLink}>
               <span className="fa fa-th"></span>
               &nbsp;Dashboard
             </NavLink>
           </div>
         </div>
-        <div className={classnames('menu', 'menu-right', { open: appBar.open })}>
-          <div>
-            <NavLink to="/settings">
+        <div style={[
+                styles.menu,
+                styles.rightMenu,
+                appBar.open && styles.open
+              ]}>
+          <div style={[styles.menuChild, styles.rightMenuChild]}>
+            <NavLink
+                to="/settings"
+                onlyActiveOnIndex={true}
+                style={styles.link}
+                activeStyle={styles.activeLink}>
               <span className="fa fa-cog"></span>
               &nbsp;Settings
             </NavLink>

@@ -1,69 +1,76 @@
-import './dashboard.css';
-
 import * as React from 'react';
 import { AbstractComponent } from '../../components/AbstractComponent';
 import { Link, RouteComponentProps } from 'react-router';
 import { Layout } from 'react-grid-layout';
 import { GridLayout } from '../../components/GridLayout';
 import { Tile } from '../../components/tile/Tile';
-import { Component, LayoutDesc } from '../../api';
-import { Actions, ActionLayoutChange } from '../../actions';
+import { Component, LayoutDesc, Context } from '../../api';
 import { ActionBar, Action } from '../../components/action-bar/ActionBar';
+import LayoutUtils from '../../util/LayoutUtils';
+import {
+  Actions, ActionLayoutChange, ActionArrangeLayout, ActionMinifyLayout,
+  ActionBreakpointChange
+} from '../../actions';
 
-interface UIProps extends RouteComponentProps<{}, {}> {}
+interface UIProps extends RouteComponentProps<void, void> {}
 
-export class Dashboard extends AbstractComponent<UIProps, {}> {
+export class Dashboard extends AbstractComponent<UIProps, void> {
 
-  onReset() {
-    this.context.store.dispatch<ActionLayoutChange>({
-      type: Actions.LAYOUT_CHANGE,
-      layouts: { lg: [], md: [], sm: [], xs: [], xxs: [] }
+  constructor(props: UIProps, context: Context) {
+    super(props, context);
+  }
+
+  onArrange() {
+    this.context.store.dispatch<ActionArrangeLayout>({
+      type: Actions.ARRANGE_LAYOUT,
+      breakpoint: this.context.store.getState().currentBrkpt,
+      cols: this.context.store.getState().cols
     });
   }
 
-  onResetClick(event: MouseEvent) {
-    event.preventDefault();
-    this.onReset();
-  }
-
-  onResetKey(event: KeyboardEvent) {
-    if (event.keyCode === 13) {
-      event.preventDefault();
-      this.onReset();
-    }
-  }
-
-  onSave() {
-    console.log('my grid', this.context.store.getState().layouts);
-    this.context.store.dispatch<ActionLayoutChange>({
-      type: Actions.LAYOUT_CHANGE,
-      layouts: { lg: [], md: [], sm: [], xs: [], xxs: [] }
+  onMinify() {
+    this.context.store.dispatch<ActionMinifyLayout>({
+      type: Actions.MINIFY_LAYOUT,
+      breakpoint: this.context.store.getState().currentBrkpt,
+      cols: this.context.store.getState().cols
     });
-  }
-
-  onSaveClick(event: MouseEvent) {
-    event.preventDefault();
-    this.onSave();
-  }
-
-  onSaveKey(event: KeyboardEvent) {
-    if (event.keyCode === 13) {
-      event.preventDefault();
-      this.onSave();
-    }
   }
 
   onLayoutChange(layout: Layout, layouts: LayoutDesc<Layout[]>) {
-    this.context.store.dispatch<ActionLayoutChange>({
-      type: Actions.LAYOUT_CHANGE,
-      layouts: layouts
+    const equals = LayoutUtils.equals(this.getLayouts(), layouts);
+    if (!equals) {
+      const currentBrkpt = this.context.store.getState().currentBrkpt;
+      this.context.store.dispatch<ActionLayoutChange>({
+        type: Actions.LAYOUT_CHANGE,
+        breakpoint: currentBrkpt,
+        layouts: layouts[currentBrkpt]
+      });
+    }
+  }
+
+  onBreakpointChange(brkpt: string, nbCols: number) {
+    this.context.store.dispatch<ActionBreakpointChange>({
+      type: Actions.BRKPT_CHANGE,
+      value: brkpt
+    })
+  }
+
+  private getLayouts(): LayoutDesc<Layout[]> {
+    const state = this.context.store.getState();
+    const layouts: LayoutDesc<Layout[]> = {
+      lg: [], md: [], sm: [], xs: [], xxs: []
+    };
+    Object.keys(state.components).forEach(name => {
+      Object.keys(state.cols).forEach(key => {
+        layouts[key].push(state.components[name].layouts[key]);
+      });
     });
+    return layouts;
   }
 
   render() {
     const state = this.context.store.getState();
-    let currentX = 0, currentY = 0;
-
+    const layouts = this.getLayouts();
     const components = Object.keys(state.components).map(name => {
       return state.components[name];
     }).filter(comp => {
@@ -74,42 +81,23 @@ export class Dashboard extends AbstractComponent<UIProps, {}> {
       <div>
         <ActionBar>
           <Action
-              handler={this.onReset.bind(this)}
-              helper="Restore default layout">ResetLayout</Action>
+              handler={this.onArrange.bind(this)}
+              helper="Tries to arrange components">Arrange</Action>
           <Action
-              handler={this.onSave.bind(this)}
-              helper="Save current layout as default">SaveLayout</Action>
+              handler={this.onMinify.bind(this)}
+              helper="Sets each component's width and height to their minimum">Minify</Action>
         </ActionBar>
         <GridLayout
-            layouts={state.layouts}
+            ref="grid"
+            breakpoints={state.breakpoints}
             cols={state.cols}
+            layouts={layouts}
             onLayoutChange={this.onLayoutChange.bind(this)}
+            onBreakpointChange={this.onBreakpointChange.bind(this)}
             draggableCancel=".tile .content">
-          {components.map((comp, i) => {
-            if ((currentX + (comp.layout.w || 1)) > 6) {
-              currentY += 1;
-              currentX = 0;
-            }
-
-            const layout: Layout = {
-              i: comp.name,
-              x: currentX,
-              y: currentY,
-              w: comp.layout.w || 1,
-              h: comp.layout.h || 1,
-              minW: comp.layout.minW || 1,
-              minH: comp.layout.minH || 1,
-              maxW: comp.layout.maxW,
-              maxH: comp.layout.maxH
-            };
-
-            currentX += comp.layout.w;
-            if (currentX >= 6) {
-              currentY += 1;
-              currentX = 0;
-            }
+          {components.map(comp => {
             return (
-              <div key={comp.name} _grid={layout}>
+              <div key={comp.name}>
                 <Tile {...comp} />
               </div>
             );

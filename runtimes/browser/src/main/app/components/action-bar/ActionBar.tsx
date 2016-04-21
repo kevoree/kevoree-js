@@ -1,25 +1,25 @@
-import './action-bar.css';
-
 import * as React from 'react';
-import * as classNames from 'classnames';
+import * as Radium from 'radium';
+import styles from './styles';
 
-interface IAction {
+interface ActionProps {
   handler: Function;
   helper?: string;
 }
 
 interface ActionBarProps {
-  children?: IAction[]
+  children?: ActionProps[];
 }
 interface ActionBarState {
   showHelper: boolean;
   helper: string;
 }
 
+@Radium
 export class ActionBar extends React.Component<ActionBarProps, ActionBarState> {
   constructor(props: ActionBarProps) {
     super(props);
-    this.state = { showHelper: false, helper: '' };
+    this.state = { showHelper: false || false, helper: '' };
   }
 
   onShowHelper(action: React.ReactElement<ActionProps>) {
@@ -32,19 +32,21 @@ export class ActionBar extends React.Component<ActionBarProps, ActionBarState> {
 
   render(): JSX.Element {
     return (
-      <div className="action-bar">
+      <div style={styles.bar}>
         {this.props.children.map((child, i) => {
           return (
-            <div key={i} className="action">
-              <ActionWrapper
-                  onShowHelper={this.onShowHelper.bind(this)}
-                  onHideHelper={this.onHideHelper.bind(this)}>
+            <div key={i} style={styles.action}>
+              <div
+                  onMouseEnter={this.onShowHelper.bind(this, child)}
+                  onFocus={this.onShowHelper.bind(this, child)}
+                  onMouseLeave={this.onHideHelper.bind(this, child)}
+                  onBlur={this.onHideHelper.bind(this, child)}>
                 {child}
-              </ActionWrapper>
+              </div>
             </div>
           )
         })}
-        <div className={classNames('helper', { hide: !this.state.showHelper })}>
+        <div style={[styles.helper, !this.state.showHelper && styles.hide ]}>
           {this.state.helper}
         </div>
       </div>
@@ -52,25 +54,7 @@ export class ActionBar extends React.Component<ActionBarProps, ActionBarState> {
   }
 }
 
-interface ActionWrapperProps {
-  onShowHelper: (action: React.ReactElement<ActionProps>) => void;
-  onHideHelper: (action: React.ReactElement<ActionProps>) => void;
-}
-class ActionWrapper extends React.Component<ActionWrapperProps, void> {
-  render(): JSX.Element {
-    return (
-      <div
-          onMouseEnter={this.props.onShowHelper.bind(this, this.props.children)}
-          onMouseLeave={this.props.onHideHelper.bind(this, this.props.children)}
-          onFocus={this.props.onShowHelper.bind(this, this.props.children)}
-          onBlur={this.props.onHideHelper.bind(this, this.props.children)}>
-        {this.props.children}
-      </div>
-    );
-  }
-}
-
-interface ActionProps extends IAction {}
+@Radium
 export class Action extends React.Component<ActionProps, void> {
 
   onClick(event: MouseEvent) {
@@ -89,7 +73,7 @@ export class Action extends React.Component<ActionProps, void> {
 
   render(): JSX.Element {
     return (
-      <button
+      <button style={styles.button}
           onClick={this.onClick.bind(this)}
           onKeyDown={this.onKeyDown.bind(this)}>
         {this.props.children}

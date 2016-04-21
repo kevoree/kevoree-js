@@ -7,8 +7,7 @@ export abstract class AbstractComponent<P, S> extends React.Component<P, S> {
   }
 
   context: Context;
-
-  private unsubscribe: Function;
+  protected unsubscribe: Function;
 
   constructor(props: P, context: Context) {
     super(props, context);

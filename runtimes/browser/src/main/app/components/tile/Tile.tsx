@@ -1,18 +1,18 @@
-import './tile.css';
-
 import * as React from 'react';
-import * as classnames from 'classnames';
+import * as Radium from 'radium';
 import { AbstractComponent } from '../../components/AbstractComponent';
 import { Component } from '../../api';
 import {
   Actions, ActionToggleComponent, ActionToggleComponentMenu
 } from '../../actions';
+import styles from './styles';
 
 export interface UIProps {
   name: string;
 }
 
-export class Tile extends AbstractComponent<UIProps, {}> {
+@Radium
+export class Tile extends AbstractComponent<UIProps, void> {
   private globalClickHandler: EventListener;
   private globalKeyPressHandler: EventListener;
 
@@ -85,25 +85,26 @@ export class Tile extends AbstractComponent<UIProps, {}> {
     const comp = this.context.store.getState().components[this.props.name];
 
     return (
-      <div className="tile">
-        <div className="header row">
-          <div className="description">
-            <span className="name">{this.props.name}</span>
+      <div style={styles.tile}>
+        <div className="row" style={styles.header}>
+          <div style={styles.description}>
+            <span style={styles.name}>{this.props.name}</span>
             <span>&nbsp;-&nbsp;</span>
-            <span className="type">{comp.type}</span>
+            <span>{comp.type}</span>
           </div>
           <div
-              className={classnames('menu', { open: comp.menuOpen })}
+              style={[styles.menu, comp.menuOpen && styles.open]}
               onClick={this.menuBtnClickHandler.bind(this)}
               onKeyDown={this.menuBtnKeyHandler.bind(this)}>
             <span className="fa fa-caret-square-o-down"></span>
-            <ul className="items" style={{ display: (comp.menuOpen ? 'block' : 'none') }}>
-              <li onClick={this.onHideClick.bind(this)}
+            <ul style={[styles.items, !comp.menuOpen && styles.hide]}>
+              <li style={styles.item}
+                  onClick={this.onHideClick.bind(this)}
                   onKeyDown={this.onHideKey.bind(this)}>Hide</li>
             </ul>
           </div>
         </div>
-        <div className="content"></div>
+        <div style={styles.content}></div>
       </div>
     );
   }
