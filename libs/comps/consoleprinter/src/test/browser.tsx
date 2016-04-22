@@ -1,5 +1,6 @@
 import { Services, Injector, Context, LoggerFactory } from 'kevoree-api';
 import { UIProcessor } from 'kevoree-ui';
+import { ReflectUtils } from 'kevoree-reflect-utils';
 import { ModelServiceImpl } from './ModelServiceImpl';
 import { ContextServiceImpl } from './ContextServiceImpl';
 import { OutputPortImpl } from './OutputPortImpl';
@@ -8,11 +9,12 @@ import * as ReactDOM from 'react-dom';
 import ConsolePrinter = require('../main/ConsolePrinter');
 
 interface UIState {
-  instance?: ConsolePrinter,
+  ui?: React.ReactElement<any>;
   started?: boolean;
+  instance?: ConsolePrinter;
 }
 
-class Browser extends React.Component<{}, UIState> {
+class Browser extends React.Component<void, UIState> {
 
   private injector: Injector;
   private count: number = 0;
@@ -20,7 +22,7 @@ class Browser extends React.Component<{}, UIState> {
 
   constructor() {
     super();
-    this.state = { instance: null, started: false };
+    this.state = { instance: null, ui: null, started: false };
 
     // create an injector
     this.injector = new Injector();
@@ -42,25 +44,32 @@ class Browser extends React.Component<{}, UIState> {
       // inject services in instance
       this.injector.inject(instance, ctx);
 
-      this.setState({ instance: instance });
+      this.setState({
+        instance: instance,
+        ui: UIProcessor.render(instance),
+        started: false
+      });
     }
   }
 
   startInstance() {
     if (this.state.instance !== null && !this.state.started) {
-      this.setState({ started: true });
+      ReflectUtils.callOnStart(this.state.instance, err => {
+        if (!err) {
+          this.setState({ started: true });
+        }
+      });
     }
   }
 
   stopInstance() {
     if (this.state.instance !== null && this.state.started) {
-      this.setState({ started: false });
+      ReflectUtils.callOnStop(this.state.instance, err => {
+        if (!err) {
+          this.setState({ started: false });
+        }
+      });
     }
-  }
-
-  removeInstance() {
-    this.stopInstance();
-    this.setState({ instance: null });
   }
 
   sendMsg() {
@@ -75,15 +84,21 @@ class Browser extends React.Component<{}, UIState> {
     }
   }
 
+
+  removeInstance() {
+    this.stopInstance();
+    this.setState({ instance: null, ui: null });
+  }
+
   render(): JSX.Element {
-    var instance = <em>Not loaded yet</em>;
-    if (this.state.instance) {
-      instance = UIProcessor.render(this.state.instance);
+    var instance = <em>Not instance yet</em>;
+    if (this.state.ui) {
+      instance = this.state.ui;
     }
 
     return (
       <div>
-        <h2>Browser test: ConsolePrinter</h2>
+        <h2>Browser test: Ticker</h2>
         <div>
           <button onClick={this.createInstance.bind(this)} disabled={this.state.instance !== null}>Create instance</button>
           <button onClick={this.startInstance.bind(this)} disabled={this.state.instance === null || this.state.started === true}>Start instance</button>
@@ -103,4 +118,4 @@ class Browser extends React.Component<{}, UIState> {
 ReactDOM.render(
   <Browser />,
   document.getElementById('container')
-)
+);

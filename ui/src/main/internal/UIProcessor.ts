@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import * as React from 'react';
 import { MetaData } from '../annotations/MetaData';
+import { Observer } from '../api/Observer';
 
 export class UIProcessor {
   static render(instance: any): React.ReactElement<any> {
@@ -10,7 +11,7 @@ export class UIProcessor {
     const props = {};
     propsMetas.forEach(fieldName => {
       const propName = Reflect.getMetadata(MetaData.PROP, instance, fieldName);
-      props[propName] = instance[fieldName];
+      props[propName] = instance[fieldName] = new Observer<any>();
     });
 
     return React.createElement(Type, props);

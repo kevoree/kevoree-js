@@ -4,11 +4,12 @@ const borderColor = '#999';
 const activeTextColor = '#fff';
 const activeBgColor = '#222';
 const smallDevice = '430px';
+const height = 50;
 
 export default {
   bar: {
-    height: 50,
-    lineHeight: '50px',
+    height: height,
+    lineHeight: `${height}px`,
     backgroundColor: bgColor,
     borderBottom: `1px solid ${borderColor}`,
 
@@ -27,7 +28,7 @@ export default {
   menuChild: {
     float: 'left',
     width: 120,
-    height: 50,
+    height: height,
     textAlign: 'center',
     borderRight: `1px solid ${borderColor}`,
     borderLeft: 'none',

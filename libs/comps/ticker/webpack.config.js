@@ -19,12 +19,13 @@ module.exports = {
   externals: {
     'react': 'React',
     'react-dom': 'ReactDOM',
-    'kevoree-model': 'KevoreeModel'
+    // 'kevoree-model': 'KevoreeModel'
   },
   output: {
     libraryTarget: 'var',
     library: 'Ticker',
     path: path.join(__dirname, 'built', 'browser'),
-    filename: '[name]-bundle.js'
+    filename: '[name]-bundle.js',
+    publicPath: ''
   }
 };

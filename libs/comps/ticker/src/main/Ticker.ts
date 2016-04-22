@@ -2,30 +2,30 @@ import {
     Component, Output, Param, Inject, Services, ModelService, ContextService,
     OutputPort, Min, OnStart, OnStop, OnUpdate
 } from 'kevoree-api';
-import { Observer, ComponentUI, UIProp } from 'kevoree-ui';
+import { ComponentUI, UIProp, Observer } from 'kevoree-ui';
 import { Logger } from 'kevoree-logger';
 import { TickerUI } from './TickerUI';
 
 @Component({
   version: 1,
-  description: 'By default, the ticker will send the current timestamp in '
-+ ' milliseconds once every 3000ms. This can be tweaked using the '
-+ ' <strong>delay</strong> parameter. You can also change the output to a '
-+ ' random number between [0, 100[ by setting the attribute <strong>random'
-+ '</strong> to <strong>true</strong>'
+  description: `By default, the ticker will send the current timestamp in \
+milliseconds once every 3000ms. This can be tweaked using the \
+<strong>delay</strong> parameter. You can also change the output to a random \
+number between [0, 100[ by setting the attribute <strong>random</strong> to \
+<strong>true</strong>`
 })
 @ComponentUI(TickerUI)
 class Ticker {
   private timerId: any;
 
   @UIProp()
-  private onTick: Observer<string> = new Observer<string>();
+  private onTick: Observer<string>;
 
-  @Param
   @Min(0)
+  @Param()
   private delay: number = 3000;
 
-  @Param
+  @Param()
   private random: boolean = false;
 
   @Output({ type: 'string' })
@@ -50,8 +50,8 @@ class Ticker {
       } else {
         val = new Date().getTime()+'';
       }
-      this.onTick.dispatch(val);
       this.tick.send(val);
+      this.onTick.dispatch(val);
     }, this.delay);
   }
 

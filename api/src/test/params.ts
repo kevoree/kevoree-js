@@ -9,12 +9,12 @@ describe('Params annotations', () => {
     describe('MetaData.PARAMS', () => {
         @Component({ version: 1 })
         class MyComp {
-            @Param private foo: string;
-            @Param private bar: string;
-            @Param private baz: string[];
-            @Param private beep: number;
-            @Param private bloop: number;
-            @Param private blap: boolean;
+            @Param() private foo: string;
+            @Param() private bar: string;
+            @Param() private baz: string[];
+            @Param() private beep: number;
+            @Param() private bloop: number;
+            @Param() private blap: boolean;
         }
 
         it('contains every param name', () => {
@@ -26,7 +26,7 @@ describe('Params annotations', () => {
     describe('String param', () => {
         @Component({ version: 1 })
         class MyComp {
-            @Param
+            @Param()
             private foo: string;
 
             @Required
@@ -45,15 +45,15 @@ describe('Params annotations', () => {
         });
     });
 
-    describe('Int @Param', () => {
+    describe('Int @Param()', () => {
         @Component({ version: 1 })
         class MyComp {
 
-            @Param
+            @Param()
             @Required
             private bar: number = 42;
 
-            @Param
+            @Param()
             @Min(12)
             @Max(52)
             private range: number;
@@ -78,10 +78,10 @@ describe('Params annotations', () => {
 
         @Component({ version: 1 })
         class MyComp {
-            @Param
+            @Param()
             private foo: Foo;
 
-            @Param
+            @Param()
             @Required
             private bar: Bar = Bar.TWO;
         }
@@ -95,10 +95,10 @@ describe('Params annotations', () => {
     describe('@ListParam', () => {
         @Component({ version: 1 })
         class MyComp {
-            @Param
+            @Param()
             private attrs: string[];
 
-            @Param
+            @Param()
             private bars: number[] = [1, 2, 3];
         }
     });

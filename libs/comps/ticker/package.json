@@ -5,6 +5,16 @@
   "kevoree": {
     "namespace": "kevoree"
   },
+  "scripts": {
+    "build": "tsc",
+    "gen-model": "kevoree-gen-model",
+    "test": "mocha built/test",
+    "browser": "webpack-dev-server --inline --content-base ."
+  },
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "react": "^15.0.1",
+    "webpack": "^1.13.0",
+    "webpack-dev-server": "^1.14.1"
+  }
 }

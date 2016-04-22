@@ -24,6 +24,7 @@
         "src/main/annotations/MetaData.ts",
         "src/main/annotations/UIProp.ts",
         "src/main/api/Observer.ts",
+        "src/main/api/UIComponent.ts",
         "src/main/internal/UIProcessor.ts",
         "src/main/kevoree-ui.ts",
         "src/test/test.ts",

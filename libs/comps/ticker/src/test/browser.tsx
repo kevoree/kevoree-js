@@ -1,4 +1,5 @@
-import { Services, Injector, Context, LoggerFactory } from 'kevoree-api';
+import { Services, Injector, Context, LoggerFactory, Callback } from 'kevoree-api';
+import { ReflectUtils } from 'kevoree-reflect-utils';
 import { UIProcessor } from 'kevoree-ui';
 import { ModelServiceImpl } from './ModelServiceImpl';
 import { ContextServiceImpl } from './ContextServiceImpl';
@@ -9,6 +10,7 @@ import Ticker = require('../main/Ticker');
 
 interface UIState {
   instance?: Ticker;
+  ui?: React.ReactElement<any>;
   started?: boolean;
 }
 
@@ -20,7 +22,7 @@ class Browser extends React.Component<{}, UIState> {
 
   constructor() {
     super();
-    this.state = { instance: null, started: false };
+    this.state = { instance: null, ui: null, started: false };
 
     // create an injector
     this.injector = new Injector();
@@ -39,7 +41,7 @@ class Browser extends React.Component<{}, UIState> {
       ctx.register(Services.Logger, LoggerFactory.createLogger('comp'));
       ctx.register(Services.Context, new ContextServiceImpl(`comp${this.count++}`, 'node0'));
 
-      // create an instance
+      // add some value for the @Params & @Output
       instance['delay'] = 500;
       instance['random'] = false;
       instance['tick'] = new OutputPortImpl();
@@ -47,33 +49,43 @@ class Browser extends React.Component<{}, UIState> {
       // inject services in instance
       this.injector.inject(instance, ctx);
 
-      this.setState({ instance: instance, started: false });
+      this.setState({
+        instance: instance,
+        ui: UIProcessor.render(instance),
+        started: false
+      });
     }
   }
 
   startInstance() {
     if (this.state.instance !== null && !this.state.started) {
-      this.state.instance.start();
-      this.setState({ started: true });
+      ReflectUtils.callOnStart(this.state.instance, err => {
+        if (!err) {
+          this.setState({ started: true });
+        }
+      });
     }
   }
 
   stopInstance() {
     if (this.state.instance !== null && this.state.started) {
-      this.state.instance.stop();
-      this.setState({ started: false });
+      ReflectUtils.callOnStop(this.state.instance, err => {
+        if (!err) {
+          this.setState({ started: false });
+        }
+      });
     }
   }
 
   removeInstance() {
     this.stopInstance();
-    this.setState({ instance: null });
+    this.setState({ instance: null, ui: null });
   }
 
   render(): JSX.Element {
-    var instance = <em>Not loaded yet</em>;
-    if (this.state.instance) {
-      instance = UIProcessor.render(this.state.instance);
+    var instance = <em>Not instance yet</em>;
+    if (this.state.ui) {
+      instance = this.state.ui;
     }
 
     return (

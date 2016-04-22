@@ -7,8 +7,9 @@
   },
   "scripts": {
     "build": "tsc",
-    "gen-model": "node node_modules/.bin/kevoree-gen-model",
-    "test": "mocha built/test"
+    "gen-model": "kevoree-gen-model",
+    "test": "mocha built/test",
+    "browser": "webpack-dev-server --inline --content-base ."
   },
   "dependencies": {
     "react": "^0.14.8"
