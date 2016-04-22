@@ -1,0 +1,22 @@
+{
+  "name": "kevoree-reflect-utils",
+  "version": "1.0.0",
+  "description": "Helpers for Kevoree's annotations on instances",
+  "main": "built/main/reflect-utils.js",
+  "typings": "built/main/reflect-utils.d.ts",
+  "scripts": {
+    "test": "mocha built/test"
+  },
+  "keywords": [
+    "kevoree",
+    "reflect",
+    "annotation",
+    "helper",
+    "util"
+  ],
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "license": "LGPL-3.0",
+  "dependencies": {
+    "reflect-metadata": "^0.1.3"
+  }
+}
