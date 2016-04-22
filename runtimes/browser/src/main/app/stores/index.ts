@@ -29,7 +29,7 @@ export const store: Store<State, Action> = createStore<State, Action>(
 
 function genRandomComponents(): Components {
   const compList = new Components();
-  const max = 5, min = 3;
+  const max = 25, min = 20;
   const count = Random.gen(min, max);
 
   let x = 0, y = 0;

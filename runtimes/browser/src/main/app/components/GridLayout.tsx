@@ -9,7 +9,7 @@ export class GridLayout extends React.Component<any, any> {
       <ResponsiveGridLayout
           {...this.props} cols={this.props.cols} useCSSTransforms={true}
           rowHeight={250} autoSize={true} verticalCompact={false}
-          margin={[5, 5]}>
+          margin={[5, 5]} className="layout">
       </ResponsiveGridLayout>
     );
   }

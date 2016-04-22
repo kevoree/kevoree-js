@@ -98,7 +98,7 @@ class Browser extends React.Component<void, UIState> {
 
     return (
       <div>
-        <h2>Browser test: Ticker</h2>
+        <h2>Browser test: ConsolePrinter</h2>
         <div>
           <button onClick={this.createInstance.bind(this)} disabled={this.state.instance !== null}>Create instance</button>
           <button onClick={this.startInstance.bind(this)} disabled={this.state.instance === null || this.state.started === true}>Start instance</button>

@@ -68,6 +68,22 @@ export class Dashboard extends AbstractComponent<UIProps, void> {
     return layouts;
   }
 
+  private displayOverlays() {
+    const overlays = document.getElementsByClassName('overlay');
+    for (let i=0; i < overlays.length; i++) {
+      const elem = overlays[i] as HTMLElement;
+      elem.style.display = 'block';
+    }
+  }
+
+  private hideOverlays() {
+    const overlays = document.getElementsByClassName('overlay');
+    for (let i=0; i < overlays.length; i++) {
+      const elem = overlays[i] as HTMLElement;
+      elem.style.display = 'none';
+    }
+  }
+
   render() {
     const state = this.context.store.getState();
     const layouts = this.getLayouts();
@@ -94,10 +110,14 @@ export class Dashboard extends AbstractComponent<UIProps, void> {
             layouts={layouts}
             onLayoutChange={this.onLayoutChange.bind(this)}
             onBreakpointChange={this.onBreakpointChange.bind(this)}
+            onDragStart={this.displayOverlays.bind(this)}
+            onResizeStart={this.displayOverlays.bind(this)}
+            onDragStop={this.hideOverlays.bind(this)}
+            onResizeStop={this.hideOverlays.bind(this)}
             draggableCancel=".tile .content">
           {components.map(comp => {
             return (
-              <div key={comp.name}>
+              <div key={comp.name} className={['yoloSwagLord-'+comp.name]}>
                 <Tile {...comp} />
               </div>
             );

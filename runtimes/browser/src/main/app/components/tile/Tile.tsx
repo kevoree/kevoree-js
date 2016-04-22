@@ -65,6 +65,28 @@ export class Tile extends AbstractComponent<UIProps, void> {
     }
   }
 
+  componentDidMount() {
+    super.componentDidMount();
+    const comp = this.context.store.getState().components[this.props.name];
+    const iframe = this.refs['iframe'] as HTMLIFrameElement;
+    console.log('gonna create iframe '+comp.name);
+    iframe.contentWindow.document.open();
+    iframe.contentWindow.document.write(`
+      <html>
+        <head>
+          <title>${comp.name} - ${comp.type}</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react.js"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react-dom.js"></script>
+        </head>
+        <body>
+          <h2>${comp.name} - ${comp.type}</h2>
+          <script>console.log('Hello world: ${comp.name}')</script>
+        </body>
+      </html>`);
+    iframe.contentWindow.document.close();
+  }
+
   componentWillUnmount() {
     super.componentWillUnmount();
     document.removeEventListener('click', this.globalClickHandler);
@@ -86,7 +108,7 @@ export class Tile extends AbstractComponent<UIProps, void> {
 
     return (
       <div style={styles.tile}>
-        <div className="row" style={styles.header}>
+        <div className='row' style={styles.header}>
           <div style={styles.description}>
             <span style={styles.name}>{this.props.name}</span>
             <span>&nbsp;-&nbsp;</span>
@@ -96,7 +118,7 @@ export class Tile extends AbstractComponent<UIProps, void> {
               style={[styles.menu, comp.menuOpen && styles.open]}
               onClick={this.menuBtnClickHandler.bind(this)}
               onKeyDown={this.menuBtnKeyHandler.bind(this)}>
-            <span className="fa fa-caret-square-o-down"></span>
+            <span className='fa fa-caret-square-o-down'></span>
             <ul style={[styles.items, !comp.menuOpen && styles.hide]}>
               <li style={styles.item}
                   onClick={this.onHideClick.bind(this)}
@@ -104,7 +126,15 @@ export class Tile extends AbstractComponent<UIProps, void> {
             </ul>
           </div>
         </div>
-        <div style={styles.content}></div>
+        <div className="overlay"></div>
+        <div style={styles.content}>
+          <iframe
+              ref='iframe'
+              name={comp.name}
+              width='100%'
+              height='100%'
+              frameBorder='0'></iframe>
+        </div>
       </div>
     );
   }
