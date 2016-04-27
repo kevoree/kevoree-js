@@ -1,17 +1,14 @@
 import { Layout } from 'react-grid-layout';
 import { Component, Components, LayoutDesc } from '../api';
 import {
-  Action, Actions, ActionToggleComponent, ActionToggleComponentMenu,
-  ActionArrangeLayout, ActionMinifyLayout, ActionLayoutChange
+  Action, Actions, ActionToggleComponent, ActionArrangeLayout,
+  ActionMinifyLayout, ActionLayoutChange
 } from '../actions';
 
 export default (components: Components = {}, action: Action) => {
   switch (action.type) {
     case Actions.TOGGLE_COMP:
       return toggleComponent(components, action as ActionToggleComponent);
-
-    case Actions.TOGGLE_COMP_MENU:
-      return toggleComponentMenu(components, action as ActionToggleComponentMenu);
 
     case Actions.ARRANGE_LAYOUT:
       return arrangeLayout(components, action as ActionArrangeLayout);
@@ -31,14 +28,6 @@ function toggleComponent(components: Components, action: ActionToggleComponent):
   return Object.assign({}, components, {
     [action.name]: Object.assign({}, components[action.name], {
       hide: action.hidden
-    })
-  });
-}
-
-function toggleComponentMenu(components: Components, action: ActionToggleComponentMenu): Components {
-  return Object.assign({}, components, {
-    [action.name]: Object.assign({}, components[action.name], {
-      menuOpen: action.open
     })
   });
 }

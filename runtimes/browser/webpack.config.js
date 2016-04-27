@@ -40,5 +40,9 @@ module.exports = {
     new ExtractTextPlugin('[name].css')
   ],
 
-  devtool: 'source-map'
+  devtool: 'source-map',
+
+  externals: {
+    'jailed': 'jailed'
+  }
 }

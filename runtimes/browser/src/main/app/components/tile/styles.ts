@@ -15,7 +15,7 @@ export default {
   },
   description: {
     position: 'absolute',
-    left: 5,
+    left: 0,
     right: 25,
     overflow: 'hidden',
     textOverflow: 'ellipsis'
@@ -39,7 +39,8 @@ export default {
     display: 'none'
   },
   name: {
-    fontWeight: 800
+    fontWeight: 800,
+    paddingLeft: 5
   },
   items: {
     position: 'absolute',

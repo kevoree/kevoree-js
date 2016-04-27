@@ -17,9 +17,9 @@ module.exports = {
     test: './src/test/browser.tsx'
   },
   externals: {
-    'react': 'React',
-    'react-dom': 'ReactDOM',
-    // 'kevoree-model': 'KevoreeModel'
+    'react': 'var React',
+    'react-dom': 'var ReactDOM',
+    'kevoree-model': 'var KevoreeModel'
   },
   output: {
     libraryTarget: 'var',

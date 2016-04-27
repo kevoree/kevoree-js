@@ -11,7 +11,11 @@ export class UIProcessor {
     const props = {};
     propsMetas.forEach(fieldName => {
       const propName = Reflect.getMetadata(MetaData.PROP, instance, fieldName);
-      props[propName] = instance[fieldName] = new Observer<any>();
+      if (instance[fieldName] === null || typeof instance[fieldName] === 'undefined') {
+        props[propName] = instance[fieldName] = new Observer<any>();
+      } else {
+        props[propName] = instance[fieldName];
+      }
     });
 
     return React.createElement(Type, props);

@@ -114,7 +114,7 @@ export class Dashboard extends AbstractComponent<UIProps, void> {
             onResizeStart={this.displayOverlays.bind(this)}
             onDragStop={this.hideOverlays.bind(this)}
             onResizeStop={this.hideOverlays.bind(this)}
-            draggableCancel=".tile .content">
+            draggableHandle=".drag-anchor, .drag-anchor *">
           {components.map(comp => {
             return (
               <div key={comp.name} className={['yoloSwagLord-'+comp.name]}>

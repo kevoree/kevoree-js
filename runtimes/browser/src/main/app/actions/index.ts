@@ -8,4 +8,3 @@ export * from './ActionArrangeLayout';
 export * from './ActionToggleComponent';
 export * from './ActionBreakpointChange';
 export * from './ActionBreakpointsChange';
-export * from './ActionToggleComponentMenu';

@@ -29,7 +29,7 @@ export const store: Store<State, Action> = createStore<State, Action>(
 
 function genRandomComponents(): Components {
   const compList = new Components();
-  const max = 25, min = 20;
+  const max = 20, min = 5;
   const count = Random.gen(min, max);
 
   let x = 0, y = 0;
@@ -49,7 +49,6 @@ function genRandomComponents(): Components {
       name: name,
       type: ['AsyncWebSocketConsolePrinter', 'ConsolePrinter', 'Chart'][Random.gen(0, 2)],
       hide: false,
-      menuOpen: false,
       layouts: {
         lg:  { i: name, x: x, y: y, w: w, h: h, minW: minW, minH: minH },
         md:  { i: name, x: x, y: y, w: w, h: h, minW: minW, minH: minH },

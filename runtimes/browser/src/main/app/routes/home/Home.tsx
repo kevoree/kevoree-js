@@ -7,7 +7,9 @@ interface UIProps extends RouteComponentProps<RouteParams, {}> {}
 export class Home extends AbstractComponent<UIProps, {}> {
   render(): JSX.Element {
     return (
-      <div className="container"></div>
+      <div className="container">
+        <h4>TODO</h4>
+      </div>
     );
   }
 }
