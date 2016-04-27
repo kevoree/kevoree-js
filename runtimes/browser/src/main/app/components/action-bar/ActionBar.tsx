@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as Radium from 'radium';
+import { Button } from '../Button';
 import styles from './styles';
 
 interface ActionProps {
@@ -57,27 +58,13 @@ export class ActionBar extends React.Component<ActionBarProps, ActionBarState> {
 @Radium
 export class Action extends React.Component<ActionProps, void> {
 
-  onClick(event: MouseEvent) {
-    event.preventDefault();
-    this.props.handler();
-    (event.target as any).blur();
-  }
-
-  onKeyDown(event: KeyboardEvent) {
-    if (event.keyCode === 13) {
-      event.preventDefault();
-      this.props.handler();
-      (event.target as any).blur();
-    }
-  }
-
   render(): JSX.Element {
     return (
-      <button style={styles.button}
-          onClick={this.onClick.bind(this)}
-          onKeyDown={this.onKeyDown.bind(this)}>
+      <Button
+          style={styles.button}
+          handler={this.props.handler}>
         {this.props.children}
-      </button>
+      </Button>
     );
   }
 }
