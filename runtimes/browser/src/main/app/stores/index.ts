@@ -12,7 +12,8 @@ const initialState: State = {
   cols:           COLS,
   breakpoints:    BREAKPOINTS,
   components:     genRandomComponents(),
-  currentBrkpt:   'lg'
+  currentBrkpt:   'lg',
+  devMode:        false
 };
 
 export const store: Store<State, Action> = createStore<State, Action>(
@@ -21,7 +22,13 @@ export const store: Store<State, Action> = createStore<State, Action>(
     appbar: appbar,
     components: components,
     breakpoints: breakpoints,
-    currentBrkpt: breakpoint
+    currentBrkpt: breakpoint,
+    devMode: (state: boolean = false, action: Action) => {
+      if (action.type === 'TOGGLE_DEVMODE') {
+        return !state;
+      }
+      return state;
+    }
   }),
   initialState,
   (window as any).devToolsExtension ? (window as any).devToolsExtension() : (f: any) => f

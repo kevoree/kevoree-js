@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as Radium from 'radium';
 import { AbstractComponent } from '../AbstractComponent';
+import { Button } from '../Button';
 import { NavLink } from '../NavLink';
 import { Actions, ActionToggleAppBar } from '../../actions';
 import styles from './styles';
@@ -39,13 +40,13 @@ export class AppBar extends AbstractComponent<void, void> {
           <img src="images/logo.png" style={styles.logoImg} />
         </div>
         <div style={styles.menuResponsive}>
-            <button
+            <Button
+                displaySize='medium'
                 style={styles.menuResponsiveBtn}
-                onClick={this.toggleMenuClick.bind(this)}
-                onKeyDown={this.toggleMenuKey.bind(this)}>
+                handler={this.toggle.bind(this)}>
               <span className="fa fa-bars"></span>
               &nbsp;{btnLabel}
-            </button>
+            </Button>
         </div>
         <div style={[styles.menu, appBar.open && styles.open]}>
           <div style={styles.menuChild}>

@@ -65,7 +65,10 @@ export default {
     color: textColor,
     height: 30,
     lineHeight: '30px',
-    padding: '0 12px'
+    padding: '0 12px',
+
+    ':focus':  { color: textColor, backgroundColor: '#222' },
+    ':active': { color: textColor, backgroundColor: '#222' }
   },
   logo: {
     float: 'left',

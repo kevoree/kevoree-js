@@ -9,4 +9,5 @@ export interface State {
   components: Components;
   breakpoints: LayoutDesc<number>;
   currentBrkpt: string;
+  devMode: boolean;
 }
