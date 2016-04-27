@@ -19,7 +19,7 @@ class Ticker {
   private timerId: any;
 
   @UIProp()
-  private onTick: Observer<string>;
+  private onTick = new Observer<string>();
 
   @Min(0)
   @Param()

@@ -11,7 +11,7 @@ import { ConsolePrinterUI } from './ConsolePrinterUI';
 class ConsolePrinter {
 
   @UIProp()
-  private onMessage: Observer<string>;
+  private onMessage = new Observer<string>();
 
   @Inject(Services.Context)
   private context: ContextService;

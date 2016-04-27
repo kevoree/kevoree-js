@@ -6,34 +6,44 @@ import { OutputPortImpl } from './OutputPortImpl';
 import { LoggerImpl, LoggerFactory } from 'kevoree-logger';
 import Ticker = require('../main/Ticker');
 
-// create an injector
-var di = new Injector();
-var modelService = new ModelServiceImpl();
-di.register(Services.Model, modelService);
+describe('Ticker', function () {
+  this.timeout(6000);
 
-// contextual injector for the node
-var ctx = new Context();
-ctx.register(Services.Logger, LoggerFactory.createLogger('comp'));
-ctx.register(Services.Context, new ContextServiceImpl('comp', 'node0'));
+  it('', done => {
+    // create an injector
+    var di = new Injector();
+    var modelService = new ModelServiceImpl();
+    di.register(Services.Model, modelService);
 
-// create an instance
-var comp = new Ticker();
-comp['delay'] = 500;
-comp['random'] = true;
-comp['tick'] = new OutputPortImpl();
+    const nodeName = 'node0';
+    const compName = 'comp';
 
-// inject services in instance
-di.inject(comp, ctx);
+    // contextual injector for the node
+    var ctx = new Context();
+    ctx.register(Services.Logger, LoggerFactory.createLogger('comp'));
+    ctx.register(Services.Context, new ContextServiceImpl(compName, nodeName));
 
-// start instance
-comp.start();
+    // create an instance
+    var comp = new Ticker();
+    comp['delay'] = 500;
+    comp['random'] = true;
+    comp['tick'] = new OutputPortImpl(`${nodeName}:${compName}->tick`);
 
-setTimeout(() => {
-    comp['delay'] = 1000;
-    comp['random'] = false;
-    comp.update();
-}, 2000);
+    // inject services in instance
+    di.inject(comp, ctx);
 
-setTimeout(() => {
-    comp.stop();
-}, 5000);
+    // start instance
+    comp.start();
+
+    setTimeout(() => {
+        comp['delay'] = 1000;
+        comp['random'] = false;
+        comp.update();
+    }, 2000);
+
+    setTimeout(() => {
+        comp.stop();
+        done();
+    }, 5000);
+  });
+});

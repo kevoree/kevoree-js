@@ -14,7 +14,7 @@ module.exports = {
   },
   entry: {
     main: ['./src/main/ConsolePrinter.ts'],
-    test: './src/test/browser.tsx'
+    test: './src/browser/browser.tsx'
   },
   externals: {
     'react': 'var React',

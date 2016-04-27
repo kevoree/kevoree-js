@@ -23,8 +23,8 @@
         "src/test/ModelServiceImpl.ts",
         "src/test/OutputPortImpl.ts",
         "src/test/test.ts",
+        "src/browser/browser.tsx",
         "src/main/TickerUI.tsx",
-        "src/test/browser.tsx",
         "typings/main.d.ts"
     ],
     "atom": {

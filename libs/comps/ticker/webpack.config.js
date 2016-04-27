@@ -14,12 +14,12 @@ module.exports = {
   },
   entry: {
     main: ['./src/main/Ticker.ts'],
-    test: './src/test/browser.tsx'
+    test: './src/browser/browser.tsx'
   },
   externals: {
-    'react': 'React',
-    'react-dom': 'ReactDOM',
-    // 'kevoree-model': 'KevoreeModel'
+    'react': 'var React',
+    'react-dom': 'var ReactDOM',
+    'kevoree-model': 'var KevoreeModel'
   },
   output: {
     libraryTarget: 'var',

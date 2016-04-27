@@ -1,9 +1,10 @@
-import { OutputPort, Callback } from 'kevoree-api';
+import { OutputPort } from 'kevoree-api';
 
 export class OutputPortImpl implements OutputPort {
 
-    send(msg: string, cb?: Callback): void {
-        // TODO
-        console.log(`>>> ${msg}`);
-    }
+  constructor(public path: string) {}
+
+  send(msg: string): void {
+    console.log(`>>> ${msg}`);
+  }
 }

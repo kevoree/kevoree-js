@@ -1,20 +1,19 @@
-import { Services, Injector, Context, LoggerFactory, Callback } from 'kevoree-api';
-import { ReflectUtils } from 'kevoree-reflect-utils';
+import { Services, Injector, Context, LoggerFactory } from 'kevoree-api';
 import { UIProcessor } from 'kevoree-ui';
-import { ModelServiceImpl } from './ModelServiceImpl';
-import { ContextServiceImpl } from './ContextServiceImpl';
-import { OutputPortImpl } from './OutputPortImpl';
+import { ReflectUtils } from 'kevoree-reflect-utils';
+import { ModelServiceImpl } from '../test/ModelServiceImpl';
+import { ContextServiceImpl } from '../test/ContextServiceImpl';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import Ticker = require('../main/Ticker');
+import ConsolePrinter = require('../main/ConsolePrinter');
 
 interface UIState {
-  instance?: Ticker;
   ui?: React.ReactElement<any>;
   started?: boolean;
+  instance?: ConsolePrinter;
 }
 
-class Browser extends React.Component<{}, UIState> {
+class Browser extends React.Component<void, UIState> {
 
   private injector: Injector;
   private count: number = 0;
@@ -34,17 +33,12 @@ class Browser extends React.Component<{}, UIState> {
   createInstance() {
     if (this.state.instance === null) {
       // create an instance
-      const instance = new Ticker();
+      const instance = new ConsolePrinter();
 
       // contextual injector for the instance
       var ctx = new Context();
       ctx.register(Services.Logger, LoggerFactory.createLogger('comp'));
       ctx.register(Services.Context, new ContextServiceImpl(`comp${this.count++}`, 'node0'));
-
-      // add some value for the @Params & @Output
-      instance['delay'] = 500;
-      instance['random'] = false;
-      instance['tick'] = new OutputPortImpl();
 
       // inject services in instance
       this.injector.inject(instance, ctx);
@@ -77,6 +71,19 @@ class Browser extends React.Component<{}, UIState> {
     }
   }
 
+  sendMsg() {
+    if (this.state.instance && this.state.started) {
+      this.state.instance.input(`${parseInt(`${Math.random()*100}`, 10)}`);
+    }
+  }
+
+  sendIncMsg() {
+    if (this.state.instance && this.state.started) {
+      this.state.instance.input(`${this.msgCount++}`);
+    }
+  }
+
+
   removeInstance() {
     this.stopInstance();
     this.setState({ instance: null, ui: null });
@@ -90,12 +97,14 @@ class Browser extends React.Component<{}, UIState> {
 
     return (
       <div>
-        <h2>Browser test: Ticker</h2>
+        <h2>Browser test: ConsolePrinter</h2>
         <div>
           <button onClick={this.createInstance.bind(this)} disabled={this.state.instance !== null}>Create instance</button>
           <button onClick={this.startInstance.bind(this)} disabled={this.state.instance === null || this.state.started === true}>Start instance</button>
           <button onClick={this.stopInstance.bind(this)} disabled={this.state.instance === null || this.state.started === false}>Stop instance</button>
           <button onClick={this.removeInstance.bind(this)} disabled={this.state.instance === null}>Remove instance</button>
+          <button onClick={this.sendMsg.bind(this)} disabled={this.state.instance === null || this.state.started === false}>Send random msg</button>
+          <button onClick={this.sendIncMsg.bind(this)} disabled={this.state.instance === null || this.state.started === false}>Send inc msg</button>
         </div>
         <div style={{ marginTop: '10px', padding: '3px', border: '1px solid', width: '200px' }}>
           {instance}
@@ -108,4 +117,4 @@ class Browser extends React.Component<{}, UIState> {
 ReactDOM.render(
   <Browser />,
   document.getElementById('container')
-)
+);
