@@ -2,7 +2,7 @@ import {
     Component, Output, Param, Inject, Services, ModelService, ContextService,
     OutputPort, Min, OnStart, OnStop, OnUpdate
 } from 'kevoree-api';
-import { ComponentUI, UIProp, Observer } from 'kevoree-ui';
+import { UIComponent, UIProp, Observer } from 'kevoree-ui';
 import { Logger } from 'kevoree-logger';
 import { TickerUI } from './TickerUI';
 
@@ -14,7 +14,7 @@ milliseconds once every 3000ms. This can be tweaked using the \
 number between [0, 100[ by setting the attribute <strong>random</strong> to \
 <strong>true</strong>`
 })
-@ComponentUI(TickerUI)
+@UIComponent(TickerUI)
 class Ticker {
   private timerId: any;
 

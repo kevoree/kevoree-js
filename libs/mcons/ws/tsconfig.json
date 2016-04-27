@@ -23,7 +23,7 @@
         "src/**/*.ts"
     ],
     "files": [
-        "src/main/WSCDN.ts",
+        "src/main/WebSocketMCon.ts",
         "src/test/test.ts"
     ],
     "compileOnSave": true,

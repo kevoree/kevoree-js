@@ -20,8 +20,8 @@
         "typings/main.d.ts"
     ],
     "files": [
-        "src/main/annotations/ComponentUI.ts",
         "src/main/annotations/MetaData.ts",
+        "src/main/annotations/UIComponent.ts",
         "src/main/annotations/UIProp.ts",
         "src/main/api/Observer.ts",
         "src/main/internal/UIProcessor.ts",

@@ -1,8 +1,8 @@
 {
-  "name": "kevoree-cdn-ws",
+  "name": "kevoree-mcon-ws",
   "version": "1.0.0",
-  "description": "Kevoree CDN that connects to the storage using WebSockets",
-  "main": "built/main/WSCDN",
+  "description": "Kevoree model connector that handles connection using WebSockets",
+  "main": "built/main/WebSocketMCon",
   "scripts": {
     "test": "node node_modules/.bin/mocha built/test"
   },

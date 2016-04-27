@@ -7,7 +7,7 @@ export * from './TypeEnum';
 
 export * from './annotations/types/Channel';
 export * from './annotations/types/Component';
-export * from './annotations/types/Cdn';
+export * from './annotations/types/ModelConnector';
 export * from './annotations/types/Node';
 
 export * from './annotations/ports/Input';

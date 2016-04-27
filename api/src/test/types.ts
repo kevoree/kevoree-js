@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import {
-    Node, Cdn, Channel, Component, MetaData, TypeEnum, TypeMeta
+    Node, ModelConnector, Channel, Component, MetaData, TypeEnum, TypeMeta
 } from '../main/kevoree-api';
 import * as Assert from 'assert';
 
@@ -13,8 +13,8 @@ describe('TypeDefinition annotations', () => {
     @Node({ description: DESC, version: 1 })
     class MyNode {}
 
-    @Cdn({ description: DESC, version: 1 })
-    class MyGroup {}
+    @ModelConnector({ description: DESC, version: 1 })
+    class MyModelConnector {}
 
     @Channel({ description: DESC, version: 1 })
     class MyChannel {}
@@ -39,14 +39,14 @@ describe('TypeDefinition annotations', () => {
         Assert.equal(name, (<any> MyNode).name);
     });
 
-    it('@Group', () => {
-        var type = Reflect.getMetadata(MetaData.TYPE, MyGroup.prototype);
-        var meta: TypeMeta = Reflect.getMetadata(MetaData.META, MyGroup.prototype);
-        var name = Reflect.getMetadata(MetaData.NAME, MyGroup.prototype);
+    it('@ModelConnector', () => {
+        var type = Reflect.getMetadata(MetaData.TYPE, MyModelConnector.prototype);
+        var meta: TypeMeta = Reflect.getMetadata(MetaData.META, MyModelConnector.prototype);
+        var name = Reflect.getMetadata(MetaData.NAME, MyModelConnector.prototype);
 
-        Assert.equal(type, TypeEnum.CDN);
+        Assert.equal(type, TypeEnum.MCON);
         Assert.equal(meta.description, DESC);
-        Assert.equal(name, (<any> MyGroup).name);
+        Assert.equal(name, (<any> MyModelConnector).name);
     });
 
     it('@Channel', () => {

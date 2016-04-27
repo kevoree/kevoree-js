@@ -40,8 +40,7 @@ export class ActionBar extends React.Component<ActionBarProps, ActionBarState> {
               <div
                   onMouseEnter={this.onShowHelper.bind(this, child)}
                   onFocus={this.onShowHelper.bind(this, child)}
-                  onMouseLeave={this.onHideHelper.bind(this, child)}
-                  onBlur={this.onHideHelper.bind(this, child)}>
+                  onMouseLeave={this.onHideHelper.bind(this, child)}>
                 {child}
               </div>
             </div>
