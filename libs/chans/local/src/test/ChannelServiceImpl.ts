@@ -1,37 +1,28 @@
-import { ChannelService, DispatchCallback } from 'kevoree-api';
+import { ChannelService, InputPort, OutputPort } from 'kevoree-api';
 
 export class ChannelServiceImpl implements ChannelService {
-	dispatched: string[];
-	inputs: string[];
-	outputs: string[];
 
-	constructor() {
-		this.dispatched = [];
-		this.inputs = [
-			'nodes[node0]/components[printer0]/inputs[input]',
-			'nodes[node0]/components[printer1]/inputs[input]'
-		];
-		this.outputs = [
-			'nodes[node1]/components[ticker0]/inputs[input]',
-			'nodes[node1]/components[ticker1]/inputs[input]'
-		];
-	}
+  constructor(private node: string, private inputs: InputPort[], private outputs: OutputPort[]) {}
 
-	getInputs(): string[] {
+	getInputs(): InputPort[] {
 		return this.inputs;
 	}
 
-	getOutputs(): string[] {
+  getLocalInputs(): InputPort[] {
+    return this.inputs.filter(path => !path.remote);
+  }
+
+  getRemoteInputs(): InputPort[] {
+    return this.inputs.filter(input => input.remote);
+  }
+
+	getOutputs(): OutputPort[] {
 		return this.outputs;
 	}
 
-	localDispatch(msg: string, callback?: DispatchCallback) {
+	dispatch(msg: string) {
 		this.inputs.forEach(input => {
-			console.log(`should dispatch message to ${input}`);
-			if (callback) {
-				callback(null, input, 'no answer');
-			}
-		});
-		this.dispatched.push(msg);
+      input.dispatch(msg);
+    });
 	}
 }

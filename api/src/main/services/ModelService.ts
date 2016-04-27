@@ -1,4 +1,4 @@
-import { Callback } from '../Callback';
+import { Callback } from '../api/Callback';
 
 export interface ModelService {
     getCurrentModel(): any;

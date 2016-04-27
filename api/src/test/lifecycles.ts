@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import {
     Component, Channel, OnStart, OnStop, OnUpdate, OnMessage, MetaData,
-    LifecycleMeta, Callback, DispatchCallback
+    LifecycleMeta, Callback
 } from '../main/kevoree-api';
 import * as Assert from 'assert';
 
@@ -18,8 +18,8 @@ describe('Lifecycle annotations', () => {
         @OnUpdate()
         update() {}
 
-        @OnMessage
-        onMessage(msg: string, cb: DispatchCallback) {}
+        @OnMessage()
+        onMessage(msg: string) {}
     }
 
     it('@OnStart()', () => {
@@ -40,7 +40,7 @@ describe('Lifecycle annotations', () => {
         Assert.equal(meta.async, false);
     });
 
-    it('@OnMessage', () => {
+    it('@OnMessage()', () => {
         var meta: LifecycleMeta = Reflect.getMetadata(MetaData.ON_MESSAGE, MyComp.prototype);
         Assert.equal(meta.name, 'onMessage');
     });
@@ -144,6 +144,16 @@ describe('Lifecycle annotations', () => {
           }
       });
     });
+
+    it('@OnMessage() with wrong signature must throw error', () => {
+      Assert.throws(() => {
+          @Channel({ version: 1 })
+          class WrongChan {
+              @OnMessage()
+              onMessage(msg: number) {}
+          }
+      });
+    });
   });
 
   describe('error on duplicate', () => {
@@ -189,11 +199,11 @@ describe('Lifecycle annotations', () => {
     it('@OnMessage() duplicate must throw error', () => {
       Assert.throws(() => {
           @Channel({ version: 1 })
-          class WrongComp {
-              @OnMessage
+          class WrongChan {
+              @OnMessage()
               onMessage() {}
 
-              @OnMessage
+              @OnMessage()
               onMessage1() {}
           }
       });

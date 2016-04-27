@@ -1,8 +1,5 @@
-import { Callback } from '../Callback';
-
 export interface OutputPort {
+    path: string;
 
     send(msg: string): void;
-
-    send(msg: string, cb: Callback): void;
 }

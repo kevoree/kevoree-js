@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { MetaData } from '../../MetaData';
+import { MetaData } from '../../api/MetaData';
 import { NumberTypeMeta } from '../metas/NumberTypeMeta';
 
 export function NumberType(type: NumberTypeMeta) {

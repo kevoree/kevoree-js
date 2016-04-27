@@ -10,7 +10,7 @@ class JavascriptNode {
     @Inject(Services.Logger)
     private logger: LoggerService;
 
-    @Param
+    @Param()
     private logLevel: LogLevel = LogLevel.INFO;
 
     @OnStart()

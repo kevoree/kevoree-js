@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { TypeMeta } from '../metas/TypeMeta';
-import { MetaData } from '../../MetaData';
+import { MetaData } from '../../api/MetaData';
 import { typeDefinition } from '../../util/typeDefinition';
-import { TypeEnum } from '../../TypeEnum';
+import { TypeEnum } from '../../api/TypeEnum';
 
 export function Channel(meta: TypeMeta) {
   return function (target: any) {

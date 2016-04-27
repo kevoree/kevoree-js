@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { MetaData } from '../../MetaData';
+import { MetaData } from '../../api/MetaData';
 import { LengthMeta } from '../metas/LengthMeta';
 
 export function Length(value: number) {

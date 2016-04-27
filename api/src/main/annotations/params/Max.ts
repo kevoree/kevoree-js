@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { MetaData } from '../../MetaData';
+import { MetaData } from '../../api/MetaData';
 import { MinMaxMeta } from '../metas/MinMaxMeta';
 
 export function Max(value: number, exclusive?: boolean) {
