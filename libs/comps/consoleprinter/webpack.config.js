@@ -12,20 +12,21 @@ module.exports = {
       exclude: /node_modules/
     }]
   },
-  entry: {
-    main: ['./src/main/ConsolePrinter.ts'],
-    test: './src/browser/browser.tsx'
-  },
+  entry: path.join(__dirname, 'src', 'main', 'ConsolePrinter.ts'),
   externals: {
     'react': 'var React',
-    'react-dom': 'var ReactDOM',
     'kevoree-model': 'var KevoreeModel'
   },
   output: {
     libraryTarget: 'var',
     library: 'ConsolePrinter',
-    path: path.join(__dirname, 'built', 'browser'),
-    filename: '[name]-bundle.js',
+    path: path.join('built', 'browser'),
+    filename: 'bundle.js',
     publicPath: ''
+  },
+  ts: {
+    compilerOptions: {
+      declaration: false
+    }
   }
 };

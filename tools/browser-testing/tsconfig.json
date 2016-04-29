@@ -1,0 +1,49 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "isolatedModules": false,
+        "jsx": "react",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "declaration": false,
+        "noImplicitAny": false,
+        "noImplicitUseStrict": false,
+        "removeComments": true,
+        "noLib": false,
+        "preserveConstEnums": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "outDir": "built"
+    },
+    "exclude": [
+        "node_modules",
+        "typings/browser",
+        "typings/browser.d.ts"
+    ],
+    "filesGlob": [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "typings/main.d.ts"
+    ],
+    "compileOnSave": true,
+    "buildOnSave": false,
+    "atom": {
+        "rewriteTsconfig": true
+    },
+    "files": [
+        "src/main/components/actions/styles.ts",
+        "src/main/components/index/styles.ts",
+        "src/main/components/lifecycle-actions/styles.ts",
+        "src/main/services/ContextServiceImpl.ts",
+        "src/main/services/ModelServiceImpl.ts",
+        "src/main/utils/URLUtils.ts",
+        "src/test/main.ts",
+        "src/main/components/actions/Actions.tsx",
+        "src/main/components/index/Index.tsx",
+        "src/main/components/lifecycle-actions/LifecycleActions.tsx",
+        "src/main/components/loader/Loader.tsx",
+        "src/main/index.tsx",
+        "typings/main.d.ts"
+    ]
+}

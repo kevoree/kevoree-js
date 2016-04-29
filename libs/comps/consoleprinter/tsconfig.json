@@ -23,7 +23,6 @@
     "src/test/ContextServiceImpl.ts",
     "src/test/ModelServiceImpl.ts",
     "src/test/test.ts",
-    "src/browser/browser.tsx",
     "src/main/ConsolePrinterUI.tsx",
     "typings/main.d.ts"
   ],

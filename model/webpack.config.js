@@ -1,30 +1,29 @@
 var path = require('path');
+var webpack = require('webpack');
 var pkg = require('./package.json');
 
 module.exports = {
   resolve: {
-    extensions: ['', '.js', '.ts', '.tsx']
+    extensions: ['', '.ts']
   },
-  devtool: 'source-map',
   module: {
     loaders: [{
-      test: /\.tsx?$/,
+      test: /\.ts$/,
       loader: 'ts-loader',
       exclude: /node_modules/
     }]
   },
-  entry: path.join(__dirname, 'src', 'main', 'Ticker.ts'),
-  externals: {
-    'react': 'var React',
-    'kevoree-model': 'var KevoreeModel'
-  },
+  entry: path.join(__dirname, 'src', 'main', 'model.ts'),
   output: {
-    libraryTarget: 'var',
-    library: 'Ticker',
     path: path.join('built', 'browser'),
     filename: pkg.name+'.js',
-    publicPath: ''
+    publicPath: 'built/browser',
+    library: 'KevoreeModel',
+    libraryTarget: 'var'
   },
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin()
+  ],
   ts: {
     compilerOptions: {
       declaration: false

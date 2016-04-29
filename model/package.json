@@ -5,12 +5,16 @@
   "main": "built/main/model.js",
   "typings": "built/main/model.d.ts",
   "scripts": {
-    "test": "node node_modules/.bin/mocha built/test"
+    "test": "mocha built/test",
+    "browser": "webpack"
   },
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "license": "LGPL-3.0",
   "dependencies": {},
   "devDependencies": {
-    "mocha": "^2.4.5"
+    "mocha": "^2.4.5",
+    "ts-loader": "^0.8.2",
+    "typescript": "^1.8.10",
+    "webpack": "^1.13.0"
   }
 }

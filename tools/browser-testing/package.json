@@ -1,0 +1,38 @@
+{
+  "name": "kevoree-browser-testing",
+  "version": "1.0.0",
+  "description": "Application that allows to test Kevoree components easily while in development",
+  "main": "built/browser/browser-testing.js",
+  "dependencies": {
+    "es6-promise": "^3.1.2",
+    "font-awesome": "^4.6.1",
+    "kevoree-api": "^1.0.0",
+    "kevoree-ui": "^1.0.0",
+    "react": "^15.0.1",
+    "react-dom": "^15.0.1",
+    "whatwg-fetch": "^1.0.0"
+  },
+  "devDependencies": {
+    "css-loader": "^0.23.1",
+    "file-loader": "^0.8.5",
+    "react": "^15.0.1",
+    "style-loader": "^0.13.1",
+    "ts-loader": "^0.8.2",
+    "typescript": "^1.8.10",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.0",
+    "webpack-dev-server": "^1.14.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --inline --content-base ."
+  },
+  "keywords": [
+    "kevoree",
+    "test",
+    "browser",
+    "component"
+  ],
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "license": "LGPL-3.0"
+}

@@ -9,10 +9,12 @@
     "build": "tsc",
     "gen-model": "kevoree-gen-model",
     "test": "tsc && mocha built/test",
-    "browser": "webpack-dev-server --inline --content-base ."
+    "browser": "webpack-dev-server --inline --content-base node_modules/kevoree-browser-testing"
   },
-  "dependencies": {
-    "react": "^0.14.8"
-  },
-  "devDependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "react": "^15.0.1",
+    "ts-loader": "^0.8.2",
+    "typescript": "^1.8.10"
+  }
 }
