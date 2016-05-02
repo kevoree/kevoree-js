@@ -49,6 +49,16 @@ export class ReflectUtils {
     return Reflect.getMetadata(MetaData.OUTPUTS, Object.getPrototypeOf(instance));
   }
 
+  static getParams(instance: any): { name: string, type: string }[] {
+    const proto = Object.getPrototypeOf(instance);
+    return Reflect.getMetadata(MetaData.PARAMS, proto).map((name: string) => {
+      return {
+        name: name,
+        type: typeof instance[name]
+      };
+    });
+  }
+
   private static doCall(instance: any, metas: LifecycleMeta, callback: (err?: Error) => void) {
     if (metas) {
       if (metas.async) {

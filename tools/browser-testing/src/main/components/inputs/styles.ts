@@ -1,4 +1,14 @@
 export default {
+  fieldset: (enable: boolean) => {
+    return {
+      display: enable? 'block':'none',
+      marginTop: 8
+    };
+  },
+  legend: {
+    fontWeight: 'bold',
+    padding: '0 5px'
+  },
   list: {
     listStyleType: 'none'
   },
@@ -10,9 +20,7 @@ export default {
     display: 'inline-block',
     fontWeight: 'bold'
   },
-  strOrNumberInput: {
+  input: {
     display: 'inline-block'
-  },
-  booleanInput: {
   }
 };

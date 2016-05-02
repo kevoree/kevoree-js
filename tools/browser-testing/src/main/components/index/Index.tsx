@@ -5,6 +5,7 @@ import { UIProcessor } from 'kevoree-ui';
 import { ReflectUtils } from 'kevoree-reflect-utils';
 import { LifecycleActions } from '../lifecycle-actions/LifecycleActions';
 import { InstanceParams } from '../instance-params/InstanceParams';
+import { Inputs } from '../inputs/Inputs';
 import { ModelServiceImpl } from '../../services/ModelServiceImpl';
 import { ContextServiceImpl } from '../../services/ContextServiceImpl';
 import { URLUtils } from '../../utils/URLUtils';
@@ -113,13 +114,15 @@ export class Index extends React.Component<void, UIState>  {
                   onStart={this.startInstance.bind(this)}
                   onStop={this.stopInstance.bind(this)} />
             </fieldset>
-            <fieldset style={{ display: (this.state.instance)? 'block':'none' }}>
+            <fieldset style={styles.fieldset(!!this.state.instance)}>
               <legend style={styles.legend}>Params</legend>
-              <InstanceParams instance={this.state.instance} />
+              <InstanceParams {...this.state} />
             </fieldset>
+            <Inputs {...this.state} />
           </div>
+
           <div style={styles.rightContent}>
-            <fieldset>
+            <fieldset style={styles.paddingTop}>
               <legend style={styles.legend}>Component tile</legend>
               <div style={styles.tile}>
                 {instance}
@@ -128,6 +131,15 @@ export class Index extends React.Component<void, UIState>  {
           </div>
         </div>
       </div>
+    );
+  }
+
+  private renderOutputs(): JSX.Element {
+    return (
+      <fieldset style={styles.fieldset(!!this.state.instance)}>
+        <legend style={styles.legend}>Outputs</legend>
+
+      </fieldset>
     );
   }
 }

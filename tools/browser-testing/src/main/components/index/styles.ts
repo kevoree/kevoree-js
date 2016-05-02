@@ -19,6 +19,9 @@ export default {
     float: 'left',
     width: '49%'
   },
+  paddingTop: {
+    paddingTop: 5
+  },
   rightContent: {
     float: 'right',
     width: '49%'
@@ -31,7 +34,8 @@ export default {
     width: 200,
     height: 200,
     border: '1px solid #000',
-    margin: 'auto'
+    margin: 'auto',
+    padding: 4
   },
   error: {
     backgroundColor: 'red',
@@ -39,5 +43,11 @@ export default {
     fontWeight: 'bold',
     fontSize: 'small',
     padding: 2
+  },
+  fieldset: (enable: boolean) => {
+    return {
+      display: enable? 'block':'none',
+      marginTop: 8
+    };
   }
 };
