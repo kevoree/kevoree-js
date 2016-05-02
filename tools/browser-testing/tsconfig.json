@@ -34,15 +34,17 @@
     "files": [
         "src/main/components/actions/styles.ts",
         "src/main/components/index/styles.ts",
+        "src/main/components/instance-params/styles.ts",
         "src/main/components/lifecycle-actions/styles.ts",
         "src/main/services/ContextServiceImpl.ts",
         "src/main/services/ModelServiceImpl.ts",
+        "src/main/utils/InstanceUtils.ts",
         "src/main/utils/URLUtils.ts",
         "src/test/main.ts",
         "src/main/components/actions/Actions.tsx",
         "src/main/components/index/Index.tsx",
+        "src/main/components/instance-params/InstanceParams.tsx",
         "src/main/components/lifecycle-actions/LifecycleActions.tsx",
-        "src/main/components/loader/Loader.tsx",
         "src/main/index.tsx",
         "typings/main.d.ts"
     ]

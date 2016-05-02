@@ -1,33 +1,33 @@
 {
-    "compilerOptions": {
-        "target": "es5",
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "jsx": "react",
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "noImplicitAny": true,
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "suppressImplicitAnyIndexErrors": true,
-        "outDir": "built"
-    },
-    "filesGlob": [
-        "src/**/*.ts",
-        "src/**/*.tsx",
-        "typings/main.d.ts"
-    ],
-    "files": [
-        "src/main/Ticker.ts",
-        "src/test/ContextServiceImpl.ts",
-        "src/test/ModelServiceImpl.ts",
-        "src/test/OutputPortImpl.ts",
-        "src/test/test.ts",
-        "src/browser/browser.tsx",
-        "src/main/TickerUI.tsx",
-        "typings/main.d.ts"
-    ],
-    "atom": {
-        "rewriteTsconfig": true
-    }
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "jsx": "react",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noImplicitAny": true,
+    "removeComments": true,
+    "declaration": true,
+    "preserveConstEnums": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "outDir": "built"
+  },
+  "filesGlob": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "typings/main.d.ts"
+  ],
+  "files": [
+    "src/main/Ticker.ts",
+    "src/test/ContextServiceImpl.ts",
+    "src/test/ModelServiceImpl.ts",
+    "src/test/OutputPortImpl.ts",
+    "src/test/test.ts",
+    "src/main/TickerUI.tsx",
+    "typings/main.d.ts"
+  ],
+  "atom": {
+    "rewriteTsconfig": true
+  }
 }

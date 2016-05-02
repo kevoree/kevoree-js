@@ -4,9 +4,11 @@ import { Services, Injector, Context, LoggerFactory } from 'kevoree-api';
 import { UIProcessor } from 'kevoree-ui';
 import { ReflectUtils } from 'kevoree-reflect-utils';
 import { LifecycleActions } from '../lifecycle-actions/LifecycleActions';
+import { InstanceParams } from '../instance-params/InstanceParams';
 import { ModelServiceImpl } from '../../services/ModelServiceImpl';
 import { ContextServiceImpl } from '../../services/ContextServiceImpl';
 import { URLUtils } from '../../utils/URLUtils';
+import { InstanceUtils } from '../../utils/InstanceUtils';
 import styles from './styles';
 
 interface UIState {
@@ -24,7 +26,7 @@ export class Index extends React.Component<void, UIState>  {
     super(props);
     this.state = { started: false, ui: null, instance: null };
 
-    this.compType = URLUtils.getParamByName('name');
+    this.compType = URLUtils.getParamByName('type');
 
     // create an injector
     this.injector = new Injector();
@@ -34,19 +36,21 @@ export class Index extends React.Component<void, UIState>  {
   }
 
   createInstance() {
-    console.log('onCreate');
     if (this.state.instance === null) {
       // create an instance
       const CompType = window[this.compType];
       const instance = new CompType();
+      const nodeName = 'node0';
+      const compName = 'yourComp';
 
       // contextual injector for the instance
       var ctx = new Context();
       ctx.register(Services.Logger, LoggerFactory.createLogger('comp'));
-      ctx.register(Services.Context, new ContextServiceImpl('yourComp', 'node0'));
+      ctx.register(Services.Context, new ContextServiceImpl(compName, nodeName));
 
       // inject services in instance
       this.injector.inject(instance, ctx);
+      InstanceUtils.injectOutputs(instance, nodeName, compName);
 
       this.setState({
         instance: instance,
@@ -54,18 +58,15 @@ export class Index extends React.Component<void, UIState>  {
         started: false
       });
 
-      console.log('created', instance);
     }
   }
 
   removeInstance() {
-    console.log('onRemove');
     this.stopInstance();
     this.setState({ instance: null, ui: null });
   }
 
   startInstance() {
-    console.log('onStart');
     if (this.state.instance !== null && !this.state.started) {
       ReflectUtils.callOnStart(this.state.instance, err => {
         if (!err) {
@@ -76,7 +77,6 @@ export class Index extends React.Component<void, UIState>  {
   }
 
   stopInstance() {
-    console.log('onStop');
     if (this.state.instance !== null && this.state.started) {
       ReflectUtils.callOnStop(this.state.instance, err => {
         if (!err) {
@@ -89,7 +89,7 @@ export class Index extends React.Component<void, UIState>  {
   render(): JSX.Element {
     let error = <div></div>;
     if (!this.compType) {
-      error = <div style={styles.error}>You should specify the name of the component in the URL (eg. /?name=MyComp)</div>;
+      error = <div style={styles.error}>You should specify the type of the component in the URL (eg. /?type=MyComp)</div>;
     }
 
     var instance = <em>No instance created yet</em>;
@@ -112,6 +112,10 @@ export class Index extends React.Component<void, UIState>  {
                   onRemove={this.removeInstance.bind(this)}
                   onStart={this.startInstance.bind(this)}
                   onStop={this.stopInstance.bind(this)} />
+            </fieldset>
+            <fieldset style={{ display: (this.state.instance)? 'block':'none' }}>
+              <legend style={styles.legend}>Params</legend>
+              <InstanceParams instance={this.state.instance} />
             </fieldset>
           </div>
           <div style={styles.rightContent}>

@@ -1,5 +1,4 @@
 var path = require('path');
-var pkg = require('./package.json');
 
 module.exports = {
   resolve: {
@@ -16,13 +15,14 @@ module.exports = {
   entry: path.join(__dirname, 'src', 'main', 'Ticker.ts'),
   externals: {
     'react': 'var React',
-    'kevoree-model': 'var KevoreeModel'
+    'kevoree-model': 'var KevoreeModel',
+    'reflect-metadata': 'var Reflect'
   },
   output: {
     libraryTarget: 'var',
     library: 'Ticker',
     path: path.join('built', 'browser'),
-    filename: pkg.name+'.js',
+    filename: 'bundle.js',
     publicPath: ''
   },
   ts: {

@@ -41,6 +41,14 @@ export class ReflectUtils {
     ReflectUtils.doCall(instance, metas, callback);
   }
 
+  static getInputs(instance: any): string[] {
+    return Reflect.getMetadata(MetaData.INPUTS, Object.getPrototypeOf(instance));
+  }
+
+  static getOutputs(instance: any): string[] {
+    return Reflect.getMetadata(MetaData.OUTPUTS, Object.getPrototypeOf(instance));
+  }
+
   private static doCall(instance: any, metas: LifecycleMeta, callback: (err?: Error) => void) {
     if (metas) {
       if (metas.async) {

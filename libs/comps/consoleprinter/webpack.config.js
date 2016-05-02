@@ -15,7 +15,8 @@ module.exports = {
   entry: path.join(__dirname, 'src', 'main', 'ConsolePrinter.ts'),
   externals: {
     'react': 'var React',
-    'kevoree-model': 'var KevoreeModel'
+    'kevoree-model': 'var KevoreeModel',
+    'reflect-metadata': 'var Reflect'
   },
   output: {
     libraryTarget: 'var',

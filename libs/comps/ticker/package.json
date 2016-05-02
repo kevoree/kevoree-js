@@ -9,7 +9,7 @@
     "build": "tsc",
     "gen-model": "kevoree-gen-model",
     "test": "tsc && mocha built/test",
-    "browser": "webpack-dev-server --inline --content-base ."
+    "browser": "webpack-dev-server --inline --content-base node_modules/kevoree-browser-testing"
   },
   "dependencies": {
     "kevoree-api": "^1.0.0",
