@@ -1,8 +1,8 @@
-import 'whatwg-fetch';
 import * as React from 'react';
 import { Services, Injector, Context, LoggerFactory } from 'kevoree-api';
 import { UIProcessor } from 'kevoree-ui';
 import { ReflectUtils } from 'kevoree-reflect-utils';
+import { Registry } from '../../utils/Registry';
 import { LifecycleActions } from '../lifecycle-actions/LifecycleActions';
 import { InstanceParams } from '../instance-params/InstanceParams';
 import { Inputs } from '../inputs/Inputs';
@@ -12,22 +12,29 @@ import { URLUtils } from '../../utils/URLUtils';
 import { InstanceUtils } from '../../utils/InstanceUtils';
 import styles from './styles';
 
+declare const KevoreeBrowserRegistry: Registry;
+
 interface UIState {
   started?: boolean;
   ui?: React.ReactElement<any>;
   instance?: any;
+  typeName?: string;
+  type?: any;
 }
 
 export class Index extends React.Component<void, UIState>  {
 
   private injector: Injector;
-  private compType: string;
 
   constructor(props: void) {
     super(props);
-    this.state = { started: false, ui: null, instance: null };
-
-    this.compType = URLUtils.getParamByName('type');
+    this.state = {
+      typeName: null,
+      type: null,
+      instance: null,
+      started: false,
+      ui: null
+    };
 
     // create an injector
     this.injector = new Injector();
@@ -36,11 +43,14 @@ export class Index extends React.Component<void, UIState>  {
     this.injector.register(Services.Model, modelService);
   }
 
+  init(name: string, type: any) {
+    this.setState({ typeName: name, type: type });
+  }
+
   createInstance() {
     if (this.state.instance === null) {
       // create an instance
-      const CompType = window[this.compType];
-      const instance = new CompType();
+      const instance = new this.state.type();
       const nodeName = 'node0';
       const compName = 'yourComp';
 
@@ -88,11 +98,6 @@ export class Index extends React.Component<void, UIState>  {
   }
 
   render(): JSX.Element {
-    let error = <div></div>;
-    if (!this.compType) {
-      error = <div style={styles.error}>You should specify the type of the component in the URL (eg. /?type=MyComp)</div>;
-    }
-
     var instance = <em>No instance created yet</em>;
     if (this.state.ui) {
       instance = this.state.ui;
@@ -101,10 +106,9 @@ export class Index extends React.Component<void, UIState>  {
     return (
       <div style={styles.container}>
         <div style={styles.header}>
-          <h3 style={styles.title}>Kevoree Browser Testing - {this.compType}</h3>
+          <h3 style={styles.title}>Kevoree Browser Testing - {this.state.typeName}</h3>
         </div>
         <div style={styles.content}>
-          {error}
           <div style={styles.leftContent}>
             <fieldset>
               <legend style={styles.legend}>Actions</legend>
@@ -131,15 +135,6 @@ export class Index extends React.Component<void, UIState>  {
           </div>
         </div>
       </div>
-    );
-  }
-
-  private renderOutputs(): JSX.Element {
-    return (
-      <fieldset style={styles.fieldset(!!this.state.instance)}>
-        <legend style={styles.legend}>Outputs</legend>
-
-      </fieldset>
     );
   }
 }

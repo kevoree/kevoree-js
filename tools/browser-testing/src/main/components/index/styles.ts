@@ -37,13 +37,6 @@ export default {
     margin: 'auto',
     padding: 4
   },
-  error: {
-    backgroundColor: 'red',
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 'small',
-    padding: 2
-  },
   fieldset: (enable: boolean) => {
     return {
       display: enable? 'block':'none',

@@ -12,15 +12,13 @@ module.exports = {
       exclude: /node_modules/
     }]
   },
-  entry: path.join(__dirname, 'src', 'main', 'ConsolePrinter.ts'),
+  entry: path.join(__dirname, 'src', 'browser', 'bundle.ts'),
   externals: {
     'react': 'var React',
     'kevoree-model': 'var KevoreeModel',
     'reflect-metadata': 'var Reflect'
   },
   output: {
-    libraryTarget: 'var',
-    library: 'ConsolePrinter',
     path: path.join('built', 'browser'),
     filename: 'bundle.js',
     publicPath: ''

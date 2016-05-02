@@ -1,5 +1,4 @@
 var path = require('path');
-var pkg = require('./package.json');
 
 module.exports = {
   resolve: {
@@ -25,7 +24,7 @@ module.exports = {
   entry: path.join(__dirname, 'src', 'main', 'index.tsx'),
   output: {
     path: path.join('built', 'browser'),
-    filename: pkg.name+'.js',
+    filename: 'kevoree-browser-testing.js',
     publicPath: 'built/browser'
   },
   externals: {

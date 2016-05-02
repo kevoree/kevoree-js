@@ -19,6 +19,7 @@
     "typings/main.d.ts"
   ],
   "files": [
+    "src/browser/bundle.ts",
     "src/main/Ticker.ts",
     "src/test/ContextServiceImpl.ts",
     "src/test/ModelServiceImpl.ts",
