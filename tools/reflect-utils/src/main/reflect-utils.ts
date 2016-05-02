@@ -1,5 +1,13 @@
 import 'reflect-metadata';
-import { MetaData, LifecycleMeta } from 'kevoree-api';
+import { MetaData, LifecycleMeta, MinMaxMeta } from 'kevoree-api';
+
+export interface Param {
+  name: string;
+  type: 'string' | 'number' | 'boolean';
+  min?: number;
+  max?: number;
+  multi?: boolean;
+}
 
 export class ReflectUtils {
 
@@ -49,14 +57,51 @@ export class ReflectUtils {
     return Reflect.getMetadata(MetaData.OUTPUTS, Object.getPrototypeOf(instance));
   }
 
-  static getParams(instance: any): { name: string, type: string }[] {
+  static getParams(instance: any): Param[] {
     const proto = Object.getPrototypeOf(instance);
     return Reflect.getMetadata(MetaData.PARAMS, proto).map((name: string) => {
-      return {
-        name: name,
-        type: typeof instance[name]
-      };
+      const nativeType = Reflect.getMetadata('design:type', instance, name);
+      const type = ReflectUtils.getTypeAsString(nativeType);
+      const param: Param = { name: name, type: type };
+      switch (type) {
+        case 'string':
+          const multi: boolean = Reflect.getMetadata(MetaData.MULTILINE, instance, name);
+          if (multi) {
+            param.multi = multi;
+          }
+          break;
+
+        case 'number':
+          const min: MinMaxMeta = Reflect.getMetadata(MetaData.MIN, instance, name);
+          if (min) {
+            param.min = min.value;
+            if (min.exclusive) {
+              param.min = param.min + 1;
+            }
+          }
+          const max: MinMaxMeta = Reflect.getMetadata(MetaData.MAX, instance, name);
+          if (max) {
+            param.max = max.value;
+            if (max.exclusive) {
+              param.max = param.max + 1;
+            }
+          }
+          break;
+      }
+      return param;
     });
+  }
+
+  private static getTypeAsString(type: any): 'string' | 'number' | 'boolean' {
+    if (type === Number) {
+      return 'number';
+    } else if (type === String) {
+      return 'string';
+    } else if (type === Boolean) {
+      return 'boolean';
+    } else {
+      return 'string';
+    }
   }
 
   private static doCall(instance: any, metas: LifecycleMeta, callback: (err?: Error) => void) {

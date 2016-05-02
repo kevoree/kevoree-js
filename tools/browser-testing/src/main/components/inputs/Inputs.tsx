@@ -55,7 +55,8 @@ export class Inputs extends React.Component<UIProps, UIState> {
             <button
                 onClick={this.doSend.bind(this, name)}
                 onKeyDown={this.onKeyDown.bind(this, name)}
-                disabled={!this.props.started}>
+                disabled={!this.props.started}
+                style={styles.button}>
               Send
             </button>
           </li>

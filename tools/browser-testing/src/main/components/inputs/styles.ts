@@ -22,5 +22,7 @@ export default {
   },
   input: {
     display: 'inline-block'
+  },
+  button: {
   }
 };
