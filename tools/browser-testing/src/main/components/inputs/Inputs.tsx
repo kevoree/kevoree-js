@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ReflectUtils } from 'kevoree-reflect-utils';
+import { ReflectUtils } from 'kevoree-api';
 import styles from './styles';
 
 interface UIProps {

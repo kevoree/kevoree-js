@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import {
     Component, Output, OutputPort, MetaData
-} from '../main/kevoree-api';
+} from '../../main/kevoree-api';
 import * as Assert from 'assert';
 
 describe('Outputs annotations', () => {

@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { TypeMeta } from '../metas/TypeMeta';
 import { MetaData } from '../../api/MetaData';
-import { typeDefinition } from '../../util/typeDefinition';
+import { typeDefinition } from './typeDefinition';
 import { TypeEnum } from '../../api/TypeEnum';
 
 export function Node(meta: TypeMeta) {

@@ -6,9 +6,9 @@
     "namespace": "kevoree"
   },
   "scripts": {
-    "build": "tsc",
+    "compile": "tsc -p .",
+    "test": "mocha --recursive built/test",
     "gen-model": "kevoree-gen-model",
-    "test": "tsc && mocha built/test",
     "browser": "webpack-dev-server --inline --content-base node_modules/kevoree-browser-testing"
   },
   "dependencies": {

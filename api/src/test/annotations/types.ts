@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import {
     Node, ModelConnector, Channel, Component, MetaData, TypeEnum, TypeMeta
-} from '../main/kevoree-api';
+} from '../../main/kevoree-api';
 import * as Assert from 'assert';
 
 describe('TypeDefinition annotations', () => {

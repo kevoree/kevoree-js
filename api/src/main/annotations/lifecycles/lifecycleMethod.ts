@@ -1,4 +1,4 @@
-import { LifecycleMeta } from '../annotations/metas/LifecycleMeta';
+import { LifecycleMeta } from '../metas/LifecycleMeta';
 
 export function lifecycleMethod(async: boolean, name: string, meta: string) {
     return function (target: any, funcName: string) {

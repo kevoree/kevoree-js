@@ -1,25 +1,39 @@
 import 'reflect-metadata';
 import {
-    Component, MetaData, NumberType, Param, Required, Multiline, Min, Max,
-    Length, NumberTypeMeta, MinMaxMeta
-} from '../main/kevoree-api';
+    Component, MetaData, Param, Required, Multiline, Min, Max, Length
+} from '../../main/kevoree-api';
 import * as Assert from 'assert';
 
 describe('Params annotations', () => {
     describe('MetaData.PARAMS', () => {
         @Component({ version: 1 })
         class MyComp {
-            @Param() private foo: string;
-            @Param() private bar: string;
-            @Param() private baz: string[];
-            @Param() private beep: number;
-            @Param() private bloop: number;
-            @Param() private blap: boolean;
+            @Param() foo: string;
+            @Param() bar: string;
+            @Param() baz: string[];
+            @Param() bloop: number;
+            @Param() blap: boolean;
+            @Param({ type: 'int' }) beep: number;
+            @Param({ type: 'float' }) bleep: number;
+            @Param({ type: 'long' }) bim: number;
+            @Param({ type: 'short' }) bam: number;
+            @Param({ type: 'double' }) boom: number;
         }
 
         it('contains every param name', () => {
             var params = Reflect.getMetadata(MetaData.PARAMS, MyComp.prototype);
-            Assert.deepEqual(params, ['foo', 'bar', 'baz', 'beep', 'bloop', 'blap'], "meta params should equal ['foo', 'bar', 'baz', 'beep', 'bloop', 'blap']");
+            Assert.deepEqual(params, [
+              { name: 'foo',    type: 'string'  },
+              { name: 'bar',    type: 'string'  },
+              { name: 'baz',    type: 'array'   },
+              { name: 'bloop',  type: 'int'     },
+              { name: 'blap',   type: 'boolean' },
+              { name: 'beep',   type: 'int'     },
+              { name: 'bleep',  type: 'float'   },
+              { name: 'bim',    type: 'long'    },
+              { name: 'bam',    type: 'short'   },
+              { name: 'boom',   type: 'double'  }
+            ]);
         });
     });
 
@@ -45,15 +59,15 @@ describe('Params annotations', () => {
         });
     });
 
-    describe('Int @Param()', () => {
+    describe('Number param', () => {
         @Component({ version: 1 })
         class MyComp {
 
-            @Param()
+            @Param({ type: 'int' })
             @Required
             private bar: number = 42;
 
-            @Param()
+            @Param({ type: 'int' })
             @Min(12)
             @Max(52)
             private range: number;
@@ -65,23 +79,23 @@ describe('Params annotations', () => {
         });
 
         it('custom values with min & max', () => {
-            var min: MinMaxMeta = Reflect.getMetadata(MetaData.MIN, MyComp.prototype, 'range');
-            var max: MinMaxMeta = Reflect.getMetadata(MetaData.MAX, MyComp.prototype, 'range');
-            Assert.equal(min.value, 12, 'min should be 12');
-            Assert.equal(max.value, 52, 'max should be 52');
+            var min: number = Reflect.getMetadata(MetaData.MIN, MyComp.prototype, 'range');
+            var max: number = Reflect.getMetadata(MetaData.MAX, MyComp.prototype, 'range');
+            Assert.equal(min, 12, 'min should be 12');
+            Assert.equal(max, 52, 'max should be 52');
         });
     });
 
-    describe('@ChoiceParam', () => {
+    describe('Enum param', () => {
         enum Foo { ONE = 1, TWO = 2, THREE = 3 }
         enum Bar { ONE, TWO, THREE }
 
         @Component({ version: 1 })
         class MyComp {
-            @Param()
+            @Param({ type: 'choice' })
             private foo: Foo;
 
-            @Param()
+            @Param({ type: 'choice' })
             @Required
             private bar: Bar = Bar.TWO;
         }
@@ -92,14 +106,17 @@ describe('Params annotations', () => {
         });
     });
 
-    describe('@ListParam', () => {
+    describe('Array param', () => {
         @Component({ version: 1 })
         class MyComp {
             @Param()
             private attrs: string[];
-
-            @Param()
-            private bars: number[] = [1, 2, 3];
         }
+
+        it('string array', () => {
+          const metas = Reflect.getMetadata(MetaData.PARAMS, MyComp.prototype)[0];
+          Assert.equal(metas.name, 'attrs');
+          Assert.equal(metas.type, 'array');
+        });
     });
 });

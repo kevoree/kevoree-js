@@ -18,4 +18,5 @@ export class MetaData {
   static INPUTS:      string = 'kevoree:inputs';
   static OUTPUTS:     string = 'kevoree:outputs';
   static MSG_SCHEMA:  string = 'kevoree:msg_schema';
+  static CHOICES:     string = 'kevoree:choices';
 }

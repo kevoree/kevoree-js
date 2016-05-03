@@ -8,10 +8,13 @@
     "ts-injector": "^1.0.0"
   },
   "typings": "built/main/kevoree-api.d.ts",
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha": "^2.4.5",
+    "typescript": "^1.8.10"
+  },
   "scripts": {
-    "build": "tsc",
-    "test": "mocha built/test"
+    "compile": "tsc -p .",
+    "test": "npm run compile && mocha --recursive built/test"
   },
   "keywords": [
     "kevoree",

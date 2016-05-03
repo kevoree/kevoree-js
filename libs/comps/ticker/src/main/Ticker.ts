@@ -22,7 +22,7 @@ class Ticker {
   private onTick = new Observer<string>();
 
   @Min(0)
-  @Param()
+  @Param({ type: 'int' })
   private delay: number = 3000;
 
   @Param()

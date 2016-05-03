@@ -1,4 +1,4 @@
-import { lifecycleMethod } from '../../util/lifecycleMethod';
+import { lifecycleMethod } from './lifecycleMethod';
 import { MetaData } from '../../api/MetaData';
 
 export function OnStop(async: boolean = false) {

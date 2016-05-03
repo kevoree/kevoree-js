@@ -1,19 +1,13 @@
 import 'reflect-metadata';
 import { MetaData } from '../../api/MetaData';
-import { MinMaxMeta } from '../metas/MinMaxMeta';
 
-export function Max(value: number, exclusive?: boolean) {
+export function Max(value: number) {
     return function (target: any, propertyKey: string) {
-        var meta: MinMaxMeta = {
-            value: value,
-            exclusive: exclusive
-        };
-
-        var min: MinMaxMeta = Reflect.getMetadata(MetaData.MIN, target, propertyKey);
-        if (min && min.value > meta.value) {
-            throw new Error(`@Max(${meta.value}) must be greater or equal to @Min(${min.value})`);
+        var min: number = Reflect.getMetadata(MetaData.MIN, target, propertyKey);
+        if (min && min > value) {
+            throw new Error(`@Max(${value}) must be greater or equal to @Min(${min})`);
         }
 
-        Reflect.defineMetadata(MetaData.MAX, meta, target, propertyKey);
+        Reflect.defineMetadata(MetaData.MAX, value, target, propertyKey);
     };
 }

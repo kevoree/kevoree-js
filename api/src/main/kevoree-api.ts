@@ -22,9 +22,6 @@ export * from './annotations/lifecycles/OnMessage';
 
 export * from './annotations/metas/TypeMeta';
 export * from './annotations/metas/LifecycleMeta';
-export * from './annotations/metas/MinMaxMeta';
-export * from './annotations/metas/LengthMeta';
-export * from './annotations/metas/NumberTypeMeta';
 
 export * from './annotations/params/Param';
 export * from './annotations/params/Required';
@@ -32,7 +29,7 @@ export * from './annotations/params/Min';
 export * from './annotations/params/Max';
 export * from './annotations/params/Length';
 export * from './annotations/params/Multiline';
-export * from './annotations/params/NumberType';
+export * from './annotations/params/Choices';
 
 export * from './services/Services';
 export * from './services/ModelService';
@@ -41,3 +38,6 @@ export { Logger as LoggerService, LoggerImpl, LoggerFactory } from 'kevoree-logg
 export * from './services/ChannelService';
 
 export * from './es5/factory';
+
+export * from './reflect/ReflectUtils';
+export * from './reflect/ParamDetails';

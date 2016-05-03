@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Services, Injector, Context, LoggerFactory } from 'kevoree-api';
+import {
+  Services, Injector, Context, LoggerFactory, ReflectUtils
+} from 'kevoree-api';
 import { UIProcessor } from 'kevoree-ui';
-import { ReflectUtils } from 'kevoree-reflect-utils';
 import { Registry } from '../../utils/Registry';
 import { LifecycleActions } from '../lifecycle-actions/LifecycleActions';
 import { InstanceParams } from '../instance-params/InstanceParams';

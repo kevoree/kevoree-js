@@ -1,6 +1,4 @@
-import { OnStop, Callback } from 'kevoree-api';
-import { ReflectUtils } from '../main/reflect-utils';
-
+import { ReflectUtils, OnStop, Callback } from '../../main/kevoree-api';
 
 describe('ReflectUtils.callOnStop', () => {
   const errorMsg = 'On purpose';

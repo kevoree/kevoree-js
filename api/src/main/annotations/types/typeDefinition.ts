@@ -1,5 +1,5 @@
-import { TypeMeta } from '../annotations/metas/TypeMeta';
-import { MetaData } from '../api/MetaData';
+import { TypeMeta } from '../metas/TypeMeta';
+import { MetaData } from '../../api/MetaData';
 
 export function typeDefinition(target: any, meta: TypeMeta) {
   Reflect.defineMetadata(MetaData.NAME, target.name, target.prototype);

@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import {
     Component, Channel, OnStart, OnStop, OnUpdate, OnMessage, MetaData,
     LifecycleMeta, Callback
-} from '../main/kevoree-api';
+} from '../../main/kevoree-api';
 import * as Assert from 'assert';
 
 describe('Lifecycle annotations', () => {

@@ -6,6 +6,6 @@
 {"@class":"org.kevoree.Value","@uuid":7,"name":"description","value":"Prints out incoming messages to the terminal console","op_TypeDefinition_metaData":[2]},
 {"@class":"org.kevoree.DictionaryType","@uuid":9,"op_TypeDefinition_dictionary":[2]},
 {"@class":"org.kevoree.DeployUnit","@uuid":3,"name":"kevoree-comp-consoleprinter","version":"6.0.0-alpha","platform":"javascript","op_TypeDefinition_deployUnits":[2]},
-{"@class":"org.kevoree.Value","@uuid":12,"name":"jsonschema","value":"[object Object]","op_PortType_protocol":[10]}
+{"@class":"org.kevoree.Value","@uuid":12,"name":"jsonschema","value":"{\"type\":\"string\"}","op_PortType_protocol":[10]}
 ]
 

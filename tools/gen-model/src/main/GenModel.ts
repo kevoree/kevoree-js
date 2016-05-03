@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import { resolve } from 'path';
 import { readFile } from 'fs';
 import * as util from 'util';
-import { TypeEnum, MetaData, TypeMeta, NumberTypeMeta, MinMaxMeta } from 'kevoree-api';
+import { TypeEnum, MetaData, TypeMeta, ReflectUtils } from 'kevoree-api';
 import { MetaData as InjectMetaData, InjectData } from 'ts-injector';
 import { org } from 'kevoree-model';
 import { ModelCallback } from './ModelCallback';
@@ -46,7 +46,7 @@ export class GenModel {
               case TypeEnum.NODE:
                 tdef = kView.createNodeType();
                 break;
-              case TypeEnum.CDN:
+              case TypeEnum.MCON:
                 // tdef = kView.createModelConnector();
                 break;
               case TypeEnum.CHANNEL:
@@ -81,101 +81,88 @@ export class GenModel {
                     }
 
                     var dicType = kView.createDictionaryType();
-                    Reflect.getMetadata(MetaData.PARAMS, Type.prototype).forEach((name: string) => {
-                      var param: org.kevoree.ParamType;
+                    const t = new Type();
+                    ReflectUtils.getParams(t).forEach(paramDetails => {
+                      let param: org.kevoree.ParamType;
 
-                      const type = Reflect.getMetadata('design:type', Type.prototype, name);
-                      const required: boolean = Reflect.getMetadata(MetaData.REQUIRED, Type.prototype, name) || false;
-                      const fragment: boolean = Reflect.getMetadata(MetaData.FRAGMENT, Type.prototype, name) || false;
-                      const t = new Type();
+                      const minMaxConstraints = function (param: org.kevoree.NumberParamType) {
+                        if (typeof paramDetails.min !== 'undefined') {
+                          const minConstraint = kView.createMinConstraint();
+                          minConstraint.setValue(paramDetails.min);
+                          param.addConstraints(minConstraint);
+                        }
 
-                      switch (typeof t[name]) {
+                        if (typeof paramDetails.max !== 'undefined') {
+                          const maxConstraint = kView.createMaxConstraint();
+                          maxConstraint.setValue(paramDetails.max);
+                          param.addConstraints(maxConstraint);
+                        }
+                      }
+
+                      switch (paramDetails.type) {
+                        case 'int':
+                          param = kView.createNumberParamType();
+                          (<org.kevoree.NumberParamType> param).setType(org.kevoree.meta.MetaNumberType.INT);
+                          minMaxConstraints((<org.kevoree.NumberParamType> param));
+                          break;
+
+                        case 'long':
+                          param = kView.createNumberParamType();
+                          (<org.kevoree.NumberParamType> param).setType(org.kevoree.meta.MetaNumberType.LONG);
+                          minMaxConstraints((<org.kevoree.NumberParamType> param));
+                          break;
+
+                        case 'short':
+                          param = kView.createNumberParamType();
+                          (<org.kevoree.NumberParamType> param).setType(org.kevoree.meta.MetaNumberType.SHORT);
+                          minMaxConstraints((<org.kevoree.NumberParamType> param));
+                          break;
+
+                        case 'double':
+                          param = kView.createNumberParamType();
+                          (<org.kevoree.NumberParamType> param).setType(org.kevoree.meta.MetaNumberType.DOUBLE);
+                          minMaxConstraints((<org.kevoree.NumberParamType> param));
+                          break;
+
+                        case 'float':
+                          param = kView.createNumberParamType();
+                          (<org.kevoree.NumberParamType> param).setType(org.kevoree.meta.MetaNumberType.FLOAT);
+                          minMaxConstraints((<org.kevoree.NumberParamType> param));
+                          break;
+
                         case 'string':
                           param = kView.createStringParamType();
-                          const multi = Reflect.getMetadata(MetaData.MULTILINE, Type.prototype, name) || false;
-                          const constraint = kView.createMultilineConstraint();
-                          constraint.setValue(multi);
-                          param.addConstraints(constraint);
+                          const multi = kView.createMultilineConstraint();
+                          multi.setValue(paramDetails.multi);
+                          param.addConstraints(multi);
+                          // const length = kView.createLengthConstraint();
+                          // length.setValue(paramDetails.length);
+                          // param.addConstraints(length);
                           break;
 
                         case 'boolean':
                           param = kView.createBooleanParamType();
                           break;
 
-                        case 'number':
-                          param = kView.createNumberParamType();
-                          const numberType: NumberTypeMeta = Reflect.getMetadata(MetaData.NUMBER_TYPE, Type.prototype, name);
-                          switch (numberType) {
-                            case NumberTypeMeta.SHORT:
-                              (<org.kevoree.NumberParamType> param).setType(org.kevoree.meta.MetaNumberType.SHORT);
-                              break;
-                            case NumberTypeMeta.INT:
-                              (<org.kevoree.NumberParamType> param).setType(org.kevoree.meta.MetaNumberType.INT);
-                              break;
-                            case NumberTypeMeta.LONG:
-                              (<org.kevoree.NumberParamType> param).setType(org.kevoree.meta.MetaNumberType.LONG);
-                              break;
-                            case NumberTypeMeta.FLOAT:
-                              (<org.kevoree.NumberParamType> param).setType(org.kevoree.meta.MetaNumberType.FLOAT);
-                              break;
-                            case NumberTypeMeta.DOUBLE:
-                              (<org.kevoree.NumberParamType> param).setType(org.kevoree.meta.MetaNumberType.DOUBLE);
-                              break;
-                          }
-                          const min: MinMaxMeta = Reflect.getMetadata(MetaData.MIN, Type.prototype, name);
-                          if (min) {
-                            const minConstraint = kView.createMinConstraint();
-                            minConstraint.setValue(min.value);
-                            minConstraint.setExclusive(min.exclusive);
-                            param.addConstraints(minConstraint);
-                          }
-                          const max: MinMaxMeta = Reflect.getMetadata(MetaData.MAX, Type.prototype, name);
-                          if (max) {
-                            const maxConstraint = kView.createMaxConstraint();
-                            maxConstraint.setValue(max.value);
-                            maxConstraint.setExclusive(max.exclusive);
-                            param.addConstraints(maxConstraint);
-                          }
+                        case 'choice':
+                          param = kView.createChoiceParamType();
+                          paramDetails.choices.forEach(item => {
+                            const choice = kView.createItem();
+                            choice.setValue(item);
+                            (<org.kevoree.ChoiceParamType> param).addChoices(choice);
+                          });
                           break;
 
-                        // case ParamType.INTEGER:
-                        //     var idt = kView.createIntDataType();
-                        //     idt.setDefault((<NumberParamMeta> data).default);
-                        //     idt.setMin((<NumberParamMeta> data).min);
-                        //     idt.setMax((<NumberParamMeta> data).max);
-                        //     attr.addDatatype(idt);
-                        //     break;
-                        //
-                        // case ParamType.CHOICES:
-                        //     var cdt = kView.createChoiceDataType();
-                        //     cdt.setDefaultIndex((<ChoiceParamMeta> data).defaultIndex);
-                        //     (<ChoiceParamMeta> data).choices.forEach((val) => {
-                        //         var choice = kView.createItem();
-                        //         choice.setValue(val);
-                        //         cdt.addChoices(choice);
-                        //     });
-                        //     attr.addDatatype(cdt);
-                        //     break;
-                        //
-                        // case ParamType.LIST:
-                        //     var ldt = kView.createListDataType();
-                        //     (<ListParamMeta> data).default.forEach((val) => {
-                        //         var value = kView.createItem();
-                        //         value.setValue(val);
-                        //         ldt.addDefault(value);
-                        //     });
-                        //     attr.addDatatype(ldt);
-                        //     break;
-
                         default:
-                          done(new Error(`Param "${name}" has an invalid type.`));
+                          done(new Error(`Param "${paramDetails.name}" has an invalid type.`));
                           return;
                       }
 
-                      param.setRequired(required);
-                      param.setFragment(fragment);
+                      param.setRequired(paramDetails.required);
+                      param.setFragment(paramDetails.fragment);
                       dicType.addParams(param);
                     });
+
                     tdef.addDictionary(dicType);
 
                     Reflect.getMetadata(MetaData.INPUTS, Type.prototype).forEach((name: string) => {

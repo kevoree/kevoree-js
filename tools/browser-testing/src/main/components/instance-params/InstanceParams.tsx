@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ReflectUtils, Param } from 'kevoree-reflect-utils';
+import { ReflectUtils, ParamDetails } from 'kevoree-api';
 import styles from './styles';
 
 interface UIProps {
@@ -9,12 +9,12 @@ interface UIProps {
 
 export class InstanceParams extends React.Component<UIProps, void> {
 
-  stringUpdate(param: Param, event: Event) {
+  stringUpdate(param: ParamDetails, event: Event) {
     this.props.instance[param.name] = (event.target as any).value + '';
     this.forceUpdate();
   }
 
-  numberUpdate(param: Param, event: Event) {
+  numberUpdate(param: ParamDetails, event: Event) {
     let value = parseInt((event.target as any).value, 10);
     value = Math.min(value, param.max || +Infinity);
     value = Math.max(value, param.min || -Infinity);
@@ -22,8 +22,13 @@ export class InstanceParams extends React.Component<UIProps, void> {
     this.forceUpdate();
   }
 
-  booleanUpdate(param: Param, event: Event) {
+  booleanUpdate(param: ParamDetails, event: Event) {
     this.props.instance[param.name] = !!(event.target as any).checked;
+    this.forceUpdate();
+  }
+
+  selectUpdate(param: ParamDetails, event: Event) {
+    this.props.instance[param.name] = (event.target as any).value;
     this.forceUpdate();
   }
 
@@ -60,7 +65,11 @@ export class InstanceParams extends React.Component<UIProps, void> {
               );
             }
 
-          case 'number':
+          case 'int':
+          case 'float':
+          case 'double':
+          case 'short':
+          case 'long':
             if (typeof param.min === 'undefined' && typeof param.max === 'undefined') {
               return (
                 <li key={i} style={styles.listItem}>
@@ -130,6 +139,23 @@ export class InstanceParams extends React.Component<UIProps, void> {
                     onChange={this.booleanUpdate.bind(this, param)}
                     disabled={this.props.started}
                     style={styles.booleanInput} />
+              </li>
+            );
+
+          case 'choice':
+            return (
+              <li key={i} style={styles.listItem}>
+                <label for={param.name} style={styles.label}>{param.name}</label>
+                <select
+                    name={param.name}
+                    value={this.props.instance[param.name]}
+                    onChange={this.selectUpdate.bind(this, param)}
+                    disabled={this.props.started}
+                    style={styles.booleanInput}>
+                  {param.choices.map((item, i) => {
+                    return (<option key={i} value={i}>{item}</option>);
+                  })}
+                </select>
               </li>
             );
 
