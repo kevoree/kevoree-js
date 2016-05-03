@@ -37,6 +37,7 @@
         "src/main/components/inputs/styles.ts",
         "src/main/components/instance-params/styles.ts",
         "src/main/components/lifecycle-actions/styles.ts",
+        "src/main/components/outputs/styles.ts",
         "src/main/services/ContextServiceImpl.ts",
         "src/main/services/ModelServiceImpl.ts",
         "src/main/utils/InstanceUtils.ts",
@@ -48,6 +49,8 @@
         "src/main/components/inputs/Inputs.tsx",
         "src/main/components/instance-params/InstanceParams.tsx",
         "src/main/components/lifecycle-actions/LifecycleActions.tsx",
+        "src/main/components/outputs/Output.tsx",
+        "src/main/components/outputs/Outputs.tsx",
         "src/main/index.tsx",
         "typings/main.d.ts"
     ]

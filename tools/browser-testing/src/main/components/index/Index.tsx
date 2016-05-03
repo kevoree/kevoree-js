@@ -7,6 +7,7 @@ import { Registry } from '../../utils/Registry';
 import { LifecycleActions } from '../lifecycle-actions/LifecycleActions';
 import { InstanceParams } from '../instance-params/InstanceParams';
 import { Inputs } from '../inputs/Inputs';
+import { Outputs } from '../outputs/Outputs';
 import { ModelServiceImpl } from '../../services/ModelServiceImpl';
 import { ContextServiceImpl } from '../../services/ContextServiceImpl';
 import { URLUtils } from '../../utils/URLUtils';
@@ -21,6 +22,7 @@ interface UIState {
   instance?: any;
   typeName?: string;
   type?: any;
+  outputs?: { [key:string]: string[] };
 }
 
 export class Index extends React.Component<void, UIState>  {
@@ -34,7 +36,8 @@ export class Index extends React.Component<void, UIState>  {
       type: null,
       instance: null,
       started: false,
-      ui: null
+      ui: null,
+      outputs: {}
     };
 
     // create an injector
@@ -62,14 +65,21 @@ export class Index extends React.Component<void, UIState>  {
 
       // inject services in instance
       this.injector.inject(instance, ctx);
-      InstanceUtils.injectOutputs(instance, nodeName, compName);
+      // inject fake output ports
+      const initialOutputs = InstanceUtils.injectOutputs(instance, nodeName, compName, (portName, message) => {
+        if (this.state.outputs[portName].length === 50) {
+          this.state.outputs[portName].pop();
+        }
+        this.state.outputs[portName].unshift(message);
+        this.setState({ outputs: this.state.outputs });
+      });
 
       this.setState({
         instance: instance,
         ui: UIProcessor.render(instance),
-        started: false
+        started: false,
+        outputs: initialOutputs
       });
-
     }
   }
 
@@ -133,6 +143,9 @@ export class Index extends React.Component<void, UIState>  {
                 {instance}
               </div>
             </fieldset>
+            <div style={{ paddingTop: 8 }}>
+              <Outputs outputs={this.state.outputs} />
+            </div>
           </div>
         </div>
       </div>
