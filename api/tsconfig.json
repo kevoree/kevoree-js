@@ -61,6 +61,7 @@
         "src/test/annotations/outputs.ts",
         "src/test/annotations/params.ts",
         "src/test/annotations/types.ts",
+        "src/test/es5/test.ts",
         "src/test/reflect/callOnStart.ts",
         "src/test/reflect/callOnStop.ts",
         "src/test/reflect/callOnUpdate.ts",
