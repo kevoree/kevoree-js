@@ -1,22 +1,16 @@
 var Kevoree = require('kevoree-api');
 
-var metas = {
+module.exports = Kevoree.Factory.Component({
+  name: 'ConsolePrinter',
   version: 1,
-  description: 'Prints out incoming messages to the terminal console'
-};
-
-// function ConsolePrinter() {}
-// ConsolePrinter.prototype = {
-//   context: null,
-//   input: function (message) {
-//     console.log(this.context.getInstanceName()+'> '+message);
-//   }
-// };
-//
-// Kevoree.componentDecorator(ConsolePrinter, metas);
-// Kevoree.injectDecorator(ConsolePrinter, 'context', Kevoree.Services.Context);
-// Kevoree.inputDecorator(ConsolePrinter, 'input', { type: 'string' });
-
-
-
-module.exports = ConsolePrinter;
+  description: 'Prints out incoming messages to the console'
+}).Inject({
+  context: Kevoree.Services.Context
+}).Input({
+  input: { type: 'string' }
+}).Class({
+  context: null,
+  input: function (msg) {
+    console.log(this.context.getInstanceName() + '> ' + msg);
+  }
+});

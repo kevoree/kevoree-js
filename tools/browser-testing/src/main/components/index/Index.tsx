@@ -85,7 +85,7 @@ export class Index extends React.Component<void, UIState>  {
 
   removeInstance() {
     this.stopInstance();
-    this.setState({ instance: null, ui: null });
+    this.setState({ instance: null, ui: null, outputs: {}, started: false });
   }
 
   startInstance() {
@@ -143,7 +143,7 @@ export class Index extends React.Component<void, UIState>  {
                 {instance}
               </div>
             </fieldset>
-            <div style={{ paddingTop: 8 }}>
+            <div style={styles.outputs(Object.keys(this.state.outputs).length > 0)}>
               <Outputs outputs={this.state.outputs} />
             </div>
           </div>

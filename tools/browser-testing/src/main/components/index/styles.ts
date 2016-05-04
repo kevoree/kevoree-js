@@ -42,5 +42,11 @@ export default {
       display: enable? 'block':'none',
       marginTop: 8
     };
+  },
+  outputs: (enable: boolean) => {
+    return {
+      paddingTop: 8,
+      display: enable ? 'block':'none'
+    };
   }
 };
