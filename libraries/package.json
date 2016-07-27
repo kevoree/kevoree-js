@@ -1,0 +1,17 @@
+{
+  "name": "kevoree-js-libs",
+  "version": "0.0.0",
+  "description": "KevoreeJS dev env: installs needed tools for dev scripts",
+  "main": "update.js",
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "async": "^2.0.1",
+    "chalk": "^1.1.3",
+    "grunt": "^1.0.1",
+    "indent-string": "^3.0.0",
+    "ora": "^0.2.3",
+    "time-grunt": "^1.4.0"
+  }
+}
