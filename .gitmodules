@@ -88,3 +88,9 @@
 [submodule "libraries/comp/websiteviewer"]
 	path = libraries/comp/websiteviewer
 	url = git@github.com:kevoree/kevoree-js-comp-websiteviewer.git
+[submodule "libraries/comp/twitter"]
+	path = libraries/comp/twitter
+	url = git@github.com:kevoree/kevoree-js-comp-twitter.git
+[submodule "tools/kevoree-validator"]
+	path = tools/kevoree-validator
+	url = git@github.com:kevoree/kevoree-js-validator.git

@@ -13,6 +13,20 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
     exec: {
+      entities: {
+        src: PROJECTS,
+        options: {
+          cmd: 'npm',
+          args: ['install', 'kevoree-entities@next']
+        }
+      },
+      clean: {
+        src: PROJECTS,
+        options: {
+          cmd: 'rm',
+          args: ['-rf', 'node_modules']
+        }
+      },
       install: {
         src: PROJECTS,
         options: {
@@ -20,18 +34,18 @@ module.exports = function (grunt) {
           args: ['install']
         }
       },
-      kevoree_registry: {
-        src: PROJECTS,
-        options: {
-          cmd: 'grunt',
-          args: ['kevoree_registry']
-        }
-      },
-      kevoree_genmodel: {
+      genmodel: {
         src: PROJECTS,
         options: {
           cmd: 'grunt',
           args: ['kevoree_genmodel']
+        }
+      },
+      publish: {
+        src: PROJECTS,
+        options: {
+          cmd: 'grunt',
+          args: ['kevoree_registry']
         }
       }
     }
