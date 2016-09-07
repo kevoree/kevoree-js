@@ -13,13 +13,6 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
     exec: {
-      entities: {
-        src: PROJECTS,
-        options: {
-          cmd: 'npm',
-          args: ['install', 'kevoree-entities@next']
-        }
-      },
       clean: {
         src: PROJECTS,
         options: {
@@ -32,6 +25,13 @@ module.exports = function (grunt) {
         options: {
           cmd: 'npm',
           args: ['install']
+        }
+      },
+      grunt: {
+        src: PROJECTS,
+        options: {
+          cmd: 'grunt',
+          args: []
         }
       },
       genmodel: {
