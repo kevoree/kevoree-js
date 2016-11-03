@@ -57,7 +57,7 @@
 	url = git@github.com:kevoree/kevoree-js-library.git
 [submodule "runtimes/nodejs"]
 	path = runtimes/nodejs
-	url = git@github.com:kevoree/kevoree-nodejs-runtime.git
+	url = git@github.com:kevoree/kevoree-js-cli.git
 [submodule "runtimes/browser"]
 	path = runtimes/browser
 	url = git@github.com:kevoree/kevoree-browser-runtime.git
