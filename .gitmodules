@@ -97,6 +97,6 @@
 [submodule "tools/hash"]
 	path = tools/hash
 	url = git@github.com:kevoree/kevoree-js-hash.git
-[submodule "libraries/groups/centralizedws"]
-	path = libraries/groups/centralizedws
+[submodule "libraries/group/centralizedws"]
+	path = libraries/group/centralizedws
 	url = git@github.com:kevoree/kevoree-js-group-centralizedws.git
