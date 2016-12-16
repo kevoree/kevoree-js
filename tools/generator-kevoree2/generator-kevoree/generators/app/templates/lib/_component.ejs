@@ -1,0 +1,37 @@
+'use strict';
+
+var Entity = require('kevoree-entities');
+
+/**
+ * <%= description %>
+ *
+ * @type {<%= name %>}
+ */
+module.exports = Entity.<%= classType %>.extend({
+  toString: '<%= name %>',
+  tdef_version: <%= version %>,
+
+  /**
+   * Called when your component starts
+   *
+   * @param {Function}     done call this when you are done starting
+   *                            done(): all good
+   *                            done(error): something went wrong
+   */
+  start: function (done) {
+    this.log.info(this.toString(), this.name + ' start');
+    done();
+  },
+
+  /**
+   * Called when your component stops
+   *
+   * @param {Function}     done call this when you are done stopping
+   *                            done(): all good
+   *                            done(error): something went wrong
+   */
+  stop: function (done) {
+    this.log.info(this.toString(), this.name + ' stop');
+    done();
+  }
+});

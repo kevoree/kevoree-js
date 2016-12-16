@@ -94,3 +94,9 @@
 [submodule "tools/kevoree-validator"]
 	path = tools/kevoree-validator
 	url = git@github.com:kevoree/kevoree-js-validator.git
+[submodule "tools/hash"]
+	path = tools/hash
+	url = git@github.com:kevoree/kevoree-js-hash.git
+[submodule "libraries/groups/centralizedws"]
+	path = libraries/groups/centralizedws
+	url = git@github.com:kevoree/kevoree-js-group-centralizedws.git

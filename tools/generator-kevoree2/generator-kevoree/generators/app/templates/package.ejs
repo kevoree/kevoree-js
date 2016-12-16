@@ -1,0 +1,39 @@
+{
+  "name": "<%= moduleName %>",
+  "version": "<%= moduleVersion %>",
+  "description": "<%= description %>",
+  "main": "lib/<%= name %>.js",
+  "kevoree": {
+    "namespace": "<%= namespace %>"
+  },
+  "scripts": {
+    "prepublish": "grunt"
+  },
+  "keywords": [
+    "kevoree",
+    "<%= type %>"
+  ],
+  "dependencies": {
+    "kevoree-entities": "^9.0.0-alpha"
+  },
+  "devDependencies": {
+    "grunt": "^1",
+    "standard": "^8.5.0",
+    "grunt-kevoree": "^5",
+    "grunt-kevoree-genmodel": "^3",
+    "grunt-kevoree-registry": "^3",
+    "load-grunt-tasks": "^3"
+  },
+  "repository": "<%= repository %>",
+  "author": {
+    "name": "<%= authorName %>",
+    "email": "<%= authorEmail %>"
+  },
+  "license": "<%= license %>",
+  "eslintConfig": {
+    "extends": ["standard"],
+    "rules": {
+      "semi": 0
+    }
+  }
+}
