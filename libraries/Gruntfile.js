@@ -31,7 +31,7 @@ module.exports = function (grunt) {
 				src: PROJECTS,
 				options: {
 					cmd: 'grunt',
-					args: []
+					args: ['publish']
 				}
 			},
 			git: {
