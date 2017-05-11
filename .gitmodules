@@ -100,3 +100,6 @@
 [submodule "libraries/group/centralizedws"]
 	path = libraries/group/centralizedws
 	url = git@github.com:kevoree/kevoree-js-group-centralizedws.git
+[submodule "tools/registry-client"]
+	path = tools/registry-client
+	url = git@github.com:kevoree/kevoree-js-registry-client.git
