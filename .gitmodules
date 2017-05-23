@@ -103,3 +103,6 @@
 [submodule "tools/registry-client"]
 	path = tools/registry-client
 	url = git@github.com:kevoree/kevoree-js-registry-client.git
+[submodule "tools/kreg"]
+	path = tools/kreg
+	url = git@github.com:kevoree/kreg.git
