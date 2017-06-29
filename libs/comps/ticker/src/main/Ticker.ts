@@ -6,6 +6,10 @@ import { UIComponent, UIProp, Observer } from 'kevoree-ui';
 import { Logger } from 'kevoree-logger';
 import { TickerUI } from './TickerUI';
 
+enum TestEnum {
+  FOO, BAR, BAZ
+}
+
 @Component({
   version: 1,
   description: `By default, the ticker will send the current timestamp in \
@@ -27,6 +31,9 @@ class Ticker {
 
   @Param()
   private random: boolean = false;
+
+  @Param()
+  private test: TestEnum
 
   @Output({ type: 'string' })
   private tick: OutputPort;

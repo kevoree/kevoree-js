@@ -4,11 +4,14 @@ module.exports = Kevoree.Factory.Component({
   name: 'ConsolePrinter',
   version: 1,
   description: 'Prints out incoming messages to the console'
-}).Inject({
+})
+.Inject({
   context: Kevoree.Services.Context
-}).Input({
+})
+.Input({
   input: { type: 'string' }
-}).Class({
+})
+.Class({
   context: null,
   input: function (msg) {
     console.log(this.context.getInstanceName() + '> ' + msg);
