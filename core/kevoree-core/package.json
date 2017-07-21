@@ -1,0 +1,41 @@
+{
+  "name": "kevoree-core",
+  "version": "9.0.7",
+  "description": "Kevoree Javascript platform core",
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "main": "./kevoree-core.js",
+  "scripts": {
+    "build": "webpack",
+    "lint": "eslint kevoree-core.js lib",
+    "prepublish": "npm run test && npm run build",
+    "test": "npm run lint && mocha test/server"
+  },
+  "keywords": [
+    "kevoree",
+    "core",
+    "platform"
+  ],
+  "contributors": [],
+  "bugs": {
+    "url": "https://github.com/kevoree/kevoree-js-core/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kevoree/kevoree-js-core"
+  },
+  "dependencies": {
+    "kevoree-library": "^5.0.11"
+  },
+  "devDependencies": {
+    "eslint": "^4.1.1",
+    "kevoree-kevscript": "^5.0.0",
+    "kevoree-node-javascript": "^5.4.0-beta.3",
+    "kevoree-registry-client": "^3.0.0",
+    "kevoree-validator": "^0.1.18",
+    "mocha": "^3.2.0",
+    "tiny-conf": "^1.0.5",
+    "webpack": "^3.0.0"
+  },
+  "license": "LGPL-3.0",
+  "homepage": "https://github.com/kevoree/kevoree-js-core"
+}

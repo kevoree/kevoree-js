@@ -1,0 +1,34 @@
+{
+  "name": "kevoree-library",
+  "version": "5.0.11",
+  "description": "Kevoree JavaScript library - Generated with KMF",
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "main": "./kevoree-library.js",
+  "scripts": {
+    "prepublish": "npm run build",
+    "test": "mocha test/server",
+    "build": "webpack"
+  },
+  "keywords": [
+    "kevoree",
+    "library",
+    "api"
+  ],
+  "contributors": [],
+  "bugs": {
+    "url": "https://github.com/kevoree/kevoree-js-library/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kevoree/kevoree-js-library"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "mocha": "^2.5.3",
+    "webpack": "^3.0.0"
+  },
+  "dependencies": {
+    "kevoree-kotlin": "^1.0.0"
+  },
+  "license": "LGPL-3.0"
+}

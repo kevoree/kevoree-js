@@ -1,0 +1,33 @@
+{
+  "name": "kevoree-comp-twitter",
+  "version": "1.0.0",
+  "description": "Tweets input messages and streams Tweets based on hashtags (comma-separated)",
+  "main": "lib/Twitter.js",
+  "kevoree": {
+    "namespace": "kevoree"
+  },
+  "scripts": {
+    "prepublish": "grunt"
+  },
+  "keywords": [
+    "kevoree",
+    "component"
+  ],
+  "dependencies": {
+    "kevoree-entities": "^9.2.1",
+    "twitter": "^1.3.0"
+  },
+  "devDependencies": {
+    "grunt": "^1",
+    "grunt-kevoree": "^5.9.0-alpha.2",
+    "grunt-kevoree-genmodel": "^3.0.3",
+    "grunt-kevoree-registry": "^3",
+    "load-grunt-tasks": "^3"
+  },
+  "repository": "https://github.com/kevoree/kevoree-js-comp-twitter",
+  "author": {
+    "name": "Maxime Tricoire",
+    "email": "max.tricoire@gmail.com"
+  },
+  "license": "LGPL-3.0"
+}

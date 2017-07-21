@@ -1,0 +1,46 @@
+{
+  "name": "kevoree-resolvers",
+  "version": "5.0.0",
+  "description": "Standard Kevoree Javascript resolvers",
+  "main": "./kevoree-resolvers.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevoree/kevoree-js-resolvers.git"
+  },
+  "keywords": [
+    "kevoree",
+    "resolver",
+    "npm"
+  ],
+  "author": {
+    "name": "Maxime Tricoire",
+    "email": "max.tricoire@gmail.com"
+  },
+  "license": "LGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/kevoree/kevoree-js-resolvers/issues"
+  },
+  "homepage": "https://github.com/kevoree/kevoree-js-resolvers",
+  "dependencies": {
+    "kevoree-commons": "^3.0.0",
+    "kevoree-hash": "^3.0.1",
+    "mkdirp": "^0.5.1",
+    "npm-package-arg": "^4.2.0",
+    "rimraf": "^2.6.1"
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "kevoree-library": "^5.0.11",
+    "mocha": "^3.2.0"
+  },
+  "maintainers": [
+    {
+      "name": "leiko",
+      "email": "max.tricoire@gmail.com"
+    }
+  ],
+  "readme": "README.md"
+}

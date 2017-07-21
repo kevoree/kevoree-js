@@ -1,0 +1,30 @@
+{
+  "name": "kevoree-comp-msgsender",
+  "version": "1.0.1",
+  "main": "./lib/MsgSender.js",
+  "kevoree": {
+    "namespace": "kevoree"
+  },
+  "scripts": {
+    "prepublish": "grunt",
+    "postpublish": "grunt publish"
+  },
+  "keywords": [
+    "kevoree-std-lib",
+    "kevoree",
+    "library",
+    "comp"
+  ],
+  "dependencies": {
+    "kevoree-entities": "^9.2.1"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-browserify": "^5.0.0",
+    "grunt-contrib-uglify": "^0.4.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-kevoree": "^5.9.0-alpha.2",
+    "grunt-kevoree-genmodel": "^3.0.3",
+    "grunt-kevoree-registry": "^3.0.1"
+  }
+}

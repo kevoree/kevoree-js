@@ -1,0 +1,58 @@
+{
+  "name": "kevoree-comp-ticker",
+  "version": "5.3.3",
+  "description": "A Kevoree component that sends a 'tick' message at user-defined intervals",
+  "main": "src/Ticker.js",
+  "kevoree": {
+    "namespace": "kevoree",
+    "browser": "src/browser/main.js"
+  },
+  "scripts": {
+    "prepublish": "npm run lint && NODE_ENV=production grunt",
+    "postpublish": "grunt kevoree_registry",
+    "lint": "grunt eslint",
+    "build": "grunt webpack",
+    "build-prod": "NODE_ENV=production grunt webpack"
+  },
+  "keywords": [
+    "kevoree-std-lib",
+    "kevoree",
+    "library",
+    "comp"
+  ],
+  "dependencies": {
+    "kevoree-entities": "^9.2.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.18.2",
+    "babel-eslint": "^7.2.3",
+    "babel-loader": "^7.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.16.0",
+    "eslint": "^3.9.1",
+    "eslint-config-standard-jsx": "^3.2.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-react": "^6.7.1",
+    "grunt": "^1.0.1",
+    "grunt-eslint": "^19.0.0",
+    "grunt-kevoree": "^6.0.0",
+    "grunt-kevoree-genmodel": "^3.0.3",
+    "grunt-kevoree-registry": "^4.0.0",
+    "grunt-webpack": "^3.0.0",
+    "json-loader": "^0.5.4",
+    "kevoree-core": "^9.0.7",
+    "load-grunt-tasks": "^3.5.2",
+    "react": "^15.4.1",
+    "webpack": "^2.5.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kevoree/kevoree-js-comp-ticker.git"
+  },
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "license": "LGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/kevoree/kevoree-js-comp-ticker/issues"
+  },
+  "homepage": "https://github.com/kevoree/kevoree-js-comp-ticker"
+}

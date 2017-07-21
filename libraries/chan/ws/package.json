@@ -1,0 +1,46 @@
+{
+  "name": "kevoree-chan-ws",
+  "version": "5.3.3",
+  "main": "./lib/WSChan.js",
+  "description": "A Kevoree chan that uses an external remote WebSocket server to share messages.<br/>This server must implement a <a href=\"https://github.com/maxleiko/wsmsgbroker\">specific protocol</a>",
+  "kevoree": {
+    "namespace": "kevoree"
+  },
+  "scripts": {
+    "prepublish": "grunt",
+    "postpublish": "grunt publish"
+  },
+  "keywords": [
+    "kevoree",
+    "library",
+    "channel"
+  ],
+  "browser": {
+    "ws": "./browser/ws-shim.js"
+  },
+  "dependencies": {
+    "bufferutil": "^1.2.1",
+    "kevoree-entities": "^9.2.1",
+    "utf-8-validate": "^1.2.1",
+    "ws": "^1.1.1",
+    "wsmsgbroker": "^1.7.0"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-browserify": "^5.0.0",
+    "grunt-contrib-uglify": "^0.8.0",
+    "grunt-kevoree": "^5.9.0-alpha.2",
+    "grunt-kevoree-genmodel": "^3.0.3",
+    "grunt-kevoree-registry": "^3.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kevoree/kevoree-js-chan-ws.git"
+  },
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "license": "LGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/kevoree/kevoree-js-chan-ws/issues"
+  },
+  "homepage": "https://github.com/kevoree/kevoree-js-chan-ws"
+}
