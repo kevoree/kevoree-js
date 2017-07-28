@@ -1,0 +1,13 @@
+add node0, browser : JavascriptNode
+add sync : WSGroup
+// and we add your component to the Browser node so that you can test your UI
+add browser.comp : WebSiteViewer
+
+attach node0, browser sync
+
+set sync.master = 'node0'
+
+set browser.logLevel = 'DEBUG'
+set browser.comp.url = 'http://kevoree.org'
+
+network node0.ip.lo 127.0.0.1

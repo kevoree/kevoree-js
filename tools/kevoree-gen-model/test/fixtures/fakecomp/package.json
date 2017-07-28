@@ -1,0 +1,13 @@
+{
+  "name": "fakecomp",
+  "version": "1.0.0",
+  "main": "./FakeComp.js",
+  "kevoree": {
+    "namespace": "myNamespace"
+  },
+  "private": true,
+  "dependencies": {
+    "kevoree-entities": "^8",
+    "kevoree-library": "^5"
+  }
+}

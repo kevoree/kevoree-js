@@ -1,0 +1,15 @@
+add node0: JavascriptNode
+add node0.printer: ConsolePrinter
+add node0.ticker: Ticker
+add chan: LocalChannel
+add sync: WSGroup
+
+attach node0 sync
+
+bind node0.printer.input chan
+bind node0.ticker.tick chan
+
+set sync.master = 'node0'
+set node0.logLevel = 'debug'
+
+network node0.ip.lo localhost

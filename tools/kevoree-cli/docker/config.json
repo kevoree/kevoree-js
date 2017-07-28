@@ -1,0 +1,11 @@
+{
+  "registry": {
+    "host": "registry.kevoree.org",
+    "port": 443,
+    "ssl": true,
+    "oauth": {
+      "client_secret": "kevoree_registryapp_secret",
+      "client_id": "kevoree_registryapp"
+    }
+  }
+}

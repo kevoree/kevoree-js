@@ -1,0 +1,16 @@
+{
+  "name": "multiple-deps",
+  "version": "1.0.0",
+  "description": "Test fixture",
+  "main": "index.js",
+	"kevoree": {
+		"namespace": "kevoree"
+	},
+  "scripts": {},
+  "author": "",
+  "license": "ISC",
+	"dependencies": {
+		"async": "*",
+		"chalk": "*"
+	}
+}

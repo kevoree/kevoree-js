@@ -1,0 +1,177 @@
+{
+  "JavascriptNode/1": {
+    "createdBy": "kevoree",
+    "lastModifiedBy": "leiko",
+    "lastModifiedDate": 1481214814452,
+    "id": 1122,
+    "name": "JavascriptNode",
+    "version": 1,
+    "model": "{\"class\":\"org.kevoree.NodeType@name=JavascriptNode,version=1\",\"abstract\":\"false\",\"name\":\"JavascriptNode\",\"version\":\"1\",\"deployUnits\":[],\"superTypes\":[],\"dictionaryType\":[\n{\"class\":\"org.kevoree.DictionaryType@0.0\",\"generated_KMF_ID\":\"0.0\",\"attributes\":[\n{\"class\":\"org.kevoree.DictionaryAttribute@logLevel\",\"fragmentDependant\":\"false\",\"optional\":\"false\",\"name\":\"logLevel\",\"state\":\"false\",\"datatype\":\"STRING\",\"defaultValue\":\"INFO\",\"genericTypes\":[]}\n]}\n],\"metaData\":[\n{\"class\":\"org.kevoree.Value@description\",\"name\":\"description\",\"value\":\"Kevoree JS standard node platform\"}\n]}"
+  },
+  "JavascriptNode/42": {
+    "createdBy": "kevoree",
+    "lastModifiedBy": "leiko",
+    "lastModifiedDate": 1481214814452,
+    "id": 1123,
+    "name": "JavascriptNode",
+    "version": 42,
+    "model": "{\"class\":\"org.kevoree.NodeType@name=JavascriptNode,version=42\",\"abstract\":\"false\",\"name\":\"JavascriptNode\",\"version\":\"42\",\"deployUnits\":[],\"superTypes\":[],\"dictionaryType\":[\n{\"class\":\"org.kevoree.DictionaryType@0.0\",\"generated_KMF_ID\":\"0.0\",\"attributes\":[\n{\"class\":\"org.kevoree.DictionaryAttribute@logLevel\",\"fragmentDependant\":\"false\",\"optional\":\"false\",\"name\":\"logLevel\",\"state\":\"false\",\"datatype\":\"STRING\",\"defaultValue\":\"INFO\",\"genericTypes\":[]}\n]}\n],\"metaData\":[\n{\"class\":\"org.kevoree.Value@description\",\"name\":\"description\",\"value\":\"Kevoree JS standard node platform\"}\n]}"
+  },
+  "JavascriptNode/1/LATEST": [{
+    "createdBy": "leiko",
+    "lastModifiedBy": "leiko",
+    "lastModifiedDate": 1481214814443,
+    "id": 1201,
+    "name": "kevoree-node-javascript",
+    "version": "5.4.0-beta.0",
+    "platform": "js",
+    "model": "{\"class\":\"root:org.kevoree.ContainerRoot@0.49632998520880391481214811460\",\"generated_KMF_ID\":\"0.49632998520880391481214811460\",\"nodes\":[],\"repositories\":[],\"hubs\":[],\"mBindings\":[],\"groups\":[],\"packages\":[\n{\"class\":\"org.kevoree.Package@kevoree\",\"name\":\"kevoree\",\"packages\":[],\"typeDefinitions\":[],\"deployUnits\":[\n{\"class\":\"org.kevoree.DeployUnit@hashcode=01cf3fc730f4fbcdebf52a6f9fe54e05,name=kevoree-node-javascript,version=5.4.0-beta.0\",\"name\":\"kevoree-node-javascript\",\"hashcode\":\"01cf3fc730f4fbcdebf52a6f9fe54e05\",\"url\":\"\",\"version\":\"5.4.0-beta.0\",\"requiredLibs\":[],\"filters\":[\n{\"class\":\"org.kevoree.Value@platform\",\"name\":\"platform\",\"value\":\"js\"}\n]}\n]}\n]}"
+  }],
+  "JavascriptNode/1/RELEASE": [{
+    "createdBy": "leiko",
+    "lastModifiedBy": "leiko",
+    "lastModifiedDate": 1481214814443,
+    "id": 1202,
+    "name": "kevoree-node-javascript",
+    "version": "5.4.0",
+    "platform": "js",
+    "model": "{\"class\":\"root:org.kevoree.ContainerRoot@0.49632998520880391481214811460\",\"generated_KMF_ID\":\"0.49632998520880391481214811460\",\"nodes\":[],\"repositories\":[],\"hubs\":[],\"mBindings\":[],\"groups\":[],\"packages\":[\n{\"class\":\"org.kevoree.Package@kevoree\",\"name\":\"kevoree\",\"packages\":[],\"typeDefinitions\":[],\"deployUnits\":[\n{\"class\":\"org.kevoree.DeployUnit@hashcode=01cf3fc730f4fbcdebf52a6f9fe54e05,name=kevoree-node-javascript,version=5.4.0\",\"name\":\"kevoree-node-javascript\",\"hashcode\":\"01cf3fc730f4fbcdebf52a6f9fe54e05\",\"url\":\"\",\"version\":\"5.4.0\",\"requiredLibs\":[],\"filters\":[\n{\"class\":\"org.kevoree.Value@platform\",\"name\":\"platform\",\"value\":\"js\"}\n]}\n]}\n]}"
+  }],
+  "JavascriptNode/42/LATEST": [{
+    "createdBy": "leiko",
+    "lastModifiedBy": "leiko",
+    "lastModifiedDate": 1481214814443,
+    "id": 1201,
+    "name": "kevoree-node-javascript",
+    "version": "5.4.0-beta.0",
+    "platform": "js",
+    "model": "{\"class\":\"root:org.kevoree.ContainerRoot@0.49632998520880391481214811460\",\"generated_KMF_ID\":\"0.49632998520880391481214811460\",\"nodes\":[],\"repositories\":[],\"hubs\":[],\"mBindings\":[],\"groups\":[],\"packages\":[\n{\"class\":\"org.kevoree.Package@kevoree\",\"name\":\"kevoree\",\"packages\":[],\"typeDefinitions\":[],\"deployUnits\":[\n{\"class\":\"org.kevoree.DeployUnit@hashcode=01cf3fc730f4fbcdebf52a6f9fe54e05,name=kevoree-node-javascript,version=5.4.0-beta.0\",\"name\":\"kevoree-node-javascript\",\"hashcode\":\"01cf3fc730f4fbcdebf52a6f9fe54e05\",\"url\":\"\",\"version\":\"5.4.0-beta.0\",\"requiredLibs\":[],\"filters\":[\n{\"class\":\"org.kevoree.Value@platform\",\"name\":\"platform\",\"value\":\"js\"}\n]}\n]}\n]}"
+  }],
+  "JavascriptNode/42/RELEASE": [{
+    "createdBy": "leiko",
+    "lastModifiedBy": "leiko",
+    "lastModifiedDate": 1481214814443,
+    "id": 1202,
+    "name": "kevoree-node-javascript",
+    "version": "5.4.0",
+    "platform": "js",
+    "model": "{\"class\":\"root:org.kevoree.ContainerRoot@0.49632998520880391481214811460\",\"generated_KMF_ID\":\"0.49632998520880391481214811460\",\"nodes\":[],\"repositories\":[],\"hubs\":[],\"mBindings\":[],\"groups\":[],\"packages\":[\n{\"class\":\"org.kevoree.Package@kevoree\",\"name\":\"kevoree\",\"packages\":[],\"typeDefinitions\":[],\"deployUnits\":[\n{\"class\":\"org.kevoree.DeployUnit@hashcode=01cf3fc730f4fbcdebf52a6f9fe54e05,name=kevoree-node-javascript,version=5.4.0\",\"name\":\"kevoree-node-javascript\",\"hashcode\":\"01cf3fc730f4fbcdebf52a6f9fe54e05\",\"url\":\"\",\"version\":\"5.4.0\",\"requiredLibs\":[],\"filters\":[\n{\"class\":\"org.kevoree.Value@platform\",\"name\":\"platform\",\"value\":\"js\"}\n]}\n]}\n]}"
+  }],
+  "JavascriptNode/42/dus": [{
+      "createdBy": "leiko",
+      "lastModifiedBy": "leiko",
+      "lastModifiedDate": 1481214814443,
+      "id": 1201,
+      "name": "kevoree-node-javascript",
+      "version": "5.4.0-beta.0",
+      "platform": "js",
+      "model": "{\"class\":\"root:org.kevoree.ContainerRoot@0.49632998520880391481214811460\",\"generated_KMF_ID\":\"0.49632998520880391481214811460\",\"nodes\":[],\"repositories\":[],\"hubs\":[],\"mBindings\":[],\"groups\":[],\"packages\":[\n{\"class\":\"org.kevoree.Package@kevoree\",\"name\":\"kevoree\",\"packages\":[],\"typeDefinitions\":[],\"deployUnits\":[\n{\"class\":\"org.kevoree.DeployUnit@hashcode=01cf3fc730f4fbcdebf52a6f9fe54e05,name=kevoree-node-javascript,version=5.4.0-beta.0\",\"name\":\"kevoree-node-javascript\",\"hashcode\":\"01cf3fc730f4fbcdebf52a6f9fe54e05\",\"url\":\"\",\"version\":\"5.4.0-beta.0\",\"requiredLibs\":[],\"filters\":[\n{\"class\":\"org.kevoree.Value@platform\",\"name\":\"platform\",\"value\":\"js\"}\n]}\n]}\n]}"
+    },
+    {
+      "createdBy": "leiko",
+      "lastModifiedBy": "leiko",
+      "lastModifiedDate": 1481214814443,
+      "id": 1202,
+      "name": "kevoree-node-javascript",
+      "version": "5.4.0",
+      "platform": "js",
+      "model": "{\"class\":\"root:org.kevoree.ContainerRoot@0.49632998520880391481214811460\",\"generated_KMF_ID\":\"0.49632998520880391481214811460\",\"nodes\":[],\"repositories\":[],\"hubs\":[],\"mBindings\":[],\"groups\":[],\"packages\":[\n{\"class\":\"org.kevoree.Package@kevoree\",\"name\":\"kevoree\",\"packages\":[],\"typeDefinitions\":[],\"deployUnits\":[\n{\"class\":\"org.kevoree.DeployUnit@hashcode=01cf3fc730f4fbcdebf52a6f9fe54e05,name=kevoree-node-javascript,version=5.4.0\",\"name\":\"kevoree-node-javascript\",\"hashcode\":\"01cf3fc730f4fbcdebf52a6f9fe54e05\",\"url\":\"\",\"version\":\"5.4.0\",\"requiredLibs\":[],\"filters\":[\n{\"class\":\"org.kevoree.Value@platform\",\"name\":\"platform\",\"value\":\"js\"}\n]}\n]}\n]}"
+    }
+  ],
+  "WSGroup/1": {
+    "createdBy": "kevoree",
+    "lastModifiedBy": "leiko",
+    "lastModifiedDate": 1481214903670,
+    "id": 1049,
+    "name": "WSGroup",
+    "version": 1,
+    "model": "{\"class\":\"org.kevoree.GroupType@name=WSGroup,version=1\",\"name\":\"WSGroup\",\"abstract\":\"false\",\"version\":\"1\",\"deployUnits\":[],\"superTypes\":[],\"dictionaryType\":[\n{\"class\":\"org.kevoree.DictionaryType@0.0\",\"generated_KMF_ID\":\"0.0\",\"attributes\":[\n{\"class\":\"org.kevoree.DictionaryAttribute@filter\",\"datatype\":\"STRING\",\"defaultValue\":\"\",\"name\":\"filter\",\"fragmentDependant\":\"false\",\"optional\":\"true\",\"state\":\"false\",\"genericTypes\":[]}\n,\n{\"class\":\"org.kevoree.DictionaryAttribute@onConnect\",\"datatype\":\"STRING\",\"defaultValue\":\"\",\"name\":\"onConnect\",\"fragmentDependant\":\"false\",\"optional\":\"true\",\"state\":\"false\",\"genericTypes\":[]}\n,\n{\"class\":\"org.kevoree.DictionaryAttribute@onDisconnect\",\"datatype\":\"STRING\",\"defaultValue\":\"\",\"name\":\"onDisconnect\",\"fragmentDependant\":\"false\",\"optional\":\"true\",\"state\":\"false\",\"genericTypes\":[]}\n,\n{\"class\":\"org.kevoree.DictionaryAttribute@port\",\"datatype\":\"INT\",\"defaultValue\":\"9000\",\"name\":\"port\",\"fragmentDependant\":\"true\",\"optional\":\"true\",\"state\":\"false\",\"genericTypes\":[]}\n,\n{\"class\":\"org.kevoree.DictionaryAttribute@master\",\"datatype\":\"STRING\",\"defaultValue\":\"\",\"name\":\"master\",\"fragmentDependant\":\"false\",\"optional\":\"true\",\"state\":\"false\",\"genericTypes\":[]}\n]}\n],\"metaData\":[\n{\"class\":\"org.kevoree.Value@description\",\"name\":\"description\",\"value\":\"This group uses <strong>WebSockets</strong> to propagate models over the connected nodes.<br/>If the attribute <strong>master</strong> is specified (using the instance name of one of the connected nodes) then a WebSocket server will be listening on that node using the <strong>port</strong> attribute specified in the fragment dictionary of that particular node and every other nodes connected to that group will try to connect to that <strong>master</strong> node.</br>If <strong>master</strong> is empty, then every connected node will try to start a WebSocket server using their <strong>port</strong> fragment attribute.<br/><br/>The attributes <strong>onConnect</strong> and <strong>onDisconnect</strong> expects KevScript strings to be given to them optionally. If set, <strong>onConnect</strong> KevScript will be executed on the <strong>master</strong> node when a new client connects to the master server (and <strong>onDisconnect</strong> will be executed when a node disconnects from the master server)<br/><br/><em>NB: onConnect & onDisconnect can reference the current node that triggered the process by using this notation: {nodeName}</em><br/><em>NB2: {groupName} is also available and resolves to the current WSGroup instance name</em><br/><em>NB3: onConnect & onDisconnect are not triggered if the client nodeName does not match the regex given in the <strong>filter</strong> parameter</em>\"}\n]}"
+  },
+  "WSGroup/1/RELEASE": [{
+    "createdBy": "kevoree",
+    "lastModifiedBy": "kevoree",
+    "lastModifiedDate": 1480609319361,
+    "id": 1054,
+    "name": "org.kevoree.library.java.ws",
+    "version": "5.4.0",
+    "platform": "java",
+    "model": "\n{\"class\":\"root:org.kevoree.ContainerRoot@0\",\"generated_KMF_ID\":\"0\",\"nodes\":[],\"repositories\":[],\"hubs\":[],\"mBindings\":[],\"groups\":[],\"packages\":[\n{\"class\":\"org.kevoree.Package@kevoree\",\"name\":\"kevoree\",\"packages\":[],\"typeDefinitions\":[],\"deployUnits\":[\n{\"class\":\"org.kevoree.DeployUnit@hashcode=ca43b985c3e5dfb28c9e6664f4c9822e,name=org.kevoree.library.java.ws,version=5.4.0\",\"hashcode\":\"ca43b985c3e5dfb28c9e6664f4c9822e\",\"name\":\"org.kevoree.library.java.ws\",\"version\":\"5.4.0\",\"url\":\"org.kevoree.library.java:org.kevoree.library.java.ws:5.4.0\",\"requiredLibs\":[],\"filters\":[\n{\"class\":\"org.kevoree.Value@repo_central\",\"name\":\"repo_central\",\"value\":\"http://repo.maven.apache.org/maven2\"}\n,\n{\"class\":\"org.kevoree.Value@repo_sonatype-nexus-snapshots\",\"name\":\"repo_sonatype-nexus-snapshots\",\"value\":\"https://oss.sonatype.org/content/repositories/snapshots\"}\n,\n{\"class\":\"org.kevoree.Value@repo_kevoree-oss\",\"name\":\"repo_kevoree-oss\",\"value\":\"https://oss.sonatype.org/content/groups/public/\"}\n,\n{\"class\":\"org.kevoree.Value@class:WSChan:1\",\"name\":\"class:WSChan:1\",\"value\":\"org.kevoree.library.WSChan\"}\n,\n{\"class\":\"org.kevoree.Value@class:WSFeedbackGroup:1\",\"name\":\"class:WSFeedbackGroup:1\",\"value\":\"org.kevoree.library.WSFeedbackGroup\"}\n,\n{\"class\":\"org.kevoree.Value@class:RemoteWSChan:1\",\"name\":\"class:RemoteWSChan:1\",\"value\":\"org.kevoree.library.RemoteWSChan\"}\n,\n{\"class\":\"org.kevoree.Value@platform\",\"name\":\"platform\",\"value\":\"java\"}\n,\n{\"class\":\"org.kevoree.Value@class:RemoteWSGroup:1\",\"name\":\"class:RemoteWSGroup:1\",\"value\":\"org.kevoree.library.RemoteWSGroup\"}\n,\n{\"class\":\"org.kevoree.Value@class:WSGroup:1\",\"name\":\"class:WSGroup:1\",\"value\":\"org.kevoree.library.WSGroup\"}\n]}\n]}\n]}\n"
+  }, {
+    "createdBy": "leiko",
+    "lastModifiedBy": "leiko",
+    "lastModifiedDate": 1481214903666,
+    "id": 1202,
+    "name": "kevoree-group-ws",
+    "version": "5.3.3",
+    "platform": "js",
+    "model": "{\"class\":\"root:org.kevoree.ContainerRoot@0.83080968781951791481214900770\",\"generated_KMF_ID\":\"0.83080968781951791481214900770\",\"nodes\":[],\"repositories\":[],\"hubs\":[],\"mBindings\":[],\"groups\":[],\"packages\":[\n{\"class\":\"org.kevoree.Package@kevoree\",\"name\":\"kevoree\",\"packages\":[],\"typeDefinitions\":[],\"deployUnits\":[\n{\"class\":\"org.kevoree.DeployUnit@hashcode=9527650cb9fcd89da4b080558da5e3d0,name=kevoree-group-ws,version=5.3.3\",\"name\":\"kevoree-group-ws\",\"hashcode\":\"9527650cb9fcd89da4b080558da5e3d0\",\"url\":\"\",\"version\":\"5.3.3\",\"requiredLibs\":[],\"filters\":[\n{\"class\":\"org.kevoree.Value@platform\",\"name\":\"platform\",\"value\":\"js\"}\n]}\n]}\n]}"
+  }],
+	"WSGroup/1/dus": [
+		{
+	    "createdBy": "kevoree",
+	    "lastModifiedBy": "kevoree",
+	    "lastModifiedDate": 1480609319361,
+	    "id": 1054,
+	    "name": "org.kevoree.library.java.ws",
+	    "version": "5.4.0",
+	    "platform": "java",
+	    "model": "\n{\"class\":\"root:org.kevoree.ContainerRoot@0\",\"generated_KMF_ID\":\"0\",\"nodes\":[],\"repositories\":[],\"hubs\":[],\"mBindings\":[],\"groups\":[],\"packages\":[\n{\"class\":\"org.kevoree.Package@kevoree\",\"name\":\"kevoree\",\"packages\":[],\"typeDefinitions\":[],\"deployUnits\":[\n{\"class\":\"org.kevoree.DeployUnit@hashcode=ca43b985c3e5dfb28c9e6664f4c9822e,name=org.kevoree.library.java.ws,version=5.4.0\",\"hashcode\":\"ca43b985c3e5dfb28c9e6664f4c9822e\",\"name\":\"org.kevoree.library.java.ws\",\"version\":\"5.4.0\",\"url\":\"org.kevoree.library.java:org.kevoree.library.java.ws:5.4.0\",\"requiredLibs\":[],\"filters\":[\n{\"class\":\"org.kevoree.Value@repo_central\",\"name\":\"repo_central\",\"value\":\"http://repo.maven.apache.org/maven2\"}\n,\n{\"class\":\"org.kevoree.Value@repo_sonatype-nexus-snapshots\",\"name\":\"repo_sonatype-nexus-snapshots\",\"value\":\"https://oss.sonatype.org/content/repositories/snapshots\"}\n,\n{\"class\":\"org.kevoree.Value@repo_kevoree-oss\",\"name\":\"repo_kevoree-oss\",\"value\":\"https://oss.sonatype.org/content/groups/public/\"}\n,\n{\"class\":\"org.kevoree.Value@class:WSChan:1\",\"name\":\"class:WSChan:1\",\"value\":\"org.kevoree.library.WSChan\"}\n,\n{\"class\":\"org.kevoree.Value@class:WSFeedbackGroup:1\",\"name\":\"class:WSFeedbackGroup:1\",\"value\":\"org.kevoree.library.WSFeedbackGroup\"}\n,\n{\"class\":\"org.kevoree.Value@class:RemoteWSChan:1\",\"name\":\"class:RemoteWSChan:1\",\"value\":\"org.kevoree.library.RemoteWSChan\"}\n,\n{\"class\":\"org.kevoree.Value@platform\",\"name\":\"platform\",\"value\":\"java\"}\n,\n{\"class\":\"org.kevoree.Value@class:RemoteWSGroup:1\",\"name\":\"class:RemoteWSGroup:1\",\"value\":\"org.kevoree.library.RemoteWSGroup\"}\n,\n{\"class\":\"org.kevoree.Value@class:WSGroup:1\",\"name\":\"class:WSGroup:1\",\"value\":\"org.kevoree.library.WSGroup\"}\n]}\n]}\n]}\n"
+	  }, {
+	    "createdBy": "leiko",
+	    "lastModifiedBy": "leiko",
+	    "lastModifiedDate": 1481214903666,
+	    "id": 1202,
+	    "name": "kevoree-group-ws",
+	    "version": "5.3.3",
+	    "platform": "js",
+	    "model": "{\"class\":\"root:org.kevoree.ContainerRoot@0.83080968781951791481214900770\",\"generated_KMF_ID\":\"0.83080968781951791481214900770\",\"nodes\":[],\"repositories\":[],\"hubs\":[],\"mBindings\":[],\"groups\":[],\"packages\":[\n{\"class\":\"org.kevoree.Package@kevoree\",\"name\":\"kevoree\",\"packages\":[],\"typeDefinitions\":[],\"deployUnits\":[\n{\"class\":\"org.kevoree.DeployUnit@hashcode=9527650cb9fcd89da4b080558da5e3d0,name=kevoree-group-ws,version=5.3.3\",\"name\":\"kevoree-group-ws\",\"hashcode\":\"9527650cb9fcd89da4b080558da5e3d0\",\"url\":\"\",\"version\":\"5.3.3\",\"requiredLibs\":[],\"filters\":[\n{\"class\":\"org.kevoree.Value@platform\",\"name\":\"platform\",\"value\":\"js\"}\n]}\n]}\n]}"
+	  }
+	],
+  "Ticker/1": {
+    "createdBy": "kevoree",
+    "lastModifiedBy": "leiko",
+    "lastModifiedDate": 1481215345582,
+    "id": 1042,
+    "name": "Ticker",
+    "version": 1,
+    "model": "{\"class\":\"org.kevoree.ComponentType@name=Ticker,version=1\",\"name\":\"Ticker\",\"abstract\":\"false\",\"version\":\"1\",\"deployUnits\":[],\"superTypes\":[],\"dictionaryType\":[\n{\"class\":\"org.kevoree.DictionaryType@0.0\",\"generated_KMF_ID\":\"0.0\",\"attributes\":[\n{\"class\":\"org.kevoree.DictionaryAttribute@random\",\"datatype\":\"BOOLEAN\",\"defaultValue\":\"false\",\"name\":\"random\",\"fragmentDependant\":\"false\",\"optional\":\"true\",\"state\":\"false\",\"genericTypes\":[]}\n,\n{\"class\":\"org.kevoree.DictionaryAttribute@period\",\"datatype\":\"LONG\",\"defaultValue\":\"3000\",\"name\":\"period\",\"fragmentDependant\":\"false\",\"optional\":\"true\",\"state\":\"false\",\"genericTypes\":[]}\n]}\n],\"metaData\":[\n{\"class\":\"org.kevoree.Value@description\",\"name\":\"description\",\"value\":\"A Kevoree component that sends a 'tick' message at user-defined intervals\"}\n],\"required\":[\n{\"class\":\"org.kevoree.PortTypeRef@tick\",\"noDependency\":\"true\",\"name\":\"tick\",\"optional\":\"true\",\"ref\":[],\"mappings\":[]}\n],\"provided\":[]}"
+  },
+  "Ticker/1/LATEST": [{
+    "createdBy": "kevoree",
+    "lastModifiedBy": "kevoree",
+    "lastModifiedDate": 1480609301137,
+    "id": 1044,
+    "name": "org.kevoree.library.java.toys",
+    "version": "5.4.0-SNAPSHOT",
+    "platform": "java",
+    "model": "\n{\"class\":\"root:org.kevoree.ContainerRoot@0\",\"generated_KMF_ID\":\"0\",\"nodes\":[],\"repositories\":[],\"hubs\":[],\"mBindings\":[],\"groups\":[],\"packages\":[\n{\"class\":\"org.kevoree.Package@kevoree\",\"name\":\"kevoree\",\"packages\":[],\"typeDefinitions\":[],\"deployUnits\":[\n{\"class\":\"org.kevoree.DeployUnit@hashcode=bff7d1689b79e75d0b944397ac6fe223,name=org.kevoree.library.java.toys,version=5.4.0-SNAPSHOT\",\"hashcode\":\"bff7d1689b79e75d0b944397ac6fe223\",\"name\":\"org.kevoree.library.java.toys\",\"version\":\"5.4.0-SNAPSHOT\",\"url\":\"org.kevoree.library.java:org.kevoree.library.java.toys:5.4.0-SNAPSHOT\",\"requiredLibs\":[],\"filters\":[\n{\"class\":\"org.kevoree.Value@repo_central\",\"name\":\"repo_central\",\"value\":\"http://repo.maven.apache.org/maven2\"}\n,\n{\"class\":\"org.kevoree.Value@repo_sonatype-nexus-snapshots\",\"name\":\"repo_sonatype-nexus-snapshots\",\"value\":\"https://oss.sonatype.org/content/repositories/snapshots\"}\n,\n{\"class\":\"org.kevoree.Value@repo_kevoree-oss\",\"name\":\"repo_kevoree-oss\",\"value\":\"https://oss.sonatype.org/content/groups/public/\"}\n,\n{\"class\":\"org.kevoree.Value@class:ToyConsole:2\",\"name\":\"class:ToyConsole:2\",\"value\":\"org.kevoree.library.ToyConsole\"}\n,\n{\"class\":\"org.kevoree.Value@class:Ticker:1\",\"name\":\"class:Ticker:1\",\"value\":\"org.kevoree.library.Ticker\"}\n,\n{\"class\":\"org.kevoree.Value@platform\",\"name\":\"platform\",\"value\":\"java\"}\n]}\n]}\n]}\n"
+  }, {
+    "createdBy": "leiko",
+    "lastModifiedBy": "leiko",
+    "lastModifiedDate": 1481215345578,
+    "id": 1206,
+    "name": "kevoree-comp-ticker",
+    "version": "5.3.3-beta.0",
+    "platform": "js",
+    "model": "{\"class\":\"root:org.kevoree.ContainerRoot@0.330504510397256151481215338936\",\"generated_KMF_ID\":\"0.330504510397256151481215338936\",\"nodes\":[],\"repositories\":[],\"hubs\":[],\"mBindings\":[],\"groups\":[],\"packages\":[\n{\"class\":\"org.kevoree.Package@kevoree\",\"name\":\"kevoree\",\"packages\":[],\"typeDefinitions\":[],\"deployUnits\":[\n{\"class\":\"org.kevoree.DeployUnit@hashcode=e6d702455a2d985a3ad587eb4a4cad0b,name=kevoree-comp-ticker,version=5.3.3-beta.0\",\"name\":\"kevoree-comp-ticker\",\"hashcode\":\"e6d702455a2d985a3ad587eb4a4cad0b\",\"url\":\"\",\"version\":\"5.3.3-beta.0\",\"requiredLibs\":[],\"filters\":[\n{\"class\":\"org.kevoree.Value@platform\",\"name\":\"platform\",\"value\":\"js\"}\n]}\n]}\n]}"
+  }],
+  "Ticker/1/dus": [{
+    "createdBy": "kevoree",
+    "lastModifiedBy": "kevoree",
+    "lastModifiedDate": 1480609301137,
+    "id": 1044,
+    "name": "org.kevoree.library.java.toys",
+    "version": "5.4.0-SNAPSHOT",
+    "platform": "java",
+    "model": "\n{\"class\":\"root:org.kevoree.ContainerRoot@0\",\"generated_KMF_ID\":\"0\",\"nodes\":[],\"repositories\":[],\"hubs\":[],\"mBindings\":[],\"groups\":[],\"packages\":[\n{\"class\":\"org.kevoree.Package@kevoree\",\"name\":\"kevoree\",\"packages\":[],\"typeDefinitions\":[],\"deployUnits\":[\n{\"class\":\"org.kevoree.DeployUnit@hashcode=bff7d1689b79e75d0b944397ac6fe223,name=org.kevoree.library.java.toys,version=5.4.0-SNAPSHOT\",\"hashcode\":\"bff7d1689b79e75d0b944397ac6fe223\",\"name\":\"org.kevoree.library.java.toys\",\"version\":\"5.4.0-SNAPSHOT\",\"url\":\"org.kevoree.library.java:org.kevoree.library.java.toys:5.4.0-SNAPSHOT\",\"requiredLibs\":[],\"filters\":[\n{\"class\":\"org.kevoree.Value@repo_central\",\"name\":\"repo_central\",\"value\":\"http://repo.maven.apache.org/maven2\"}\n,\n{\"class\":\"org.kevoree.Value@repo_sonatype-nexus-snapshots\",\"name\":\"repo_sonatype-nexus-snapshots\",\"value\":\"https://oss.sonatype.org/content/repositories/snapshots\"}\n,\n{\"class\":\"org.kevoree.Value@repo_kevoree-oss\",\"name\":\"repo_kevoree-oss\",\"value\":\"https://oss.sonatype.org/content/groups/public/\"}\n,\n{\"class\":\"org.kevoree.Value@class:ToyConsole:2\",\"name\":\"class:ToyConsole:2\",\"value\":\"org.kevoree.library.ToyConsole\"}\n,\n{\"class\":\"org.kevoree.Value@class:Ticker:1\",\"name\":\"class:Ticker:1\",\"value\":\"org.kevoree.library.Ticker\"}\n,\n{\"class\":\"org.kevoree.Value@platform\",\"name\":\"platform\",\"value\":\"java\"}\n]}\n]}\n]}\n"
+  }, {
+    "createdBy": "leiko",
+    "lastModifiedBy": "leiko",
+    "lastModifiedDate": 1481215345578,
+    "id": 1206,
+    "name": "kevoree-comp-ticker",
+    "version": "5.3.3-beta.0",
+    "platform": "js",
+    "model": "{\"class\":\"root:org.kevoree.ContainerRoot@0.330504510397256151481215338936\",\"generated_KMF_ID\":\"0.330504510397256151481215338936\",\"nodes\":[],\"repositories\":[],\"hubs\":[],\"mBindings\":[],\"groups\":[],\"packages\":[\n{\"class\":\"org.kevoree.Package@kevoree\",\"name\":\"kevoree\",\"packages\":[],\"typeDefinitions\":[],\"deployUnits\":[\n{\"class\":\"org.kevoree.DeployUnit@hashcode=e6d702455a2d985a3ad587eb4a4cad0b,name=kevoree-comp-ticker,version=5.3.3-beta.0\",\"name\":\"kevoree-comp-ticker\",\"hashcode\":\"e6d702455a2d985a3ad587eb4a4cad0b\",\"url\":\"\",\"version\":\"5.3.3-beta.0\",\"requiredLibs\":[],\"filters\":[\n{\"class\":\"org.kevoree.Value@platform\",\"name\":\"platform\",\"value\":\"js\"}\n]}\n]}\n]}"
+  }]
+}

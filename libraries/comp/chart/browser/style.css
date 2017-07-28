@@ -1,0 +1,22 @@
+body {
+    height: 100%;
+}
+.top-panel {
+    padding: 5px;
+    background-color: #f5f5f5;
+}
+.chart-panel {
+    position: absolute;
+    top: 32px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+.chart-container {
+    height: 100%;
+    width: 100%;
+}
+.chart {
+    height: 100%;
+    width: 100%;
+}

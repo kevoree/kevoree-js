@@ -29,8 +29,8 @@
     ]
   },
   "devDependencies": {
-    "eslint": "^3.11.1",
-    "mocha": "^3.2.0"
+    "webpack": "^3.3.0",
+    "mocha": "^3.4.2"
   },
   "dependencies": {
     "pkg-hash": "^3.0.0"

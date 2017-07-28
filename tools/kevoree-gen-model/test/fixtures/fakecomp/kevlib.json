@@ -1,0 +1,312 @@
+{
+    "class": "root:org.kevoree.ContainerRoot@0.118423787411685361482592509999",
+    "generated_KMF_ID": "0.118423787411685361482592509999",
+    "nodes": [],
+    "repositories": [],
+    "hubs": [],
+    "mBindings": [],
+    "groups": [],
+    "packages": [
+        {
+            "class": "org.kevoree.Package@myNamespace",
+            "name": "myNamespace",
+            "packages": [],
+            "typeDefinitions": [
+                {
+                    "class": "org.kevoree.ComponentType@name=FakeComp,version=1",
+                    "abstract": "false",
+                    "name": "FakeComp",
+                    "version": "1",
+                    "deployUnits": [
+                        "/packages[myNamespace]/deployUnits[hashcode=2c99ad7828821af367333a4892abd1ba,name=fakecomp,version=1.0.0]"
+                    ],
+                    "superTypes": [],
+                    "dictionaryType": [
+                        {
+                            "class": "org.kevoree.DictionaryType@0.0",
+                            "generated_KMF_ID": "0.0",
+                            "attributes": [
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@memory",
+                                    "fragmentDependant": "false",
+                                    "optional": "false",
+                                    "name": "memory",
+                                    "state": "false",
+                                    "datatype": "INT",
+                                    "defaultValue": "512",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@cpuShares",
+                                    "fragmentDependant": "false",
+                                    "optional": "false",
+                                    "name": "cpuShares",
+                                    "state": "false",
+                                    "datatype": "INT",
+                                    "defaultValue": "0",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@pushRegistry",
+                                    "fragmentDependant": "false",
+                                    "optional": "true",
+                                    "name": "pushRegistry",
+                                    "state": "false",
+                                    "datatype": "STRING",
+                                    "defaultValue": "https://index.docker.io/v1/",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@pushOnDestroy",
+                                    "fragmentDependant": "false",
+                                    "optional": "true",
+                                    "name": "pushOnDestroy",
+                                    "state": "false",
+                                    "datatype": "BOOLEAN",
+                                    "defaultValue": "false",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@commitRepo",
+                                    "fragmentDependant": "false",
+                                    "optional": "false",
+                                    "name": "commitRepo",
+                                    "state": "false",
+                                    "datatype": "STRING",
+                                    "defaultValue": "",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@authEmail",
+                                    "fragmentDependant": "false",
+                                    "optional": "true",
+                                    "name": "authEmail",
+                                    "state": "false",
+                                    "datatype": "STRING",
+                                    "defaultValue": "",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@authPassword",
+                                    "fragmentDependant": "false",
+                                    "optional": "true",
+                                    "name": "authPassword",
+                                    "state": "false",
+                                    "datatype": "STRING",
+                                    "defaultValue": "",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@authUsername",
+                                    "fragmentDependant": "false",
+                                    "optional": "true",
+                                    "name": "authUsername",
+                                    "state": "false",
+                                    "datatype": "STRING",
+                                    "defaultValue": "",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@cmd",
+                                    "fragmentDependant": "false",
+                                    "optional": "true",
+                                    "name": "cmd",
+                                    "state": "false",
+                                    "datatype": "STRING",
+                                    "defaultValue": "",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@commitAuthor",
+                                    "fragmentDependant": "false",
+                                    "optional": "true",
+                                    "name": "commitAuthor",
+                                    "state": "false",
+                                    "datatype": "STRING",
+                                    "defaultValue": "",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@commitMsg",
+                                    "fragmentDependant": "false",
+                                    "optional": "true",
+                                    "name": "commitMsg",
+                                    "state": "false",
+                                    "datatype": "STRING",
+                                    "defaultValue": "",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@commitTag",
+                                    "fragmentDependant": "false",
+                                    "optional": "true",
+                                    "name": "commitTag",
+                                    "state": "false",
+                                    "datatype": "STRING",
+                                    "defaultValue": "",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@image",
+                                    "fragmentDependant": "false",
+                                    "optional": "true",
+                                    "name": "image",
+                                    "state": "false",
+                                    "datatype": "STRING",
+                                    "defaultValue": "",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@boolAttr",
+                                    "fragmentDependant": "false",
+                                    "optional": "false",
+                                    "name": "boolAttr",
+                                    "state": "false",
+                                    "datatype": "BOOLEAN",
+                                    "defaultValue": "true",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@port3",
+                                    "fragmentDependant": "false",
+                                    "optional": "true",
+                                    "name": "port3",
+                                    "state": "false",
+                                    "datatype": "INT",
+                                    "defaultValue": "1000",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@port2",
+                                    "fragmentDependant": "false",
+                                    "optional": "true",
+                                    "name": "port2",
+                                    "state": "false",
+                                    "datatype": "STRING",
+                                    "defaultValue": "42",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@port1",
+                                    "fragmentDependant": "false",
+                                    "optional": "true",
+                                    "name": "port1",
+                                    "state": "false",
+                                    "datatype": "STRING",
+                                    "defaultValue": "52.2",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@port",
+                                    "fragmentDependant": "true",
+                                    "optional": "true",
+                                    "name": "port",
+                                    "state": "false",
+                                    "datatype": "STRING",
+                                    "defaultValue": "9000",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@emptyAttr4",
+                                    "fragmentDependant": "false",
+                                    "optional": "true",
+                                    "name": "emptyAttr4",
+                                    "state": "false",
+                                    "datatype": "STRING",
+                                    "defaultValue": "",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@emptyAttr3",
+                                    "fragmentDependant": "false",
+                                    "optional": "true",
+                                    "name": "emptyAttr3",
+                                    "state": "false",
+                                    "datatype": "BOOLEAN",
+                                    "defaultValue": "",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@emptyAttr2",
+                                    "fragmentDependant": "false",
+                                    "optional": "true",
+                                    "name": "emptyAttr2",
+                                    "state": "false",
+                                    "datatype": "STRING",
+                                    "defaultValue": "",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@emptyAttr",
+                                    "fragmentDependant": "false",
+                                    "optional": "true",
+                                    "name": "emptyAttr",
+                                    "state": "false",
+                                    "datatype": "INT",
+                                    "defaultValue": "",
+                                    "genericTypes": []
+                                },
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@fooAttr",
+                                    "fragmentDependant": "false",
+                                    "optional": "true",
+                                    "name": "fooAttr",
+                                    "state": "false",
+                                    "datatype": "BOOLEAN",
+                                    "defaultValue": "foo",
+                                    "genericTypes": []
+                                }
+                            ]
+                        }
+                    ],
+                    "metaData": [],
+                    "required": [
+                        {
+                            "class": "org.kevoree.PortTypeRef@potato",
+                            "noDependency": "true",
+                            "optional": "true",
+                            "name": "potato",
+                            "ref": [],
+                            "mappings": []
+                        }
+                    ],
+                    "provided": [
+                        {
+                            "class": "org.kevoree.PortTypeRef@receiver",
+                            "noDependency": "true",
+                            "optional": "true",
+                            "name": "receiver",
+                            "ref": [],
+                            "mappings": []
+                        },
+                        {
+                            "class": "org.kevoree.PortTypeRef@fake",
+                            "noDependency": "true",
+                            "optional": "true",
+                            "name": "fake",
+                            "ref": [],
+                            "mappings": []
+                        }
+                    ]
+                }
+            ],
+            "deployUnits": [
+                {
+                    "class": "org.kevoree.DeployUnit@hashcode=2c99ad7828821af367333a4892abd1ba,name=fakecomp,version=1.0.0",
+                    "name": "fakecomp",
+                    "hashcode": "2c99ad7828821af367333a4892abd1ba",
+                    "url": "",
+                    "version": "1.0.0",
+                    "requiredLibs": [],
+                    "filters": [
+                        {
+                            "class": "org.kevoree.Value@platform",
+                            "name": "platform",
+                            "value": "js"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

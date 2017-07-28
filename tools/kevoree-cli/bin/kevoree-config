@@ -1,0 +1,23 @@
+#!/usr/bin/env node
+
+const chalk = require('chalk');
+const kConst = require('kevoree-const');
+const config = require('tiny-conf');
+const kApi = require('kevoree-registry-client');
+const printConfig = require('../lib/printConfig');
+
+require('tiny-conf-plugin-file')(config, kConst.CONFIG_PATH);
+require('tiny-conf-plugin-argv')(config);
+
+// prints the content of file kConst.CONFIG_PATH
+printConfig(require(kConst.CONFIG_PATH));
+
+console.log();
+kApi.account.get()
+  .then((user) => {
+    console.log('You are logged-in as: ' + chalk.cyan(user.login));
+  })
+  .catch(() => {
+    console.log(chalk.yellow('You are not logged-in'));
+    console.log('Use the CLI: ' + chalk.cyan('$ kevoree login'));
+  });

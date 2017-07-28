@@ -1,0 +1,5 @@
+add node: JavascriptNode/LATEST/LATEST
+add node.ticker: Ticker/LATEST/LATEST
+
+set node.ticker.random = '
+'

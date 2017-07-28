@@ -1,0 +1,90 @@
+{
+    "class": "org.kevoree.ContainerRoot@0.73673023539595311411134683129",
+    "generated_KMF_ID": "0.73673023539595311411134683129",
+    "nodes": [],
+    "repositories": [],
+    "hubs": [],
+    "mBindings": [],
+    "groups": [],
+    "packages": [
+        {
+            "class": "org.kevoree.Package@org",
+            "name": "org",
+            "packages": [
+                {
+                    "class": "org.kevoree.Package@kevoree",
+                    "name": "kevoree",
+                    "packages": [
+                        {
+                            "class": "org.kevoree.Package@library",
+                            "name": "library",
+                            "packages": [],
+                            "typeDefinitions": [
+                                {
+                                    "class": "org.kevoree.NodeType@name=JavascriptNode,version=3.0.0-SNAPSHOT",
+                                    "abstract": "false",
+                                    "name": "JavascriptNode",
+                                    "version": "3.0.0-SNAPSHOT",
+                                    "deployUnits": [
+                                        "packages[org]/packages[kevoree]/packages[library]/deployUnits[hashcode=,name=kevoree-node-javascript,version=3.0.0-SNAPSHOT]"
+                                    ],
+                                    "superTypes": [],
+                                    "dictionaryType": [
+                                        {
+                                            "class": "org.kevoree.DictionaryType@0.43125935690477491411134683160",
+                                            "generated_KMF_ID": "0.43125935690477491411134683160",
+                                            "attributes": [
+                                                {
+                                                    "class": "org.kevoree.DictionaryAttribute@logFilter",
+                                                    "fragmentDependant": "false",
+                                                    "optional": "true",
+                                                    "name": "logFilter",
+                                                    "state": "false",
+                                                    "datatype": "STRING",
+                                                    "defaultValue": "",
+                                                    "genericTypes": []
+                                                },
+                                                {
+                                                    "class": "org.kevoree.DictionaryAttribute@logLevel",
+                                                    "fragmentDependant": "false",
+                                                    "optional": "false",
+                                                    "name": "logLevel",
+                                                    "state": "false",
+                                                    "datatype": "STRING",
+                                                    "defaultValue": "DEBUG",
+                                                    "genericTypes": []
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "metaData": []
+                                }
+                            ],
+                            "deployUnits": [
+                                {
+                                    "class": "org.kevoree.DeployUnit@hashcode=,name=kevoree-node-javascript,version=3.0.0-SNAPSHOT",
+                                    "name": "kevoree-node-javascript",
+                                    "hashcode": "",
+                                    "url": "",
+                                    "version": "3.0.0-SNAPSHOT",
+                                    "requiredLibs": [],
+                                    "filters": [
+                                        {
+                                            "class": "org.kevoree.Value@platform",
+                                            "name": "platform",
+                                            "value": "javascript"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "typeDefinitions": [],
+                    "deployUnits": []
+                }
+            ],
+            "typeDefinitions": [],
+            "deployUnits": []
+        }
+    ]
+}

@@ -1,0 +1,20 @@
+{
+  "class": "root:org.kevoree.ContainerRoot@0.0",
+  "generated_KMF_ID": "0.0",
+  "nodes": [{
+    "class": "org.kevoree.ContainerNode@node",
+    "name": "node",
+    "started": "true",
+    "typeDefinition": [],
+    "host": [],
+    "hosts": [],
+    "dictionary": [],
+    "fragmentDictionary": [],
+    "metaData": []
+  }],
+  "repositories": [],
+  "hubs": [],
+  "mBindings": [],
+  "groups": [],
+  "packages": []
+}

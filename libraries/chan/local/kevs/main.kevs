@@ -1,0 +1,10 @@
+add node0 : JavascriptNode/LATEST/LATEST
+add sync : WSGroup/LATEST/LATEST
+add node0.printer : ConsolePrinter/LATEST/LATEST
+add node0.ticker : Ticker/LATEST/LATEST
+add myChan : LocalChannel/LATEST/LATEST
+
+attach node0 sync
+
+bind node0.printer.input myChan
+bind node0.ticker.tick myChan

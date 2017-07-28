@@ -1,0 +1,29 @@
+const AbstractNode = require('kevoree-entities/lib/AbstractNode');
+
+const {{name}} = AbstractNode.extend({
+  toString: '{{name}}',
+  tdef_version: 1,
+
+  start(done) {
+    this.log.info('{{name}}', 'Hello world!');
+    done();
+  },
+
+  stop(done) {
+    this.log.info('{{name}}', 'Bye world!');
+    done();
+  },
+
+  /**
+   * Process traces in order to do the adaptation logic on the current node
+   * @param diffSeq traces obtained by diff on current model and proposed model
+   * @param targetModel the proposed model
+   * @returns {Array} an array of adaptation commands
+   */
+  processTraces: function (/*diffSeq, targetModel*/) {
+    this.log.warn('{{name}}', 'Adaptation logic not implemented yet');
+    return [];
+  },
+});
+
+module.exports = {{name}};

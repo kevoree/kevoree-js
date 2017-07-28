@@ -1,0 +1,111 @@
+add node0: JavascriptNode
+add node0.nodeRED: NodeRED
+add node0.ticker: Ticker
+add node0.printer: ConsolePrinter
+add sync: WSGroup
+add chan0, chan1: LocalChannel
+
+set node0.nodeRED.nodesDir = '/tmp/nodered-nodes'
+set node0.nodeRED.flows = '
+[
+   {
+      "id":"kWSServerOutputConf",
+      "type":"websocket-client",
+      "path":"ws://127.0.0.1:45001",
+      "wholemsg":"false"
+   },
+   {
+      "id":"kWSServerInputConf",
+      "type":"websocket-client",
+      "path":"ws://127.0.0.1:45000",
+      "wholemsg":"false"
+   },
+   {
+      "id":"683f7aff.97c084",
+      "type":"debug",
+      "name":"afterFilter",
+      "active":true,
+      "console":"false",
+      "complete":"true",
+      "x":647,
+      "y":244,
+      "z":"f994fb05.066b08",
+      "wires":[]
+   },
+   {
+      "id":"kWSServerInput",
+      "type":"websocket in",
+      "name":"kevoreeInput",
+      "server":"",
+      "client":"kWSServerInputConf",
+      "x":308,
+      "y":159,
+      "z":"f994fb05.066b08",
+      "wires":[
+         [
+            "73adb02a.8c525",
+            "fcf0e9d1.030f18"
+         ]
+      ]
+   },
+   {
+      "id":"kWSServerOutput",
+      "type":"websocket out",
+      "name":"kevoreeOutput",
+      "server":"",
+      "client":"kWSServerOutputConf",
+      "x":681,
+      "y":165,
+      "z":"f994fb05.066b08",
+      "wires":[]
+   },
+   {
+      "id":"73adb02a.8c525",
+      "type":"change",
+      "name":"filter",
+      "rules":[
+         {
+            "t":"delete",
+            "p":"_session"
+         }
+      ],
+      "action":"",
+      "property":"",
+      "from":"",
+      "to":"",
+      "reg":false,
+      "x":494,
+      "y":159,
+      "z":"f994fb05.066b08",
+      "wires":[
+         [
+            "kWSServerOutput",
+            "683f7aff.97c084"
+         ]
+      ]
+   },
+   {
+      "id":"fcf0e9d1.030f18",
+      "type":"debug",
+      "name":"afterKevoreeInput",
+      "active":true,
+      "console":"false",
+      "complete":"true",
+      "x":484,
+      "y":80,
+      "z":"f994fb05.066b08",
+      "wires":[]
+   }
+]
+'
+
+attach node0 sync
+
+bind node0.nodeRED.input chan0
+bind node0.ticker.tick chan0
+
+bind node0.nodeRED.output chan1
+bind node0.printer.input chan1
+
+set node0.logLevel = 'DEBUG'
+set node0.nodeRED.userDir = '/tmp/nodered'

@@ -1,0 +1,79 @@
+{
+    "class": "root:org.kevoree.ContainerRoot@0.91007409737839581500974999063",
+    "generated_KMF_ID": "0.91007409737839581500974999063",
+    "nodes": [],
+    "repositories": [],
+    "hubs": [],
+    "mBindings": [],
+    "groups": [],
+    "packages": [
+        {
+            "class": "org.kevoree.Package@kevoree",
+            "name": "kevoree",
+            "packages": [],
+            "typeDefinitions": [
+                {
+                    "class": "org.kevoree.ComponentType@name=Proxy,version=1",
+                    "abstract": "false",
+                    "name": "Proxy",
+                    "version": "1",
+                    "deployUnits": [
+                        "/packages[kevoree]/deployUnits[hashcode=01248bd8421ab31d261fe45b618d7e72,name=kevoree-comp-proxy,version=0.0.1]"
+                    ],
+                    "superTypes": [],
+                    "dictionaryType": [
+                        {
+                            "class": "org.kevoree.DictionaryType@0.0",
+                            "generated_KMF_ID": "0.0",
+                            "attributes": []
+                        }
+                    ],
+                    "metaData": [
+                        {
+                            "class": "org.kevoree.Value@description",
+                            "name": "description",
+                            "value": "Proxy input messages to its output"
+                        }
+                    ],
+                    "required": [
+                        {
+                            "class": "org.kevoree.PortTypeRef@out",
+                            "noDependency": "true",
+                            "optional": "true",
+                            "name": "out",
+                            "ref": [],
+                            "mappings": []
+                        }
+                    ],
+                    "provided": [
+                        {
+                            "class": "org.kevoree.PortTypeRef@in",
+                            "noDependency": "true",
+                            "optional": "true",
+                            "name": "in",
+                            "ref": [],
+                            "mappings": []
+                        }
+                    ]
+                }
+            ],
+            "deployUnits": [
+                {
+                    "class": "org.kevoree.DeployUnit@hashcode=01248bd8421ab31d261fe45b618d7e72,name=kevoree-comp-proxy,version=0.0.1",
+                    "name": "kevoree-comp-proxy",
+                    "hashcode": "01248bd8421ab31d261fe45b618d7e72",
+                    "url": "",
+                    "version": "0.0.1",
+                    "requiredLibs": [],
+                    "filters": [
+                        {
+                            "class": "org.kevoree.Value@platform",
+                            "name": "platform",
+                            "value": "js"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

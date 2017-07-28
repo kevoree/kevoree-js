@@ -5,7 +5,7 @@
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "main": "./kevoree-core.js",
   "scripts": {
-    "build": "webpack",
+    "build": "webpack -p",
     "lint": "eslint kevoree-core.js lib",
     "prepublish": "npm run test && npm run build",
     "test": "npm run lint && mocha test/server"
@@ -27,14 +27,17 @@
     "kevoree-library": "^5.0.11"
   },
   "devDependencies": {
-    "eslint": "^4.1.1",
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-preset-env": "^1.6.0",
+    "webpack": "^3.3.0",
     "kevoree-kevscript": "^5.0.0",
-    "kevoree-node-javascript": "^5.4.0-beta.3",
+    "kevoree-logger": "^1.0.0-alpha",
     "kevoree-registry-client": "^3.0.0",
     "kevoree-validator": "^0.1.18",
-    "mocha": "^3.2.0",
-    "tiny-conf": "^1.0.5",
-    "webpack": "^3.0.0"
+    "mocha": "^3.4.2",
+    "tiny-conf": "^1.1.0",
+    "webpack": "^3.3.0"
   },
   "license": "LGPL-3.0",
   "homepage": "https://github.com/kevoree/kevoree-js-core"

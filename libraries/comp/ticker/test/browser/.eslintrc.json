@@ -1,0 +1,17 @@
+{
+  "env": {
+    "browser": true
+  },
+  "globals": {
+    "React": true,
+    "ReactDOM": true,
+    "TinyConf": true,
+    "KevoreeCore": true,
+    "KevoreeLibrary": true,
+    "KevoreeKevscript": true
+  },
+  "rules": {
+    "no-console": 0,
+    "vars-on-top": 0
+  }
+}

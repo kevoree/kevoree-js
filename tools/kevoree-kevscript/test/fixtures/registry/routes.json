@@ -1,0 +1,35 @@
+{
+  "/api/namespaces/kevoree/tdefs/JavascriptNode/latest": "JavascriptNode/42",
+  "/api/namespaces/kevoree/tdefs/WSGroup/latest": "WSGroup/1",
+	"/api/namespaces/kevoree/tdefs/WSGroup/1": "WSGroup/1",
+  "/api/namespaces/kevoree/tdefs/JavascriptNode/1": "JavascriptNode/1",
+  "/api/namespaces/kevoree/tdefs/JavascriptNode/42": "JavascriptNode/42",
+  "/api/namespaces/kevoree/tdefs/JavascriptNode/1/dus": {
+    "param": "version",
+    "version": {
+      "latest": "JavascriptNode/1/LATEST",
+      "release": "JavascriptNode/1/RELEASE"
+    }
+  },
+  "/api/namespaces/kevoree/tdefs/JavascriptNode/42/dus": {
+    "param": "version",
+    "version": {
+      "latest": "JavascriptNode/42/LATEST",
+      "release": "JavascriptNode/42/RELEASE"
+    }
+  },
+  "/api/namespaces/kevoree/tdefs/JavascriptNode/42/specific-dus": {
+    "param": "js",
+    "js": {
+      "5.4.0": "JavascriptNode/42/RELEASE",
+      "5.4.0-beta.0": "JavascriptNode/42/LATEST"
+    }
+  },
+  "/api/namespaces/kevoree/tdefs/WSGroup/1/specific-dus": "WSGroup/1/RELEASE",
+  "/api/namespaces/kevoree/tdefs/Ticker/latest": "Ticker/1",
+	"/api/namespaces/kevoree/tdefs/Ticker/1": "Ticker/1",
+  "/api/namespaces/kevoree/tdefs/Ticker/1/specific-dus": "Ticker/1/LATEST",
+	"/api/namespaces/kevoree/tdefs/UnknownType/latest": 404,
+	"/api/namespaces/kevoree/tdefs/Ticker/1/dus": "Ticker/1/dus",
+	"/api/namespaces/kevoree/tdefs/WSGroup/1/dus": "WSGroup/1/dus"
+}

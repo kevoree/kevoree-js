@@ -1,0 +1,10 @@
+{
+	"extends": "../../configs/base",
+	"compilerOptions": {
+		"outDir": "../../build"
+	},
+  "include": [
+    "**/*.ts",
+    "../decl/*.d.ts"
+  ]
+}

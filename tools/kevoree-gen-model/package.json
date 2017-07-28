@@ -11,7 +11,7 @@
     "kevoree-gen-model": "./bin/cli.js"
   },
   "dependencies": {
-    "async": "^2.1.4",
+    "async": "^2.5.0",
     "chalk": "^1.1.3",
     "cli-table": "^0.3.1",
     "kevoree-entities": "^9.2.1",
@@ -21,8 +21,8 @@
     "optimist": "^0.6.1"
   },
   "devDependencies": {
-    "eslint": "^3.12.2",
-    "mocha": "^3.2.0"
+    "webpack": "^3.3.0",
+    "mocha": "^3.4.2"
   },
   "keywords": [
     "kevoree",

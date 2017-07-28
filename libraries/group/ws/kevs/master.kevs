@@ -1,0 +1,18 @@
+add node0, node1: JavascriptNode
+add sync: WSGroup
+
+attach node0, node1 sync
+
+set sync.master = "node0"
+
+network node0.lo.ip 127.0.0.1
+
+set node0.logLevel = 'DEBUG'
+set node1.logLevel = 'DEBUG'
+
+//set sync.onConnect = "
+//add {nodeName}.ticker: Ticker
+//"
+//set sync.onDisconnect = "
+//remove {nodeName}
+//"

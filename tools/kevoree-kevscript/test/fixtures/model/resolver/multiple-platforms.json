@@ -1,0 +1,119 @@
+{
+  "class": "root:org.kevoree.ContainerRoot@0.234242753054907161480673878709",
+  "generated_KMF_ID": "0.234242753054907161480673878709",
+  "nodes": [],
+  "repositories": [],
+  "hubs": [],
+  "mBindings": [],
+  "groups": [],
+  "packages": [{
+    "class": "org.kevoree.Package@kevoree",
+    "name": "kevoree",
+    "packages": [],
+    "typeDefinitions": [{
+      "class": "org.kevoree.ComponentType@name=Ticker,version=1",
+      "name": "Ticker",
+      "abstract": "false",
+      "version": "1",
+      "deployUnits": [
+				"/packages[kevoree]/deployUnits[hashcode=abc,name=kevoree-comp-ticker,version=0.800.42]",
+				"/packages[kevoree]/deployUnits[hashcode=def,name=kevoree-comp-ticker,version=0.800.43]",
+				"/packages[kevoree]/deployUnits[hashcode=ijk,name=org.kevoree.library.ticker,version=0.1.2]",
+				"/packages[kevoree]/deployUnits[hashcode=lmn,name=org.kevoree.library.ticker,version=0.1.2-alpha]"
+			],
+      "superTypes": [],
+      "dictionaryType": [{
+        "class": "org.kevoree.DictionaryType@0.0",
+        "generated_KMF_ID": "0.0",
+        "attributes": [{
+            "class": "org.kevoree.DictionaryAttribute@random",
+            "datatype": "BOOLEAN",
+            "defaultValue": "false",
+            "name": "random",
+            "fragmentDependant": "false",
+            "optional": "true",
+            "state": "false",
+            "genericTypes": []
+          },
+          {
+            "class": "org.kevoree.DictionaryAttribute@period",
+            "datatype": "LONG",
+            "defaultValue": "3000",
+            "name": "period",
+            "fragmentDependant": "false",
+            "optional": "true",
+            "state": "false",
+            "genericTypes": []
+          }
+        ]
+      }],
+      "metaData": [{
+        "class": "org.kevoree.Value@description",
+        "name": "description",
+        "value": "A Kevoree component that sends a 'tick' message at user-defined intervals"
+      }],
+      "required": [{
+        "class": "org.kevoree.PortTypeRef@tick",
+        "noDependency": "true",
+        "name": "tick",
+        "optional": "true",
+        "ref": [],
+        "mappings": []
+      }],
+      "provided": []
+    }],
+    "deployUnits": [{
+        "class": "org.kevoree.DeployUnit@hashcode=abc,name=kevoree-comp-ticker,version=0.800.42",
+        "name": "kevoree-comp-ticker",
+        "hashcode": "abc",
+        "url": "",
+        "version": "0.800.42",
+        "requiredLibs": [],
+        "filters": [{
+          "class": "org.kevoree.Value@platform",
+          "name": "platform",
+          "value": "js"
+        }]
+      },
+      {
+        "class": "org.kevoree.DeployUnit@hashcode=def,name=kevoree-comp-ticker,version=0.800.43",
+        "hashcode": "def",
+        "name": "kevoree-comp-ticker",
+        "version": "0.800.43",
+        "url": "",
+        "requiredLibs": [],
+        "filters": [{
+          "class": "org.kevoree.Value@platform",
+          "name": "platform",
+          "value": "js"
+        }]
+      },
+      {
+        "class": "org.kevoree.DeployUnit@hashcode=ijk,name=org.kevoree.library.ticker,version=0.1.2",
+        "hashcode": "ijk",
+        "name": "org.kevoree.library.ticker",
+        "version": "0.1.2",
+        "url": "org.kevoree.library:org.kevoree.library.ticker:0.1.2",
+        "requiredLibs": [],
+        "filters": [{
+          "class": "org.kevoree.Value@platform",
+          "name": "platform",
+          "value": "java"
+        }]
+      },
+      {
+        "class": "org.kevoree.DeployUnit@hashcode=lmn,name=org.kevoree.library.ticker,version=0.1.2-alpha",
+        "hashcode": "lmn",
+        "name": "org.kevoree.library.ticker",
+        "version": "0.1.2-alpha",
+        "url": "org.kevoree.library:org.kevoree.library.ticker:0.1.2-alpha",
+        "requiredLibs": [],
+        "filters": [{
+          "class": "org.kevoree.Value@platform",
+          "name": "platform",
+          "value": "java"
+        }]
+      }
+    ]
+  }]
+}

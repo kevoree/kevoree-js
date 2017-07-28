@@ -1,0 +1,22 @@
+const AbstractChannel = require('kevoree-entities/lib/AbstractChannel');
+
+const {{name}} = AbstractChannel.extend({
+  toString: '{{name}}',
+  tdef_version: 1,
+
+  start(done) {
+    this.log.info('{{name}}', 'Hello world!');
+    done();
+  },
+
+  stop(done) {
+    this.log.info('{{name}}', 'Bye world!');
+    done();
+  },
+
+  onSend(fromPortPath, destPortPaths, msg) {
+    this.log.info('CrazyChan', `fromPortPath=${fromPortPath}, destPortPaths=${destPortPaths}, msg=${msg}`);
+  }
+});
+
+module.exports = {{name}};

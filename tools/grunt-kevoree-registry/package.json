@@ -8,10 +8,9 @@
     "test": "grunt test"
   },
   "devDependencies": {
-    "eslint": "^3.19.0",
+    "webpack": "^3.3.0",
     "grunt": "^1.0.1",
     "grunt-contrib-clean": "^1.0.0",
-    "grunt-contrib-jshint": "^1.1.0",
     "grunt-contrib-nodeunit": "^1.0.0"
   },
   "keywords": [
@@ -22,13 +21,13 @@
   ],
   "dependencies": {
     "cli-table": "^0.3.1",
-    "inquirer": "^1.2.3",
-    "kevoree-const": "^1.0.1",
+    "inquirer": "^3.2.0",
+    "kevoree-const": "^2.0.0",
     "kevoree-library": "^5.0.11",
     "kevoree-registry-client": "^3.0.0",
-    "tiny-conf": "^1.0.5",
-    "tiny-conf-plugin-argv": "^1.0.1",
-    "tiny-conf-plugin-file": "^1.0.1"
+    "tiny-conf": "^1.1.0",
+    "tiny-conf-plugin-argv": "^1.1.0",
+    "tiny-conf-plugin-file": "^1.1.1"
   },
   "directories": {
     "test": "test"

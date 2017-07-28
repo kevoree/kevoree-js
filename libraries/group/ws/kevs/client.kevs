@@ -1,0 +1,7 @@
+add node0, jsNode0: JavascriptNode
+add sync: WSGroup/5.3.2-SNAPSHOT
+
+attach * sync
+set sync.master = 'node0'
+
+network node0.ip.lo 127.0.0.1

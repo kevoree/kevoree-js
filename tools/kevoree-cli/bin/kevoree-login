@@ -1,0 +1,114 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const kConst = require('kevoree-const');
+const mkdirp = require('mkdirp');
+const ora = require('ora');
+const chalk = require('chalk');
+const inquirer = require('inquirer');
+const kApi = require('kevoree-registry-client');
+const config = require('tiny-conf');
+const printConfig = require('../lib/printConfig');
+
+require('tiny-conf-plugin-file')(config, kConst.CONFIG_PATH);
+
+const spinner = ora('Initializing Kevoree login...').start();
+
+new Promise(function (resolve, reject) {
+  mkdirp(kConst.GLOBAL_PATH, function (err) {
+    if (err) {
+      reject(err);
+    } else {
+      resolve();
+    }
+  });
+}).then(function () {
+  return new Promise(function (resolve) {
+    fs.lstat(kConst.CONFIG_PATH, function (err, stats) {
+      if (err) {
+        resolve(false);
+      } else {
+        resolve(stats.isFile());
+      }
+    });
+  });
+}).then(function (alreadyExists) {
+  spinner.stop();
+  if (alreadyExists) {
+    console.log(chalk.yellow('Warning:'), 'there is already a config file at "' + kConst.CONFIG_PATH + '"');
+    printConfig(require(kConst.CONFIG_PATH));
+    return inquirer.prompt([
+      {
+        name: 'overwrite',
+        type: 'confirm',
+        message: 'Overwrite',
+        default: false
+      }
+    ]);
+  } else {
+    return {
+      overwrite: true
+    };
+  }
+}).then(function (answer) {
+  if (answer.overwrite) {
+    const questions = [
+      {
+        name: 'login',
+        type: 'string',
+        default: config.get('user.login'),
+        message: 'login',
+        validate: function (val) {
+          if (val.match(/^[a-z0-9]+$/)) {
+            return true;
+          }
+          return 'Login must match ' + /^[a-z0-9]+$/;
+        }
+      },
+      {
+        name: 'password',
+        type: 'password',
+        message: 'password',
+        validate: function (val) {
+          if (val.length >= 6 && val.length <= 100) {
+            return true;
+          }
+          return 'Password must be at least 6 characters';
+        }
+      }
+    ];
+    return inquirer.prompt(questions).then(function (answers) {
+      return kApi.auth.login(answers.login, answers.password)
+        .catch((err) => {
+          spinner.stop(); // (re-)stop spinner (ie. in case of error it will stop it)
+          console.log(chalk.yellow('Login failed') + ' (' + err.message + ')');
+          process.exit(1);
+        });
+    }).then(function () {
+      return new Promise(function (resolve, reject) {
+        const confSrc = JSON.stringify(config.get(), null, 2);
+        fs.writeFile(kConst.CONFIG_PATH, confSrc, {
+          mode: parseInt('0600', 8)
+        }, function (err) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(true);
+          }
+        });
+      });
+    });
+  }
+}).then(function (modified) {
+  console.log();
+  if (modified) {
+    console.log('Config written at: ' + chalk.gray(kConst.CONFIG_PATH));
+  } else {
+    console.log(chalk.green('No changes'));
+  }
+}).catch(function (err) {
+  spinner.stop(); // (re-)stop spinner (ie. in case of error it will stop it)
+  console.log(chalk.red('Something went wrong :/'));
+  console.log(err.stack);
+  process.exit(1);
+});

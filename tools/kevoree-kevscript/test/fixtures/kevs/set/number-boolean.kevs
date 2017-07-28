@@ -1,0 +1,5 @@
+add node: JavascriptNode/LATEST/LATEST
+add node.ticker: Ticker/LATEST/LATEST
+
+set node.ticker.period = '3000'
+set node.ticker.random = 'true'

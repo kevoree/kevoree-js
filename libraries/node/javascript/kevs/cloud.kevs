@@ -1,0 +1,4 @@
+add host, host.child : JavascriptNode
+add sync : WSGroup
+
+attach host sync

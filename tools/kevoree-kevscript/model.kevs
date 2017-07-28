@@ -1,0 +1,6 @@
+add node0, node1, P0lPs7 : JavascriptNode/1/LATEST
+add node0.printer, node0.printer1, node0.printer2 : ConsolePrinter/1/LATEST
+add node0.ticker, node1.ticker : Ticker/1/LATEST
+add sync : WSGroup/1/LATEST
+
+attach P0lPs7, node1, node0 sync

@@ -1,0 +1,6 @@
+add node0: JavascriptNode/LATEST/LATEST
+add sync: CentralizedWSGroup/LATEST/LATEST
+
+attach * sync
+
+set sync.isMaster/node0 = 'true'

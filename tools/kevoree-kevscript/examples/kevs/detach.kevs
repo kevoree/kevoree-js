@@ -1,0 +1,7 @@
+attach  node0 sync
+attach node0, node1, node2 *
+attach  node0,node1,node2 sync
+attach  * sync 	//yolo
+attach node1 sync2// yolo
+
+detach node0 foo

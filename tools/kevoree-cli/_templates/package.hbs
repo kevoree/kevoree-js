@@ -1,0 +1,27 @@
+{
+  "name": "{{moduleName}}",
+  "version": "0.0.1",
+  "description": "{{description}}",
+  "main": "lib/{{name}}.js",
+  "kevoree": {
+    "namespace": "{{namespace}}"
+  },
+  "scripts": {
+    "lint": "eslint lib test",
+    "prebuild": "npm run lint",
+    "build": "kevoree-scripts build",
+    "prestart": "npm run build",
+    "start": "kevoree-scripts start",
+    "kev:publish": "kevoree-scripts publish",
+    "prepublishOnly": "npm run build",
+    "postpublish": "npm run kev:publish"
+  },
+  "dependencies": {
+    "kevoree-entities": "^9.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^4.3.0",
+    "webpack": "^3.3.0",
+    "kevoree-scripts": "^1.0.0"
+  }
+}

@@ -1,0 +1,155 @@
+{
+    "class": "root:org.kevoree.ContainerRoot@0.49632998520880391481214811460",
+    "generated_KMF_ID": "0.49632998520880391481214811460",
+    "nodes": [
+        {
+            "class": "org.kevoree.ContainerNode@node2",
+            "name": "node2",
+            "started": "true",
+            "typeDefinition": [
+                "/packages[kevoree]/typeDefinitions[name=JavascriptNode,version=1]"
+            ],
+            "hosts": [],
+            "host": [],
+            "groups": [],
+            "dictionary": [
+                {
+                    "class": "org.kevoree.Dictionary@0.0",
+                    "generated_KMF_ID": "0.0",
+                    "values": [
+                        {
+                            "class": "org.kevoree.Value@logLevel",
+                            "name": "logLevel",
+                            "value": "INFO"
+                        }
+                    ]
+                }
+            ],
+            "fragmentDictionary": [],
+            "metaData": [],
+            "components": [],
+            "networkInformation": []
+        },
+        {
+            "class": "org.kevoree.ContainerNode@node1",
+            "name": "node1",
+            "started": "true",
+            "typeDefinition": [
+                "/packages[kevoree]/typeDefinitions[name=JavascriptNode,version=1]"
+            ],
+            "hosts": [],
+            "host": [],
+            "groups": [],
+            "dictionary": [
+                {
+                    "class": "org.kevoree.Dictionary@0.0",
+                    "generated_KMF_ID": "0.0",
+                    "values": [
+                        {
+                            "class": "org.kevoree.Value@logLevel",
+                            "name": "logLevel",
+                            "value": "INFO"
+                        }
+                    ]
+                }
+            ],
+            "fragmentDictionary": [],
+            "metaData": [],
+            "components": [],
+            "networkInformation": []
+        },
+        {
+            "class": "org.kevoree.ContainerNode@node0",
+            "name": "node0",
+            "started": "true",
+            "typeDefinition": [
+                "/packages[kevoree]/typeDefinitions[name=JavascriptNode,version=1]"
+            ],
+            "hosts": [],
+            "host": [],
+            "groups": [],
+            "dictionary": [
+                {
+                    "class": "org.kevoree.Dictionary@0.0",
+                    "generated_KMF_ID": "0.0",
+                    "values": [
+                        {
+                            "class": "org.kevoree.Value@logLevel",
+                            "name": "logLevel",
+                            "value": "INFO"
+                        }
+                    ]
+                }
+            ],
+            "fragmentDictionary": [],
+            "metaData": [],
+            "components": [],
+            "networkInformation": []
+        }
+    ],
+    "repositories": [],
+    "hubs": [],
+    "mBindings": [],
+    "groups": [],
+    "packages": [
+        {
+            "class": "org.kevoree.Package@kevoree",
+            "name": "kevoree",
+            "packages": [],
+            "typeDefinitions": [
+                {
+                    "class": "org.kevoree.NodeType@name=JavascriptNode,version=1",
+                    "abstract": "false",
+                    "name": "JavascriptNode",
+                    "version": "1",
+                    "deployUnits": [
+                        "/packages[kevoree]/deployUnits[hashcode=01cf3fc730f4fbcdebf52a6f9fe54e05,name=kevoree-node-javascript,version=5.4.0-beta.0]"
+                    ],
+                    "superTypes": [],
+                    "dictionaryType": [
+                        {
+                            "class": "org.kevoree.DictionaryType@0.0",
+                            "generated_KMF_ID": "0.0",
+                            "attributes": [
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@logLevel",
+                                    "fragmentDependant": "false",
+                                    "optional": "false",
+                                    "name": "logLevel",
+                                    "state": "false",
+                                    "datatype": "STRING",
+                                    "defaultValue": "INFO",
+                                    "genericTypes": []
+                                }
+                            ]
+                        }
+                    ],
+                    "metaData": [
+                        {
+                            "class": "org.kevoree.Value@description",
+                            "name": "description",
+                            "value": "Kevoree JS standard node platform"
+                        }
+                    ]
+                }
+            ],
+            "deployUnits": [
+                {
+                    "class": "org.kevoree.DeployUnit@hashcode=01cf3fc730f4fbcdebf52a6f9fe54e05,name=kevoree-node-javascript,version=5.4.0-beta.0",
+                    "name": "kevoree-node-javascript",
+                    "hashcode": "01cf3fc730f4fbcdebf52a6f9fe54e05",
+                    "url": "",
+                    "version": "5.4.0-beta.0",
+                    "requiredLibs": [],
+                    "filters": [
+                        {
+                            "class": "org.kevoree.Value@platform",
+                            "name": "platform",
+                            "value": "js"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,31 @@
+---
+extends: eslint:recommended
+parserOptions:
+  ecmaVersion: 6
+env:
+  node: true
+globals:
+  Promise: true
+rules:
+  wrap-iife:
+  - 2
+  - inside
+  eqeqeq: 2
+  no-use-before-define:
+  - 2
+  - nofunc
+  no-unused-vars:
+  - 2
+  - vars: local
+  no-multi-str: 2
+  no-irregular-whitespace: 2
+  semi:
+  - 2
+  - always
+  linebreak-style: 0
+  eol-last: 2
+  no-undef:
+    - 2
+    - typeof: true
+  no-var: 2
+  prefer-const: 2

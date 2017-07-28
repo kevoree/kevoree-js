@@ -1,0 +1,266 @@
+{
+  "class": "root:org.kevoree.ContainerRoot@0.49480097566961371481207903108",
+  "generated_KMF_ID": "0.49480097566961371481207903108",
+  "nodes": [{
+    "class": "org.kevoree.ContainerNode@node2",
+    "name": "node2",
+    "started": "true",
+    "typeDefinition": [
+      "/packages[kevoree]/typeDefinitions[name=JavascriptNode,version=1]"
+    ],
+    "hosts": [],
+    "host": [],
+    "groups": [],
+    "dictionary": [{
+      "class": "org.kevoree.Dictionary@0.0",
+      "generated_KMF_ID": "0.0",
+      "values": [{
+        "class": "org.kevoree.Value@logLevel",
+        "name": "logLevel",
+        "value": "INFO"
+      }]
+    }],
+    "fragmentDictionary": [],
+    "metaData": [{
+      "class": "org.kevoree.Value@kwe_selected",
+      "name": "kwe_selected",
+      "value": "false"
+    }, {
+      "class": "org.kevoree.Value@kwe_position",
+      "name": "kwe_position",
+      "value": "{\"x\":386,\"y\":321}"
+    }],
+    "components": [{
+      "class": "org.kevoree.ComponentInstance@comp878",
+      "name": "comp878",
+      "started": "true",
+      "typeDefinition": [
+        "/packages[tellu]/typeDefinitions[name=HomeGW,version=1]"
+      ],
+      "dictionary": [{
+        "class": "org.kevoree.Dictionary@0.0",
+        "generated_KMF_ID": "0.0",
+        "values": [{
+          "class": "org.kevoree.Value@server_FallServerNew_FALL_LIMIT_var",
+          "name": "server_FallServerNew_FALL_LIMIT_var",
+          "value": "-4"
+        }, {
+          "class": "org.kevoree.Value@server_FallServerNew_LOC_HYSTERESIS_var",
+          "name": "server_FallServerNew_LOC_HYSTERESIS_var",
+          "value": "5"
+        }]
+      }],
+      "fragmentDictionary": [],
+      "metaData": [{
+        "class": "org.kevoree.Value@kwe_selected",
+        "name": "kwe_selected",
+        "value": "false"
+      }, {
+        "class": "org.kevoree.Value@kwe_position",
+        "name": "kwe_position",
+        "value": "{\"x\":521,\"y\":418}"
+      }],
+      "provided": [],
+      "required": []
+    }],
+    "networkInformation": []
+  }, {
+    "class": "org.kevoree.ContainerNode@node1",
+    "name": "node1",
+    "started": "true",
+    "typeDefinition": [
+      "/packages[kevoree]/typeDefinitions[name=JavascriptNode,version=1]"
+    ],
+    "hosts": [],
+    "host": [],
+    "groups": [],
+    "dictionary": [{
+      "class": "org.kevoree.Dictionary@0.0",
+      "generated_KMF_ID": "0.0",
+      "values": [{
+        "class": "org.kevoree.Value@logLevel",
+        "name": "logLevel",
+        "value": "INFO"
+      }]
+    }],
+    "fragmentDictionary": [],
+    "metaData": [{
+      "class": "org.kevoree.Value@kwe_selected",
+      "name": "kwe_selected",
+      "value": "false"
+    }, {
+      "class": "org.kevoree.Value@kwe_position",
+      "name": "kwe_position",
+      "value": "{\"x\":312,\"y\":98}"
+    }],
+    "components": [],
+    "networkInformation": []
+  }, {
+    "class": "org.kevoree.ContainerNode@node0",
+    "name": "node0",
+    "started": "true",
+    "typeDefinition": [
+      "/packages[kevoree]/typeDefinitions[name=JavascriptNode,version=1]"
+    ],
+    "hosts": [],
+    "host": [],
+    "groups": [],
+    "dictionary": [{
+      "class": "org.kevoree.Dictionary@0.0",
+      "generated_KMF_ID": "0.0",
+      "values": [{
+        "class": "org.kevoree.Value@logLevel",
+        "name": "logLevel",
+        "value": "INFO"
+      }]
+    }],
+    "fragmentDictionary": [],
+    "metaData": [{
+      "class": "org.kevoree.Value@kwe_selected",
+      "name": "kwe_selected",
+      "value": "false"
+    }, {
+      "class": "org.kevoree.Value@kwe_position",
+      "name": "kwe_position",
+      "value": "{\"x\":69,\"y\":98}"
+    }],
+    "components": [],
+    "networkInformation": []
+  }],
+  "repositories": [],
+  "hubs": [],
+  "mBindings": [],
+  "groups": [],
+  "packages": [{
+    "class": "org.kevoree.Package@tellu",
+    "name": "tellu",
+    "packages": [],
+    "typeDefinitions": [{
+      "class": "org.kevoree.ComponentType@name=HomeGW,version=1",
+      "abstract": "false",
+      "name": "HomeGW",
+      "version": "1",
+      "deployUnits": [
+        "/packages[tellu]/deployUnits[hashcode=e46dc2ca560e4783391b7797d7e023af,name=home-gw,version=1.1.0]"
+      ],
+      "superTypes": [],
+      "dictionaryType": [{
+        "class": "org.kevoree.DictionaryType@0.0",
+        "generated_KMF_ID": "0.0",
+        "attributes": [{
+          "class": "org.kevoree.DictionaryAttribute@server_FallServerNew_FALL_LIMIT_var",
+          "fragmentDependant": "false",
+          "optional": "true",
+          "name": "server_FallServerNew_FALL_LIMIT_var",
+          "state": "false",
+          "datatype": "INT",
+          "defaultValue": "-4",
+          "genericTypes": []
+        }, {
+          "class": "org.kevoree.DictionaryAttribute@server_FallServerNew_LOC_HYSTERESIS_var",
+          "fragmentDependant": "false",
+          "optional": "true",
+          "name": "server_FallServerNew_LOC_HYSTERESIS_var",
+          "state": "false",
+          "datatype": "INT",
+          "defaultValue": "5",
+          "genericTypes": []
+        }]
+      }],
+      "metaData": [{
+        "class": "org.kevoree.Value@description",
+        "name": "description",
+        "value": "HomeGW configuration generated from ThingML"
+      }],
+      "required": [{
+        "class": "org.kevoree.PortTypeRef@ser_sma_reading_out",
+        "noDependency": "true",
+        "optional": "true",
+        "name": "ser_sma_reading_out",
+        "ref": [],
+        "mappings": []
+      }, {
+        "class": "org.kevoree.PortTypeRef@ser_fal__out",
+        "noDependency": "true",
+        "optional": "true",
+        "name": "ser_fal__out",
+        "ref": [],
+        "mappings": []
+      }],
+      "provided": [{
+        "class": "org.kevoree.PortTypeRef@ser_sma_read_in",
+        "noDependency": "true",
+        "optional": "true",
+        "name": "ser_sma_read_in",
+        "ref": [],
+        "mappings": []
+      }, {
+        "class": "org.kevoree.PortTypeRef@ser_sen_readingJson_in",
+        "noDependency": "true",
+        "optional": "true",
+        "name": "ser_sen_readingJson_in",
+        "ref": [],
+        "mappings": []
+      }]
+    }],
+    "deployUnits": [{
+      "class": "org.kevoree.DeployUnit@hashcode=e46dc2ca560e4783391b7797d7e023af,name=home-gw,version=1.1.0",
+      "name": "home-gw",
+      "hashcode": "e46dc2ca560e4783391b7797d7e023af",
+      "url": "",
+      "version": "1.1.0",
+      "requiredLibs": [],
+      "filters": [{
+        "class": "org.kevoree.Value@platform",
+        "name": "platform",
+        "value": "js"
+      }]
+    }]
+  }, {
+    "class": "org.kevoree.Package@kevoree",
+    "name": "kevoree",
+    "packages": [],
+    "typeDefinitions": [{
+      "class": "org.kevoree.NodeType@name=JavascriptNode,version=1",
+      "abstract": "false",
+      "name": "JavascriptNode",
+      "version": "1",
+      "deployUnits": [
+        "/packages[kevoree]/deployUnits[hashcode=c25e8031c80600f44ab09e85b52c1c6c,name=kevoree-node-javascript,version=5.4.0-beta.1]"
+      ],
+      "superTypes": [],
+      "dictionaryType": [{
+        "class": "org.kevoree.DictionaryType@0.0",
+        "generated_KMF_ID": "0.0",
+        "attributes": [{
+          "class": "org.kevoree.DictionaryAttribute@logLevel",
+          "fragmentDependant": "false",
+          "optional": "false",
+          "name": "logLevel",
+          "state": "false",
+          "datatype": "STRING",
+          "defaultValue": "INFO",
+          "genericTypes": []
+        }]
+      }],
+      "metaData": [{
+        "class": "org.kevoree.Value@description",
+        "name": "description",
+        "value": "Kevoree JS standard node platform"
+      }]
+    }],
+    "deployUnits": [{
+      "class": "org.kevoree.DeployUnit@hashcode=c25e8031c80600f44ab09e85b52c1c6c,name=kevoree-node-javascript,version=5.4.0-beta.1",
+      "name": "kevoree-node-javascript",
+      "hashcode": "c25e8031c80600f44ab09e85b52c1c6c",
+      "url": "",
+      "version": "5.4.0-beta.1",
+      "requiredLibs": [],
+      "filters": [{
+        "class": "org.kevoree.Value@platform",
+        "name": "platform",
+        "value": "js"
+      }]
+    }]
+  }]
+}

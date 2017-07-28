@@ -1,0 +1,54 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "/home/leiko/dev/kevoree-js/tools/hash/test/fixtures/deps",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "/home/leiko/dev/kevoree-js/tools/hash/test/fixtures/deps",
+        "spec": "/home/leiko/dev/kevoree-js/tools/hash/test/fixtures/deps",
+        "type": "directory"
+      },
+      "/home/leiko/dev/kevoree-js/tools/hash"
+    ]
+  ],
+  "_from": "test/fixtures/deps",
+  "_id": "deps@1.0.0",
+  "_inCache": true,
+  "_location": "/deps",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "/home/leiko/dev/kevoree-js/tools/hash/test/fixtures/deps",
+    "scope": null,
+    "escapedName": null,
+    "name": null,
+    "rawSpec": "/home/leiko/dev/kevoree-js/tools/hash/test/fixtures/deps",
+    "spec": "/home/leiko/dev/kevoree-js/tools/hash/test/fixtures/deps",
+    "type": "directory"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "file:test/fixtures/deps",
+  "_shasum": "3b6b204c9acfe0a57fcd940298006d3a78c99bed",
+  "_shrinkwrap": null,
+  "_spec": "/home/leiko/dev/kevoree-js/tools/hash/test/fixtures/deps",
+  "_where": "/home/leiko/dev/kevoree-js/tools/hash",
+  "author": "",
+  "dependencies": {
+    "async": "*"
+  },
+  "description": "Test fixture",
+  "devDependencies": {},
+  "kevoree": {
+    "namespace": "kevoree"
+  },
+  "license": "ISC",
+  "main": "index.js",
+  "name": "deps",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "scripts": {},
+  "version": "1.0.0"
+}

@@ -1,0 +1,73 @@
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.title {
+  text-transform: uppercase;
+  text-decoration: underline;
+}
+
+.list {
+  font-family: monospace;
+  list-style-type: none;
+  padding-left: 10px;
+}
+
+.list-item {
+  border: 1px solid #ccc;
+  border-top: none;
+  padding: 2px 4px;
+  cursor: default;
+}
+
+.list-item:first-child {
+  border-top: 1px solid #ccc;
+}
+
+.list-item * {
+  display: inline-block;
+}
+
+.log-tag {
+  width: 165px;
+}
+
+.level-error {
+  background-color: #f2dede;
+  color: #a94442;
+}
+
+.level-warn {
+  background-color: #fcf8e3;
+  color: #8a6d3b;
+}
+
+.level-debug {
+  background-color: #d9edf7;
+  color: #31708f;
+}
+
+.level-info {
+  background-color: #fff;
+  color: #555;
+}
+
+.level-error:hover {
+  background-color: #ebcccc;
+  color: #a94442;
+}
+
+.level-warn:hover {
+  background-color: #faf2cc;
+  color: #8a6d3b;
+}
+
+.level-debug:hover {
+  background-color: #c4e3f3;
+  color: #31708f;
+}
+
+.level-info:hover {
+  background-color: #f5f5f5;
+  color: #555;
+}

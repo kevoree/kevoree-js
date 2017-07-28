@@ -1,0 +1,26 @@
+{
+  "name": "kevoree-library",
+  "main": "browser/kevoree-library.js",
+  "homepage": "https://github.com/kevoree/kevoree-js-library",
+  "authors": [
+    "Maxime Tricoire <max.tricoire@gmail.com>"
+  ],
+  "description": "Kevoree API generated using KMF 3",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "kevoree",
+    "api",
+    "library",
+    "kmf"
+  ],
+  "license": "LGPL-3.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

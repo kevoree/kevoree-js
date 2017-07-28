@@ -1,0 +1,24 @@
+{
+  "name": "kevoree-registry-client",
+  "description": "A library to communicate with a Kevoree registry REST API",
+  "main": "build/browser/kevoree-registry-client.js",
+  "authors": [
+    "Maxime Tricoire <max.tricoire@gmail.com> (https://github.com/maxleiko)"
+  ],
+  "license": "LGPL-3.0",
+  "keywords": [
+    "kevoree",
+    "registry",
+    "client",
+    "rest",
+    "api"
+  ],
+  "homepage": "https://github.com/kevoree/kevoree-js-registry-client",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

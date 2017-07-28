@@ -1,0 +1,41 @@
+{
+  "class": "root:org.kevoree.ContainerRoot@0.0",
+  "generated_KMF_ID": "0.0",
+  "nodes": [],
+  "repositories": [],
+  "hubs": [],
+  "mBindings": [],
+  "groups": [],
+  "packages": [
+    {
+      "class": "org.kevoree.Package@heads",
+      "name": "heads",
+      "packages": [],
+      "typeDefinitions": [
+        {
+          "class": "org.kevoree.NodeType@name=VirtualJavaNode,version=1",
+          "abstract": "false",
+          "name": "VirtualJavaNode",
+          "version": "1",
+          "deployUnits": [],
+          "superTypes": [],
+          "dictionaryType": [
+            {
+              "class": "org.kevoree.DictionaryType@0.0",
+              "generated_KMF_ID": "0.0",
+              "attributes": []
+            }
+          ],
+          "metaData": [
+            {
+              "class": "org.kevoree.Value@virtual",
+              "name": "virtual",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "deployUnits": []
+    }
+  ]
+}

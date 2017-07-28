@@ -1,0 +1,15 @@
+---
+root: true
+extends: eslint:recommended
+parserOptions:
+  ecmaVersion: 6
+env:
+  node: true
+rules:
+  semi: 2
+  no-use-before-define: 2
+  space-before-function-paren:
+  - error
+  - anonymous: always
+    named: never
+    asyncArrow: ignore

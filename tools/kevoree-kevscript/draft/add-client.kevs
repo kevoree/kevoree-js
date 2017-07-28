@@ -1,0 +1,5 @@
+// kevscript files should be used as actions to execute on a system
+add %client%: @client
+
+set %client%.period = 5000
+set %client%.random = false

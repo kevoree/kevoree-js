@@ -1,0 +1,4 @@
+add node0: JavascriptNode/LATEST/LATEST
+add node0.ticker: Ticker/LATEST/LATEST
+remove node0.ticker
+add node0.ticker: Ticker/LATEST/LATEST

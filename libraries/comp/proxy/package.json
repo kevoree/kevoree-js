@@ -1,0 +1,21 @@
+{
+  "name": "kevoree-comp-proxy",
+  "version": "0.0.1",
+  "description": "Proxy input messages to its output",
+  "main": "lib/Proxy.js",
+  "kevoree": {
+    "namespace": "kevoree"
+  },
+  "scripts": {
+    "start": "kevoree-scripts start",
+    "build": "kevoree-scripts build",
+    "publish": "kevoree-scripts publish"
+  },
+  "dependencies": {
+    "kevoree-entities": "^9.2.1"
+  },
+  "devDependencies": {
+    "kevoree-scripts": "^1.0.0",
+    "eslint": "^3.18.0"
+  }
+}

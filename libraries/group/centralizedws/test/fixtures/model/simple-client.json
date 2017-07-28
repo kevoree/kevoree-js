@@ -1,0 +1,220 @@
+{
+  "class": "root:org.kevoree.ContainerRoot@0.230181408471039631482164776708",
+  "generated_KMF_ID": "0.230181408471039631482164776708",
+  "nodes": [{
+    "class": "org.kevoree.ContainerNode@node1",
+    "name": "node1",
+    "started": "true",
+    "typeDefinition": [
+      "/packages[kevoree]/typeDefinitions[name=JavascriptNode,version=1]"
+    ],
+    "hosts": [],
+    "host": [],
+    "groups": [
+      "/groups[sync]"
+    ],
+    "dictionary": [{
+      "class": "org.kevoree.Dictionary@0.0",
+      "generated_KMF_ID": "0.0",
+      "values": [{
+        "class": "org.kevoree.Value@logLevel",
+        "name": "logLevel",
+        "value": "INFO"
+      }]
+    }],
+    "fragmentDictionary": [],
+    "metaData": [],
+    "components": [],
+    "networkInformation": []
+  }, {
+    "class": "org.kevoree.ContainerNode@node0",
+    "name": "node0",
+    "started": "true",
+    "typeDefinition": [
+      "/packages[kevoree]/typeDefinitions[name=JavascriptNode,version=1]"
+    ],
+    "hosts": [],
+    "host": [],
+    "groups": [
+      "/groups[sync]"
+    ],
+    "dictionary": [{
+      "class": "org.kevoree.Dictionary@0.0",
+      "generated_KMF_ID": "0.0",
+      "values": [{
+        "class": "org.kevoree.Value@logLevel",
+        "name": "logLevel",
+        "value": "INFO"
+      }]
+    }],
+    "fragmentDictionary": [],
+    "metaData": [],
+    "components": [],
+    "networkInformation": [{
+      "class": "org.kevoree.NetworkInfo@lo",
+      "name": "lo",
+      "values": [{
+        "class": "org.kevoree.Value@ip",
+        "name": "ip",
+        "value": "localhost"
+      }]
+    }]
+  }],
+  "repositories": [],
+  "hubs": [],
+  "mBindings": [],
+  "groups": [{
+    "class": "org.kevoree.Group@sync",
+    "name": "sync",
+    "started": "true",
+    "typeDefinition": [
+      "/packages[kevoree]/typeDefinitions[name=CentralizedWSGroup,version=1]"
+    ],
+    "subNodes": [
+      "/nodes[node1]",
+      "/nodes[node0]"
+    ],
+    "dictionary": [{
+      "class": "org.kevoree.Dictionary@0.0",
+      "generated_KMF_ID": "0.0",
+      "values": [{
+        "class": "org.kevoree.Value@port",
+        "name": "port",
+        "value": "9000"
+      }]
+    }],
+    "fragmentDictionary": [{
+      "class": "org.kevoree.FragmentDictionary@node1",
+      "name": "node1",
+      "generated_KMF_ID": "0.0",
+      "values": [{
+        "class": "org.kevoree.Value@masterNet",
+        "name": "masterNet",
+        "value": "lo.ip"
+      }, {
+        "class": "org.kevoree.Value@isMaster",
+        "name": "isMaster",
+        "value": "false"
+      }]
+    }, {
+      "class": "org.kevoree.FragmentDictionary@node0",
+      "name": "node0",
+      "generated_KMF_ID": "0.0",
+      "values": [{
+        "class": "org.kevoree.Value@masterNet",
+        "name": "masterNet",
+        "value": "lo.ipv4"
+      }, {
+        "class": "org.kevoree.Value@isMaster",
+        "name": "isMaster",
+        "value": "true"
+      }]
+    }],
+    "metaData": []
+  }],
+  "packages": [{
+    "class": "org.kevoree.Package@kevoree",
+    "name": "kevoree",
+    "packages": [],
+    "typeDefinitions": [{
+      "class": "org.kevoree.NodeType@name=JavascriptNode,version=1",
+      "abstract": "false",
+      "name": "JavascriptNode",
+      "version": "1",
+      "deployUnits": [
+        "/packages[kevoree]/deployUnits[hashcode=2796b819c0c43fa770a30b21ddd81565,name=kevoree-node-javascript,version=5.4.0-beta.2]"
+      ],
+      "superTypes": [],
+      "dictionaryType": [{
+        "class": "org.kevoree.DictionaryType@0.0",
+        "generated_KMF_ID": "0.0",
+        "attributes": [{
+          "class": "org.kevoree.DictionaryAttribute@logLevel",
+          "fragmentDependant": "false",
+          "optional": "false",
+          "name": "logLevel",
+          "state": "false",
+          "datatype": "STRING",
+          "defaultValue": "INFO",
+          "genericTypes": []
+        }]
+      }],
+      "metaData": [{
+        "class": "org.kevoree.Value@description",
+        "name": "description",
+        "value": "Kevoree JS standard node platform"
+      }]
+    }, {
+      "class": "org.kevoree.GroupType@name=CentralizedWSGroup,version=1",
+      "abstract": "false",
+      "name": "CentralizedWSGroup",
+      "version": "1",
+      "deployUnits": [
+        "/packages[kevoree]/deployUnits[hashcode=fecc6578c96d15a8ac04ac662b0d6061,name=kevoree-group-centralizedws,version=1.0.0-alpha]"
+      ],
+      "superTypes": [],
+      "dictionaryType": [{
+        "class": "org.kevoree.DictionaryType@0.0",
+        "generated_KMF_ID": "0.0",
+        "attributes": [{
+          "class": "org.kevoree.DictionaryAttribute@port",
+          "fragmentDependant": "false",
+          "optional": "false",
+          "name": "port",
+          "state": "false",
+          "datatype": "INT",
+          "defaultValue": "9000",
+          "genericTypes": []
+        }, {
+          "class": "org.kevoree.DictionaryAttribute@masterNet",
+          "fragmentDependant": "true",
+          "optional": "false",
+          "name": "masterNet",
+          "state": "false",
+          "datatype": "STRING",
+          "defaultValue": "lo.ipv4",
+          "genericTypes": []
+        }, {
+          "class": "org.kevoree.DictionaryAttribute@isMaster",
+          "fragmentDependant": "true",
+          "optional": "false",
+          "name": "isMaster",
+          "state": "false",
+          "datatype": "BOOLEAN",
+          "defaultValue": "false",
+          "genericTypes": []
+        }]
+      }],
+      "metaData": [{
+        "class": "org.kevoree.Value@description",
+        "name": "description",
+        "value": "WebSocket group based on a centralized architecture that only sends partial model to connected clients"
+      }]
+    }],
+    "deployUnits": [{
+      "class": "org.kevoree.DeployUnit@hashcode=2796b819c0c43fa770a30b21ddd81565,name=kevoree-node-javascript,version=5.4.0-beta.2",
+      "name": "kevoree-node-javascript",
+      "hashcode": "2796b819c0c43fa770a30b21ddd81565",
+      "url": "",
+      "version": "5.4.0-beta.2",
+      "requiredLibs": [],
+      "filters": [{
+        "class": "org.kevoree.Value@platform",
+        "name": "platform",
+        "value": "js"
+      }]
+    }, {
+      "class": "org.kevoree.DeployUnit@hashcode=fecc6578c96d15a8ac04ac662b0d6061,name=kevoree-group-centralizedws,version=1.0.0-alpha",
+      "name": "kevoree-group-centralizedws",
+      "hashcode": "fecc6578c96d15a8ac04ac662b0d6061",
+      "url": "",
+      "version": "1.0.0-alpha",
+      "requiredLibs": [],
+      "filters": [{
+        "class": "org.kevoree.Value@platform",
+        "name": "platform",
+        "value": "js"
+      }]
+    }]
+  }]
+}

@@ -1,0 +1,12 @@
+add node0 : JavascriptNode/LATEST/LATEST
+add node0.myComp : ConsolePrinter/LATEST/LATEST
+// add node0.tick: Ticker/LATEST/LATEST
+//add chan: RemoteWSChan/LATEST/LATEST
+
+//bind node0.myComp.input chan
+// bind node0.tick.tick chan
+
+//set chan.host = 'ws.kevoree.org'
+//set chan.uuid = '1452365'
+
+set node0.logLevel = 'DEBUG'

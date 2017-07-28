@@ -1,13 +1,22 @@
 {
   "name": "kevoree-node-javascript",
-  "version": "5.5.0",
+  "version": "5.5.0-alpha.3",
   "main": "./lib/JavascriptNode.js",
   "kevoree": {
     "namespace": "kevoree"
   },
   "scripts": {
-    "prepublish": "eslint lib browser.js test && grunt",
-    "postpublish": "grunt publish"
+    "lint": "eslint lib browser.js test",
+    "webpack": "webpack -p --progress",
+    "prebuild": "npm run lint",
+    "build": "kevoree-scripts build",
+    "postbuild": "npm run webpack",
+    "prestart": "npm run build",
+    "start": "kevoree-scripts start",
+    "prekev:publish": "npm run build",
+    "kev:publish": "kevoree-scripts publish",
+    "prepublishOnly": "npm run build",
+    "postpublish": "npm run kev:publish"
   },
   "description": "Kevoree JS standard node platform",
   "keywords": [
@@ -26,26 +35,20 @@
     "url": "https://github.com/kevoree/kevoree-js-node-javascript"
   },
   "dependencies": {
-    "kevoree-cli": "^6.0.0-alpha.2",
-    "kevoree-commons": "^3.0.0",
     "kevoree-entities": "^9.2.1",
     "kevoree-library": "^5.0.11",
     "times-up": "^1.0.1"
   },
   "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-preset-env": "^1.6.0",
     "eslint": "^3.18.0",
     "expect": "^1.20.2",
-    "grunt": "^1.0.1",
-    "grunt-kevoree": "^6.0.0",
-    "grunt-kevoree-genmodel": "^3.0.3",
-    "grunt-kevoree-registry": "^4.0.0",
-    "grunt-webpack": "^2.0.1",
     "json-loader": "^0.5.4",
-    "load-grunt-tasks": "^3.5.2",
-    "mocha": "^3.2.0",
-    "webpack": "^2.3.1",
-    "webpack-dev-server": "^2.4.2",
-    "wrapper-webpack-plugin": "^0.1.11"
+    "kevoree-scripts": "^1.0.0",
+    "mocha": "^3.4.2",
+    "webpack": "^3.4.1"
   },
   "engines": {
     "node": "*"

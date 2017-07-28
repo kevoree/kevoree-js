@@ -1,0 +1,32 @@
+config:
+  target: 'ws://localhost:9000'
+  phases:
+    -
+      duration: 5
+      arrivalRate: 1
+      name: "Warm-up"
+    -
+      duration: 10
+      arrivalCount: 10
+      name: "Low load phase"
+    -
+      duration: 10
+      arrivalRate: 20
+      name: "Medium load phase"
+    -
+      duration: 10
+      arrivalRate: 50
+      name: "High load phase"
+
+  payload:
+    path: 'payload/register.csv'
+    fields:
+      - 'message'
+
+scenarios:
+  -
+    name: "Registering"
+    engine: 'ws'
+    flow:
+      -
+        send: '{{ message }}'

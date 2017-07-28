@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>KevScript tests</title>
+  <link rel="stylesheet" href="/node_modules/mocha/mocha.css">
+</head>
+<body>
+  <div id="mocha">
+    <p>
+      <a href=".">Index</a>
+    </p>
+  </div>
+  <div id="messages"></div>
+  <div id="fixtures"></div>
+  <script type="text/javascript" src="/node_modules/mocha/mocha.js"></script>
+  <script type="text/javascript" src="/node_modules/expect/umd/expect.js"></script>
+	<script type="text/javascript" src="/node_modules/sinon/pkg/sinon.js"></script>
+  <script type="text/javascript" src="/node_modules/kevoree-library/browser/kevoree-library.js"></script>
+  <script type="text/javascript" src="/node_modules/tiny-conf/dist/tiny-conf.js"></script>
+  <script type="text/javascript" src="/node_modules/kevoree-validator/browser/kevoree-validator.js"></script>
+  <script type="text/javascript" src="/node_modules/kevoree-registry-client/build/browser/kevoree-registry-client.js"></script>
+  <script type="text/javascript" src="/node_modules/kevoree-commons/browser/kevoree-commons.js"></script>
+  <script type="text/javascript" src="/browser/kevoree-kevscript.js"></script>
+  <script>mocha.setup('bdd');</script>
+  <script type="text/javascript" src="test.js"></script>
+  <script>mocha.run();</script>
+</body>
+</html>

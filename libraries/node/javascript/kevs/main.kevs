@@ -1,0 +1,19 @@
+add node0: JavascriptNode/1/{ js: '5.5.0-alpha.3' }
+set node0.logLevel = 'DEBUG'
+// add sync: CentralizedWSGroup/LATEST/LATEST
+// add node0.ticker: Ticker/LATEST/LATEST
+// add node0.printer: ConsolePrinter/LATEST/LATEST
+// add node1.printer: ConsolePrinter/LATEST/LATEST
+// add chan: RemoteWSChan/LATEST/LATEST
+//
+// attach * sync
+//
+// bind node0.ticker.tick chan
+// bind *.printer.input chan
+//
+// set node0.logLevel = 'DEBUG'
+//
+// set sync.isMaster/node0 = 'true'
+//
+// set chan.host = 'ws.kevoree.org'
+// set chan.uuid = 'yoloswag'

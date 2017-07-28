@@ -1,0 +1,21 @@
+add node0, node1 : JavascriptNode
+add node0.console : ConsolePrinter
+add node0.ticker : Ticker
+add node1.broker : WSMsgBroker
+add node1.console : ConsolePrinter
+add sync : WSGroup
+add chan : WSChan/5.2.4-SNAPSHOT
+
+attach node0, node1 sync
+
+bind node0.console.input chan
+bind node0.ticker.tick chan
+bind node1.console.input chan
+
+set node1.broker.port = '9050'
+set sync.master = "node0"
+set sync.port/node0 = '9000'
+set chan.port = '9050'
+set chan.host = '0.0.0.0'
+
+network node0.lan.ip 127.0.0.1

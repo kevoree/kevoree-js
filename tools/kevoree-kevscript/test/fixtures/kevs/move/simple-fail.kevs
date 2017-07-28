@@ -1,0 +1,5 @@
+add node0: JavascriptNode
+add node0.ticker: Ticker/LATEST/LATEST
+add sync: WSGroup
+
+move node0.ticker sync

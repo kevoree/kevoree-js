@@ -1,0 +1,25 @@
+{
+  "name": "kevoree-core",
+  "main": "browser/kevoree-core.js",
+  "homepage": "https://github.com/kevoree/kevoree-js-core",
+  "authors": [
+    "Maxime Tricoire <max.tricoire@gmail.com>"
+  ],
+  "description": "Kevoree Javascript platform core",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "kevoree",
+    "core",
+    "platform"
+  ],
+  "license": "LGPL-3.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

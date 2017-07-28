@@ -1,0 +1,18 @@
+add node0, browser: JavascriptNode
+add browser.sender: MsgSender
+add browser.printer: ConsolePrinter
+add browser.ticker: Ticker
+add sync: WSGroup
+add chan: LocalChannel
+
+attach node0, browser sync
+
+set sync.master = "node0"
+
+bind browser.sender.send chan
+bind browser.ticker.tick chan
+bind browser.printer.input chan
+
+set browser.ticker.period = "500"
+
+network node0.ip.lo 127.0.0.1
