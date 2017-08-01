@@ -1,10 +1,10 @@
-var AbstractComponent = require('kevoree-entities/lib/AbstractComponent');
+const AbstractComponent = require('kevoree-entities/lib/AbstractComponent');
 
-var ErroneousComp = AbstractComponent.extend({
+const ErroneousComp = AbstractComponent.extend({
 	toString: 'ErroneousComp',
 	tdef_version: '0.0.0',
 
-	start: function (done) {
+	start: function () {
 		throw new Error('throw error on purpose !');
 	}
 });

@@ -2,30 +2,37 @@
   "name": "kevoree-chan-local",
   "version": "5.3.3",
   "main": "./lib/LocalChannel.js",
+  "description": "Kevoree channel that only sends messages to components in the same node",
   "kevoree": {
     "namespace": "kevoree"
   },
   "scripts": {
-    "prepublish": "npm run lint && grunt",
-    "postpublish": "grunt publish",
-    "lint": "eslint lib"
+    "lint": "eslint lib browser.js test",
+    "webpack": "webpack -p --progress",
+    "prebuild": "npm run lint",
+    "build": "kevoree-scripts build",
+    "postbuild": "npm run webpack",
+    "prestart": "npm run build",
+    "start": "kevoree-scripts start",
+    "prekev:publish": "npm run build",
+    "kev:publish": "kevoree-scripts publish",
+    "prepublishOnly": "npm run build",
+    "postpublish": "npm run kev:publish"
   },
   "dependencies": {
     "kevoree-entities": "^9.2.1"
   },
   "devDependencies": {
-    "eslint": "^3.11.1",
-    "grunt": "^1.0.1",
-    "grunt-kevoree": "^6.0.0",
-    "grunt-kevoree-genmodel": "^3.0.3",
-    "grunt-kevoree-registry": "^4.0.0",
-    "grunt-webpack": "^1.0.18",
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-preset-env": "^1.6.0",
+    "eslint": "^3.18.0",
+    "expect": "^1.20.2",
     "json-loader": "^0.5.4",
-    "load-grunt-tasks": "^3.5.2",
-    "webpack": "^1.13.3",
-    "webpack-dev-server": "^1.16.2"
+    "kevoree-scripts": "^1.0.0",
+    "mocha": "^3.4.2",
+    "webpack": "^3.4.1"
   },
-  "description": "Kevoree channel that only sends messages to components in the same node",
   "keywords": [
     "kevoree-std-lib",
     "kevoree",
@@ -41,14 +48,5 @@
   "bugs": {
     "url": "https://github.com/kevoree/kevoree-js-chan-local/issues"
   },
-  "homepage": "https://github.com/kevoree/kevoree-js-chan-local",
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "eslint:recommended"
-    ]
-  }
+  "homepage": "https://github.com/kevoree/kevoree-js-chan-local"
 }

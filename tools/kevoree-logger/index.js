@@ -2,6 +2,7 @@ const chalk = require('chalk');
 const winston = require('winston');
 
 function LoggerFactory() {
+  this.transports = ['console'];
   this.loggers = [];
 }
 
@@ -18,60 +19,68 @@ LoggerFactory.prototype = {
       colorize: true,
       exitOnError: false,
       prettyPrint: true,
-      transports: [
-        new winston.transports.Console({
-          timestamp: () => {
-            const d = new Date();
-            return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
-          },
-          colorize: (level, msg) => {
-            switch (level) {
-              case 'info':
-                return chalk.gray(msg);
-              case 'debug':
-                return chalk.cyan(msg);
-              case 'warn':
-                return chalk.yellow(msg);
-              case 'error':
-                return chalk.red(msg);
-              default:
-                return msg;
-            }
-          },
-          formatter: (options) => {
-            let msg;
-            if (options.message instanceof Error) {
-              msg = options.message.stack;
-            } else if (options.message instanceof Object) {
-              msg = JSON.stringify(options.message, null, 2);
-            } else {
-              msg = options.message;
-            }
+      transports: [],
+    });
 
-            if (!options.meta) {
-              options.meta = { tag: tag, instance: instance };
-            } else {
-              if (!options.meta.tag) {
-                options.meta.tag = tag;
-              }
-              if (!options.meta.instance) {
-                options.meta.instance = instance;
-              }
-            }
-            options.meta.tag = options.meta.tag.substr(0, 12);
-
-            const now = Date.now();
-            const ellapsed = ((now - previousTs) > 30000) ? '>30s' : '+' + (now - previousTs) + 'ms';
-            previousTs = now;
-
-            return chalk.gray(options.timestamp())
-              + '  ' + chalk.magenta(truncate(options.meta.tag, 12))
-              + '  ' + chalk.blue(truncate(options.meta.instance, 8))
-              + '  ' + options.colorize(options.level, msg)
-              + ' '  + ellapsed;
+    const consoleTransport = {
+      timestamp: () => {
+        const d = new Date();
+        return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
+      },
+      colorize: (level, msg) => {
+        switch (level) {
+          case 'info':
+            return chalk.gray(msg);
+          case 'debug':
+            return chalk.cyan(msg);
+          case 'warn':
+            return chalk.yellow(msg);
+          case 'error':
+            return chalk.red(msg);
+          default:
+            return msg;
+        }
+      },
+      formatter: (options) => {
+        let msg;
+        if (options.meta.stack) {
+          if (options.message && options.message.length > 0) {
+            msg = options.message + '\n' + options.meta.stack;
+          } else {
+            msg = options.meta.stack;
           }
-        })
-      ]
+        } else if (options.message instanceof Object) {
+          msg = JSON.stringify(options.message, null, 2);
+        } else {
+          msg = options.message;
+        }
+
+        if (!options.meta.tag) {
+          options.meta.tag = tag;
+        }
+        if (!options.meta.instance) {
+          options.meta.instance = instance;
+        }
+        options.meta.tag = options.meta.tag.substr(0, 12);
+
+        const now = Date.now();
+        const ellapsed = ((now - previousTs) > 30000) ? '>30s' : '+' + (now - previousTs) + 'ms';
+        previousTs = now;
+
+        return chalk.gray(options.timestamp())
+          + '  ' + chalk.magenta(truncate(options.meta.tag, 12))
+          + '  ' + chalk.blue(truncate(options.meta.instance, 8))
+          + '  ' + options.colorize(options.level, msg)
+          + ' '  + ellapsed;
+      }
+    };
+
+    this.transports.forEach((transport) => {
+      switch (transport) {
+        case 'console':
+          logger.add(winston.transports.Console, consoleTransport);
+          break;
+      }
     });
 
     this.loggers.push(logger);
@@ -79,12 +88,16 @@ LoggerFactory.prototype = {
   },
 
   remove(transport) {
+    this.transports.splice(this.transports.indexOf(transport), 1);
     this.loggers.forEach((logger) => {
       try { logger.remove(transport); } catch (ignore) {/**/}
     });
   },
 
   add(transport) {
+    if (this.transports.indexOf(transport) === -1) {
+      this.transports.push(transport);
+    }
     this.loggers.forEach((logger) => logger.add(transport));
   },
 

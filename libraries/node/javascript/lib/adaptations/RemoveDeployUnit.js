@@ -11,25 +11,25 @@ const AddDeployUnit = require('./AddDeployUnit');
 module.exports = AdaptationPrimitive.extend({
   toString: 'RemoveDeployUnit',
 
-  execute: function(callback) {
+  /**
+   * [description]
+   * @return {Promise} [description]
+   */
+  execute: function() {
     if (this.modelElement) {
       const resolver = this.node.getKevoreeCore().getResolver();
-      resolver.uninstall(this.modelElement, (err) => {
-        if (err) {
-          return callback(err);
-        }
-
-        this.log.debug(this.modelElement.path());
-        this.mapper.removeEntry(this.modelElement.path());
-        callback();
-      });
+      return resolver.uninstall(this.modelElement)
+        .then(() => {
+          this.log.debug(this.modelElement.path());
+          this.mapper.removeEntry(this.modelElement.path());
+        });
     } else {
-      callback();
+      return Promise.resolve();
     }
   },
 
-  undo: function(callback) {
+  undo: function() {
     const cmd = new AddDeployUnit(this.node, this.mapper, this.adaptModel, this.modelElement);
-    cmd.execute(callback);
+    return cmd.execute();
   }
 });

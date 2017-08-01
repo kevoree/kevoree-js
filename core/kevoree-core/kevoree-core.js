@@ -76,53 +76,63 @@ KevoreeCore.prototype = {
    * @return {Promise} resolved when the core is stopped
    */
   stop() {
-    const factory = new kevoree.factory.DefaultKevoreeFactory();
-    const cloner = factory.createModelCloner();
-    const stopModel = cloner.clone(this.currentModel, false);
-    const node = stopModel.findNodesByID(this.nodeName);
-    if (node.started) {
-      node.started = false;
-      const subNodes = node.hosts.iterator();
-      while (subNodes.hasNext()) {
-        subNodes.next().delete();
-      }
+    this.log.info('Stopping Kevoree...');
 
-      const groups = node.groups.iterator();
-      while (groups.hasNext()) {
-        groups.next().delete();
-      }
+    if (this.nodeInstance === null) {
+      clearInterval(this.loopId);
+      this.emitter.emit('stopped');
+      return Promise.reject(new Error('Platform stopped before bootstrapped'));
 
-      const bindings = stopModel.mBindings.iterator();
-      while (bindings.hasNext()) {
-        const binding = bindings.next();
-        if (binding.port.eContainer() &&
-          binding.port.eContainer().eContainer() &&
-          binding.port.eContainer().eContainer().name === node.name) {
-          if (binding.hub) {
-            binding.hub.delete();
+    } else {
+      const factory = new kevoree.factory.DefaultKevoreeFactory();
+      const cloner = factory.createModelCloner();
+      const stopModel = cloner.clone(this.currentModel, false);
+      const node = stopModel.findNodesByID(this.nodeName);
+      if (node.started) {
+        node.started = false;
+        const subNodes = node.hosts.iterator();
+        while (subNodes.hasNext()) {
+          subNodes.next().delete();
+        }
+
+        const groups = node.groups.iterator();
+        while (groups.hasNext()) {
+          groups.next().delete();
+        }
+
+        const bindings = stopModel.mBindings.iterator();
+        while (bindings.hasNext()) {
+          const binding = bindings.next();
+          if (binding.port.eContainer() &&
+            binding.port.eContainer().eContainer() &&
+            binding.port.eContainer().eContainer().name === node.name) {
+            if (binding.hub) {
+              binding.hub.delete();
+            }
           }
         }
-      }
 
-      const comps = node.components.iterator();
-      while (comps.hasNext()) {
-        comps.next().delete();
-      }
+        const comps = node.components.iterator();
+        while (comps.hasNext()) {
+          comps.next().delete();
+        }
 
-      this.stopping = true;
-      return this.deploy(stopModel)
-        .then(() => {
-          if (this.nodeInstance === null) {
-            this.log.info('Platform stopped before bootstrapped', { tag: this.toString() });
-            this.emitter.emit('stopped');
-          } else {
-            this.log.info('Platform stopped: ' + this.nodeInstance.getName(), { tag: this.toString() });
+        this.stopping = true;
+        return this.deploy(stopModel)
+          .then(() => {
+            this.log.info('Platform stopped: ' + this.nodeInstance.getName());
             clearInterval(this.loopId);
-          }
-        });
+            this.emitter.emit('stopped');
+          })
+          .catch((err) => {
+            this.log.error(err);
+            this.log.error('Something went wrong while stopping Kevoree. Force stop.');
+            clearInterval(this.loopId);
+            this.emitter.emit('stopped');
+            throw err;
+          });
+      }
     }
-
-    return Promise.resolve();
   },
 
   /**
@@ -135,68 +145,70 @@ KevoreeCore.prototype = {
    * @return {Promise}             resolved when the model is deployed
    */
   deploy(model) {
-    return new Promise((resolve, reject) => {
-      if (!this.deployModel) {
-        this.emitter.emit('deploying', model);
-        if (model && !model.findNodesByID(this.nodeName)) {
-          reject(new Error('Deploy model failure: unable to find ' + this.nodeName + ' in given model'));
-        } else {
-          this.log.debug((this.stopping ? 'Stopping' : 'Deploy') + ' process started...');
-          if (model) {
-            // check if there is an instance currently running
-            // if not, it will try to run it
-            this.checkBootstrapNode(model)
-              .then(() => {
-                if (this.nodeInstance) {
-                  let adaptations;
-                  try {
-                    // monkey-patch model because of KMF
-                    monkeyPatchKMF(model);
-                    const factory = new kevoree.factory.DefaultKevoreeFactory();
-                    // clone model so that adaptations won't modify the proposed one
-                    const cloner = factory.createModelCloner();
-                    this.deployModel = cloner.clone(model, true);
-                    // set it read-only to ensure adaptations consistency
-                    this.deployModel.setRecursiveReadOnly();
-                    // make a diff between the current model and the model to deploy
-                    const diffSeq = factory.createModelCompare().diff(this.currentModel, this.deployModel);
-                    // ask the node platform to create the needed adaptation commands
-                    adaptations = this.nodeInstance.processTraces(diffSeq, this.deployModel);
-                    // execute adaptation commands
-                    adaptationsExecutor(this, model, adaptations, resolve, reject);
-                  } catch (err) {
-                    this.log.error(err.stack);
-                    const error = new Error('Something went wrong while creating adaptations (deployment ignored)');
-                    this.log.warn(error.message);
-                    this.deployModel = null;
-                    if (this.firstBoot) {
-                      // === If firstBoot adaptations creation failed then it is bad => exit
-                      this.log.warn('Shutting down Kevoree because bootstrap failed...');
-                      reject(error);
-                      this.emitter.emit('error', error);
-                    } else {
-                      reject(error);
-                      this.emitter.emit('error', error);
-                    }
-                  }
-                } else {
-                  reject(new Error('There is no instance to bootstrap on'));
-                }
-              })
-              .catch((err) => {
-                this.emitter.emit('error', err);
-                reject(err);
-              });
-          } else {
-            reject(new Error('Model is not defined or null. Deploy aborted.'));
-          }
-        }
+    if (!this.deployModel) {
+      this.emitter.emit('deploying', model);
+      if (model && !model.findNodesByID(this.nodeName)) {
+        return Promise.reject(new Error('Deploy model failure: unable to find ' + this.nodeName + ' in given model'));
       } else {
-        // TODO add the possibility to put new deployment in pending queue
-        this.log.warn('New deploy process requested: aborted because another one is in process (retry later?)');
-        reject(new Error('New deploy process requested: aborted because another one is in process (retry later?)'));
+        this.log.debug((this.stopping ? 'Stopping' : 'Deploy') + ' process started...');
+        if (model) {
+          // check if there is an instance currently running
+          // if not, it will try to run it
+          return this.checkBootstrapNode(model)
+            .then(() => {
+              if (this.nodeInstance) {
+                let adaptations;
+                try {
+                  // monkey-patch model because of KMF
+                  monkeyPatchKMF(model);
+                  const factory = new kevoree.factory.DefaultKevoreeFactory();
+                  // clone model so that adaptations won't modify the proposed one
+                  const cloner = factory.createModelCloner();
+                  this.deployModel = cloner.clone(model, true);
+                  // set it read-only to ensure adaptations consistency
+                  this.deployModel.setRecursiveReadOnly();
+                  // make a diff between the current model and the model to deploy
+                  const diffSeq = factory.createModelCompare().diff(this.currentModel, this.deployModel);
+                  // ask the node platform to create the needed adaptation commands
+                  adaptations = this.nodeInstance.processTraces(diffSeq, this.deployModel);
+                  // execute adaptation commands
+                  return adaptationsExecutor(this, model, adaptations);
+                } catch (err) {
+                  this.log.error(err.stack);
+                  const error = new Error('Something went wrong while creating adaptations (deployment ignored)');
+                  this.log.warn(error.message);
+                  this.deployModel = null;
+                  if (this.firstBoot) {
+                    // === If firstBoot adaptations creation failed then it is bad => exit
+                    this.log.warn('Shutting down Kevoree because bootstrap failed...');
+                    this.emitter.emit('error', error);
+                    throw error;
+                  } else {
+                    this.emitter.emit('error', error);
+                    throw error;
+                  }
+                }
+              } else {
+                throw new Error('There is no instance to bootstrap on');
+              }
+            }, () => {
+              this.log.error('Unable to bootstrap \'' + this.nodeName + "'");
+              this.deployModel = null;
+              return this.stop();
+            })
+            .catch((err) => {
+              this.emitter.emit('error', err);
+              throw err;
+            });
+        } else {
+          return Promise.reject(new Error('Model is not defined or null. Deploy aborted.'));
+        }
       }
-    });
+    } else {
+      // TODO add the possibility to put new deployment in pending queue
+      this.log.warn('New deploy process requested: aborted because another one is in process (retry later?)');
+      return Promise.reject(new Error('New deploy process requested: aborted because another one is in process (retry later?)'));
+    }
   },
 
   submitScript(script) {
@@ -242,58 +254,50 @@ KevoreeCore.prototype = {
    * @return {Promise}             resolves when bootstrapped
    */
   checkBootstrapNode(model) {
-    return new Promise((resolve, reject) => {
-      if (!this.nodeInstance) {
-        this.log.debug('Start \'' + this.nodeName + '\' bootstrapping...');
-        const node = model.findNodesByID(this.nodeName);
-        if (node) {
-          const meta = node.typeDefinition.select('deployUnits[]/filters[name=platform,value=js]');
-          if (meta.size() > 0) {
-            this.resolver.resolve(meta.get(0).eContainer(), false, (err, AbstractNode) => {
-              if (err) {
-                reject(err);
-              } else {
-                try {
-                  const deployNode = model.findNodesByID(this.nodeName);
-                  const currentNode = this.currentModel.findNodesByID(this.nodeName);
+    if (this.nodeInstance) {
+      return Promise.resolve();
+    } else {
+      this.log.debug('Start \'' + this.nodeName + '\' bootstrapping...');
+      const node = model.findNodesByID(this.nodeName);
+      if (node) {
+        const meta = node.typeDefinition.select('deployUnits[]/filters[name=platform,value=js]');
+        if (meta.size() > 0) {
+          return this.resolver.resolve(meta.get(0).eContainer())
+            .then((Node) => {
+              const deployNode = model.findNodesByID(this.nodeName);
+              const currentNode = this.currentModel.findNodesByID(this.nodeName);
 
-                  // create node instance
-                  this.nodeInstance = new AbstractNode(this, deployNode, this.nodeName);
+              // create node instance
+              this.nodeInstance = new Node(this, deployNode, this.nodeName);
 
-                  // bootstrap node dictionary
-                  const factory = new kevoree.factory.DefaultKevoreeFactory();
-                  currentNode.dictionary = factory.createDictionary().withGenerated_KMF_ID('0');
-                  if (deployNode.typeDefinition.dictionaryType) {
-                    deployNode.typeDefinition.dictionaryType.attributes.array.forEach((attr) => {
-                      if (!attr.fragmentDependant) {
-                        const param = factory.createValue();
-                        param.name = attr.name;
-                        const currVal = deployNode.dictionary.findValuesByID(param.name);
-                        if (!currVal) {
-                          param.value = attr.defaultValue;
-                          currentNode.dictionary.addValues(param);
-                          this.log.debug('Set default node param: ' + param.name + '=' + param.value);
-                        }
-                      }
-                    });
+              // bootstrap node dictionary
+              const factory = new kevoree.factory.DefaultKevoreeFactory();
+              currentNode.dictionary = factory.createDictionary().withGenerated_KMF_ID('0');
+              if (deployNode.typeDefinition.dictionaryType) {
+                deployNode.typeDefinition.dictionaryType.attributes.array.forEach((attr) => {
+                  if (!attr.fragmentDependant) {
+                    const param = factory.createValue();
+                    param.name = attr.name;
+                    const currVal = deployNode.dictionary.findValuesByID(param.name);
+                    if (!currVal) {
+                      param.value = attr.defaultValue;
+                      currentNode.dictionary.addValues(param);
+                      this.log.debug('Set default node param: ' + param.name + '=' + param.value);
+                    }
                   }
-                  resolve();
-                } catch (err) {
-                  reject(err);
-                }
+                });
               }
+            })
+            .catch(() => {
+              throw new Error('Unable to bootstrap \''+ this.nodeName +'\'');
             });
-          } else {
-            reject(new Error('No DeployUnit found for \'' + this.nodeName + '\' that matches the \'js\' platform'));
-          }
         } else {
-          reject(new Error('Unable to find \'' + this.nodeName + '\' in the given model.'));
+          return Promise.reject(new Error('No DeployUnit found for \'' + this.nodeName + '\' that matches the \'js\' platform'));
         }
       } else {
-        // bootstrap already done :)
-        resolve();
+        return Promise.reject(new Error('Unable to find \'' + this.nodeName + '\' in the given model.'));
       }
-    });
+    }
   },
 
   on(event, handler) {
@@ -336,10 +340,6 @@ KevoreeCore.prototype = {
     return this.loggerFactory;
   }
 };
-//
-// KevoreeCore.prototype.off = function (event, listener) {
-//   this.removeListener(event, listener);
-// };
 
 function hash(str) {
   let val = 0;

@@ -1,10 +1,7 @@
 add node0 : JavascriptNode/LATEST/LATEST
-add node0.ticker : Ticker/LATEST/LATEST
-add sync : WSGroup/LATEST/LATEST
+add node0.ticker : Ticker/1/{ js: '5.3.3' }
 //add node0.console : ConsolePrinter/LATEST/LATEST
 //add chan, chan1, chan2 : LocalChannel/LATEST/LATEST
-
-attach node0 sync
 
 // bind node0.ticker.tick chan
 // bind node0.ticker.tick chan1

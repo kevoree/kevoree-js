@@ -1,9 +1,8 @@
 'use strict';
 
-var path = require('path');
-var webpack = require('webpack');
+const path = require('path');
 
-var pkg = require('./package.json');
+const pkg = require('./package.json');
 
 module.exports = {
   entry: './browser.js',
@@ -12,13 +11,11 @@ module.exports = {
   },
   module: {
     loaders: [
-        { test: /\.json$/, loader: 'json' },
+      { test: /\.json$/, exclude: /node_modules/, loader: 'json-loader' },
+      { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader' },
     ]
   },
   externals: {
     'kevoree-library': 'KevoreeLibrary'
-  },
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin()
-  ]
+  }
 };

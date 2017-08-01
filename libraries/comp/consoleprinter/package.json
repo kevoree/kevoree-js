@@ -37,7 +37,7 @@
     "load-grunt-tasks": "^3.5.2",
     "react": "^15.4.1",
     "standard": "^8.6.0",
-    "webpack": "^1.13.3",
+    "webpack": "^3.4.1",
     "webpack-dev-server": "^1.16.2"
   },
   "description": "Prints incoming message to the console stdout",

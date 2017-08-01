@@ -26,7 +26,7 @@
     "url": "https://github.com/kevoree/kevoree-js"
   },
   "devDependencies": {
-    "webpack": "^3.3.0"
+    "webpack": "^3.4.1"
   },
   "dependencies": {
     "kevoree-library": "^5.0.0",

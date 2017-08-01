@@ -53,10 +53,10 @@ var AbstractChannel = KevoreeEntity.extend({
 		}
 
 		if (this.started) {
-			this.log.debug(' ' + this.name + ' -> ' + msg + ' -> [' + debugPaths.join(', ') + ']');
+			this.log.debug(' -> ' + msg + ' -> [' + debugPaths.join(', ') + ']');
 			this.onSend(outputPath, paths, msg + '', callback);
 		} else {
-			this.log.debug(' ' + this.name + ' -> ' + msg + ' -> [' + debugPaths.join(', ') + '] (queued)');
+			this.log.debug(' -> ' + msg + ' -> [' + debugPaths.join(', ') + '] (queued)');
 			this.pendings.push({
 				outputPath: outputPath,
 				content: msg,

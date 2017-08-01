@@ -32,7 +32,7 @@
     "grunt-webpack": "^1.0.18",
     "json-loader": "^0.5.4",
     "load-grunt-tasks": "^3.5.2",
-    "webpack": "^1.13.2",
+    "webpack": "^3.4.1",
     "webpack-dev-server": "^1.16.2"
   },
   "homepage": "https://github.com/kevoree/kevoree-js",

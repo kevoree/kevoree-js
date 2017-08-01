@@ -17,7 +17,7 @@
     "commander": "^2.9.0",
     "handlebars": "^4.0.10",
     "inquirer": "^3.2.0",
-    "kevoree-logger": "^1.0.0-alpha",
+    "kevoree-logger": "^1.0.0",
     "kevoree-const": "^2.0.0",
     "kevoree-core": "^9.0.7",
     "kevoree-registry-client": "^3.0.0",
@@ -35,7 +35,7 @@
     "validate-npm-package-name": "^3.0.0"
   },
   "devDependencies": {
-    "webpack": "^3.3.0"
+    "webpack": "^3.4.1"
   },
   "license": "LGPL-3.0",
   "keywords": [

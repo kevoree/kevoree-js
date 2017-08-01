@@ -15,9 +15,9 @@ function Output(compInstance, portElem) {
 		compInstance[fieldName] = function internalSend(msg, callback) {
 			var channelPaths = Object.keys(self.channels);
 			if (channelPaths.length > 0) {
-				compInstance.log.debug(compInstance.toString(), compInstance.name + '.' + portElem.name + ' -> ' + msg);
+				compInstance.log.debug(portElem.name + ' -> ' + msg);
 			} else {
-				compInstance.log.debug(compInstance.toString(), compInstance.name + '.' + portElem.name + ' -> ' + msg + ' (dropped)');
+				compInstance.log.debug(portElem.name + ' -> ' + msg + ' (dropped)');
 			}
 			channelPaths.forEach(function (chanPath) {
 				self.channels[chanPath].internalSend(portElem.path(), msg, callback);

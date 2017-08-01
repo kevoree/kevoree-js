@@ -399,7 +399,7 @@
         "name": "JavascriptNode",
         "version": "1",
         "deployUnits": [
-          "/packages[kevoree]/deployUnits[hashcode=849007e8ee983d94c4e5fad23ba3a116,name=kevoree-node-javascript,version=5.4.0-beta.3]"
+          "/packages[kevoree]/deployUnits[hashcode=849007e8ee983d94c4e5fad23ba3a116,name=kevoree-node-javascript,version=5.5.0-alpha.3]"
         ],
         "superTypes": [],
         "dictionaryType": [{
@@ -577,11 +577,11 @@
         }]
       },
       {
-        "class": "org.kevoree.DeployUnit@hashcode=849007e8ee983d94c4e5fad23ba3a116,name=kevoree-node-javascript,version=5.4.0-beta.3",
+        "class": "org.kevoree.DeployUnit@hashcode=849007e8ee983d94c4e5fad23ba3a116,name=kevoree-node-javascript,version=5.5.0-alpha.3",
         "name": "kevoree-node-javascript",
         "hashcode": "849007e8ee983d94c4e5fad23ba3a116",
         "url": "",
-        "version": "5.4.0-beta.3",
+        "version": "5.5.0-alpha.3",
         "requiredLibs": [],
         "filters": [{
           "class": "org.kevoree.Value@platform",

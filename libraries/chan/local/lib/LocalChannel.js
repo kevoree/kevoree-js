@@ -1,6 +1,6 @@
-var AbstractChannel = require('kevoree-entities/lib/AbstractChannel');
+const AbstractChannel = require('kevoree-entities/lib/AbstractChannel');
 
-var LocalChannel = AbstractChannel.extend({
+const LocalChannel = AbstractChannel.extend({
   toString: 'LocalChannel',
   tdef_version: 1,
 

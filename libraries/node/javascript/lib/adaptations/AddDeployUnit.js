@@ -13,31 +13,29 @@ module.exports = AdaptationPrimitive.extend({
   toString: 'AddDeployUnit',
 
   /**
-   *
-   * @param callback function: if this function first parameter != null it means that there is an error
+   * [description]
+   * @return {Promise} [description]
    */
-  execute: function (callback) {
+  execute: function () {
     if (!this.mapper.hasObject(this.modelElement.path())) {
       const resolver = this.node.getKevoreeCore().getResolver();
-
-      resolver.resolve(this.modelElement, false, (err, TypeDef) => {
-        if (err) {
-          callback(err);
-        } else {
-          // bootstrap success: add deployUnit path & packageName into mapper
-          this.log.debug('namespace=' + ModelHelper.getNamespace(this.modelElement.eContainer()) + ',hash=' + this.modelElement.hashcode + ',name=' + this.modelElement.name + ',version=' + this.modelElement.version);
-          this.mapper.addEntry(this.modelElement.path(), TypeDef);
-          callback();
-        }
-      });
+      return resolver.resolve(this.modelElement)
+        .then((Type) => {
+          this.log.debug(
+            'namespace=' + ModelHelper.getNamespace(this.modelElement.eContainer()) +
+            ',hash=' + this.modelElement.hashcode +
+            ',name=' + this.modelElement.name +
+            ',version=' + this.modelElement.version);
+          this.mapper.addEntry(this.modelElement.path(), Type);
+        });
     } else {
       // this deploy unit is already installed, move on
-      callback();
+      return Promise.resolve();
     }
   },
 
-  undo: function(callback) {
+  undo: function() {
     const cmd = new RemoveDeployUnit(this.node, this.mapper, this.adaptModel, this.modelElement);
-    cmd.execute(callback);
+    return cmd.execute();
   }
 });

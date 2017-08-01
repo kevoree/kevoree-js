@@ -10,7 +10,11 @@ module.exports = AdaptationPrimitive.extend({
     this.instance = null;
   },
 
-  execute: function(callback) {
+  /**
+   * [description]
+   * @return {Promise} [description]
+   */
+  execute: function() {
     const kDictionary = this.modelElement.eContainer();
     let instance;
     if (kDictionary.eContainer().name === this.node.getName()) {
@@ -34,17 +38,17 @@ module.exports = AdaptationPrimitive.extend({
         this.log.debug(kDictionary.eContainer().name + '.' + this.modelElement.name + ' = ' + this.modelElement.value);
         dictionary.setEntry(this.modelElement.name, this.modelElement.value);
       }
-      callback();
+      return Promise.resolve();
     } else {
       this.log.warn('Did not update any dictionary because ' + kDictionary.eContainer().path() + ' is not related to this platform obvsiouly');
-      callback();
+      return Promise.resolve();
     }
   },
 
-  undo: function(callback) {
+  undo: function() {
     if (this.instance !== null && this.oldDictionaryMap !== null) {
       this.instance.getDictionary().setMap(this.oldDictionaryMap);
     }
-    callback();
+    return Promise.resolve();
   }
 });

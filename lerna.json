@@ -5,6 +5,8 @@
     "core/*",
     "tools/*",
     "libraries/comp/proxy",
-    "libraries/node/javascript"
+    "libraries/comp/ticker",
+    "libraries/node/javascript",
+    "libraries/chan/local"
   ]
 }

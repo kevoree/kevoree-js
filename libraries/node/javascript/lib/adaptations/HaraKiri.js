@@ -5,7 +5,11 @@ const AdaptationPrimitive = require('kevoree-entities/lib/AdaptationPrimitive');
 const HaraKiri = AdaptationPrimitive.extend({
   toString: 'HaraKiri',
 
-  execute: function(callback) {
+  /**
+   * [description]
+   * @return {Promise} [description]
+   */
+  execute: function() {
     const kCore = this.node.getKevoreeCore();
     this.log.debug('Hara-kiri requested: shutting down this runtime...');
     kCore.once('deployed', () => {
@@ -13,11 +17,11 @@ const HaraKiri = AdaptationPrimitive.extend({
         kCore.stop();
       }
     });
-    callback();
+    return Promise.resolve();
   },
 
-  undo: function(callback) {
-    callback();
+  undo: function() {
+    return Promise.resolve();
   }
 });
 

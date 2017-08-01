@@ -9,32 +9,39 @@ const timesUp = require('times-up');
 module.exports = AdaptationPrimitive.extend({
   toString: 'UpdateInstance',
 
-  execute: function(callback) {
-    let instance;
-    if (this.modelElement.name === this.node.getName()) {
-      instance = this.node;
-    } else {
-      instance = this.mapper.getObject(this.modelElement.path());
-    }
-
-    if (instance) {
-      if (instance.isStarted()) {
-        instance.__update__(timesUp('update(...)', 30000, (err) => {
-          if (err) {
-            this.log.error('Unable to update ' + instance.getPath());
-          } else {
-            this.log.debug(instance.getPath());
-            this.node.kCore.emitter.emit('instanceUpdated', instance);
-          }
-          callback(err);
-        }));
+  /**
+   * [description]
+   * @return {Promise} [description]
+   */
+  execute: function() {
+    return new Promise((resolve, reject) => {
+      let instance;
+      if (this.modelElement.name === this.node.getName()) {
+        instance = this.node;
+      } else {
+        instance = this.mapper.getObject(this.modelElement.path());
       }
-    } else {
-      callback(new Error(this.toString() + ' error: unable to update instance ' + this.modelElement.name));
-    }
+
+      if (instance) {
+        if (instance.isStarted()) {
+          instance.__update__(timesUp('update(...)', 30000, (err) => {
+            if (err) {
+              this.log.error('Unable to update ' + instance.getPath());
+              reject(err);
+            } else {
+              this.log.debug(instance.getPath());
+              this.node.kCore.emitter.emit('instanceUpdated', instance);
+              resolve();
+            }
+          }));
+        }
+      } else {
+        reject(new Error(this.toString() + ' error: unable to update instance ' + this.modelElement.name));
+      }
+    });
   },
 
-  undo: function(callback) {
-    callback();
+  undo: function() {
+    return Promise.resolve();
   }
 });

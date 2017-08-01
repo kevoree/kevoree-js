@@ -13,7 +13,6 @@ const config = require('../config/index');
 
 const fs = require('fs');
 const os = require('os');
-const ncp = require('ncp');
 const path = require('path');
 const chalk = require('chalk');
 const spawn = require('cross-spawn');
@@ -127,7 +126,11 @@ kevs.parse(script, model, ctxVars)
   .then(({ model, warnings }) => {
     warnings.forEach((warning) => logger.warn('KevScript', warning));
     core.start(config.get('node.name'));
-    core.deploy(model);
+    return core.deploy(model)
+      .catch((err) => {
+        logger.error(err.message);
+        logger.info('Bye.');
+      });
   })
   .catch((err) => {
     logger.error(err.stack);

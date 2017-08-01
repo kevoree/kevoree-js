@@ -29,7 +29,7 @@
     "kevoree-core": "^9.0.7",
     "kevoree-hash": "^3.0.1",
     "kevoree-const": "^2.0.0",
-    "kevoree-logger": "^1.0.0-alpha",
+    "kevoree-logger": "^1.0.0",
     "kevoree-library": "^5.0.11",
     "kevoree-kevscript": "^5.0.0",
     "kevoree-resolvers": "^5.0.0",

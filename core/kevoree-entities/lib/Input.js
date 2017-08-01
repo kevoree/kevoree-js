@@ -22,7 +22,7 @@ Input.prototype = {
 			msg = [].concat(msg);
 
 			if (this.compInstance.started) {
-				this.compInstance.log.debug(this.compInstance.toString(), ' ' + msg + ' -> ' + this.compInstance.name + '.' + this.portElem.name);
+				this.compInstance.log.debug(' ' + msg + ' -> ' + this.portElem.name);
 				var result, error;
 				try {
 					result = this.compInstance[this.methodName].apply(this.compInstance, msg);
@@ -32,7 +32,7 @@ Input.prototype = {
 				}
 				callback(error, result);
 			} else {
-				this.compInstance.log.debug(this.compInstance.toString(), ' ' + msg + ' -> ' + this.compInstance.name + '.' + this.portElem.name + ' (queued)');
+				this.compInstance.log.debug(' ' + msg + ' -> ' + this.portElem.name + ' (queued)');
 				this.pendings.push({
 					content: msg,
 					callback: callback
