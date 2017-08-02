@@ -1,6 +1,6 @@
 'use strict';
 
-var TYPE = 'kevs';
+const TYPE = 'kevs';
 
 function PushKevSMessage(kevs) {
   this.kevs = kevs;
@@ -8,15 +8,15 @@ function PushKevSMessage(kevs) {
 
 PushKevSMessage.prototype = {
   getKevScript: function () {
-      return this.kevs;
+    return this.kevs;
   },
 
   getType: function () {
-      return TYPE;
+    return TYPE;
   },
 
   toRaw: function () {
-      return TYPE + '/' + this.kevs;
+    return TYPE + '/' + this.kevs;
   }
 };
 

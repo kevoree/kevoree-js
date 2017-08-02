@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "bootstrap": "lerna bootstrap --hoist",
-    "postinstall": "npm run bootstrap"
+    "bs": "lerna bootstrap --hoist",
+    "postinstall": "npm run bs"
   },
   "devDependencies": {
     "lerna": "^2.0.0-rc.5"

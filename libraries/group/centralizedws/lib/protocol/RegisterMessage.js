@@ -1,27 +1,27 @@
 'use strict';
 
-var TYPE = 'register';
+const TYPE = 'register';
 
 function RegisterMessage(nodeName, model) {
-    this.nodeName = nodeName;
-    this.model = model;
+  this.nodeName = nodeName;
+  this.model = model;
 }
 
 RegisterMessage.prototype = {
   getNodeName: function () {
-      return this.nodeName;
+    return this.nodeName;
   },
 
   getModel: function () {
-      return this.model;
+    return this.model;
   },
 
   getType: function () {
-      return TYPE;
+    return TYPE;
   },
 
   toRaw: function () {
-      return TYPE + '/' + this.nodeName + '/' + this.model;
+    return TYPE + '/' + this.nodeName + '/' + this.model;
   }
 };
 

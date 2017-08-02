@@ -66,6 +66,8 @@ if (!dir) {
         console.log();
         hbsTemplates.write('package', path.join(dir, 'package.json'), answers);
         hbsTemplates.write(answers.type, path.join(dir, 'lib', answers.name + '.js'), answers);
+        hbsTemplates.write('test', path.join(dir, 'test', 'main.js'), answers);
+        hbsTemplates.write('test-eslintrc', path.join(dir, 'test', '.eslintrc'), answers);
         hbsTemplates.write('main', path.join(dir, 'kevs', 'main.kevs'), answers);
         hbsTemplates.write('eslintrc', path.join(dir, '.eslintrc'));
         console.log();

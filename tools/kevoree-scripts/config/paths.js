@@ -22,6 +22,7 @@ module.exports = {
   appPackageJson: resolveApp('package.json'),
   appSrc: resolveApp('src'),
   appModel: resolveApp('kevlib.json'),
+  appBrowser: resolveApp('browser'),
   appKevs: resolveApp('kevs/main.kevs'),
   appNodeModules: resolveApp('node_modules'),
   ownPath: resolveOwn('.'),

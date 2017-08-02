@@ -1,17 +1,17 @@
-var assert = require('assert');
-var WebSocket = require('ws');
-var kevoree = require('kevoree-library');
+const assert = require('assert');
+const WebSocket = require('ws');
+const kevoree = require('kevoree-library');
 
-var InstanceMock = require('./util/InstanceMock');
-var clientFactory = require('../lib/client');
-var Protocol = require('../lib/protocol/Protocol');
-var RegisterMessage = require('../lib/protocol/RegisterMessage');
+const InstanceMock = require('./util/InstanceMock');
+const clientFactory = require('../lib/client');
+const Protocol = require('../lib/protocol/Protocol');
+const RegisterMessage = require('../lib/protocol/RegisterMessage');
 // var PullMessage = require('../lib/protocol/PullMessage');
 
-var PORT = 9000;
+const PORT = 9000;
 
 function noop() { /*noop*/ }
-var logger = {
+const logger = {
 	info: noop,
 	debug: noop,
 	warn: console.warn, // eslint-disable-line
@@ -22,9 +22,9 @@ describe('client.create(logger, port, kCore)', function () {
 	this.timeout(500);
 	this.slow(200);
 
-	var client;
-	var server;
-	var iMock;
+	let client;
+	let server;
+	let iMock;
 
 	before('create instance mock', function () {
 		iMock = new InstanceMock('node1', 'sync');
@@ -38,16 +38,16 @@ describe('client.create(logger, port, kCore)', function () {
 	});
 
 	it('should register on server', function (done) {
-		var simpleClientModelStr = JSON.stringify(require('./fixtures/model/simple-client.json'));
-		var factory = new kevoree.factory.DefaultKevoreeFactory();
-		var loader = factory.createJSONLoader();
-		var model = loader.loadModelFromString(simpleClientModelStr).get(0);
+		const simpleClientModelStr = JSON.stringify(require('./fixtures/model/simple-client.json'));
+		const factory = new kevoree.factory.DefaultKevoreeFactory();
+		const loader = factory.createJSONLoader();
+		const model = loader.loadModelFromString(simpleClientModelStr).get(0);
 		iMock.currentModel = model;
 
 		server.on('connection', function (c) {
 			c.on('message', function (msg) {
-				var receivedMsg = Protocol.parse(msg);
-				var expectedMsg = new RegisterMessage(iMock.nodeName, simpleClientModelStr);
+				const receivedMsg = Protocol.parse(msg);
+				const expectedMsg = new RegisterMessage(iMock.nodeName, simpleClientModelStr);
 				assert.equal(receivedMsg.getNodeName(), expectedMsg.getNodeName());
 				// TODO compare model (but take care of re-ordering? => lodash.isEqual maybe?)
 				done();

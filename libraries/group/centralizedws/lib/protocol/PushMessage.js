@@ -1,22 +1,22 @@
 'use strict';
 
-var TYPE = 'push';
+const TYPE = 'push';
 
 function PushMessage(model) {
-    this.model = model;
+  this.model = model;
 }
 
 PushMessage.prototype = {
   getModel: function () {
-      return this.model;
+    return this.model;
   },
 
   getType: function () {
-      return TYPE;
+    return TYPE;
   },
 
   toRaw: function () {
-      return TYPE + '/' + this.model;
+    return TYPE + '/' + this.model;
   }
 };
 

@@ -1,18 +1,18 @@
-var assert = require('assert');
-var kevoree = require('kevoree-library');
-var WebSocket = require('ws');
+const assert = require('assert');
+const kevoree = require('kevoree-library');
+const WebSocket = require('ws');
 
-var serverFactory = require('../lib/server');
-var InstanceMock = require('./util/InstanceMock');
-var Protocol = require('../lib/protocol/Protocol');
-var RegisterMessage = require('../lib/protocol/RegisterMessage');
-var RegisteredMessage = require('../lib/protocol/RegisteredMessage');
+const serverFactory = require('../lib/server');
+const InstanceMock = require('./util/InstanceMock');
+const Protocol = require('../lib/protocol/Protocol');
+const RegisterMessage = require('../lib/protocol/RegisterMessage');
+const RegisteredMessage = require('../lib/protocol/RegisteredMessage');
 
-var PORT = 9000;
+const PORT = 9000;
 
 // setup
 function noop() {/*noop*/}
-var logger = {
+const logger = {
 	info: noop,
 	debug: noop,
 	warn: console.warn, // eslint-disable-line
@@ -23,8 +23,8 @@ describe('server.create(logger, port, kCore)', function () {
 	this.timeout(500);
 	this.slow(100);
 
-	var server;
-	var iMock;
+	let server;
+	let iMock;
 
 	before('create instance mock', function () {
 		iMock = new InstanceMock('node0', 'sync');
@@ -40,7 +40,7 @@ describe('server.create(logger, port, kCore)', function () {
 	});
 
 	it('server is reachable', function (done) {
-		var client = new WebSocket('ws://localhost:' + PORT);
+		const client = new WebSocket('ws://localhost:' + PORT);
 		client.on('open', function () {
 			client.close();
 			done();
@@ -50,20 +50,20 @@ describe('server.create(logger, port, kCore)', function () {
 	it('registered client is stored and receives "registered" ack', function (done) {
 		this.slow(350);
 
-		var simpleClientModelStr = JSON.stringify(require('./fixtures/model/simple-client.json'));
-		var factory = new kevoree.factory.DefaultKevoreeFactory();
-		var loader = factory.createJSONLoader();
-		var model = loader.loadModelFromString(simpleClientModelStr).get(0);
+		const simpleClientModelStr = JSON.stringify(require('./fixtures/model/simple-client.json'));
+		const factory = new kevoree.factory.DefaultKevoreeFactory();
+		const loader = factory.createJSONLoader();
+		const model = loader.loadModelFromString(simpleClientModelStr).get(0);
 		iMock.currentModel = model;
 
-		var client = new WebSocket('ws://localhost:' + PORT);
+		const client = new WebSocket('ws://localhost:' + PORT);
 		client.on('open', function () {
-			var rMsg = new RegisterMessage('node1', simpleClientModelStr);
+			const rMsg = new RegisterMessage('node1', simpleClientModelStr);
 			client.send(rMsg.toRaw());
 		});
 
 		client.on('message', function (msg) {
-			var pMsg = Protocol.parse(msg);
+			const pMsg = Protocol.parse(msg);
 			switch (pMsg.getType()) {
 				case RegisteredMessage.TYPE:
 					assert.equal(Object.keys(serverFactory.client2name).length, 1);
@@ -78,15 +78,15 @@ describe('server.create(logger, port, kCore)', function () {
 	it('client closed is removed from registered store', function (done) {
 		this.slow(500);
 
-		var simpleClientModelStr = JSON.stringify(require('./fixtures/model/simple-client.json'));
-		var factory = new kevoree.factory.DefaultKevoreeFactory();
-		var loader = factory.createJSONLoader();
-		var model = loader.loadModelFromString(simpleClientModelStr).get(0);
+		const simpleClientModelStr = JSON.stringify(require('./fixtures/model/simple-client.json'));
+		const factory = new kevoree.factory.DefaultKevoreeFactory();
+		const loader = factory.createJSONLoader();
+		const model = loader.loadModelFromString(simpleClientModelStr).get(0);
 		iMock.currentModel = model;
 
-		var client = new WebSocket('ws://localhost:' + PORT);
+		const client = new WebSocket('ws://localhost:' + PORT);
 		client.on('open', function () {
-			var rMsg = new RegisterMessage('node1', simpleClientModelStr);
+			const rMsg = new RegisterMessage('node1', simpleClientModelStr);
 			client.send(rMsg.toRaw());
 
 			// give the server the time to process the request

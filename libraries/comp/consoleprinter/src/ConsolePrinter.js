@@ -8,9 +8,8 @@ var ConsolePrinter = AbstractComponent.extend({
   toString: 'ConsolePrinter',
   tdef_version: 1,
 
-  in_input: function (msg) {
-    var line = this.getName() + '>' + msg;
-    console.log(line);
+  in_input(msg) {
+    console.log(this.getName() + '>' + msg);
   }
 });
 

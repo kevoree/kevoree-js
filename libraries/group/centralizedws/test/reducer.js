@@ -1,29 +1,29 @@
-var assert = require('assert');
-var kevoree = require('kevoree-library');
+const assert = require('assert');
+const kevoree = require('kevoree-library');
 
-var reducer = require('../lib/util/reducer');
-var readModel = require('./util/readModel');
+const reducer = require('../lib/util/reducer');
+const readModel = require('./util/readModel');
 
 // setup
-var factory = new kevoree.factory.DefaultKevoreeFactory();
-var saver = factory.createJSONSerializer();
+const factory = new kevoree.factory.DefaultKevoreeFactory();
+const saver = factory.createJSONSerializer();
 
 describe('reducer(model, master, client)', function () {
 	this.slow(100);
 
 	it('empty model', function () {
-		var model = factory.createContainerRoot();
-		var reducedModel = reducer(model, 'master', 'client');
+		const model = factory.createContainerRoot();
+		const reducedModel = reducer(model, 'master', 'client');
 
 		assert.equal(saver.serialize(model), saver.serialize(reducedModel));
 	});
 
 	it('does not remove unwanted props', function () {
-		var model = readModel('simple-client.json');
-		var reducedModel = reducer(model, 'node0', 'node1');
+		const model = readModel('simple-client.json');
+		const reducedModel = reducer(model, 'node0', 'node1');
 
-		var node0 = reducedModel.findNodesByID('node0');
-		var node1 = reducedModel.findNodesByID('node1');
+		const node0 = reducedModel.findNodesByID('node0');
+		const node1 = reducedModel.findNodesByID('node1');
 		assert.ok(node0);
 		assert.ok(node0.typeDefinition);
 		assert.equal(node0.typeDefinition.deployUnits.array.length, 1);
@@ -33,21 +33,21 @@ describe('reducer(model, master, client)', function () {
 	});
 
 	it('does not remove unwanted bindings', function () {
-		var model = readModel('client-with-chan.json');
-		var reducedModel = reducer(model, 'master', 'client');
+		const model = readModel('client-with-chan.json');
+		const reducedModel = reducer(model, 'master', 'client');
 
-		var client = reducedModel.findNodesByID('client');
-		var ticker = client.findComponentsByID('ticker');
+		const client = reducedModel.findNodesByID('client');
+		const ticker = client.findComponentsByID('ticker');
 		assert.ok(ticker);
 		assert.ok(ticker.typeDefinition);
 		assert.equal(ticker.typeDefinition.deployUnits.array.length, 2);
 
-		var printer = client.findComponentsByID('printer');
+		const printer = client.findComponentsByID('printer');
 		assert.ok(printer);
 		assert.ok(printer.typeDefinition);
 		assert.equal(printer.typeDefinition.deployUnits.array.length, 2);
 
-		var chan = reducedModel.findHubsByID('chan');
+		const chan = reducedModel.findHubsByID('chan');
 		assert.ok(chan);
 		assert.ok(chan.typeDefinition);
 		assert.equal(chan.typeDefinition.deployUnits.array.length, 2);
@@ -57,34 +57,34 @@ describe('reducer(model, master, client)', function () {
 	});
 
 	it('extraneous nodes are removed', function () {
-		var model = readModel('ext-nodes.json');
-		var reducedModel = reducer(model, 'node0', 'node2');
+		const model = readModel('ext-nodes.json');
+		const reducedModel = reducer(model, 'node0', 'node2');
 
 		assert.equal(reducedModel.findNodesByID('node1'), null);
 	});
 
 	it('extraneous channels are removed', function () {
-		var model = readModel('ext-chans.json');
-		var reducedModel = reducer(model, 'node0', 'node1');
+		const model = readModel('ext-chans.json');
+		const reducedModel = reducer(model, 'node0', 'node1');
 
 		assert.equal(reducedModel.findHubsByID('chan'), null);
 	});
 
 	it('extraneous packages are removed', function () {
-		var model = readModel('ext-pkgs.json');
-		var reducedModel = reducer(model, 'node0', 'node1');
+		const model = readModel('ext-pkgs.json');
+		const reducedModel = reducer(model, 'node0', 'node1');
 
 		assert.equal(reducedModel.findPackagesByID('tellu'), null);
 	});
 
 	it('extraneous bindings are removed', function (done) {
-		var model = readModel('ext-bindings.json');
-		var reducedModel = reducer(model, 'node0', 'node1');
+		const model = readModel('ext-bindings.json');
+		const reducedModel = reducer(model, 'node0', 'node1');
 
 		assert.equal(reducedModel.findHubsByID('extChan'), null);
 		assert.equal(reducedModel.mBindings.array.length, 4);
 
-		var sharedChan = reducedModel.findHubsByID('sharedChan');
+		const sharedChan = reducedModel.findHubsByID('sharedChan');
 		assert.equal(sharedChan.bindings.array.length, 2);
 		assert.equal(sharedChan.bindings.array[0].port.eContainer().eContainer().name, 'node1');
 		assert.equal(sharedChan.bindings.array[1].port.eContainer().eContainer().name, 'node2');

@@ -1,24 +1,24 @@
-var kevoree = require('kevoree-library');
-var serverFactory = require('../../lib/server');
-var InstanceMock = require('../util/InstanceMock');
+const kevoree = require('kevoree-library');
+const serverFactory = require('../../lib/server');
+const InstanceMock = require('../util/InstanceMock');
 
-var PORT = 9000;
+const PORT = 9000;
 
 // setup
 function noop() {/*noop*/}
-var logger = {
+const logger = {
 	info: noop,
 	debug: noop,
 	warn: console.warn, // eslint-disable-line
 	error: console.error // eslint-disable-line
 };
 
-var iMock = new InstanceMock('node0', 'sync');
+const iMock = new InstanceMock('node0', 'sync');
 
-var simpleClientModelStr = JSON.stringify(require('../fixtures/model/simple-client.json'));
-var factory = new kevoree.factory.DefaultKevoreeFactory();
-var loader = factory.createJSONLoader();
-var model = loader.loadModelFromString(simpleClientModelStr).get(0);
+const simpleClientModelStr = JSON.stringify(require('../fixtures/model/simple-client.json'));
+const factory = new kevoree.factory.DefaultKevoreeFactory();
+const loader = factory.createJSONLoader();
+const model = loader.loadModelFromString(simpleClientModelStr).get(0);
 iMock.currentModel = model;
 
 serverFactory.create(logger, PORT, iMock);

@@ -10,11 +10,11 @@ const JavascriptNode = AbstractNode.extend({
     optional: false
   },
 
-  construct: function () {
+  construct() {
     this.adaptationEngine = new AdaptationEngine(this);
   },
 
-  start: function (done) {
+  start(done) {
     this.adaptationEngine.modelObjMapper.addEntry(this.getPath(), this);
     this.dictionary.on('logLevel', this.updateLogLevel);
     const logLevel = this.dictionary.getString('logLevel', this.dic_logLevel.defaultValue);
@@ -23,7 +23,7 @@ const JavascriptNode = AbstractNode.extend({
     done();
   },
 
-  stop: function (done) {
+  stop(done) {
     this.adaptationEngine.modelObjMapper.removeEntry(this.getPath());
     this.dictionary.off('logLevel', this.updateLogLevel);
     this.log.debug('stopped');
@@ -35,7 +35,7 @@ const JavascriptNode = AbstractNode.extend({
    * @param node the hosted subNode
    * @param done
    */
-  startSubNode: function (node, done) {
+  startSubNode(node, done) {
     this.log.warn('startSubNode(): not implemented yet');
     done();
   },
@@ -45,7 +45,7 @@ const JavascriptNode = AbstractNode.extend({
    * @param node the hosted subNode
    * @param done
    */
-  stopSubNode: function (node, done) {
+  stopSubNode(node, done) {
     this.log.warn('stopSubNode(): not implemented yet');
     done();
   },
@@ -55,7 +55,7 @@ const JavascriptNode = AbstractNode.extend({
    * @param node the hosted subNode
    * @param done
    */
-  destroySubNode: function (node, done) {
+  destroySubNode(node, done) {
     this.log.warn('destroySubNode(): not implemented yet');
     done();
   },
@@ -65,7 +65,7 @@ const JavascriptNode = AbstractNode.extend({
    * @param node the hosted subNode
    * @param done
    */
-  removeSubNode: function (node, done) {
+  removeSubNode(node, done) {
     this.log.warn('removeSubNode(): not implemented yet');
     done();
   },
@@ -76,11 +76,11 @@ const JavascriptNode = AbstractNode.extend({
    * @param targetModel toDeploy model used by KevoreeCore to generate the trace
    * @returns {Array}
    */
-  processTraces: function (diffSeq, targetModel) {
+  processTraces(diffSeq, targetModel) {
     return this.adaptationEngine.processTraces(diffSeq, targetModel);
   },
 
-  updateLogLevel: function (newLevel, oldLevel) {
+  updateLogLevel(newLevel, oldLevel) {
     this.log.info('Logger level changed from ' + oldLevel + ' to ' + newLevel);
     this.log.transports.console.level = newLevel.toLowerCase().trim();
   }

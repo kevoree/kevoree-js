@@ -7,11 +7,16 @@
     "namespace": "{{namespace}}"
   },
   "scripts": {
-    "lint": "eslint lib test",
+    "lint": "eslint lib browser.js test",
+    "webpack": "webpack -p --progress",
     "prebuild": "npm run lint",
     "build": "kevoree-scripts build",
+    "postbuild": "npm run webpack",
     "prestart": "npm run build",
     "start": "kevoree-scripts start",
+    "pretest": "npm run lint",
+    "test": "mocha",
+    "prekev:publish": "npm run build",
     "kev:publish": "kevoree-scripts publish",
     "prepublishOnly": "npm run build",
     "postpublish": "npm run kev:publish"
@@ -21,7 +26,8 @@
   },
   "devDependencies": {
     "eslint": "^4.3.0",
-    "webpack": "^3.4.1",
-    "kevoree-scripts": "^1.0.0"
+    "kevoree-scripts": "^1.0.0",,
+    "kevoree-module-loader": "^1.0.0",
+    "mocha": "^3.4.2"
   }
 }

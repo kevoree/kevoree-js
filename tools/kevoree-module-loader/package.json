@@ -1,0 +1,23 @@
+{
+  "name": "kevoree-module-loader",
+  "version": "1.0.0",
+  "description": "Kevoree module loader used in browsers",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint index.js test",
+    "pretest": "npm run lint",
+    "test": "mocha",
+    "build": "webpack -p --progress",
+    "prepublish": "npm run build"
+  },
+  "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-preset-env": "^1.6.0",
+    "eslint": "^3.18.0",
+    "json-loader": "^0.5.4",
+    "mocha": "^3.4.2",
+    "webpack": "^3.4.1",
+    "mocha": "^3.4.2"
+  }
+}

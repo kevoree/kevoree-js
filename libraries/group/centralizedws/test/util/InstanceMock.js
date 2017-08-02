@@ -1,4 +1,4 @@
-var kGroupMock = require('./kGroupMock');
+const kGroupMock = require('./kGroupMock');
 
 function InstanceMock(nodeName, name) {
 	this.nodeName = nodeName;
@@ -31,7 +31,7 @@ InstanceMock.prototype = {
 	},
 
 	getKevoreeCore: function () {
-		var self = this;
+		const self = this;
 		return {
 			getCurrentModel: function () {
 				return self.currentModel;

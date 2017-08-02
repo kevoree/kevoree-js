@@ -1,17 +1,17 @@
 'use strict';
 
-var TYPE = 'registered';
+const TYPE = 'registered';
 
 function RegisteredMessage() {}
 
 RegisteredMessage.prototype = {
-	getType: function () {
-		return TYPE;
-	},
+  getType: function () {
+    return TYPE;
+  },
 
-	toRaw: function () {
-		return TYPE;
-	}
+  toRaw: function () {
+    return TYPE;
+  }
 };
 
 module.exports = RegisteredMessage;

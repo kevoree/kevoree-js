@@ -1,12 +1,13 @@
 'use strict';
 
 const path = require('path');
-const pkg = require('./package.json');
+const paths = require('./paths');
+const pkg = require(paths.appPackageJson);
 
 module.exports = {
-  entry: path.resolve('browser.js'),
+  entry: path.resolve('..', 'browser', 'entry.js'),
   output: {
-    filename: path.join('browser', pkg.name + '.js')
+    filename: path.join(paths.appPath, 'browser', pkg.name + '.js')
   },
   module: {
     loaders: [

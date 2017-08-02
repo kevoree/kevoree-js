@@ -1,15 +1,15 @@
 // testing client heartbeat manager
-var assert = require('assert');
-var WebSocket = require('ws');
-var HeartBeatManager = require('../lib/util/heartbeat-manager');
+const assert = require('assert');
+const WebSocket = require('ws');
+const HeartBeatManager = require('../lib/util/heartbeat-manager');
 
-var PORT = 8000;
+const PORT = 8000;
 
 describe('HeartBeatManager', function () {
 	this.slow(300);
 
-	var server;
-	var client;
+	let server;
+	let client;
 
 	beforeEach('start server', function () {
 		server = new WebSocket.Server({ port: PORT });
@@ -22,8 +22,8 @@ describe('HeartBeatManager', function () {
 
 	it('should answer ping request', function (done) {
 		server.on('connection', function (client) {
-			var hbManager = new HeartBeatManager(client, 50);
-			var pingMsg;
+			const hbManager = new HeartBeatManager(client, 50);
+			let pingMsg;
 			hbManager
 				.on('ping', function (msg) {
 					pingMsg = msg;
@@ -42,7 +42,7 @@ describe('HeartBeatManager', function () {
 
 	it('should stop heartbeat process when client close connection', function (done) {
 		server.on('connection', function (client) {
-			var hbManager = new HeartBeatManager(client, 50);
+			const hbManager = new HeartBeatManager(client, 50);
 			hbManager.on('stop', done);
 			hbManager.start();
 			setTimeout(function () {

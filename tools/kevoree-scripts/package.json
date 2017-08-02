@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/kevoree/kevoree-js-scripts#readme",
   "dependencies": {
+    "webpack": "^3.4.1",
     "cli-table": "^0.3.1",
     "cross-spawn": "^5.1.0",
     "kevoree-core": "^9.0.7",

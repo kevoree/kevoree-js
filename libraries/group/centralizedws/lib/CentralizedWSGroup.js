@@ -1,6 +1,6 @@
-var AbstractGroup = require('kevoree-entities/lib/AbstractGroup');
-var server = require('./server');
-var client = require('./client');
+const AbstractGroup = require('kevoree-entities/lib/AbstractGroup');
+const server = require('./server');
+const client = require('./client');
 
 function logger(log, tag) {
 	return {
@@ -19,7 +19,7 @@ function logger(log, tag) {
 	};
 }
 
-var CentralizedWSGroup = AbstractGroup.extend({
+const CentralizedWSGroup = AbstractGroup.extend({
 	toString: 'CentralizedWSGroup',
 	tdef_version: 2,
 
@@ -45,12 +45,12 @@ var CentralizedWSGroup = AbstractGroup.extend({
 		defaultValue: true
 	},
 
-	start: function (done) {
-		var isMaster = this.dictionary.getBoolean('isMaster', this.dic_isMaster.defaultValue);
-		var masterNet = this.dictionary.getString('masterNet', this.dic_masterNet.defaultValue);
-		var port = this.dictionary.getNumber('port', this.dic_port.defaultValue);
+	start(done) {
+		const isMaster = this.dictionary.getBoolean('isMaster', this.dic_isMaster.defaultValue);
+		const masterNet = this.dictionary.getString('masterNet', this.dic_masterNet.defaultValue);
+		const port = this.dictionary.getNumber('port', this.dic_port.defaultValue);
 
-		var rMasterNet = masterNet.match(/^([a-z0-9A-Z]+)\.([a-z0-9A-Z]+)$/);
+		const rMasterNet = masterNet.match(/^([a-z0-9A-Z]+)\.([a-z0-9A-Z]+)$/);
 		if (rMasterNet && rMasterNet.length > 0) {
 			if (isMaster) {
 				this.fragment = server.create(logger(this.log, '[' + this.name + '][master]'), port, this);
@@ -64,7 +64,7 @@ var CentralizedWSGroup = AbstractGroup.extend({
 				}
 			}
 
-			var self = this;
+			const self = this;
 			this.dictionary.on('port', function () {
 				if (isMaster) {
 					this.fragment.broadcast(logger(this.log, '[' + this.name + '][master]'), this);
@@ -79,7 +79,7 @@ var CentralizedWSGroup = AbstractGroup.extend({
 		}
 	},
 
-	stop: function (done) {
+	stop(done) {
 		this.fragment.close(this);
 		done();
 	}
