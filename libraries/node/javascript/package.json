@@ -6,11 +6,7 @@
     "namespace": "kevoree"
   },
   "scripts": {
-    "lint": "eslint lib browser.js test",
-    "webpack": "webpack -p --progress",
-    "prebuild": "npm run lint",
     "build": "kevoree-scripts build",
-    "postbuild": "npm run webpack",
     "prestart": "npm run build",
     "start": "kevoree-scripts start",
     "prekev:publish": "npm run build",
@@ -40,15 +36,10 @@
     "times-up": "^1.0.1"
   },
   "devDependencies": {
-    "babel-core": "^6.25.0",
-    "babel-loader": "^7.1.1",
-    "babel-preset-env": "^1.6.0",
     "eslint": "^3.18.0",
     "expect": "^1.20.2",
-    "json-loader": "^0.5.4",
     "kevoree-scripts": "^1.0.0",
-    "mocha": "^3.4.2",
-    "webpack": "^3.4.1"
+    "mocha": "^3.4.2"
   },
   "engines": {
     "node": "*"

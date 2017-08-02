@@ -1,5 +1,6 @@
 // Do this as the first thing so that any code reading it knows the right env.
-process.env.NODE_ENV = 'development';
+process.env.BABEL_ENV = 'production';
+process.env.NODE_ENV = 'production';
 
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
@@ -11,29 +12,53 @@ process.on('unhandledRejection', (err) => {
 // make sure config is the first thing set
 require('../config/index');
 
-const fs = require('fs');
-const path = require('path');
+const fs = require('fs-extra');
+const eslint = require('eslint');
 const chalk = require('chalk');
 const webpack = require('webpack');
+const merge = require('lodash.merge');
 const kevoreeGenModel = require('kevoree-gen-model');
 const paths = require('../config/paths');
-const config = require('../config/webpack.config.prod');
+const config = require('../config/webpack.config');
 const printHeader = require('./util/print-header');
 const formatWebpackMessages = require('./util/format-webpack-messages');
 
 const appPkg = require(paths.appPackageJson);
-printHeader('Generating Kevoree model', appPkg.name, appPkg.version);
+printHeader('Linting sources', appPkg.name, appPkg.version);
+const eslintCli = new eslint.CLIEngine();
+const lintReport = eslintCli.executeOnFiles([paths.appSrc, paths.appTest]);
+if (lintReport.errorCount === 0 && lintReport.warningCount === 0) {
+  console.log(chalk.green('Your code rocks.') + '\n');
+} else {
+  console.log(eslintCli.getFormatter(lintReport.results) + '\n');
+  process.exit(1);
+}
 
+printHeader('Generating Kevoree model', appPkg.name, appPkg.version);
 kevoreeGenModel(paths.appPath, false, (err) => {
   if (err && err.message) {
     console.log(err.message);
     process.exit(1);
   } else {
+    console.log();
+    printHeader('Generating browser bundle', appPkg.name, appPkg.version);
+
+    // merge default webpack config with optional custom conf
+    let conf;
+    try {
+      const customConf = require(paths.appWebpackConf);
+      conf = merge({}, config, customConf);
+    } catch (ignore) {
+      conf = config;
+    }
+
     // Remove all content but keep the directory so that
     // if you're in it, you don't end up in Trash
-    fs.emptyDirSync(paths.appBrowser);
+    fs.emptyDirSync(conf.output.path);
+
     // Start the webpack build
-    return browserBuild()
+    console.log();
+    return browserBuild(conf)
       .then(({ stats, warnings }) => {
           if (warnings.length) {
             console.log(chalk.yellow('Compiled with warnings.\n'));
@@ -49,16 +74,10 @@ kevoreeGenModel(paths.appPath, false, (err) => {
               ' to the line before.\n'
             );
           } else {
-            console.log('--- stats ---');
-            console.log(stats);
-            console.log('-------------');
-            console.log(chalk.green('Compiled successfully.\n'));
+            console.log(stats.toString({ colors: true }));
+            console.log();
+            console.log(chalk.green('Compiled successfully') + '\n');
           }
-
-          console.log();
-
-          const buildFolder = path.relative(process.cwd(), paths.appBrowser);
-          console.log('Browser module: ' + chalk.blue(buildFolder));
         },
         (err) => {
           console.log(chalk.red('Failed to compile.\n'));
@@ -70,9 +89,7 @@ kevoreeGenModel(paths.appPath, false, (err) => {
 });
 
 // Create the browser build
-function browserBuild() {
-  console.log('Creating an optimized production build...');
-
+function browserBuild(config) {
   const compiler = webpack(config);
   return new Promise((resolve, reject) => {
     compiler.run((err, stats) => {
@@ -82,20 +99,6 @@ function browserBuild() {
       const messages = formatWebpackMessages(stats.toJson({}, true));
       if (messages.errors.length) {
         return reject(new Error(messages.errors.join('\n\n')));
-      }
-      if (
-        process.env.CI &&
-        (typeof process.env.CI !== 'string' ||
-          process.env.CI.toLowerCase() !== 'false') &&
-        messages.warnings.length
-      ) {
-        console.log(
-          chalk.yellow(
-            '\nTreating warnings as errors because process.env.CI = true.\n' +
-            'Most CI servers set it automatically.\n'
-          )
-        );
-        return reject(new Error(messages.warnings.join('\n\n')));
       }
       return resolve({ stats, warnings: messages.warnings });
     });
