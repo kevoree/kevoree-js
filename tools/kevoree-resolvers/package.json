@@ -4,9 +4,9 @@
   "description": "Standard Kevoree Javascript resolvers",
   "main": "./kevoree-resolvers.js",
   "scripts": {
-    "lint": "eslint kevoree-resolvers.js lib",
+    "lint": "eslint kevoree-resolvers.js lib test",
     "pretest": "npm run lint",
-    "test": "mocha"
+    "test": "mocha test"
   },
   "repository": {
     "type": "git",
@@ -33,10 +33,13 @@
     "rimraf": "^2.6.1"
   },
   "devDependencies": {
+    "eslint": "^4.3.0",
+    "eslint-config-kevoree": "^1.0.0",
     "kevoree-logger": "^1.0.0",
     "webpack": "^3.4.1",
     "kevoree-library": "^5.0.11",
-    "mocha": "^3.4.2"
+    "mocha": "^3.4.2",
+    "rimraf": "^2.6.1"
   },
   "maintainers": [
     {

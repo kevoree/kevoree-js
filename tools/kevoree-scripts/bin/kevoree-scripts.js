@@ -13,7 +13,7 @@ switch (script) {
   case 'publish':
   case 'test':
     {
-      ['SIGINT', 'SIGTERM'].forEach(function (sig) {
+      ['SIGINT', 'SIGTERM'].forEach((sig) => {
         process.on(sig, noop);
       });
       const result = spawn(

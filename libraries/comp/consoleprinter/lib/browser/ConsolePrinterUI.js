@@ -1,9 +1,9 @@
-var React = require('react');
+const React = require('react');
 
-var ConsolePrinter = require('../ConsolePrinter');
-var s = require('./styles');
+const ConsolePrinter = require('../ConsolePrinter');
+const s = require('./styles');
 
-var ConsolePrinterUI = ConsolePrinter.extend({
+const ConsolePrinterUI = ConsolePrinter.extend({
 
   construct: function () {
     this.uiState = { messages: [], maxLines: 25 };
@@ -19,13 +19,13 @@ var ConsolePrinterUI = ConsolePrinter.extend({
   },
 
   uiFactory: function () {
-    var ReactConsolePrinter = React.createClass({
+    const ReactConsolePrinter = React.createClass({
       getInitialState: function () {
         return this.props.instance.uiState;
       },
 
       updateLines: function () {
-        var state = this.props.instance.uiState;
+        const state = this.props.instance.uiState;
         if (state.messages.length > state.maxLines) {
           state.messages = [].concat(state.messages);
           state.messages.splice(0, state.messages.length - state.maxLines);
@@ -64,7 +64,7 @@ var ConsolePrinterUI = ConsolePrinter.extend({
               )}
               {this.state.messages.length > 0 && (
                 <ul>
-                  {this.state.messages.map(function (msg, i) {
+                  {this.state.messages.map((msg, i) => {
                     return (
                       <li key={i} style={s.listGroupItem}>{msg}</li>
                     );

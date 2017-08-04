@@ -1,2 +1,0 @@
-add node0: JavascriptNode/LATEST/LATEST
-add node0.comp: kevoree.Proxy/1/{ js: '0.0.1' }

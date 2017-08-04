@@ -1,7 +1,5 @@
-'use strict';
-
-var kevoree = require('kevoree-library'),
-  EventEmitter = require('events').EventEmitter;
+const kevoree = require('kevoree-library');
+const events = require('events');
 
 /**
  * Dictionary class use to handle KevoreeEntities dictionary attributes
@@ -37,19 +35,19 @@ var kevoree = require('kevoree-library'),
  */
 function Dictionary(entity) {
   this.entity = entity;
-  this.emitter = new EventEmitter();
+  this.emitter = new events.EventEmitter();
   this.map = {};
 }
 
 Dictionary.prototype = {
   /**
    * Adds a listener on dictionary changes or on a particular attribute changes
-   * dictionary.on('myAttr', function (newVal, oldVal) { ... });
+   * dictionary.on('myAttr', (newVal, oldVal) => { ... });
    *
    * @param attrName name of the attribute you want to add a listener on
    * @param callback function (attrNewValue, attrOldValue)
    */
-  on: function (attrName, callback) {
+  on(attrName, callback) {
     this.emitter.addListener(attrName, callback.bind(this.entity));
   },
 
@@ -58,7 +56,7 @@ Dictionary.prototype = {
    * @param event
    * @param callback
    */
-  off: function (event, callback) {
+  off(event, callback) {
     this.emitter.removeListener(event, callback);
   },
 
@@ -67,7 +65,7 @@ Dictionary.prototype = {
    * @param {String} name the key
    * @returns {*}
    */
-  getValue: function (name) {
+  getValue(name) {
     return this.map[name];
   },
 
@@ -79,8 +77,8 @@ Dictionary.prototype = {
    * @param [defaultVal] a default boolean to return if no value is found in the dictionary using the given name
    * @returns {Boolean}
    */
-  getBoolean: function (name, defaultVal) {
-    var val = this.map[name];
+  getBoolean(name, defaultVal) {
+    const val = this.map[name];
     if (val === 'true' || val === 'false') {
       return val === 'true';
     }
@@ -101,8 +99,8 @@ Dictionary.prototype = {
    * @param [defaultVal] a default string to return if no value is found in the dictionary using the given name
    * @returns {String}
    */
-  getString: function (name, defaultVal) {
-    var val = this.map[name];
+  getString(name, defaultVal) {
+    const val = this.map[name];
 
     if (typeof (val) === 'string') {
       return val;
@@ -124,8 +122,8 @@ Dictionary.prototype = {
    * @param [defaultVal] a default number to return if no value is found in the dictionary using the given name
    * @returns {Number}
    */
-  getNumber: function (name, defaultVal) {
-    var val;
+  getNumber(name, defaultVal) {
+    let val;
     if (this.map[name] && this.map[name].length === 0) {
       val = null;
     } else {
@@ -147,9 +145,9 @@ Dictionary.prototype = {
    * @param name
    * @param value
    */
-  setValue: function (name, value) {
-    var factory = new kevoree.factory.DefaultKevoreeFactory();
-    var entity = this.entity.getModelEntity();
+  setValue(name, value) {
+    const factory = new kevoree.factory.DefaultKevoreeFactory();
+    const entity = this.entity.getModelEntity();
     if (!entity.dictionary) {
       entity.dictionary = factory.createDictionary();
     }
@@ -169,8 +167,8 @@ Dictionary.prototype = {
    * @param name attribute name
    * @param value new attribute value
    */
-  setEntry: function (name, value) {
-    var oldValue = this.map[name];
+  setEntry(name, value) {
+    const oldValue = this.map[name];
     this.map[name] = value;
     // emit update event with the name, oldValue and newValue
     if (this.entity.isStarted()) {
@@ -185,17 +183,17 @@ Dictionary.prototype = {
    *
    * @param map
    */
-  setMap: function (map) {
-    var name;
+  setMap(map) {
+    let name;
     if (Object.keys(this.map).length > 0) {
       // current map is not empty
-      for (var newName in map) {
-        var alreadyAdded = false;
+      for (const newName in map) {
+        let alreadyAdded = false;
 
         for (name in this.map) {
           if (newName === name) {
             // oldMap and newMap both have this attribute : update needed ?
-            var oldValue = this.map[name];
+            const oldValue = this.map[name];
             if (oldValue !== map[name]) {
               // map[name] value is different from current value => update
               this.map[name] = map[name];
@@ -221,7 +219,7 @@ Dictionary.prototype = {
    *
    * @returns {{}|*}
    */
-  getMap: function () {
+  getMap() {
     return this.map;
   },
 
@@ -229,15 +227,15 @@ Dictionary.prototype = {
    * Returns this dictionary current cloned map
    * @returns {{}}
    */
-  cloneMap: function () {
-    var clonedMap = {};
-    for (var name in this.map) {
+  cloneMap() {
+    const clonedMap = {};
+    for (const name in this.map) {
       clonedMap[name] = this.map[name];
     }
     return clonedMap;
   },
 
-  toString: function () {
+  toString() {
     return 'Dictionary';
   }
 };

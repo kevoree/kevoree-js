@@ -5,30 +5,30 @@ const HeartBeatManager = require('../lib/util/heartbeat-manager');
 
 const PORT = 8000;
 
-describe('HeartBeatManager', function () {
+describe('HeartBeatManager', function mochaDescribe() {
 	this.slow(300);
 
 	let server;
 	let client;
 
-	beforeEach('start server', function () {
+	beforeEach('start server', () => {
 		server = new WebSocket.Server({ port: PORT });
 	});
 
-	afterEach('stop server', function () {
+	afterEach('stop server', () => {
 		client.close();
 		server.close();
 	});
 
-	it('should answer ping request', function (done) {
-		server.on('connection', function (client) {
+	it('should answer ping request', (done) => {
+		server.on('connection', (client) => {
 			const hbManager = new HeartBeatManager(client, 50);
 			let pingMsg;
 			hbManager
-				.on('ping', function (msg) {
+				.on('ping', (msg) => {
 					pingMsg = msg;
 				})
-				.on('pong', function (msg) {
+				.on('pong', (msg) => {
 					assert.equal(msg, pingMsg);
 					hbManager.stop();
 					done();
@@ -40,12 +40,12 @@ describe('HeartBeatManager', function () {
 		client = new WebSocket('ws://localhost:' + PORT);
 	});
 
-	it('should stop heartbeat process when client close connection', function (done) {
-		server.on('connection', function (client) {
+	it('should stop heartbeat process when client close connection', (done) => {
+		server.on('connection', (client) => {
 			const hbManager = new HeartBeatManager(client, 50);
 			hbManager.on('stop', done);
 			hbManager.start();
-			setTimeout(function () {
+			setTimeout(() => {
 				client.close();
 			}, 70);
 		});

@@ -101,8 +101,8 @@ const resolver = new NPMResolver(kConst.GLOBAL_PATH, loggerFactory.create('NPMRe
 // create a Kevoree core
 const core = new KevoreeCore(resolver, kevs, loggerFactory);
 
-['SIGINT', 'SIGTERM'].forEach(function (sig) {
-  process.on(sig, function () {
+['SIGINT', 'SIGTERM'].forEach((sig) => {
+  process.on(sig, () => {
     if (sig === 'SIGINT') {
       console.log(); // new line after ^C
       logger.info('Shutting down Kevoree... (SIGINT)');

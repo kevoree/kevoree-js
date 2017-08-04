@@ -50,7 +50,7 @@ module.exports = (model, expressions, stmt, opts) => {
   return Promise.resolve()
     .then(() => {
       // resolve TypeDefinition
-      opts.logger.debug('KevScript', 'Trying to resolve ' + tdefExpr);
+      opts.logger.debug('Trying to resolve ' + tdefExpr);
       return opts.resolver.resolve(tdefExpr, model)
         .then((tdef) => {
           if (tdef) {

@@ -1,22 +1,20 @@
-'use strict';
-
-var KevoreeEntity = require('./KevoreeEntity');
+const KevoreeEntity = require('./KevoreeEntity');
 
 /**
  * AbstractGroup entity
  *
  * @class
  */
-var AbstractGroup = KevoreeEntity.extend({
-    toString: 'AbstractGroup',
+const AbstractGroup = KevoreeEntity.extend({
+  toString: 'AbstractGroup',
 
-    /**
-     *
-     * @param model
-     */
-    updateModel: function (model) {
-        this.kCore.deploy(model);
-    }
+  /**
+   *
+   * @param model
+   */
+  updateModel(model) {
+    this.kCore.deploy(model);
+  }
 });
 
 module.exports = AbstractGroup;

@@ -3,7 +3,7 @@ const dedupe = require('./dedupe');
 
 function isChannelRelated(chan, master, client) {
   if (chan) {
-    return chan.bindings.array.some(function (binding) {
+    return chan.bindings.array.some((binding) => {
       if (binding.port && binding.port.eContainer()) {
         const node = binding.port.eContainer().eContainer();
         if (node.name === master || node.name === client) {
@@ -27,7 +27,7 @@ function isBindingRelated(binding, master, client) {
       if (node.name === master || node.name === client) {
         return true;
       }
-      binding.port.bindings.array.some(function (b) {
+      binding.port.bindings.array.some((b) => {
         if (binding.path() !== b.path()) {
           return isBindingRelated(b, master, client);
         }
@@ -38,7 +38,7 @@ function isBindingRelated(binding, master, client) {
 }
 
 function isPortRelated(port, master, client) {
-  return port.bindings.array.some(function (binding) {
+  return port.bindings.array.some((binding) => {
     if (isBindingRelated(binding, master, client)) {
       return true;
     }
@@ -47,7 +47,7 @@ function isPortRelated(port, master, client) {
 }
 
 function isComponentRelated(comp, master, client) {
-  const inputRelated = comp.provided.array.some(function (port) {
+  const inputRelated = comp.provided.array.some((port) => {
     if (isPortRelated(port, master, client)) {
       return true;
     }
@@ -58,7 +58,7 @@ function isComponentRelated(comp, master, client) {
     return true;
   }
 
-  return comp.required.array.some(function (port) {
+  return comp.required.array.some((port) => {
     if (isPortRelated(port, master, client)) {
       return true;
     }
@@ -75,15 +75,15 @@ function getRelatedRootPackages(node) {
 
   packages.push(getRootPkgName(node));
 
-  node.components.array.forEach(function (comp) {
+  node.components.array.forEach((comp) => {
     packages.push(getRootPkgName(comp));
   });
 
-  node.hosts.array.forEach(function (node) {
+  node.hosts.array.forEach((node) => {
     packages.push(getRootPkgName(node));
   });
 
-  node.groups.array.forEach(function (group) {
+  node.groups.array.forEach((group) => {
     packages.push(getRootPkgName(group));
   });
 
@@ -91,9 +91,9 @@ function getRelatedRootPackages(node) {
 }
 
 function reduceNodes(model, master, client) {
-  model.nodes.array.forEach(function (node) {
+  model.nodes.array.forEach((node) => {
     if (node.name !== master && node.name !== client) {
-      const isRelated = node.components.array.some(function (comp) {
+      const isRelated = node.components.array.some((comp) => {
         if (isComponentRelated(comp, master, client)) {
           return true;
         }
@@ -108,7 +108,7 @@ function reduceNodes(model, master, client) {
 }
 
 function reduceBindings(model, master, client) {
-  model.mBindings.array.forEach(function (binding) {
+  model.mBindings.array.forEach((binding) => {
     // only check channel for bindings because the port will be checked by components
     if (!isChannelRelated(binding.hub, master, client)) {
       binding.delete();
@@ -117,7 +117,7 @@ function reduceBindings(model, master, client) {
 }
 
 function reduceChannels(model, master, client) {
-  model.hubs.array.forEach(function (chan) {
+  model.hubs.array.forEach((chan) => {
     if (chan.bindings.array.length === 0) {
       chan.delete();
     } else {
@@ -129,7 +129,7 @@ function reduceChannels(model, master, client) {
 }
 
 function reduceGroups(model, master, client) {
-  model.groups.array.forEach(function (group) {
+  model.groups.array.forEach((group) => {
     let node = group.findSubNodesByID(master);
     if (!node) {
       node = group.findSubNodesByID(client);
@@ -154,7 +154,7 @@ function reducePackages(model, master, client) {
 
   usedPackages = dedupe(usedPackages);
 
-  model.packages.array.forEach(function (pkg) {
+  model.packages.array.forEach((pkg) => {
     if (usedPackages.indexOf(pkg.name) === -1) {
       pkg.delete();
     }

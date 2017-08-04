@@ -6,8 +6,6 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-'use strict';
-
 const path = require('path');
 const fs = require('fs');
 
@@ -20,7 +18,7 @@ const resolveOwn = (relativePath) => path.resolve(__dirname, '..', relativePath)
 module.exports = {
   appPath: resolveApp('.'),
   appPackageJson: resolveApp('package.json'),
-  appSrc: resolveApp('src'),
+  appSrc: resolveApp('lib'),
   appTest: resolveApp('test'),
   appModel: resolveApp('kevlib.json'),
   appBabelrc: resolveApp('.babelrc'),

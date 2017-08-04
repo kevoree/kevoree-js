@@ -30,16 +30,16 @@ module.exports = function fsResolverFactory(logger, next) {
 				tdefModel.deployUnits = [];
 				return fs.writeFile(tdefPath, JSON.stringify(tdefModel, null, 2), 'utf-8')
 					.then(() => {
-						logger.debug('KevScript', 'FileSystemResolver cached ' + tdefPath);
+						logger.debug('FileSystemResolver cached ' + tdefPath);
 					})
 					.catch((err) => {
-						logger.debug('KevScript', 'FileSystemResolver failed to cache ' + root + ' (ignored)');
-						logger.debug('KevScript', err.stack);
+						logger.debug('FileSystemResolver failed to cache ' + root + ' (ignored)');
+						logger.debug(err.stack);
 					});
 			})
 			.catch((err) => {
-				logger.debug('KevScript', 'FileSystemResolver failed to create directory ' + path.resolve(tdefPath, '..') + ' (ignored)');
-				logger.debug('KevScript', err.stack);
+				logger.debug('FileSystemResolver failed to create directory ' + path.resolve(tdefPath, '..') + ' (ignored)');
+				logger.debug(err.stack);
 			});
 	}
 
@@ -50,16 +50,16 @@ module.exports = function fsResolverFactory(logger, next) {
 				const duModelStr = JSON.stringify(JSON.parse(serializer.serialize(du)), null, 2);
 				return fs.writeFile(duPath, duModelStr, 'utf-8')
 					.then(() => {
-						logger.debug('KevScript', 'FileSystemResolver cached ' + duPath);
+						logger.debug('FileSystemResolver cached ' + duPath);
 					})
 					.catch((err) => {
-						logger.debug('KevScript', 'FileSystemResolver failed to cache ' + root + ' (ignored)');
-						logger.debug('KevScript', err.stack);
+						logger.debug('FileSystemResolver failed to cache ' + root + ' (ignored)');
+						logger.debug(err.stack);
 					});
 			})
 			.catch((err) => {
-				logger.debug('KevScript', 'FileSystemResolver failed to create directory ' + path.resolve(duPath, '..') + ' (ignored)');
-				logger.debug('KevScript', err.stack);
+				logger.debug('FileSystemResolver failed to create directory ' + path.resolve(duPath, '..') + ' (ignored)');
+				logger.debug(err.stack);
 			});
 	}
 
@@ -81,8 +81,8 @@ module.exports = function fsResolverFactory(logger, next) {
 				return model;
 			})
 			.catch((err) => {
-				logger.debug('KevScript', err.message + ' (ignored)');
-				logger.debug('KevScript', err.stack);
+				logger.debug(err.message + ' (ignored)');
+				logger.debug(err.stack);
 			});
 	}
 
@@ -99,8 +99,8 @@ module.exports = function fsResolverFactory(logger, next) {
 				return model;
 			})
 			.catch((err) => {
-				logger.debug('KevScript', err.message + ' (ignored)');
-				logger.debug('KevScript', err.stack);
+				logger.debug(err.message + ' (ignored)');
+				logger.debug(err.stack);
 			});
 	}
 
@@ -166,7 +166,7 @@ module.exports = function fsResolverFactory(logger, next) {
 													tdef.addDeployUnits(model.findByPath(du.path()));
 												}
 											});
-											logger.info('KevScript', 'Found ' + fqn + ' in filesystem');
+											logger.info('Found ' + fqn + ' in filesystem');
 											return tdef;
 										} else {
 											// unable to find deployUnits in filesystem cache

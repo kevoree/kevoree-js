@@ -11,7 +11,7 @@ let previousTs = Date.now(); // timestamp marker of the previous log
 LoggerFactory.prototype = {
   create(tag, instance) {
     if (!instance) {
-      instance = 'root';
+      instance = '~';
     }
 
     const logger = new winston.Logger({

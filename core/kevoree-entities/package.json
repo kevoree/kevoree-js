@@ -6,8 +6,10 @@
   "main": "./kevoree-entities.js",
   "typings": "kevoree-entities.d.ts",
   "scripts": {
-    "prepublish": "npm run lint",
-    "lint": "eslint kevoree-entities.js lib"
+    "prepublish": "npm test",
+    "lint": "eslint kevoree-entities.js lib test",
+    "pretest": "npm run lint",
+    "test": "mocha test"
   },
   "keywords": [
     "kevoree",
@@ -26,7 +28,9 @@
     "url": "https://github.com/kevoree/kevoree-js"
   },
   "devDependencies": {
-    "webpack": "^3.4.1"
+    "mocha": "^3.4.2",
+    "eslint": "^4.3.0",
+    "eslint-config-kevoree": "^1.0.0"
   },
   "dependencies": {
     "kevoree-library": "^5.0.0",

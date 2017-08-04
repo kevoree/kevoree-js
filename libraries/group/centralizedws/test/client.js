@@ -18,7 +18,7 @@ const logger = {
 	error: console.error // eslint-disable-line
 };
 
-describe('client.create(logger, port, kCore)', function () {
+describe('client.create(logger, port, kCore)', function mochaDescribe() {
 	this.timeout(500);
 	this.slow(200);
 
@@ -26,26 +26,26 @@ describe('client.create(logger, port, kCore)', function () {
 	let server;
 	let iMock;
 
-	before('create instance mock', function () {
+	before('create instance mock', () => {
 		iMock = new InstanceMock('node1', 'sync');
 	});
 
-	beforeEach('create WebSocket Server mock', function (done) {
-		server = new WebSocket.Server({ port: PORT }, function () {
+	beforeEach('create WebSocket Server mock', (done) => {
+		server = new WebSocket.Server({ port: PORT }, () => {
 			client = clientFactory.create(logger, PORT, iMock, 'lo', 'ipv4');
 			done();
 		});
 	});
 
-	it('should register on server', function (done) {
+	it('should register on server', (done) => {
 		const simpleClientModelStr = JSON.stringify(require('./fixtures/model/simple-client.json'));
 		const factory = new kevoree.factory.DefaultKevoreeFactory();
 		const loader = factory.createJSONLoader();
 		const model = loader.loadModelFromString(simpleClientModelStr).get(0);
 		iMock.currentModel = model;
 
-		server.on('connection', function (c) {
-			c.on('message', function (msg) {
+		server.on('connection', (c) => {
+			c.on('message', (msg) => {
 				const receivedMsg = Protocol.parse(msg);
 				const expectedMsg = new RegisterMessage(iMock.nodeName, simpleClientModelStr);
 				assert.equal(receivedMsg.getNodeName(), expectedMsg.getNodeName());
@@ -55,11 +55,11 @@ describe('client.create(logger, port, kCore)', function () {
 		});
 	});
 
-	afterEach('close client if any', function (done) {
+	afterEach('close client if any', (done) => {
 		if (client) {
 			client.close();
 		}
-		setTimeout(function () {
+		setTimeout(() => {
 			// give it a bit of time to properly close clients
 			if (server) {
 				server.close(done);

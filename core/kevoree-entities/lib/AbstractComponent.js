@@ -1,40 +1,36 @@
-'use strict';
-
-var KevoreeEntity = require('./KevoreeEntity');
-var Input = require('./Input');
-var Output = require('./Output');
+const KevoreeEntity = require('./KevoreeEntity');
+const Input = require('./Input');
+const Output = require('./Output');
 
 /**
  * AbstractComponent entity
  *
  * @class
  */
-var AbstractComponent = KevoreeEntity.extend({
+const AbstractComponent = KevoreeEntity.extend({
   toString: 'AbstractComponent',
 
   /**
    * @constructs
    */
-  construct: function () {
+  construct() {
     this.inputs = {};
     this.outputs = {};
-		var self = this;
-		var comp = this.getModelEntity();
+    const comp = this.getModelEntity();
 
-    comp.provided.array.forEach(function (port) {
-      self.inputs[port.path()] = new Input(self, port);
+    comp.provided.array.forEach((port) => {
+      this.inputs[port.path()] = new Input(this, port);
     });
-    comp.required.array.forEach(function (port) {
-      self.outputs[port.path()] = new Output(self, port);
+    comp.required.array.forEach((port) => {
+      this.outputs[port.path()] = new Output(this, port);
     });
   },
 
-  __start__: function (done) {
-    var self = this;
-    this._super(function () {
+  __start__(done) {
+    this._super(() => {
       // once started, if there are any pending messages => send them
-      Object.keys(self.inputs).forEach(function (path) {
-        self.inputs[path].processPendings();
+      Object.keys(this.inputs).forEach((path) => {
+        this.inputs[path].processPendings();
       });
       done();
     });

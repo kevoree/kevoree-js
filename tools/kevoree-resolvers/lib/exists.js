@@ -1,5 +1,3 @@
-'use strict';
-
 const path = require('path');
 const kHash = require('kevoree-hash');
 const npa = require('npm-package-arg');
@@ -36,8 +34,9 @@ function exists(moduleName, modulePath, hashcode, skipIntegrityCheck) {
       });
   } else {
     // module name looks "normal"
-    let pkgJsonPath = [modulePath, 'node_modules'].concat(parsed.name.split('/')). // just in case module name is scoped
-    concat(['package.json']);
+    let pkgJsonPath = [modulePath, 'node_modules']
+      .concat(parsed.name.split('/')) // just in case module name is scoped
+      .concat(['package.json']);
     // using resolve.apply() because pkgJsonPath is an array here
     pkgJsonPath = path.resolve.apply(null, pkgJsonPath);
     return readFile(pkgJsonPath)

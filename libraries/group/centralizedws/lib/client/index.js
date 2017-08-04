@@ -35,17 +35,16 @@ function getUri(logger, port, instance, masterNetName, masterNetValueName) {
 }
 
 module.exports = {
-  create: function (logger, port, instance, masterNetName, masterNetValueName) {
-    const self = this;
+  create(logger, port, instance, masterNetName, masterNetValueName) {
     const uri = getUri(logger, port, instance, masterNetName, masterNetValueName);
-    self.client = new RWebSocket(uri);
+    this.client = new RWebSocket(uri);
 
-    self.client.onopen = function () {
+    this.client.onopen = () => {
       logger.info('connected to ' + uri);
-      register(logger, self.client, instance);
+      register(logger, this.client, instance);
     };
 
-    self.client.onmessage = function (msg) {
+    this.client.onmessage = (msg) => {
       if (typeof msg === 'object') {
         // data is a MessageEvent not a raw string
         msg = msg.data;
@@ -53,7 +52,7 @@ module.exports = {
 
       const pMsg = Protocol.parse(msg);
       if (pMsg) {
-        if (self.client.isRegistered) {
+        if (this.client.isRegistered) {
           // registered client
           switch (pMsg.getType()) {
             case PushMessage.TYPE:
@@ -74,7 +73,7 @@ module.exports = {
           // unregistered client
           switch (pMsg.getType()) {
             case RegisteredMessage.TYPE:
-              self.client.isRegistered = true;
+              this.client.isRegistered = true;
               break;
 
             default:
@@ -88,8 +87,8 @@ module.exports = {
       }
     };
 
-    self.client.onclose = function (evt) {
-      self.client.isRegistered = false;
+    this.client.onclose = (evt) => {
+      this.client.isRegistered = false;
       if (evt.code !== 1000) {
         // reconnect();
       } else {
@@ -97,11 +96,11 @@ module.exports = {
       }
     };
 
-    self.client.connect();
+    this.client.connect();
 
     return this;
   },
-  close: function () {
+  close() {
     this.client.close();
   }
 };

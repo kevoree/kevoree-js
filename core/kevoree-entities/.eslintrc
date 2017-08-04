@@ -1,4 +1,5 @@
 ---
-extends: eslint:recommended
-env:
-  node: true
+root: true
+extends: kevoree
+rules:
+  consistent-this: 2

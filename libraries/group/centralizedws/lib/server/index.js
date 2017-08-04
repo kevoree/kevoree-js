@@ -40,7 +40,7 @@ function onMessage(logger, server, client, msg, instance) {
         case PushKevSMessage.TYPE:
           logger.debug('submitting kevscript:');
           logger.debug(pMsg.getKevScript());
-          instance.submitScript(pMsg.getKevScript(), function () {
+          instance.submitScript(pMsg.getKevScript(), () => {
             logger.debug('script executed');
           });
           break;
@@ -93,33 +93,32 @@ function onClose(logger, client, instance, code, status) {
 }
 
 function onConnection(logger, server, client, instance) {
-  client.on('message', function (msg) {
+  client.on('message', (msg) => {
     onMessage(logger, server, client, msg, instance);
   });
 
-  client.on('close', function (code, status) {
+  client.on('close', (code, status) => {
     onClose(logger, client, instance, code, status);
   });
 }
 
 module.exports = {
   client2name: client2name,
-  create: function (logger, port, instance) {
-    const self = this;
-    self.server = new WebSocket.Server({
+  create(logger, port, instance) {
+    this.server = new WebSocket.Server({
       port: port
-    }, function () {
+    }, () => {
       logger.info('listening on 0.0.0.0:' + port);
     });
 
-    self.server.on('connection', function (client) {
-      onConnection(logger, self.server, client, instance);
+    this.server.on('connection', (client) => {
+      onConnection(logger, this.server, client, instance);
     });
 
-    this.deployHandler = function () {
-      if (self.server.clients.length > 0 && !instance.isRegister) {
+    this.deployHandler = () => {
+      if (this.server.clients.length > 0 && !instance.isRegister) {
         logger.debug('=== Broadcast new model to clients ===');
-        self.broadcast(logger, instance);
+        this.broadcast(logger, instance);
         logger.debug('=== Broadcast done ===');
       } else {
         logger.debug('Deployment is issued by a register (ignore broadcast)');
@@ -130,7 +129,7 @@ module.exports = {
 
     return this;
   },
-  broadcast: function (logger, instance) {
+  broadcast(logger, instance) {
     const factory = new kevoree.factory.DefaultKevoreeFactory();
     const serializer = factory.createJSONSerializer();
     const model = instance.getKevoreeCore().getCurrentModel();
@@ -140,7 +139,7 @@ module.exports = {
     const masterName = findMasterNode(group).name;
     const doReduceModel = instance.getDictionary().getBoolean('reduceModel', instance.dic_reduceModel.defaultValue);
 
-    this.server.clients.forEach(function (client) {
+    this.server.clients.forEach((client) => {
       if (client.id) {
         // this "client" is a registered node
         const name = client2name[client.id];
@@ -167,7 +166,7 @@ module.exports = {
       }
     });
   },
-  close: function (instance) {
+  close(instance) {
     instance.getKevoreeCore().off('deployed', this.deployHandler);
     this.server.close();
   }

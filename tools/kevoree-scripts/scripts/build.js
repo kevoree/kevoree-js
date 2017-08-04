@@ -13,6 +13,7 @@ process.on('unhandledRejection', (err) => {
 require('../config/index');
 
 const fs = require('fs-extra');
+const path = require('path');
 const eslint = require('eslint');
 const chalk = require('chalk');
 const webpack = require('webpack');
@@ -20,7 +21,7 @@ const merge = require('lodash.merge');
 const kevoreeGenModel = require('kevoree-gen-model');
 const paths = require('../config/paths');
 const webpackConfig = require('../config/webpack.config');
-const eslintConfig = require('../config/eslint');
+const eslintConfig = require('../config/eslintrc');
 const printHeader = require('./util/print-header');
 const formatWebpackMessages = require('./util/format-webpack-messages');
 
@@ -28,6 +29,7 @@ const appPkg = require(paths.appPackageJson);
 printHeader('Linting sources', appPkg.name, appPkg.version);
 const eslintCli = new eslint.CLIEngine(eslintConfig);
 const formatter = eslintCli.getFormatter();
+console.log('Linting: ' + chalk.blue([paths.appSrc, paths.appTest].map((p) => path.relative(process.cwd(), p)).join(', ')));
 const lintReport = eslintCli.executeOnFiles([paths.appSrc, paths.appTest]);
 if (lintReport.errorCount === 0 && lintReport.warningCount === 0) {
   console.log(chalk.green('Your code rocks.') + '\n');

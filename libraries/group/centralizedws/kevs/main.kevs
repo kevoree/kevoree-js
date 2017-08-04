@@ -1,5 +1,5 @@
 add node0: JavascriptNode/LATEST/LATEST
-add sync: CentralizedWSGroup/LATEST/LATEST
+add sync: CentralizedWSGroup/2/{ js: '1.0.0' }
 
 attach * sync
 

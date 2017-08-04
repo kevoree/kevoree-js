@@ -1,7 +1,5 @@
-'use strict';
-
-var Class = require('pseudoclass'),
-  Dictionary = require('./Dictionary');
+const Class = require('pseudoclass');
+const Dictionary = require('./Dictionary');
 
 /**
  * Abstract class: KevoreeEntity
@@ -19,13 +17,13 @@ var Class = require('pseudoclass'),
  *
  * @class
  */
-var KevoreeEntity = Class({
+const KevoreeEntity = Class({
   toString: 'KevoreeEntity',
 
   /**
    * @constructs
    */
-  construct: function (core, modelElement, nodeName) {
+  construct(core, modelElement, nodeName) {
     this.kCore = core;
     this.nodeName = nodeName;
     this.name = modelElement.name;
@@ -39,7 +37,7 @@ var KevoreeEntity = Class({
    * Called when an entity has to start
    * @param done
    */
-  start: function (done) {
+  start(done) {
     done();
   },
 
@@ -47,7 +45,7 @@ var KevoreeEntity = Class({
    * Called when an entity has to stop
    * @param done
    */
-  stop: function (done) {
+  stop(done) {
     done();
   },
 
@@ -55,25 +53,25 @@ var KevoreeEntity = Class({
    * Called when a attribute has been changed (this method is called after all attribute-specific update() method)
    * @param done
    */
-  update: function (done) {
+  update(done) {
     done();
   },
 
-  __start__: function (done) {
+  __start__(done) {
     this.started = true;
     this.start(done);
   },
 
-  __stop__: function (done) {
+  __stop__(done) {
     this.started = false;
     this.stop(done);
   },
 
-  __update__: function (done) {
+  __update__(done) {
     this.update(done);
   },
 
-  __destruct__: function () {
+  __destruct__() {
     this.kCore.getLoggerFactory().delete(this.log);
   },
 
@@ -81,23 +79,23 @@ var KevoreeEntity = Class({
    *
    * @returns {Object}
    */
-  getKevoreeCore: function () {
+  getKevoreeCore() {
     return this.kCore;
   },
 
-  getDictionary: function () {
+  getDictionary() {
     return this.dictionary;
   },
 
-  getName: function () {
+  getName() {
     return this.name;
   },
 
-  getNodeName: function () {
+  getNodeName() {
     return this.nodeName;
   },
 
-  getPath: function () {
+  getPath() {
     return this.path;
   },
 
@@ -107,20 +105,20 @@ var KevoreeEntity = Class({
    * it tries to retrieve this Kevoree entity from currentModel.
    * @returns {*}
    */
-  getModelEntity: function () {
-    var model = this.kCore.getDeployModel();
+  getModelEntity() {
+    let model = this.kCore.getDeployModel();
     if (!model) {
       model = this.kCore.getCurrentModel();
     }
     return model.findByPath(this.path);
   },
 
-  getNetworkInfos: function (nodeName) {
-    var model = this.kCore.getDeployModel();
+  getNetworkInfos(nodeName) {
+    const model = this.kCore.getDeployModel();
     if (!model) {
       this.kCore.getCurrentModel();
     }
-    var node = model.findNodesByID(nodeName);
+    const node = model.findNodesByID(nodeName);
     if (node) {
       return node.networkInformation.iterator();
     } else {
@@ -128,7 +126,7 @@ var KevoreeEntity = Class({
     }
   },
 
-  isStarted: function () {
+  isStarted() {
     return this.started;
   },
 
@@ -139,7 +137,7 @@ var KevoreeEntity = Class({
    * @param script KevScript string
    * @param [callback] function (err)
    */
-  submitScript: function (script, callback) {
+  submitScript(script, callback) {
     this.getKevoreeCore().submitScript(script, callback);
   }
 });

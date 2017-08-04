@@ -11,7 +11,7 @@ module.exports = function diff(srcModel, regModel, traces) {
   const addTraces = {},
     removeTraces = {},
     setTraces = {};
-  traces.forEach(function (trace) {
+  traces.forEach((trace) => {
     let p, elem, regElem;
     if (trace.traceType.name() === 'SET') {
       p = path.basename(trace.srcPath);
@@ -55,7 +55,7 @@ module.exports = function diff(srcModel, regModel, traces) {
     }
   });
 
-  Object.keys(setTraces).forEach(function (elemPath) {
+  Object.keys(setTraces).forEach((elemPath) => {
     const elem = setTraces[elemPath].local,
       regElem = setTraces[elemPath].registry;
     let table;
@@ -77,6 +77,9 @@ module.exports = function diff(srcModel, regModel, traces) {
         table.push(['value', elem.value, regElem.value]);
         console.log(table.toString());
         break;
+
+      default:
+      break;
     }
   });
 
@@ -84,7 +87,7 @@ module.exports = function diff(srcModel, regModel, traces) {
     const addTable = new Table({
       head: [chalk.yellow('Registry does not have:')]
     });
-    Object.keys(addTraces).forEach(function (elemPath) {
+    Object.keys(addTraces).forEach((elemPath) => {
       const elem = addTraces[elemPath];
       switch (elem.getRefInParent()) {
         case 'attributes':
@@ -102,6 +105,9 @@ module.exports = function diff(srcModel, regModel, traces) {
         case 'metaData':
           addTable.push(['metaData[' + elem.name + ']']);
           break;
+
+        default:
+          break;
       }
     });
     console.log(addTable.toString());
@@ -111,7 +117,7 @@ module.exports = function diff(srcModel, regModel, traces) {
     const removeTable = new Table({
       head: [chalk.yellow('Missing locally:')]
     });
-    Object.keys(removeTraces).forEach(function (elemPath) {
+    Object.keys(removeTraces).forEach((elemPath) => {
       const elem = removeTraces[elemPath];
       switch (elem.getRefInParent()) {
         case 'attributes':
@@ -128,6 +134,9 @@ module.exports = function diff(srcModel, regModel, traces) {
 
         case 'metaData':
           removeTable.push(['metaData[' + elem.name + ']']);
+          break;
+
+        default:
           break;
       }
     });

@@ -5,7 +5,7 @@ const chalk = require('chalk');
 function checkRequiredFiles(files) {
   let currentFilePath;
   try {
-    files.forEach(filePath => {
+    files.forEach((filePath) => {
       currentFilePath = filePath;
       fs.accessSync(filePath, fs.F_OK);
     });

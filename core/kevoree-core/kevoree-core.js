@@ -309,7 +309,7 @@ KevoreeCore.prototype = {
   },
 
   off(event, handler) {
-    this.emitter.off(event, handler);
+    this.emitter.removeListener(event, handler);
   },
 
   getResolver() {

@@ -1,13 +1,13 @@
-'use strict';
-
 const webpack = require('webpack');
 const paths = require('./paths');
 const pkg = require(paths.appPackageJson);
 
-let babelrc = { presets: ['env'] };
+let babelrc;
 try {
   babelrc = require(paths.appBabelrc);
-} catch (ignore) {/* noop */}
+} catch (ignore) {
+  babelrc = require('./babelrc');
+}
 
 const config = {
   bail: true,

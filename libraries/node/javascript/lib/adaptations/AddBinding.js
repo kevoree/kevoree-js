@@ -1,4 +1,4 @@
-'use strict';
+
 
 const AdaptationPrimitive = require('kevoree-entities/lib/AdaptationPrimitive');
 const RemoveBinding = require('./RemoveBinding');

@@ -1,15 +1,15 @@
-'use strict';
+
 
 const TYPE = 'pull';
 
 function PullMessage() {}
 
 PullMessage.prototype = {
-  getType: function () {
+  getType() {
     return TYPE;
   },
 
-  toRaw: function () {
+  toRaw() {
     return TYPE;
   }
 };

@@ -1,15 +1,15 @@
-'use strict';
+
 
 const TYPE = 'registered';
 
 function RegisteredMessage() {}
 
 RegisteredMessage.prototype = {
-  getType: function () {
+  getType() {
     return TYPE;
   },
 
-  toRaw: function () {
+  toRaw() {
     return TYPE;
   }
 };

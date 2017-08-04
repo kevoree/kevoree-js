@@ -1,4 +1,4 @@
-'use strict';
+
 
 const AdaptationPrimitive = require('kevoree-entities/lib/AdaptationPrimitive');
 const timesUp = require('times-up');
@@ -34,7 +34,7 @@ module.exports = AdaptationPrimitive.extend({
         if (instance) {
           if (this.modelElement.getRefInParent() === 'components') {
             // check if there is binding to remove in current channels
-            this.node.kCore.currentModel.mBindings.array.forEach(($1) => {
+            this.node.kCore.currentModel.mBindings.array.forEach((binding) => {
               if (binding.port && binding.port.eContainer() && binding.port.eContainer().path() === instance.path) {
                 const chan = this.mapper.getObject(binding.hub.path());
                 const port = this.mapper.getObject(binding.port.path());

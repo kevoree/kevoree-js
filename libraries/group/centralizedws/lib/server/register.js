@@ -32,20 +32,25 @@ module.exports = function register(logger, client2name, client, pMsg, instance) 
 
     if (model) {
       const group = instance.getModelEntity();
-      const masterName = findMasterNode(group).name;
-      logger.debug('reducing register model for master "' + masterName + '" and client "' + pMsg.getNodeName() + '"...');
-      const registerModel = reducer(model, masterName, pMsg.getNodeName());
-      const compare = factory.createModelCompare();
-      const kCore = instance.getKevoreeCore();
-      const currentModel = cloner.clone(kCore.getCurrentModel());
-      compare.merge(registerModel, currentModel).applyOn(registerModel);
-      // fs.writeFileSync('/tmp/master-register-'+pMsg.getNodeName()+'.json', JSON.stringify(JSON.parse(factory.createJSONSerializer().serialize(registerModel)), null, 2), 'utf8');
-      instance.isRegister = true;
-      logger.debug('isRegister lock = true');
-      kCore.deploy(registerModel, function () {
-        logger.debug('isRegister lock = false');
-        instance.isRegister = false;
-      });
+      const masterNode = findMasterNode(group);
+      if (masterNode) {
+        const masterName = masterNode.name;
+        logger.debug('reducing register model for master "' + masterName + '" and client "' + pMsg.getNodeName() + '"...');
+        const registerModel = reducer(model, masterName, pMsg.getNodeName());
+        const compare = factory.createModelCompare();
+        const kCore = instance.getKevoreeCore();
+        const currentModel = cloner.clone(kCore.getCurrentModel());
+        compare.merge(registerModel, currentModel).applyOn(registerModel);
+        // fs.writeFileSync('/tmp/master-register-'+pMsg.getNodeName()+'.json', JSON.stringify(JSON.parse(factory.createJSONSerializer().serialize(registerModel)), null, 2), 'utf8');
+        instance.isRegister = true;
+        logger.debug('isRegister lock = true');
+        kCore.deploy(registerModel, () => {
+          logger.debug('isRegister lock = false');
+          instance.isRegister = false;
+        });
+      } else {
+        throw new Error('Unable to find a master node');
+      }
     }
 
     // send registered ack back to client

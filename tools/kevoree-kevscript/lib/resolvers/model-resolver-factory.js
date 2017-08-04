@@ -4,7 +4,7 @@ module.exports = function modelResolverFactory(logger, next) {
 
 	function findBestTdef(fqn, model) {
 		let tdef = null;
-    logger.debug('KevScript', 'ModelResolver is looking for ' + fqn + ' in model');
+    logger.debug('ModelResolver is looking for ' + fqn + ' in model');
 		const pkg = model.findPackagesByID(fqn.namespace);
 		if (pkg) {
 			let path = 'typeDefinitions[name=' + fqn.name;
@@ -61,7 +61,7 @@ module.exports = function modelResolverFactory(logger, next) {
         if (typeof fqn.version.du === 'object' && Object.keys(fqn.version.du).length > 0) {
           // deployUnit versions are set explicitly: check them
           if (checkDUS(tdef, fqn.version.du)) {
-            logger.info('KevScript', 'Found ' + fqn + ' in model');
+            logger.info('Found ' + fqn + ' in model');
             return Promise.resolve(tdef);
           }
         }

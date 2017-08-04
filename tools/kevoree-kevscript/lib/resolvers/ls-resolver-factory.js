@@ -4,7 +4,7 @@ const config = require('tiny-conf');
 module.exports = function lsResolverFactory(logger, next) {
 	if (!KevoreeLibrary && !localStorage) {
 		// prevent bad usage on Node.js
-		logger.warn('KevScript', 'LocalStorageResolver cannot be used on this platform (no localStorage available)');
+		logger.warn('LocalStorageResolver cannot be used on this platform (no localStorage available)');
 		return next;
 	}
 
@@ -55,8 +55,8 @@ module.exports = function lsResolverFactory(logger, next) {
 			pkg.addTypeDefinitions(tdef);
 			return model;
 		} catch (err) {
-			logger.debug('KevScript', err.message + ' (ignored)');
-			logger.debug('KevScript', err.stack);
+			logger.debug(err.message + ' (ignored)');
+			logger.debug(err.stack);
 		}
 
 		return null;
@@ -74,8 +74,8 @@ module.exports = function lsResolverFactory(logger, next) {
 			pkg.addDeployUnits(du);
 			return model;
 		} catch (err) {
-			logger.debug('KevScript', err.message + ' (ignored)');
-			logger.debug('KevScript', err.stack);
+			logger.debug(err.message + ' (ignored)');
+			logger.debug(err.stack);
 		}
 
 		return null;
@@ -133,7 +133,7 @@ module.exports = function lsResolverFactory(logger, next) {
 										tdef.addDeployUnits(model.findByPath(du.path()));
 									}
 								});
-								logger.info('KevScript', 'Found ' + fqn + ' in localStorage');
+								logger.info('Found ' + fqn + ' in localStorage');
 								return tdef;
 							} else {
 								// unable to find deployUnits in filesystem cache

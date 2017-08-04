@@ -8,17 +8,17 @@ const readModel = require('./util/readModel');
 const factory = new kevoree.factory.DefaultKevoreeFactory();
 const saver = factory.createJSONSerializer();
 
-describe('reducer(model, master, client)', function () {
+describe('reducer(model, master, client)', function mochaDescribe() {
 	this.slow(100);
 
-	it('empty model', function () {
+	it('empty model', () => {
 		const model = factory.createContainerRoot();
 		const reducedModel = reducer(model, 'master', 'client');
 
 		assert.equal(saver.serialize(model), saver.serialize(reducedModel));
 	});
 
-	it('does not remove unwanted props', function () {
+	it('does not remove unwanted props', () => {
 		const model = readModel('simple-client.json');
 		const reducedModel = reducer(model, 'node0', 'node1');
 
@@ -32,7 +32,7 @@ describe('reducer(model, master, client)', function () {
 		assert.equal(node1.typeDefinition.deployUnits.array.length, 1);
 	});
 
-	it('does not remove unwanted bindings', function () {
+	it('does not remove unwanted bindings', () => {
 		const model = readModel('client-with-chan.json');
 		const reducedModel = reducer(model, 'master', 'client');
 
@@ -56,28 +56,28 @@ describe('reducer(model, master, client)', function () {
 
 	});
 
-	it('extraneous nodes are removed', function () {
+	it('extraneous nodes are removed', () => {
 		const model = readModel('ext-nodes.json');
 		const reducedModel = reducer(model, 'node0', 'node2');
 
 		assert.equal(reducedModel.findNodesByID('node1'), null);
 	});
 
-	it('extraneous channels are removed', function () {
+	it('extraneous channels are removed', () => {
 		const model = readModel('ext-chans.json');
 		const reducedModel = reducer(model, 'node0', 'node1');
 
 		assert.equal(reducedModel.findHubsByID('chan'), null);
 	});
 
-	it('extraneous packages are removed', function () {
+	it('extraneous packages are removed', () => {
 		const model = readModel('ext-pkgs.json');
 		const reducedModel = reducer(model, 'node0', 'node1');
 
 		assert.equal(reducedModel.findPackagesByID('tellu'), null);
 	});
 
-	it('extraneous bindings are removed', function (done) {
+	it('extraneous bindings are removed', (done) => {
 		const model = readModel('ext-bindings.json');
 		const reducedModel = reducer(model, 'node0', 'node1');
 

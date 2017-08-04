@@ -1,2 +1,4 @@
 env:
   mocha: true
+rules:
+  no-invalid-this: 0

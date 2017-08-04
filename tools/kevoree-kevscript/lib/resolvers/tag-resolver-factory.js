@@ -25,7 +25,7 @@ module.exports = function tagResolverFactory(logger, next) {
 					if (tdefVersion) {
 						// found typeDef version in cache
 						fqn.version.tdef = tdefVersion;
-						logger.debug('KevScript', 'TagResolver changed ' + fqn.namespace + '.' + fqn.name + '/LATEST to ' + fqn.namespace + '.' + fqn.name + '/' + tdefVersion);
+						logger.debug('TagResolver changed ' + fqn.namespace + '.' + fqn.name + '/LATEST to ' + fqn.namespace + '.' + fqn.name + '/' + tdefVersion);
 						tdefChanged = true;
 					}
 				}
@@ -41,7 +41,7 @@ module.exports = function tagResolverFactory(logger, next) {
 					if (duVersions) {
 						// found du versions in cache
 						fqn.version.du = duVersions;
-						logger.debug('KevScript', 'TagResolver changed ' + fqn.namespace + '.' + fqn.name + '/' + fqn.version.tdef + '/' + duTag + ' to ' + fqn.namespace + '.' + fqn.name + '/' + fqn.version.tdef + '/' + JSON.stringify(fqn.version.du));
+						logger.debug('TagResolver changed ' + fqn.namespace + '.' + fqn.name + '/' + fqn.version.tdef + '/' + duTag + ' to ' + fqn.namespace + '.' + fqn.name + '/' + fqn.version.tdef + '/' + JSON.stringify(fqn.version.du));
 						duChanged = true;
 					}
 				}
@@ -50,16 +50,16 @@ module.exports = function tagResolverFactory(logger, next) {
 					.then((tdef) => {
 						if (!tdefChanged && tdefTag === 'LATEST') {
 							tdefsTags[fqn.namespace + '.' + fqn.name] = tdef.version;
-							logger.debug('KevScript', 'TagResolver linked ' + fqn.namespace + '.' + fqn.name + '/LATEST to ' + fqn.namespace + '.' + fqn.name + '/' + tdef.version);
+							logger.debug('TagResolver linked ' + fqn.namespace + '.' + fqn.name + '/LATEST to ' + fqn.namespace + '.' + fqn.name + '/' + tdef.version);
 						}
 
 						if (!duChanged) {
 							if (duTag === 'LATEST') {
 								latestDUS[fqn.namespace + '.' + fqn.name + '/' + tdef.version] = getDUVersions(tdef.deployUnits.array);
-								logger.debug('KevScript', 'TagResolver linked ' + fqn + ' to ' + fqn.namespace + '.' + fqn.name + '/' + fqn.version.tdef + '/' + JSON.stringify(latestDUS[fqn.namespace + '.' + fqn.name + '/' + tdef.version]));
+								logger.debug('TagResolver linked ' + fqn + ' to ' + fqn.namespace + '.' + fqn.name + '/' + fqn.version.tdef + '/' + JSON.stringify(latestDUS[fqn.namespace + '.' + fqn.name + '/' + tdef.version]));
 							} else if (duTag === 'RELEASE') {
 								releaseDUS[fqn.namespace + '.' + fqn.name + '/' + tdef.version] = getDUVersions(tdef.deployUnits.array);
-								logger.debug('KevScript', 'TagResolver linked ' + fqn + ' to ' + fqn.namespace + '.' + fqn.name + '/' + fqn.version.tdef + '/' + JSON.stringify(releaseDUS[fqn.namespace + '.' + fqn.name + '/' + tdef.version]));
+								logger.debug('TagResolver linked ' + fqn + ' to ' + fqn.namespace + '.' + fqn.name + '/' + fqn.version.tdef + '/' + JSON.stringify(releaseDUS[fqn.namespace + '.' + fqn.name + '/' + tdef.version]));
 							}
 						}
 						return tdef;
