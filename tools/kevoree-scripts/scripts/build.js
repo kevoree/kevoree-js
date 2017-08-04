@@ -19,18 +19,20 @@ const webpack = require('webpack');
 const merge = require('lodash.merge');
 const kevoreeGenModel = require('kevoree-gen-model');
 const paths = require('../config/paths');
-const config = require('../config/webpack.config');
+const webpackConfig = require('../config/webpack.config');
+const eslintConfig = require('../config/eslint');
 const printHeader = require('./util/print-header');
 const formatWebpackMessages = require('./util/format-webpack-messages');
 
 const appPkg = require(paths.appPackageJson);
 printHeader('Linting sources', appPkg.name, appPkg.version);
-const eslintCli = new eslint.CLIEngine();
+const eslintCli = new eslint.CLIEngine(eslintConfig);
+const formatter = eslintCli.getFormatter();
 const lintReport = eslintCli.executeOnFiles([paths.appSrc, paths.appTest]);
 if (lintReport.errorCount === 0 && lintReport.warningCount === 0) {
   console.log(chalk.green('Your code rocks.') + '\n');
 } else {
-  console.log(eslintCli.getFormatter(lintReport.results) + '\n');
+  console.log(formatter(lintReport.results) + '\n');
   process.exit(1);
 }
 
@@ -47,9 +49,9 @@ kevoreeGenModel(paths.appPath, false, (err) => {
     let conf;
     try {
       const customConf = require(paths.appWebpackConf);
-      conf = merge({}, config, customConf);
+      conf = merge({}, webpackConfig, customConf);
     } catch (ignore) {
-      conf = config;
+      conf = webpackConfig;
     }
 
     // Remove all content but keep the directory so that

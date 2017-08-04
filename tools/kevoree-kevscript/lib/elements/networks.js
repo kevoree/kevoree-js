@@ -1,17 +1,15 @@
-'use strict';
+function networks(model) {
+  let str = '';
 
-module.exports = function (model) {
-  var str = '';
-
-  var nodes = model.nodes.iterator();
+  const nodes = model.nodes.iterator();
   while (nodes.hasNext()) {
-    var node = nodes.next();
-    var nets = node.networkInformation.iterator();
+    const node = nodes.next();
+    const nets = node.networkInformation.iterator();
     while (nets.hasNext()) {
-      var net = nets.next();
-      var values = net.values.iterator();
+      const net = nets.next();
+      const values = net.values.iterator();
       while (values.hasNext()) {
-        var val = values.next();
+        const val = values.next();
         if (str.length !== 0) {
           str += '\n';
         }
@@ -22,4 +20,6 @@ module.exports = function (model) {
   }
 
   return str;
-};
+}
+
+module.exports = networks;

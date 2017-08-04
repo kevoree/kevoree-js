@@ -9,7 +9,7 @@ module.exports = (test) => {
 	test.slow(300);
 
 	before('create a Kevoree Registry mock', () => {
-		return initRegistry().then(server => {
+		return initRegistry().then((server) => {
 			this.server = server;
 		});
 	});
@@ -33,7 +33,7 @@ module.exports = (test) => {
 	});
 
 	if (process.env.DEBUG) {
-		beforeEach(function () {
+		beforeEach(() => {
 			console.log('--------------------------'); // eslint-disable-line
 		});
 	}

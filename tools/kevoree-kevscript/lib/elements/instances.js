@@ -1,21 +1,19 @@
-'use strict';
+const modelHelper = require('../util/model-helper');
 
-var modelHelper = require('../util/model-helper');
-
-module.exports = function (model) {
-  var str = '';
+function instances(model) {
+  let str = '';
 
   function process(elems) {
-    var map = {};
+    const map = {};
     while (elems.hasNext()) {
-      var elem = elems.next();
-      var fqn = modelHelper.getFQN(elem.typeDefinition);
-      var list = map[fqn] || [];
+      const elem = elems.next();
+      const fqn = modelHelper.getFQN(elem.typeDefinition);
+      const list = map[fqn] || [];
       list.push(elem.name);
       map[fqn] = list;
     }
 
-    for (var tdef in map) {
+    for (const tdef in map) {
       if (map.hasOwnProperty(tdef)) {
         if (str.length !== 0) {
           str += '\n';
@@ -26,11 +24,11 @@ module.exports = function (model) {
   }
 
   function processRootNodes(elems) {
-    var map = {};
+    const map = {};
     while (elems.hasNext()) {
-      var elem = elems.next();
-      var fqn = modelHelper.getFQN(elem.typeDefinition);
-      var list = map[fqn] || [];
+      const elem = elems.next();
+      const fqn = modelHelper.getFQN(elem.typeDefinition);
+      const list = map[fqn] || [];
 
       if (!elem.host) {
         list.push(elem.name);
@@ -39,7 +37,7 @@ module.exports = function (model) {
       map[fqn] = list;
     }
 
-    for (var tdef in map) {
+    for (const tdef in map) {
       if (map.hasOwnProperty(tdef)) {
         if (map[tdef].length > 0) {
           if (str.length !== 0) {
@@ -52,12 +50,12 @@ module.exports = function (model) {
   }
 
   function processHostedNodesAndComps(elems) {
-    var compsMap = {};
-    var subnodesMap = {};
-    var list;
+    const compsMap = {};
+    const subnodesMap = {};
+    let list;
     while (elems.hasNext()) {
-      var elem = elems.next(),
-        fqn;
+      const elem = elems.next();
+      let fqn;
 
       if (elem.host) {
         // elem is a subNode
@@ -67,9 +65,9 @@ module.exports = function (model) {
         subnodesMap[fqn] = list;
       }
 
-      var comps = elem.components.iterator();
+      const comps = elem.components.iterator();
       while (comps.hasNext()) {
-        var comp = comps.next();
+        const comp = comps.next();
         fqn = modelHelper.getFQN(comp.typeDefinition);
         list = compsMap[fqn] || [];
         list.push(elem.name + '.' + comp.name);
@@ -77,7 +75,7 @@ module.exports = function (model) {
       }
     }
 
-    var tdef;
+    let tdef;
     for (tdef in compsMap) {
       if (compsMap.hasOwnProperty(tdef)) {
         if (compsMap[tdef].length > 0) {
@@ -107,4 +105,6 @@ module.exports = function (model) {
   process(model.hubs.iterator());
 
   return str.replace(/kevoree\./g, '');
-};
+}
+
+module.exports = instances;

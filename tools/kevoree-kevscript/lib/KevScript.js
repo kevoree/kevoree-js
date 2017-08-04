@@ -1,11 +1,9 @@
-'use strict';
-
-var kevs = require('./parser');
-var interpreter = require('./interpreter');
-var modelInterpreter = require('./model-interpreter');
-var registryUrl = require('./util/registry-url');
-var modelResolverFactory = require('./resolvers/model-resolver-factory');
-var registryResolverFactory = require('./resolvers/registry-resolver-factory');
+const kevs = require('./parser');
+const interpreter = require('./interpreter');
+const modelInterpreter = require('./model-interpreter');
+const registryUrl = require('./util/registry-url');
+const modelResolverFactory = require('./resolvers/model-resolver-factory');
+const registryResolverFactory = require('./resolvers/registry-resolver-factory');
 
 function KevScript(logger, options) {
   if (!logger) {
@@ -37,10 +35,10 @@ KevScript.prototype = {
   parse: function (data, ctxModel, ctxVars) {
     this.options.logger = this.logger;
     this.options.ctxVars = ctxVars;
-    var options = this.options;
+    const options = this.options;
 
-    var parser = new kevs.Parser();
-    var ast = parser.parse(data);
+    const parser = new kevs.Parser();
+    const ast = parser.parse(data);
 
     if (ast.type !== 'kevScript') {
       return Promise.resolve({
@@ -50,7 +48,7 @@ KevScript.prototype = {
       });
     } else {
       return interpreter(ast, ctxModel, options)
-        .then(function (result) {
+        .then((result) => {
           if (result.error) {
             result.error.warnings = result.warnings;
             throw result.error;

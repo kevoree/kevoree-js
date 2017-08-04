@@ -1,5 +1,5 @@
 /* globals localStorage, KevoreeLibrary */
-var config = require('tiny-conf');
+const config = require('tiny-conf');
 
 module.exports = function lsResolverFactory(logger, next) {
 	if (!KevoreeLibrary && !localStorage) {
@@ -8,10 +8,10 @@ module.exports = function lsResolverFactory(logger, next) {
 		return next;
 	}
 
-	var factory = new KevoreeLibrary.factory.DefaultKevoreeFactory();
-	var loader = factory.createJSONLoader();
-	var serializer = factory.createJSONSerializer();
-	var compare = factory.createModelCompare();
+	const factory = new KevoreeLibrary.factory.DefaultKevoreeFactory();
+	const loader = factory.createJSONLoader();
+	const serializer = factory.createJSONSerializer();
+	const compare = factory.createModelCompare();
 
 
 	function getRootPath(fqn) {
@@ -27,30 +27,30 @@ module.exports = function lsResolverFactory(logger, next) {
 	}
 
 	function saveTdef(fqn, tdef) {
-		var tdefPath = getTdefPath(fqn);
-		var tdefModel = JSON.parse(serializer.serialize(tdef));
+		const tdefPath = getTdefPath(fqn);
+		const tdefModel = JSON.parse(serializer.serialize(tdef));
 		tdefModel.deployUnits = [];
 		localStorage.setItem(tdefPath, JSON.stringify(tdefModel));
 	}
 
 	function saveDeployUnit(fqn, du) {
-		var duPath = getDUPath(fqn, du.findFiltersByID('platform').value, du.version);
+		const duPath = getDUPath(fqn, du.findFiltersByID('platform').value, du.version);
 		localStorage.setItem(duPath, serializer.serialize(du));
 	}
 
 	function saveDeployUnits(fqn, dus) {
-		dus.forEach(function (du) {
+		dus.forEach((du) => {
 			saveDeployUnit(fqn, du);
 		});
 	}
 
 	function readTdef(fqn) {
 		try {
-			var tdefPath = getTdefPath(fqn);
-			var tdefModel = localStorage.getItem(tdefPath);
-			var tdef = loader.loadModelFromString(tdefModel).get(0);
-			var model = factory.createContainerRoot().withGenerated_KMF_ID('0');
-			var pkg = factory.createPackage().withName(fqn.namespace);
+			const tdefPath = getTdefPath(fqn);
+			const tdefModel = localStorage.getItem(tdefPath);
+			const tdef = loader.loadModelFromString(tdefModel).get(0);
+			const model = factory.createContainerRoot().withGenerated_KMF_ID('0');
+			const pkg = factory.createPackage().withName(fqn.namespace);
 			model.addPackages(pkg);
 			pkg.addTypeDefinitions(tdef);
 			return model;
@@ -64,12 +64,12 @@ module.exports = function lsResolverFactory(logger, next) {
 
 	function readDeployUnit(fqn, platform, version) {
 		try {
-			var duPath = getDUPath(fqn, platform, version);
-			var duModel = localStorage.getItem(duPath);
-			var models =  loader.loadModelFromString(duModel);
-			var du = models.get(0);
-			var model = factory.createContainerRoot().withGenerated_KMF_ID('0');
-			var pkg = factory.createPackage().withName(fqn.namespace);
+			const duPath = getDUPath(fqn, platform, version);
+			const duModel = localStorage.getItem(duPath);
+			const models =  loader.loadModelFromString(duModel);
+			const du = models.get(0);
+			const model = factory.createContainerRoot().withGenerated_KMF_ID('0');
+			const pkg = factory.createPackage().withName(fqn.namespace);
 			model.addPackages(pkg);
 			pkg.addDeployUnits(du);
 			return model;
@@ -83,21 +83,21 @@ module.exports = function lsResolverFactory(logger, next) {
 
 	function readDeployUnits(fqn, versions) {
 		return Object.keys(versions)
-			.map(function (platform) {
+			.map((platform) => {
 				return readDeployUnit(fqn, platform, versions[platform]);
 			})
-			.filter(function (model) {
+			.filter((model) => {
 				// discard null/undefined model
 				return Boolean(model);
 			});
 	}
 
 	function askNext(fqn, model) {
-		var emptyModel = factory.createContainerRoot();
+		const emptyModel = factory.createContainerRoot();
 		factory.root(emptyModel);
 
 		return next.resolve(fqn, emptyModel)
-			.then(function (tdef) {
+			.then((tdef) => {
 				// tdef has been resolved from registry
 				// save it in filesystem
 				saveTdef(fqn, tdef);
@@ -109,26 +109,26 @@ module.exports = function lsResolverFactory(logger, next) {
 	}
 
 	return {
-		resolve: function (fqn, model) {
+		resolve: (fqn, model) => {
 			if (fqn.version.tdef === 'LATEST') {
 				return askNext(fqn, model);
 			} else {
-				return Promise.resolve().then(function () {
-					var tdefModel = readTdef(fqn);
+				return Promise.resolve().then(() => {
+					const tdefModel = readTdef(fqn);
 					if (tdefModel) {
 						// tdef found in filesystem: no need to hit registry for it
 						// now looking for deployUnits
 						if (typeof fqn.version.du === 'object') {
 							// explicit versions specified
-							var dusModel = readDeployUnits(fqn, fqn.version.du);
+							const dusModel = readDeployUnits(fqn, fqn.version.du);
 							if (dusModel && dusModel.length > 0) {
 								// deployUnits found in filesystem
 								// TODO remove current tdefs DUs in order to use the resolved ones only?
 								compare.merge(model, tdefModel).applyOn(model);
-								var tdef = model.findByPath(fqn.toKevoreePath());
-								dusModel.forEach(function (duModel) {
+								const tdef = model.findByPath(fqn.toKevoreePath());
+								dusModel.forEach((duModel) => {
 									if (duModel) {
-										var du = duModel.packages.array[0].deployUnits.array[0];
+										const du = duModel.packages.array[0].deployUnits.array[0];
 										compare.merge(model, duModel).applyOn(model);
 										tdef.addDeployUnits(model.findByPath(du.path()));
 									}

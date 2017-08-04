@@ -1,16 +1,14 @@
-'use strict';
-
-module.exports = function (model) {
-  var tdefs = model.typeDefinitions.iterator();
-  var str = '';
+function includes(model) {
+  const tdefs = model.typeDefinitions.iterator();
+  let str = '';
   while (tdefs.hasNext()) {
-    var du = tdefs.next().deployUnit;
-    var type = 'mvn';
+    const du = tdefs.next().deployUnit;
+    let type = 'mvn';
     if (du.type === 'npm') {
       type = 'npm';
     }
 
-    var def = '';
+    let def = '';
     if (du.groupName) {
       def += du.groupName + ':';
     }
@@ -26,4 +24,6 @@ module.exports = function (model) {
   }
 
   return str;
-};
+}
+
+module.exports = includes;

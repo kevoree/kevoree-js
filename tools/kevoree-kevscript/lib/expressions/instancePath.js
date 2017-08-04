@@ -1,5 +1,5 @@
-module.exports = function (model, expressions, expr, opts) {
-	return expr.children.map(function (expr) {
+module.exports = function instancePath(model, expressions, expr, opts) {
+	return expr.children.map((expr) => {
 		return expressions[expr.type](model, expressions, expr, opts);
 	});
 };

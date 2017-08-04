@@ -1,6 +1,4 @@
-'use strict';
-
-var util = require('util');
+const util = require('util');
 
 function KevScriptError(message, pos) {
   Object.setPrototypeOf(this, KevScriptError.prototype);

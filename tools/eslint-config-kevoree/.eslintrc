@@ -1,0 +1,3 @@
+---
+# validating eslint-config-kevoree with itself - woot
+extends: ./index.js

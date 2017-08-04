@@ -1,10 +1,10 @@
-var fs = require('fs');
-var mkdirp = require('mkdirp');
+const fs = require('fs');
+const mkdirp = require('mkdirp');
 
 module.exports = {
 	readFile: function promisifiedReadFile(path, encoding) {
-		return new Promise(function (resolve, reject) {
-			fs.readFile(path, encoding, function (err, data) {
+		return new Promise((resolve, reject) => {
+			fs.readFile(path, encoding, (err, data) => {
 				if (err) {
 					reject(err);
 				} else {
@@ -15,8 +15,8 @@ module.exports = {
 	},
 
 	writeFile: function promisifiedWriteFile(path, data, encoding) {
-		return new Promise(function (resolve, reject) {
-			fs.writeFile(path, data, encoding, function (err) {
+		return new Promise((resolve, reject) => {
+			fs.writeFile(path, data, encoding, (err) => {
 				if (err) {
 					reject(err);
 				} else {
@@ -27,8 +27,8 @@ module.exports = {
 	},
 
 	mkdirp: function promisifiedMkdir(path) {
-		return new Promise(function (resolve, reject) {
-			mkdirp(path, function (err) {
+		return new Promise((resolve, reject) => {
+			mkdirp(path, (err) => {
 				if (err) {
 					reject(err);
 				} else {

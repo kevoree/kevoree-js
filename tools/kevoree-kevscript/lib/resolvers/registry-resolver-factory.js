@@ -1,12 +1,12 @@
-var api = require('kevoree-registry-client');
-var kevoree = require('kevoree-library');
+const api = require('kevoree-registry-client');
+const kevoree = require('kevoree-library');
 // var semver = require('semver');
-var registryUrl = require('../util/registry-url');
-var KevScriptError = require('../KevScriptError');
+const registryUrl = require('../util/registry-url');
+const KevScriptError = require('../KevScriptError');
 
 module.exports = function registryResolverFactory(logger) {
-  var factory = new kevoree.factory.DefaultKevoreeFactory();
-  var loader = factory.createJSONLoader();
+  const factory = new kevoree.factory.DefaultKevoreeFactory();
+  const loader = factory.createJSONLoader();
 
   function resolveTdef(fqn) {
     logger.debug('KevScript', 'RegistryResolver is looking for ' + fqn + ' in ' + registryUrl());
@@ -31,19 +31,19 @@ module.exports = function registryResolverFactory(logger) {
   }
 
   function satisfyingDu(dus, platform, version) {
-    return dus.find(function (du) {
+    return dus.find((du) => {
       return du.platform === platform && du.version === version;
     });
   }
 
   return {
-    resolve: function (fqn, model) {
+    resolve: (fqn, model) => {
       return resolveTdef(fqn)
-        .then(function (regTdef) {
+        .then((regTdef) => {
           fqn.version.tdef = regTdef.version;
           logger.info('KevScript', 'Found ' + fqn.namespace + '.' + fqn.name + '/' + fqn.version.tdef + ' in ' + registryUrl());
-          var tdef = loader.loadModelFromString(regTdef.model).get(0);
-          var pkg = model.findPackagesByID(fqn.namespace);
+          const tdef = loader.loadModelFromString(regTdef.model).get(0);
+          let pkg = model.findPackagesByID(fqn.namespace);
           if (!pkg) {
             pkg = factory.createPackage().withName(fqn.namespace);
             model.addPackages(pkg);
@@ -51,14 +51,14 @@ module.exports = function registryResolverFactory(logger) {
           pkg.addTypeDefinitions(tdef);
 
           return resolveDus(fqn)
-            .then(function (dus) {
+            .then((dus) => {
               return {
                 tdef: tdef,
                 pkg: pkg,
                 dus: dus
               };
             })
-            .catch(function (err) {
+            .catch((err) => {
               if (err.statusCode === 404) {
                 throw new KevScriptError('Unable to find DeployUnits ' + fqn.version.du + ' for ' + fqn.namespace + '.' + fqn.namespace.name + '/' + fqn.version.tdef + 'in ' + registryUrl());
               } else {
@@ -66,13 +66,13 @@ module.exports = function registryResolverFactory(logger) {
               }
             });
         })
-        .then(function (data) {
+        .then((data) => {
           if (typeof fqn.version.du === 'object') {
             // confirm that versions from registry satisfies version asked
-            Object.keys(fqn.version.du).forEach(function (platform) {
+            Object.keys(fqn.version.du).forEach((platform) => {
               if (!satisfyingDu(data.dus, platform, fqn.version.du[platform])) {
                 throw new KevScriptError('Unable to find satisfying DeployUnit ' +
-                  ' { "' + platform + '": ' + '"' + fqn.version.du[platform] + '" } for ' +
+                  ' { "' + platform + '": "' + fqn.version.du[platform] + '" } for ' +
                   fqn.namespace + '.' + fqn.name + '/' + fqn.version.tdef + ' in ' + registryUrl());
               }
             });
@@ -82,12 +82,12 @@ module.exports = function registryResolverFactory(logger) {
             throw new KevScriptError('No DeployUnit found for ' + fqn.namespace + '.' + fqn.name + '/' + fqn.version.tdef + ' that matches ' + JSON.stringify(fqn.version.du));
           }
           // merge registry dus to current model package
-          var pkg = model.findPackagesByID(fqn.namespace);
-          data.dus.forEach(function (du) {
-            var duModel = loader.loadModelFromString(du.model).get(0);
+          const pkg = model.findPackagesByID(fqn.namespace);
+          data.dus.forEach((du) => {
+            const duModel = loader.loadModelFromString(du.model).get(0);
             pkg.addDeployUnits(duModel);
-            var path = '/packages[' + fqn.namespace + ']/deployUnits[name=' + du.name + ',version=' + du.version + ']';
-            model.select(path).array.forEach(function (duInModel) {
+            const path = '/packages[' + fqn.namespace + ']/deployUnits[name=' + du.name + ',version=' + du.version + ']';
+            model.select(path).array.forEach((duInModel) => {
               logger.debug('KevScript', ' + ' + du.platform + ':' + du.name + ':' + du.version + ' (' + duInModel.hashcode + ')');
               data.tdef.addDeployUnits(duInModel);
             });
@@ -95,7 +95,7 @@ module.exports = function registryResolverFactory(logger) {
 
           return model.findByPath('/packages[' + fqn.namespace + ']/typeDefinitions[name=' + fqn.name + ',version=' + fqn.version.tdef + ']');
         })
-        .catch(function (err) {
+        .catch((err) => {
           if (err.statusCode) {
             throw new KevScriptError('Unable to find ' + fqn.namespace + '.' + fqn.name + '/' + fqn.version.tdef + ' in ' + registryUrl());
           } else {

@@ -4,7 +4,7 @@ const dedupeDeployUnits = require('../../../lib/util/dedupe-deployunits');
 
 const PATH = '/packages[kevoree]/typeDefinitions[name=Ticker,version=1]';
 
-describe('KevScript - dedupe-deployunits', () => {
+describe('KevScript - dedupe-deployunits', function mochaDescribe() {
 	it('multiple DUs per platforms', () => {
 		const model = readModel('resolver/multiple-platforms.json');
 		const tdef = dedupeDeployUnits(model.findByPath(PATH));

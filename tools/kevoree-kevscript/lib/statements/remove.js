@@ -1,26 +1,26 @@
-var KevScriptError = require('../KevScriptError');
+const KevScriptError = require('../KevScriptError');
 
 function removeNode(model, node) {
 	// remove groups fragment dictionary related to this node
-	model.groups.array.forEach(function (group) {
-		var dic = group.findFragmentDictionaryByID(node.name);
+	model.groups.array.forEach((group) => {
+		const dic = group.findFragmentDictionaryByID(node.name);
 		if (dic) {
 			group.removeFragmentDictionary(dic);
 		}
 	});
 
 	// remove channels fragment dictionary related to this node
-	model.hubs.array.forEach(function (hub) {
-		var dic = hub.findFragmentDictionaryByID(node.name);
+	model.hubs.array.forEach((hub) => {
+		const dic = hub.findFragmentDictionaryByID(node.name);
 		if (dic) {
 			hub.removeFragmentDictionary(dic);
 		}
 	});
 
 	// remove bindings related to this node
-	node.components.array.forEach(function (comp) {
-		comp.provided.array.concat(comp.required.array).forEach(function (port) {
-			port.bindings.array.forEach(function (binding) {
+	node.components.array.forEach((comp) => {
+		comp.provided.array.concat(comp.required.array).forEach((port) => {
+			port.bindings.array.forEach((binding) => {
 				binding.hub.removeBindings(binding);
 				model.removeMBindings(binding);
 			});
@@ -28,7 +28,7 @@ function removeNode(model, node) {
 	});
 
 	// delete links with groups
-	node.groups.array.forEach(function (group) {
+	node.groups.array.forEach((group) => {
 		group.removeSubNodes(node);
 	});
 
@@ -41,7 +41,7 @@ function removeNode(model, node) {
 
 function removeGroup(model, group) {
 	// remove link between this group and nodes
-	group.subNodes.array.forEach(function (node) {
+	group.subNodes.array.forEach((node) => {
 		node.removeGroups(group);
 	});
 	// remove group
@@ -49,7 +49,7 @@ function removeGroup(model, group) {
 }
 
 function removeChannel(model, chan) {
-	model.mBindings.array.forEach(function (binding) {
+	model.mBindings.array.forEach((binding) => {
 		if (binding.hub.name === chan.name) {
 			if (binding.port) {
 				binding.port.removeBindings(binding);
@@ -64,8 +64,8 @@ function removeChannel(model, chan) {
 }
 
 function removeComponent(model, comp) {
-	comp.provided.array.concat(comp.required.array).forEach(function (port) {
-		port.bindings.array.forEach(function (binding) {
+	comp.provided.array.concat(comp.required.array).forEach((port) => {
+		port.bindings.array.forEach((binding) => {
 			if (binding.port) {
 				binding.port.removeBindings(binding);
 			}
@@ -81,30 +81,30 @@ function removeComponent(model, comp) {
 function removeFromNode(model, path, node) {
 	if (path === '*') {
 		// remove all from all nodes
-		node.components.array.forEach(function (comp) {
+		node.components.array.forEach((comp) => {
 			removeComponent(model, comp);
 		});
-		node.hosts.array.forEach(function (node) {
+		node.hosts.array.forEach((node) => {
 			removeNode(model, node);
 		});
 	} else {
 		// remove a specific instance from all nodes
-		var comp = node.findComponentsByID(path);
+		const comp = node.findComponentsByID(path);
 		if (comp) {
 			removeComponent(model, comp);
 		}
-		var subNode = node.findHostsByID(path);
+		const subNode = node.findHostsByID(path);
 		if (subNode) {
 			removeNode(model, subNode);
 		}
 	}
 }
 
-module.exports = function (model, expressions, stmt, opts) {
-	var nameList = expressions[stmt.children[0].type](model, expressions, stmt.children[0], opts);
-	nameList.forEach(function (instancePath, i) {
+module.exports = (model, expressions, stmt, opts) => {
+	const nameList = expressions[stmt.children[0].type](model, expressions, stmt.children[0], opts);
+	nameList.forEach((instancePath, i) => {
 		if (instancePath.length === 1) {
-			var instances = model.select('/nodes[' + instancePath[0] + ']').array
+			const instances = model.select('/nodes[' + instancePath[0] + ']').array
 				.concat(model.select('/groups[' + instancePath[0] + ']').array)
 				.concat(model.select('/hubs[' + instancePath[0] + ']').array)
 				.concat(model.select('/mBindings[' + instancePath[0] + ']').array);
@@ -113,7 +113,7 @@ module.exports = function (model, expressions, stmt, opts) {
 				throw new KevScriptError('Unable to find any instance named "' + instancePath[0] + '". Remove failed', stmt.children[0].children[i].children[0].pos);
 			}
 
-			instances.forEach(function (instance) {
+			instances.forEach((instance) => {
 				if (instance.name) {
 					// remove identifier from the list
 					opts.identifiers.splice(opts.identifiers.indexOf(instance.name), 1);
@@ -131,7 +131,7 @@ module.exports = function (model, expressions, stmt, opts) {
 
 		} else if (instancePath.length === 2) {
 			// path to a component/subNode
-			var nodes = model.select('/nodes[' + instancePath[0] + ']').array;
+			const nodes = model.select('/nodes[' + instancePath[0] + ']').array;
 			if (nodes.length === 0) {
 				if (instancePath[0] === '*') {
 					throw new KevScriptError('Unable to find any node instance that host "' + instancePath[1] + '". Remove failed', stmt.children[0].children[i].pos);
@@ -140,7 +140,7 @@ module.exports = function (model, expressions, stmt, opts) {
 				}
 			}
 
-			nodes.forEach(function (node) {
+			nodes.forEach((node) => {
 				opts.identifiers.splice(opts.identifiers.indexOf(node.name + '.' + instancePath[1]), 1);
 				removeFromNode(model, instancePath[1], node);
 			});

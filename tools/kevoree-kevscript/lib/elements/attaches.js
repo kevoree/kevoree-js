@@ -1,11 +1,9 @@
-'use strict';
+function attaches(model) {
+  const grps = model.groups.iterator();
 
-module.exports = function (model) {
-  var grps = model.groups.iterator();
-
-  var str = '';
+  let str = '';
   while (grps.hasNext()) {
-    var grp = grps.next();
+    const grp = grps.next();
     if (grp.subNodes.size() > 0) {
       if (str.length !== 0) {
         str += '\n';
@@ -13,9 +11,9 @@ module.exports = function (model) {
 
       str += 'attach ';
 
-      var subNodes = grp.subNodes.iterator();
+      const subNodes = grp.subNodes.iterator();
       while (subNodes.hasNext()) {
-        var subNode = subNodes.next();
+        const subNode = subNodes.next();
         str += subNode.name;
         if (subNodes.hasNext()) {
           str += ', ';
@@ -27,4 +25,6 @@ module.exports = function (model) {
   }
 
   return str;
-};
+}
+
+module.exports = attaches;

@@ -1,7 +1,7 @@
 const assert = require('assert');
 const readKevs = require('../../lib/readKevs');
 
-describe('KevScript - repo (deprecated)', function () {
+describe('KevScript - repo (deprecated)', function mochaDescribe() {
   require('../../init')(this);
 
   it('simple.kevs', () => {

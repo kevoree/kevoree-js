@@ -6,6 +6,7 @@
     "tools/*",
     "libraries/comp/proxy",
     "libraries/comp/ticker",
+    "libraries/comp/consoleprinter",
     "libraries/node/javascript",
     "libraries/group/centralizedws",
     "libraries/chan/local"

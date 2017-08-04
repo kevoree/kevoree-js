@@ -4,7 +4,7 @@ const resources = require('../../fixtures/registry/resources.json');
 
 module.exports = () => new Promise((resolve) => {
 	const app = express();
-	Object.keys(routes).forEach(route => {
+	Object.keys(routes).forEach((route) => {
 		const ref = routes[route];
 		if (typeof ref === 'number') {
 			app.get(route, (req, res) => {

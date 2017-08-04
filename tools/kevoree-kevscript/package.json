@@ -9,10 +9,9 @@
     "model2kevs": "./bin/model2kevs.js"
   },
   "scripts": {
-    "build": "webpack",
-    "build-prod": "NODE_ENV=production webpack -p",
+    "build": "webpack -p --progress",
     "serve": "webpack-dev-server --open",
-    "prepublish": "npm run test && npm run build-prod",
+    "prepublish": "npm run test && npm run build",
     "test": "npm run lint && mocha --recursive test/server/spec",
     "lint": "eslint lib test"
   },
@@ -53,13 +52,17 @@
     "waxeye": "^0.8.1"
   },
   "devDependencies": {
+    "eslint": "^4.3.0",
+    "eslint-config-kevoree": "^1.0.0",
     "webpack": "^3.4.1",
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-preset-env": "^1.6.0",
     "expect": "^1.20.2",
     "express": "^4.14.0",
     "mocha": "^3.4.2",
     "rimraf": "^2.6.1",
     "sinon": "^2.1.0",
-    "webpack": "^3.4.1",
     "webpack-dev-server": "^2.5.1"
   },
   "eslintConfig": {

@@ -1,9 +1,9 @@
-var KevScriptError = require('../KevScriptError');
-var shortid = require('../shortid');
+const KevScriptError = require('../KevScriptError');
+const shortid = require('../shortid');
 
-module.exports = function (model, expressions, expr, opts) {
-	var value;
-	var ctxVarKey = expressions[expr.children[0].type](model, expressions, expr.children[0]);
+module.exports = function ctxVar(model, expressions, expr, opts) {
+	let value;
+	const ctxVarKey = expressions[expr.children[0].type](model, expressions, expr.children[0]);
 	if (opts.ignoreCtxVars) {
 		// we should ignore undefined ctxVars
 		if (opts.ctxVars[ctxVarKey]) {

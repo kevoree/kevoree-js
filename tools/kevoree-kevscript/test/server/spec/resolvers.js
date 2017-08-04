@@ -11,34 +11,34 @@ const tagResolverFactory = require('../../../lib/resolvers/tag-resolver-factory'
 const modelResolverFactory = require('../../../lib/resolvers/model-resolver-factory');
 const registryResolverFactory = require('../../../lib/resolvers/registry-resolver-factory');
 
-describe('KevScript - resolvers', function () {
+describe('KevScript - resolvers', function mochaDescribe() {
 	require('../init')(this);
 
 	const factory = new kevoree.factory.DefaultKevoreeFactory();
 
 	function emptyModel() {
-		let model = factory.createContainerRoot();
+		const model = factory.createContainerRoot();
 		factory.root(model);
 		return model;
 	}
 
 	let tagResolver, modelResolver, registryResolver;
-	let model = emptyModel();
+	const model = emptyModel();
 
-	before('initialize resolvers', function () {
+	before('initialize resolvers', () => {
 		registryResolver = registryResolverFactory(loggerFactory.create('RegistryResolver'));
 		modelResolver = modelResolverFactory(loggerFactory.create('ModelResolver'), registryResolver);
 		tagResolver = tagResolverFactory(loggerFactory.create('TagResolver'), modelResolver);
     loggerFactory.remove('console');
 	});
 
-	beforeEach('initialize spies', function () {
+	beforeEach('initialize spies', () => {
 		Sinon.spy(tagResolver, 'resolve');
 		Sinon.spy(modelResolver, 'resolve');
 		Sinon.spy(registryResolver, 'resolve');
 	});
 
-	afterEach('restore spies', function () {
+	afterEach('restore spies', () => {
 		tagResolver.resolve.restore();
 		modelResolver.resolve.restore();
 		registryResolver.resolve.restore();
@@ -46,7 +46,7 @@ describe('KevScript - resolvers', function () {
 
 	it('should hit registry', () => {
 		return tagResolver.resolve(new FQN('kevoree', 'JavascriptNode'), model)
-			.then(function (tdef) {
+			.then((tdef) => {
 				assert.equal(tdef.version, '42');
 			});
 	});
@@ -58,7 +58,7 @@ describe('KevScript - resolvers', function () {
 		return tagResolver.resolve(new FQN('kevoree', 'Ticker', {
 				du: 'LATEST'
 			}), model)
-			.then(function (tdef) {
+			.then((tdef) => {
 				assert.equal(tdef.version, '1');
 				// on second resolving, the tag LATEST will be resolved to the proper version
 				// but because the model has been erased, the model resolver will be useless
@@ -66,7 +66,7 @@ describe('KevScript - resolvers', function () {
 				return tagResolver.resolve(new FQN('kevoree', 'Ticker', {
 						du: 'LATEST'
 					}), emptyModel())
-					.then(function (tdef) {
+					.then((tdef) => {
 						assert.equal(tdef.version, '1');
 
 						// tag, model and fs resolvers should be used twice
@@ -81,7 +81,7 @@ describe('KevScript - resolvers', function () {
 
 	it('should hit model resolver', () => {
 		return tagResolver.resolve(new FQN('kevoree', 'JavascriptNode', { tdef: 42 }), model)
-			.then(function (tdef) {
+			.then((tdef) => {
 				assert.equal(tdef.version, '42');
 
 				assert.equal(tagResolver.resolve.callCount, 1, 'tagResolver.resolve() should be hit once');
@@ -94,7 +94,7 @@ describe('KevScript - resolvers', function () {
 
 	it('should hit registry because unable to find explicit du version in model', () => {
 		return tagResolver.resolve(new FQN('kevoree', 'JavascriptNode', { tdef: 42, du: { js: '5.4.0-beta.0' } }), model)
-			.then(function (tdef) {
+			.then((tdef) => {
 				assert.equal(tdef.version, '42');
 				assert.equal(tdef.deployUnits.array[0].version, '5.4.0');
 

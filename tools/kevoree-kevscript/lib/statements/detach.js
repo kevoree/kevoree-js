@@ -1,20 +1,20 @@
-'use strict';
 
-var KevScriptError = require('../KevScriptError');
+
+const KevScriptError = require('../KevScriptError');
 
 function processFragmentDictionary(node) {
-	node.groups.array.forEach(function (group) {
-		var fDic = group.findFragmentDictionaryByID(node.name);
+	node.groups.array.forEach((group) => {
+		const fDic = group.findFragmentDictionaryByID(node.name);
 		if (fDic) {
 			fDic.delete();
 		}
 	});
 
-	node.components.array.forEach(function (comp) {
-		comp.provided.array.concat(comp.required.array).forEach(function (port) {
-			port.bindings.array.forEach(function (binding) {
+	node.components.array.forEach((comp) => {
+		comp.provided.array.concat(comp.required.array).forEach((port) => {
+			port.bindings.array.forEach((binding) => {
 				if (binding.hub) {
-					var fDic = binding.hub.findFragmentDictionaryByID(node.name);
+					const fDic = binding.hub.findFragmentDictionaryByID(node.name);
 					if (fDic) {
 						fDic.delete();
 					}
@@ -24,11 +24,11 @@ function processFragmentDictionary(node) {
 	});
 }
 
-module.exports = function (model, expressions, stmt, opts) {
-	var nameList = expressions[stmt.children[0].type](model, expressions, stmt.children[0], opts);
-	var targetGroups = expressions[stmt.children[1].type](model, expressions, stmt.children[1], opts);
+module.exports = (model, expressions, stmt, opts) => {
+	const nameList = expressions[stmt.children[0].type](model, expressions, stmt.children[0], opts);
+	const targetGroups = expressions[stmt.children[1].type](model, expressions, stmt.children[1], opts);
 
-	var groups = [];
+	let groups = [];
 	if (targetGroups.length === 1) {
 		groups = model.select('/groups[' + targetGroups[0] + ']').array;
 		if (targetGroups[0] !== '*' && groups.length === 0) {
@@ -38,17 +38,17 @@ module.exports = function (model, expressions, stmt, opts) {
 		throw new KevScriptError('Detach target path is invalid (' + targetGroups + ')', stmt.children[1].pos);
 	}
 
-	nameList.forEach(function (nodeName, i) {
+	nameList.forEach((nodeName, i) => {
 		if (nodeName.length === 1) {
-			var nodes = model.select('/nodes[' + nodeName + ']').array;
+			const nodes = model.select('/nodes[' + nodeName + ']').array;
 			if (nodeName !== '*' && nodes.length === 0) {
 				throw new KevScriptError('Unable to detach node instance "' + nodeName + '". Instance does not exist', stmt.children[0].children[i].pos);
 			}
 
 			// detach nodes to groups
-			nodes.forEach(function (node) {
+			nodes.forEach((node) => {
 				processFragmentDictionary(node);
-				groups.forEach(function (group) {
+				groups.forEach((group) => {
 					node.removeGroups(group);
 					group.removeSubNodes(node);
 				});

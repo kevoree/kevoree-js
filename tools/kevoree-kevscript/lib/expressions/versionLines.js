@@ -1,7 +1,7 @@
-module.exports = function (model, expressions, expr, opts) {
-	var versions = {};
-	expr.children.forEach(function (child) {
-		var version = expressions[child.type](model, expressions, child, opts);
+module.exports = function versionLines(model, expressions, expr, opts) {
+	const versions = {};
+	expr.children.forEach((child) => {
+		const version = expressions[child.type](model, expressions, child, opts);
 		versions[version.key] = version.value;
 	});
 	return versions;

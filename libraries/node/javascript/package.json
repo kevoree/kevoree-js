@@ -6,12 +6,15 @@
     "namespace": "kevoree"
   },
   "scripts": {
-    "build": "kevoree-scripts build",
     "prestart": "npm run build",
+    "pretest": "npm run build",
+    "prepublishOnly": "npm run test",
+
     "start": "kevoree-scripts start",
-    "prekev:publish": "npm run build",
+    "build": "kevoree-scripts build",
+    "test": "mocha test",
     "kev:publish": "kevoree-scripts publish",
-    "prepublishOnly": "npm run build",
+
     "postpublish": "npm run kev:publish"
   },
   "description": "Kevoree JS standard node platform",
@@ -36,24 +39,13 @@
     "times-up": "^1.0.1"
   },
   "devDependencies": {
-    "eslint": "^3.18.0",
+    "mocha": "^3.4.2",
     "expect": "^1.20.2",
-    "kevoree-scripts": "^1.0.0",
-    "mocha": "^3.4.2"
+    "eslint": "^4.3.0",
+    "eslint-config-kevoree": "^1.0.0",
+    "kevoree-scripts": "^1.0.0"
   },
   "engines": {
     "node": "*"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "eslint:recommended"
-    ],
-    "rules": {
-      "no-shadow": 2
-    }
   }
 }

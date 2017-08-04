@@ -7,8 +7,10 @@ const Proxy = AbstractComponent.extend({
   in_in(msg) {
     this.out_out(msg);
   },
-  
-  out_out() {}
+
+  out_out() {
+    console.log('boom');
+  }
 });
 
 module.exports = Proxy;

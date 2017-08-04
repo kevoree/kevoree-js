@@ -1,11 +1,9 @@
-'use strict';
-
-var kevoree = require('kevoree-library');
-var modelValidator = require('kevoree-validator');
-var monkeyPatch = require('./util/monkey-patch');
+const kevoree = require('kevoree-library');
+const modelValidator = require('kevoree-validator');
+const monkeyPatch = require('./util/monkey-patch');
 
 // statements list
-var statements = {
+const statements = {
   addRepo: require('./statements/addRepo'),
   add: require('./statements/add'),
   move: require('./statements/move'),
@@ -24,7 +22,7 @@ var statements = {
 };
 
 // expressions list
-var expressions = {
+const expressions = {
   typeDef: require('./expressions/typeDef'),
   typeFQN: require('./expressions/typeFQN'),
   nameList: require('./expressions/nameList'),
@@ -54,8 +52,8 @@ var expressions = {
   versionLines: require('./expressions/versionLines'),
 };
 
-var factory = new kevoree.factory.DefaultKevoreeFactory();
-var cloner = factory.createModelCloner();
+const factory = new kevoree.factory.DefaultKevoreeFactory();
+const cloner = factory.createModelCloner();
 
 /**
  *
@@ -67,7 +65,7 @@ var cloner = factory.createModelCloner();
  */
 function interpreter(ast, ctxModel, opts) {
   // output model
-  var model = null;
+  let model = null;
 
   if (ctxModel) {
     // if we have a context model, clone it and use it has a base
@@ -84,13 +82,13 @@ function interpreter(ast, ctxModel, opts) {
   opts.identifiers = [];
 
   return Promise.resolve()
-    .then(function () {
+    .then(() => {
       // create commands based on interpreted statements & expressions
-      var commands = [];
-      ast.children.forEach(function (child0) {
-        child0.children.forEach(function (stmt) {
+      const commands = [];
+      ast.children.forEach((child0) => {
+        child0.children.forEach((stmt) => {
           if (typeof (statements[stmt.type]) === 'function') {
-            commands.push(function () {
+            commands.push(() => {
               return statements[stmt.type](model, expressions, stmt, opts);
             });
           } else {
@@ -100,19 +98,19 @@ function interpreter(ast, ctxModel, opts) {
       });
       return commands;
     })
-    .then(function (commands) {
+    .then((commands) => {
       // execute commands sequentially
-      return commands.reduce(function (prev, next) {
+      return commands.reduce((prev, next) => {
         return prev.then(next);
       }, Promise.resolve());
     })
-    .then(function () {
+    .then(() => {
       // commands executed successfully => validate output model
-      return new Promise(function (resolve) {
+      return new Promise((resolve) => {
           modelValidator(model);
           resolve();
         })
-        .then(function () {
+        .then(() => {
           // model is valid => return
           return {
             error: null,
@@ -120,22 +118,23 @@ function interpreter(ast, ctxModel, opts) {
             warnings: opts.warnings,
           };
         })
-        .catch(function (err) {
+        .catch((err) => {
           // model is not valid
           // try to find instance position for ModelValidationError
           ast.children
-            .map(function (stmt) {
+            .map((stmt) => {
               return stmt.children[0];
             })
-            .filter(function (stmt) {
+            .filter((stmt) => {
               return stmt.type === 'add';
             })
-            .some(function (addStmt) {
-              var instancePos = addStmt.instances[err.path];
+            .some((addStmt) => {
+              const instancePos = addStmt.instances[err.path];
               if (instancePos) {
                 err.pos = instancePos;
                 return true;
               }
+              return false;
             });
 
           return {
@@ -144,13 +143,13 @@ function interpreter(ast, ctxModel, opts) {
             warnings: opts.warnings,
           };
         })
-        .then(function (result) {
+        .then((result) => {
           // whether it is valid or not => monkey patch model
           monkeyPatch(model);
           return result;
         });
     })
-    .catch(function (err) {
+    .catch((err) => {
       return {
         error: err,
         model: null,

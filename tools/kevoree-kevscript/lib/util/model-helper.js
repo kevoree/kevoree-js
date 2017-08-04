@@ -1,15 +1,15 @@
-'use strict';
 
-var semver = require('semver');
+
+const semver = require('semver');
 
 function findChanNodeGroupByName(model, name) {
 	function findByName(elem) {
-		var elems = (model[elem])
+		const elems = (model[elem])
 			? model[elem].iterator()
 			: null;
 		if (elems !== null) {
 			while (elems.hasNext()) {
-				var entity = elems.next();
+				const entity = elems.next();
 				if (entity.name === name) {
 					return entity;
 				}
@@ -22,7 +22,7 @@ function findChanNodeGroupByName(model, name) {
 }
 
 function findComponent(model, nodeName, compName) {
-	var node = model.findNodesByID(nodeName);
+	const node = model.findNodesByID(nodeName);
 	if (node) {
 		return node.findComponentsByID(compName);
 	} else {
@@ -36,11 +36,11 @@ function findComponent(model, nodeName, compName) {
  * @returns {Array}
  */
 function getPlatforms(tdef) {
-	var platforms = [];
+	const platforms = [];
 
 	if (tdef) {
-		tdef.deployUnits.array.forEach(function(du) {
-			var platform = du.findFiltersByID('platform');
+		tdef.deployUnits.array.forEach((du) => {
+			const platform = du.findFiltersByID('platform');
 			if (platform && platforms.indexOf(platform.value) === -1) {
 				platforms.push(platform.value);
 			}
@@ -64,9 +64,9 @@ function isCompatible(tdef, node) {
 			return true;
 
 		} else {
-			var nodePlatforms = getPlatforms(node.typeDefinition);
+			const nodePlatforms = getPlatforms(node.typeDefinition);
 
-			for (var i = 0; i < nodePlatforms.length; i++) {
+			for (let i = 0; i < nodePlatforms.length; i++) {
 				if (tdef.select('deployUnits[name=*]/filters[name=platform,value=' + nodePlatforms[i] + ']').array.length > 0) {
 					return true;
 				}
@@ -82,13 +82,13 @@ function isCompatible(tdef, node) {
  * @returns {String}
  */
 function getFQN(tdef) {
-	var hasPreRelease = tdef.deployUnits.array.some(function (du) {
+	const hasPreRelease = tdef.deployUnits.array.some((du) => {
 		return semver.prerelease(du.version) !== null;
 	});
 
-	var duTag = hasPreRelease ? '/LATEST' : '';
+	const duTag = hasPreRelease ? '/LATEST' : '';
 
-	var fqn = tdef.name + '/' + tdef.version + duTag;
+	let fqn = tdef.name + '/' + tdef.version + duTag;
 
 	function walk(pkg) {
 		if (pkg.eContainer()) {

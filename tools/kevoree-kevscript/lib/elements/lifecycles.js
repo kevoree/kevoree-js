@@ -1,12 +1,10 @@
-'use strict';
-
-module.exports = function (model) {
-  var str = '';
-  var toStop = [];
+function lifecycles(model) {
+  let str = '';
+  const toStop = [];
 
   function addElems(instances, host) {
     while (instances.hasNext()) {
-      var instance = instances.next();
+      const instance = instances.next();
       if (!instance.started) {
         // instance is stopped => add to toStop array
         if (host) {
@@ -37,4 +35,6 @@ module.exports = function (model) {
   }
 
   return str;
-};
+}
+
+module.exports = lifecycles;

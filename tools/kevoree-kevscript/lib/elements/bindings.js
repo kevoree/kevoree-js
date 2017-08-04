@@ -1,11 +1,9 @@
-'use strict';
+function bindings(model) {
+  const bindings = model.mBindings.iterator();
 
-module.exports = function (model) {
-  var bindings = model.mBindings.iterator();
-
-  var str = '';
+  let str = '';
   while (bindings.hasNext()) {
-    var binding = bindings.next();
+    const binding = bindings.next();
     if (str.length !== 0) {
       str += '\n';
     }
@@ -18,4 +16,6 @@ module.exports = function (model) {
   }
 
   return str;
-};
+}
+
+module.exports = bindings;

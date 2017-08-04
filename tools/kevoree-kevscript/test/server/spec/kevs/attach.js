@@ -1,7 +1,7 @@
 const assert = require('assert');
 const readKevs = require('../../lib/readKevs');
 
-describe('KevScript - attach', function () {
+describe('KevScript - attach', function mochaDescribe() {
   require('../../init')(this);
 
   it('simple.kevs', () => {
@@ -27,7 +27,7 @@ describe('KevScript - attach', function () {
         assert.equal(node1.groups.array.length, 0);
         assert.equal(node2.groups.array[0].name, sync.name);
         assert.equal(
-          sync.subNodes.array.map(n => n.name).sort().join(','), [node0.name, node2.name].sort().join(',')
+          sync.subNodes.array.map((n) => n.name).sort().join(','), [node0.name, node2.name].sort().join(',')
         );
       });
   });
@@ -44,7 +44,7 @@ describe('KevScript - attach', function () {
         assert.equal(node1.groups.array[0].name, sync.name);
         assert.equal(node2.groups.array[0].name, sync.name);
         assert.equal(
-          sync.subNodes.array.map(n => n.name).sort().join(','), [node0.name, node1.name, node2.name].sort().join(',')
+          sync.subNodes.array.map((n) => n.name).sort().join(','), [node0.name, node1.name, node2.name].sort().join(',')
         );
       });
   });

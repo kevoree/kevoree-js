@@ -23,6 +23,7 @@ module.exports = {
   appSrc: resolveApp('src'),
   appTest: resolveApp('test'),
   appModel: resolveApp('kevlib.json'),
+  appBabelrc: resolveApp('.babelrc'),
   appWebpackConf: resolveApp('webpack.config.js'),
   appBrowserEntry: resolveApp('lib/browser.js'),
   appBrowser: resolveApp('browser'),

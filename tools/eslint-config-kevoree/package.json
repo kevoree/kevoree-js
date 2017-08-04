@@ -1,0 +1,31 @@
+{
+  "name": "eslint-config-kevoree",
+  "version": "1.0.0",
+  "description": "ESLint configuration used by Kevoree",
+  "main": "index.js",
+  "scripts": {
+    "test": "eslint index.js"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "eslint": "^3.19.0 || ^4.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0 || ^4.3.0"
+  },
+  "keywords": [
+    "kevoree",
+    "eslint",
+    "eslintconfig"
+  ],
+  "license": "LGPL-3.0",
+  "author": "Maxime Tricoire <max.tricoire@gmail.com>",
+  "homepage": "https://github.com/kevoree/kevoree-js#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevoree/kevoree-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kevoree/kevoree-js/issues"
+  }
+}

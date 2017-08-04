@@ -1,18 +1,18 @@
-'use strict';
 
-var kevoree = require('kevoree-library');
-var KevScriptError = require('../KevScriptError');
-var modelHelper = require('../util/model-helper');
-var dedupeDeployUnits = require('../util/dedupe-deployunits');
+
+const kevoree = require('kevoree-library');
+const KevScriptError = require('../KevScriptError');
+const modelHelper = require('../util/model-helper');
+const dedupeDeployUnits = require('../util/dedupe-deployunits');
 
 function inflateDictionary(instance) {
-  var factory = new kevoree.factory.DefaultKevoreeFactory();
-  var dicType = instance.typeDefinition.dictionaryType;
+  const factory = new kevoree.factory.DefaultKevoreeFactory();
+  const dicType = instance.typeDefinition.dictionaryType;
   if (dicType) {
-    var dic = factory.createDictionary().withGenerated_KMF_ID('0.0');
-    dicType.attributes.array.forEach(function (attr) {
+    const dic = factory.createDictionary().withGenerated_KMF_ID('0.0');
+    dicType.attributes.array.forEach((attr) => {
       if (!attr.fragmentDependant) {
-        var dicEntry = factory.createValue();
+        const dicEntry = factory.createValue();
         dicEntry.name = attr.name;
         dicEntry.value = attr.defaultValue;
         dic.addValues(dicEntry);
@@ -23,52 +23,52 @@ function inflateDictionary(instance) {
 }
 
 function createPorts(comp) {
-  var factory = new kevoree.factory.DefaultKevoreeFactory();
-  comp.typeDefinition.provided.array.forEach(function (portType) {
-    var port = factory.createPort();
+  const factory = new kevoree.factory.DefaultKevoreeFactory();
+  comp.typeDefinition.provided.array.forEach((portType) => {
+    const port = factory.createPort();
     port.name = portType.name;
     port.portTypeRef = portType;
     comp.addProvided(port);
   });
 
-  comp.typeDefinition.required.array.forEach(function (portType) {
-    var port = factory.createPort();
+  comp.typeDefinition.required.array.forEach((portType) => {
+    const port = factory.createPort();
     port.name = portType.name;
     port.portTypeRef = portType;
     comp.addRequired(port);
   });
 }
 
-module.exports = function (model, expressions, stmt, opts) {
+module.exports = (model, expressions, stmt, opts) => {
   if (!stmt.instances) {
     stmt.instances = {};
   }
 
-  var nameList = expressions[stmt.children[0].type](model, expressions, stmt.children[0], opts);
-  var tdefExpr = expressions[stmt.children[1].type](model, expressions, stmt.children[1], opts);
+  const nameList = expressions[stmt.children[0].type](model, expressions, stmt.children[0], opts);
+  const tdefExpr = expressions[stmt.children[1].type](model, expressions, stmt.children[1], opts);
 
   return Promise.resolve()
-    .then(function () {
+    .then(() => {
       // resolve TypeDefinition
       opts.logger.debug('KevScript', 'Trying to resolve ' + tdefExpr);
       return opts.resolver.resolve(tdefExpr, model)
-        .then(function (tdef) {
+        .then((tdef) => {
           if (tdef) {
             return tdef;
           } else {
             throw new KevScriptError('Unable to resolve ' + tdefExpr);
           }
         })
-        .catch(function (err) {
+        .catch((err) => {
           err.pos = stmt.children[1].pos;
           throw err;
         });
     })
     .then(dedupeDeployUnits)
-    .then(function (tdef) {
-      var factory = new kevoree.factory.DefaultKevoreeFactory();
-      nameList.forEach(function (instancePath, i) {
-        var instance;
+    .then((tdef) => {
+      const factory = new kevoree.factory.DefaultKevoreeFactory();
+      nameList.forEach((instancePath, i) => {
+        let instance;
         if (instancePath.length === 1) {
           if (opts.identifiers.indexOf(instancePath[0]) === -1) {
             // node / chan / group
@@ -111,7 +111,7 @@ module.exports = function (model, expressions, stmt, opts) {
               throw new KevScriptError('Add statement with "*" only works for component type', stmt.children[0].children[i].pos);
             } else {
               // add a subNode to a node
-              var hostNode = model.findNodesByID(instancePath[0]);
+              const hostNode = model.findNodesByID(instancePath[0]);
               if (hostNode) {
                 instance = model.findNodesByID(instancePath[1]) || factory.createContainerNode();
                 instance.name = instancePath[1];
@@ -127,7 +127,7 @@ module.exports = function (model, expressions, stmt, opts) {
               }
             }
           } else if (tdef.metaClassName() === 'org.kevoree.ComponentType') {
-            var nodes = model.select('/nodes[' + instancePath[0] + ']').array;
+            const nodes = model.select('/nodes[' + instancePath[0] + ']').array;
 
             if (nodes.length === 0) {
               if (instancePath[0] === '*') {
@@ -137,7 +137,7 @@ module.exports = function (model, expressions, stmt, opts) {
               }
             }
             // add component to all non-hosted nodes
-            nodes.forEach(function (node) {
+            nodes.forEach((node) => {
               if (!node.host) {
                 if (opts.identifiers.indexOf(node.name + '.' + instancePath[1]) === -1) {
                   if (modelHelper.isCompatible(tdef, node)) {

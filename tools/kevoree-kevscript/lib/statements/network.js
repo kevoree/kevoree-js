@@ -1,18 +1,18 @@
-var kevoree = require('kevoree-library');
-var KevScriptError = require('../KevScriptError');
+const kevoree = require('kevoree-library');
+const KevScriptError = require('../KevScriptError');
 
-module.exports = function (model, expressions, stmt, opts) {
-	var instancesPath = expressions[stmt.children[0].type](model, expressions, stmt.children[0], opts);
-	var networkVal = expressions[stmt.children[1].type](model, expressions, stmt.children[1], opts);
+module.exports = (model, expressions, stmt, opts) => {
+	const instancesPath = expressions[stmt.children[0].type](model, expressions, stmt.children[0], opts);
+	const networkVal = expressions[stmt.children[1].type](model, expressions, stmt.children[1], opts);
 
 	if (instancesPath.length === 3) {
-		var nodes = [];
+		let nodes = [];
 		if (instancesPath[0] === '*') {
 			// all nodes
 			nodes = model.nodes.array;
 		} else {
 			// specific node
-			var node = model.findNodesByID(instancesPath[0]);
+			const node = model.findNodesByID(instancesPath[0]);
 			if (node) {
 				nodes.push(node);
 			} else {
@@ -20,17 +20,17 @@ module.exports = function (model, expressions, stmt, opts) {
 			}
 		}
 
-		var factory = new kevoree.factory.DefaultKevoreeFactory();
-		var netTypes = [];
+		const factory = new kevoree.factory.DefaultKevoreeFactory();
+		let netTypes = [];
 		if (instancesPath[1] === '*') {
 			// all network types
-			nodes.forEach(function (node) {
+			nodes.forEach((node) => {
 				netTypes = netTypes.concat(node.networkInformation.array);
 			});
 		} else {
 			// specific network
-			nodes.forEach(function (node) {
-				var network = node.findNetworkInformationByID(instancesPath[1]);
+			nodes.forEach((node) => {
+				let network = node.findNetworkInformationByID(instancesPath[1]);
 				if (network) {
 					netTypes.push(network);
 				} else {
@@ -42,16 +42,16 @@ module.exports = function (model, expressions, stmt, opts) {
 			});
 		}
 
-		var netNames = [];
+		let netNames = [];
 		if (instancesPath[2] === '*') {
 			// all network names
-			netTypes.forEach(function (net) {
+			netTypes.forEach((net) => {
 				netNames = netNames.concat(net.values.array);
 			});
 		} else {
 			// specific network name
-			netTypes.forEach(function (net) {
-				var val = net.findValuesByID(instancesPath[2]);
+			netTypes.forEach((net) => {
+				let val = net.findValuesByID(instancesPath[2]);
 				if (val) {
 					netNames.push(val);
 				} else {
@@ -63,7 +63,7 @@ module.exports = function (model, expressions, stmt, opts) {
 			});
 		}
 
-		netNames.forEach(function (net) {
+		netNames.forEach((net) => {
 			net.value = networkVal;
 		});
 	} else {

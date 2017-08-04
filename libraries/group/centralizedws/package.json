@@ -2,20 +2,17 @@
   "name": "kevoree-group-centralizedws",
   "version": "1.0.0",
   "description": "WebSocket group based on a centralized architecture that only sends partial model to connected clients",
-  "main": "./lib/CentralizedWSGroup.js",
+  "main": "lib/CentralizedWSGroup.js",
   "scripts": {
-    "lint": "eslint lib ws-shim.js browser.js test",
-    "webpack": "webpack -p --progress",
-    "prebuild": "npm run lint",
-    "build": "kevoree-scripts build",
-    "postbuild": "npm run webpack",
     "prestart": "npm run build",
+    "pretest": "npm run build",
+    "prepublishOnly": "npm run test",
+
     "start": "kevoree-scripts start",
-    "pretest": "npm run lint",
-    "test": "mocha",
-    "prekev:publish": "npm run build",
+    "build": "kevoree-scripts build",
+    "test": "mocha test",
     "kev:publish": "kevoree-scripts publish",
-    "prepublishOnly": "npm run build",
+
     "postpublish": "npm run kev:publish"
   },
   "kevoree": {
@@ -35,7 +32,7 @@
     "utf-8-validate": "^2.0.0"
   },
   "devDependencies": {
-    "eslint": "^3.18.0",
+    "eslint": "^4.3.0",
     "expect": "^1.20.2",
     "kevoree-scripts": "^1.0.0",
     "mocha": "^3.4.2",

@@ -3,16 +3,16 @@
  * www.waxeye.org
  */
 
-var waxeye = waxeye;
+let waxeye = global.waxeye;
 if (typeof module !== 'undefined') {
-    // require from module system
-    waxeye = require('waxeye');
+  // require from module system
+  waxeye = require('waxeye');
 }
 
-var Parser = (function() {
+const Parser = (function () {
 
-    var parser = function() { return this; };
-    parser.prototype = new waxeye.WaxeyeParser(0, true, [new waxeye.FA("kevScript", [new waxeye.State([new waxeye.Edge(62, 1, false)], false),
+  const parser = function () { return this; };
+  parser.prototype = new waxeye.WaxeyeParser(0, true, [new waxeye.FA("kevScript", [new waxeye.State([new waxeye.Edge(62, 1, false)], false),
             new waxeye.State([new waxeye.Edge(1, 2, false),
                 new waxeye.Edge(60, 3, true)], true),
             new waxeye.State([new waxeye.Edge(62, 1, false)], false),
@@ -427,11 +427,11 @@ var Parser = (function() {
             new waxeye.State([], true)], waxeye.FA.NEG),
         new waxeye.FA("", [new waxeye.State([new waxeye.Edge(["\""], 1, false)], false),
             new waxeye.State([], true)], waxeye.FA.NEG)]);
-    return parser;
+  return parser;
 
 })();
 
 // Add to module system
 if (typeof module !== 'undefined') {
-    module.exports.Parser = Parser;
+  module.exports.Parser = Parser;
 }

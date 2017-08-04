@@ -1,10 +1,8 @@
-'use strict';
-
-describe('JavascriptNode test', function () {
+describe('JavascriptNode test', function mochaDescribe() {
   let instance;
   const JavascriptNode = KevoreeModuleLoader.require('kevoree-node-javascript', '5.4.0-alpha.5');
   const coreStub = {
-    getLogger: function () {
+    getLogger() {
       return {
         level: 'DEBUG',
         tag: 'StubLogger',
@@ -32,12 +30,12 @@ describe('JavascriptNode test', function () {
     }
   };
 
-  beforeEach('create instance', function (done) {
+  beforeEach('create instance', (done) => {
     instance = new JavascriptNode(coreStub, elemStub, 'node0'); // jshint ignore:line
     instance.__start__(done);
   });
 
-  it('should start the instance', function (done) {
+  it('should start the instance', (done) => {
     instance.start(done);
   });
 });

@@ -1,17 +1,15 @@
-'use strict';
-
-var instances = require('./elements/instances'),
-	attaches = require('./elements/attaches'),
-	lifecycles = require('./elements/lifecycles'),
-	bindings = require('./elements/bindings'),
-	sets = require('./elements/sets'),
-	networks = require('./elements/networks');
+const instances = require('./elements/instances');
+const attaches = require('./elements/attaches');
+const lifecycles = require('./elements/lifecycles');
+const bindings = require('./elements/bindings');
+const sets = require('./elements/sets');
+const networks = require('./elements/networks');
 
 /**
  * Created by leiko on 10/04/14.
  */
-module.exports = function (model) {
-	var blocks = [
+module.exports = function modelInterpreter(model) {
+  const blocks = [
 		// order matters !
 		// repos(model),
 		//        includes(model),
@@ -23,15 +21,15 @@ module.exports = function (model) {
 		networks(model)
 	];
 
-	var kevscript = '';
-	for (var i in blocks) {
-		if (blocks.hasOwnProperty(i)) {
-			kevscript += blocks[i];
-			if (blocks[i].length > 0) {
-				kevscript += '\n\n';
-			}
-		}
-	}
+  let kevscript = '';
+  for (const i in blocks) {
+    if (blocks.hasOwnProperty(i)) {
+      kevscript += blocks[i];
+      if (blocks[i].length > 0) {
+        kevscript += '\n\n';
+      }
+    }
+  }
 
-	return kevscript.replace(/^([\n\t\r])+/, '').replace(/([\n\t\r])+$/, '\n');
+  return kevscript.replace(/^([\n\t\r])+/, '').replace(/([\n\t\r])+$/, '\n');
 };

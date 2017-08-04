@@ -1,26 +1,27 @@
-'use strict';
 
-var kevoree = require('kevoree-library');
-var KevScriptError = require('../KevScriptError');
+
+const kevoree = require('kevoree-library');
+const KevScriptError = require('../KevScriptError');
 
 function hasBinding(model, chan, port) {
-	return model.mBindings.array.some(function (binding) {
+	return model.mBindings.array.some((binding) => {
 		if (binding.hub && binding.port) {
 			return binding.hub.name === chan.name && binding.port.path() === port.path();
 		}
+    return false;
 	});
 }
 
-module.exports = function (model, expressions, stmt, opts) {
-	var bindings = expressions[stmt.children[0].type](model, expressions, stmt.children[0], opts);
-	var channels = expressions[stmt.children[1].type](model, expressions, stmt.children[1], opts);
+module.exports = (model, expressions, stmt, opts) => {
+	const bindings = expressions[stmt.children[0].type](model, expressions, stmt.children[0], opts);
+	const channels = expressions[stmt.children[1].type](model, expressions, stmt.children[1], opts);
 
-	var chans = [];
+	let chans = [];
 	if (channels.length === 1) {
 		if (channels[0] === '*') {
 			chans = model.hubs.array;
 		} else {
-			var chan = model.findHubsByID(channels[0]);
+			const chan = model.findHubsByID(channels[0]);
 			if (chan) {
 				chans.push(chan);
 			} else {
@@ -31,14 +32,14 @@ module.exports = function (model, expressions, stmt, opts) {
 		throw new KevScriptError('Bind target path is invalid (' + channels.join('.') + ')', stmt.children[1].pos);
 	}
 
-	var nodes = [];
+	let nodes = [];
 	if (bindings.length === 3) {
 		if (bindings[0] === '*') {
 			// all nodes
 			nodes = model.nodes.array;
 		} else {
 			// specific node
-			var node = model.findNodesByID(bindings[0]);
+			const node = model.findNodesByID(bindings[0]);
 			if (node) {
 				nodes.push(node);
 			} else {
@@ -49,13 +50,13 @@ module.exports = function (model, expressions, stmt, opts) {
 		throw new KevScriptError('"' + bindings.value + '" is not a valid bind path for a port', stmt.children[0].pos);
 	}
 
-	var components = [];
-	nodes.forEach(function (node) {
+	let components = [];
+	nodes.forEach((node) => {
 		if (bindings[1] === '*') {
 			// all components
 			components = components.concat(node.components.array);
 		} else {
-			var comp = node.findComponentsByID(bindings[1]);
+			const comp = node.findComponentsByID(bindings[1]);
 			if (comp) {
 				components.push(comp);
 			} else {
@@ -64,13 +65,13 @@ module.exports = function (model, expressions, stmt, opts) {
 		}
 	});
 
-	var ports = [];
-	components.forEach(function (comp) {
+	let ports = [];
+	components.forEach((comp) => {
 		if (bindings[2] === '*') {
 			// all ports
 			ports = ports.concat(comp.provided.array).concat(comp.required.array);
 		} else {
-			var port = comp.findProvidedByID(bindings[2]);
+			let port = comp.findProvidedByID(bindings[2]);
 			if (port) {
 				// add input
 				ports.push(port);
@@ -86,11 +87,11 @@ module.exports = function (model, expressions, stmt, opts) {
 		}
 	});
 
-	var factory = new kevoree.factory.DefaultKevoreeFactory();
-	chans.forEach(function (chan) {
-		ports.forEach(function (port) {
+	const factory = new kevoree.factory.DefaultKevoreeFactory();
+	chans.forEach((chan) => {
+		ports.forEach((port) => {
 			if (!hasBinding(model, chan, port)) {
-				var binding = factory.createMBinding();
+				const binding = factory.createMBinding();
 				binding.hub = chan;
 				binding.port = port;
 				chan.addBindings(binding);

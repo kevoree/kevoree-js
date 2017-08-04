@@ -1,5 +1,3 @@
-'use strict';
-
 const kevoree = require('kevoree-library');
 const ModelObjectMapper = require('./ModelObjectMapper');
 
@@ -75,25 +73,25 @@ AdaptationEngine.prototype = {
    * @param targetModel
    * @returns {Array}
    */
-  processTraces: function (diffSeq, targetModel) {
+  processTraces(diffSeq, targetModel) {
     const self = this;
     this.targetModel = targetModel;
 
     // know if a trace has already been added to cmdList for {path <-> AdaptationPrimitive}
-    const traceAlreadyProcessed = function (cmd) {
+    const traceAlreadyProcessed = (cmd) => {
       return self.alreadyProcessedTraces[cmd.modelElement.path()] && self.alreadyProcessedTraces[cmd.modelElement.path()][cmd.toString()];
     };
 
     // add a trace to the processed trace map
-    const addProcessedTrace = function (cmd) {
+    const addProcessedTrace = (cmd) => {
       self.alreadyProcessedTraces[cmd.modelElement.path()] = self.alreadyProcessedTraces[cmd.modelElement.path()] || {};
       self.alreadyProcessedTraces[cmd.modelElement.path()][cmd.toString()] = cmd;
     };
 
     // fill adaptation primitives list
     const cmdList = [];
-    diffSeq.traces.array.forEach(function (trace) {
-      self.processTrace(trace).forEach(function (cmd) {
+    diffSeq.traces.array.forEach((trace) => {
+      self.processTrace(trace).forEach((cmd) => {
         if (!traceAlreadyProcessed(cmd)) {
           cmdList.push(cmd);
           addProcessedTrace(cmd);
@@ -121,7 +119,7 @@ AdaptationEngine.prototype = {
     this.alreadyProcessedTraces = {};
 
     //return sorted command list (sort by COMMAND_RANK in order to process adaptations properly)
-    // this.sortCommands(cmdList).forEach(function (cmd) {
+    // this.sortCommands(cmdList).forEach((cmd) => {
     //   var tag = cmd.toString();
     //   while (tag.length < 20) {
     //     tag += ' ';
@@ -135,7 +133,7 @@ AdaptationEngine.prototype = {
    * Creates an array of AdaptationPrimitive according to the trace
    * @param trace
    */
-  processTrace: function (trace) {
+  processTrace(trace) {
     let cmds = [];
     const modelElement = this.targetModel.findByPath(trace.previousPath || trace.srcPath);
     let currentModel, instance, du, meta, currentModelElement, targetModelElement;
@@ -143,10 +141,15 @@ AdaptationEngine.prototype = {
     if (modelElement) {
       if (!this.isVirtual(modelElement)) {
         switch (trace.refName) {
+          default:
+            break;
+
           case 'groups':
           case 'hosts':
           case 'components':
             switch (trace.traceType.name()) {
+              default:
+                break;
               case 'ADD':
                 if (this.isRelatedToPlatform(modelElement)) {
                   meta = modelElement.typeDefinition.select('deployUnits[]/filters[name=platform,value=js]');
@@ -190,6 +193,8 @@ AdaptationEngine.prototype = {
 
           case 'bindings':
             switch (trace.traceType.name()) {
+              default:
+                break;
               case 'ADD':
                 if (this.isRelatedToPlatform(modelElement)) {
                   if (!this.isVirtual(modelElement)) {
@@ -228,7 +233,7 @@ AdaptationEngine.prototype = {
                         }
 
                         const self = this;
-                        modelElement.hub.bindings.array.forEach(function (binding) {
+                        modelElement.hub.bindings.array.forEach((binding) => {
                           cmds.push(self.createCommand(AddBinding, binding));
                         });
                       }
@@ -346,6 +351,8 @@ AdaptationEngine.prototype = {
 
           case 'typeDefinition':
             switch (trace.traceType.name()) {
+              default:
+                break;
               case 'ADD':
                 currentModel = this.node.getKevoreeCore().getCurrentModel();
                 currentModelElement = currentModel.findByPath(trace.srcPath);
@@ -373,40 +380,40 @@ AdaptationEngine.prototype = {
 
                           if (currentModelElement.metaClassName() === 'org.kevoree.Channel') {
                             // remove old bindings
-                            currentModelElement.bindings.array.forEach(function (b) {
+                            currentModelElement.bindings.array.forEach((b) => {
                               cmds.push(this.createCommand(RemoveBinding, b));
-                            }.bind(this));
+                            });
                             // add new bindings
-                            targetModelElement.bindings.array.forEach(function (b) {
+                            targetModelElement.bindings.array.forEach((b) => {
                               cmds.push(this.createCommand(AddBinding, b));
-                            }.bind(this));
+                            });
 
                           } else if (currentModelElement.metaClassName() === 'org.kevoree.ComponentInstance') {
                             // remove old input port bindings
-                            currentModelElement.provided.array.forEach(function (input) {
-                              input.bindings.array.forEach(function (b) {
+                            currentModelElement.provided.array.forEach((input) => {
+                              input.bindings.array.forEach((b) => {
                                 cmds.push(this.createCommand(RemoveBinding, b));
-                              }.bind(this));
-                            }.bind(this));
+                              });
+                            });
                             // remove old outout port bindings
-                            currentModelElement.required.array.forEach(function (output) {
-                              output.bindings.array.forEach(function (b) {
+                            currentModelElement.required.array.forEach((output) => {
+                              output.bindings.array.forEach((b) => {
                                 cmds.push(this.createCommand(RemoveBinding, b));
-                              }.bind(this));
-                            }.bind(this));
+                              });
+                            });
 
                             // add new input port bindings
-                            targetModelElement.provided.array.forEach(function (input) {
-                              input.bindings.array.forEach(function (b) {
+                            targetModelElement.provided.array.forEach((input) => {
+                              input.bindings.array.forEach((b) => {
                                 cmds.push(this.createCommand(AddBinding, b));
-                              }.bind(this));
-                            }.bind(this));
+                              });
+                            });
                             // add new outout port bindings
-                            targetModelElement.required.array.forEach(function (output) {
-                              output.bindings.array.forEach(function (b) {
+                            targetModelElement.required.array.forEach((output) => {
+                              output.bindings.array.forEach((b) => {
                                 cmds.push(this.createCommand(AddBinding, b));
-                              }.bind(this));
-                            }.bind(this));
+                              });
+                            });
                           }
 
                           // TODO upgradeInstance ?
@@ -443,7 +450,7 @@ AdaptationEngine.prototype = {
    * @param element
    * @returns {boolean}
    */
-  isRelatedToPlatform: function (element) {
+  isRelatedToPlatform(element) {
     if (element) {
       if (element.metaClassName() === 'org.kevoree.ComponentInstance') {
         // if parent is this node platform: it's ok
@@ -462,9 +469,9 @@ AdaptationEngine.prototype = {
         }
 
       } else if (element.metaClassName() === 'org.kevoree.Group') {
-        return element.subNodes.array.some(function (node) {
+        return element.subNodes.array.some((node) => {
           return this.isRelatedToPlatform(node);
-        }.bind(this));
+        });
 
       } else if (element.metaClassName() === 'org.kevoree.ContainerNode') {
         return ((element.name === this.node.getName()) || (element.host && element.host.name === this.node.getName()));
@@ -499,7 +506,7 @@ AdaptationEngine.prototype = {
    * @param element
    * @returns {Object}
    */
-  createCommand: function (Cmd, element) {
+  createCommand(Cmd, element) {
     return new Cmd(this.node, this.modelObjMapper, this.targetModel, element);
   },
 
@@ -508,7 +515,7 @@ AdaptationEngine.prototype = {
    * @param kDic
    * @returns {Array}
    */
-  createUpdateDictionaryCommands: function (kDic) {
+  createUpdateDictionaryCommands(kDic) {
     const cmds = [];
     let dictionary = null;
 
@@ -541,7 +548,7 @@ AdaptationEngine.prototype = {
    * @param elem Instance | TypeDefinition | MBinding
    * @returns true if the given element has a virtual TypeDefinition
    */
-  isVirtual: function (elem) {
+  isVirtual(elem) {
     if (isInstance(elem)) {
       return this.isVirtual(elem.typeDefinition);
     } else if (isTypeDefinition(elem)) {
@@ -566,8 +573,8 @@ AdaptationEngine.prototype = {
    * @param list
    * @returns {*}
    */
-  sortCommands: function (list) {
-    list.sort(function (a, b) {
+  sortCommands(list) {
+    list.sort((a, b) => {
       if (COMMAND_RANK[a.toString()] > COMMAND_RANK[b.toString()]) {
         return 1;
       } else if (COMMAND_RANK[a.toString()] < COMMAND_RANK[b.toString()]) {
@@ -580,7 +587,7 @@ AdaptationEngine.prototype = {
     return list;
   },
 
-  setLogger: function (logger) {
+  setLogger(logger) {
     this.log = logger;
   }
 };

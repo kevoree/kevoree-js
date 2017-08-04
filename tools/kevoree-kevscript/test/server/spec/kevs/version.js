@@ -1,7 +1,7 @@
 const assert = require('assert');
 const readKevs = require('../../lib/readKevs');
 
-describe('KevScript - version', function () {
+describe('KevScript - version', function mochaDescribe() {
   require('../../init')(this);
 
   it('default-version.kevs', () => {
@@ -92,7 +92,7 @@ describe('KevScript - version', function () {
         assert.equal(ticker.typeDefinition.version, '1');
         // make sure the order is the right one
         const dus = ticker.typeDefinition.deployUnits.array;
-        dus.sort(function (a, b) {
+        dus.sort((a, b) => {
           if (a.name > b.name) {
             return 1;
           }

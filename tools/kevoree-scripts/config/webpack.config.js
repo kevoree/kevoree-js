@@ -1,10 +1,17 @@
 'use strict';
 
+const webpack = require('webpack');
 const paths = require('./paths');
 const pkg = require(paths.appPackageJson);
 
-module.exports = {
+let babelrc = { presets: ['env'] };
+try {
+  babelrc = require(paths.appBabelrc);
+} catch (ignore) {/* noop */}
+
+const config = {
   bail: true,
+  // devtool: 'source-map',
   entry: paths.appBrowserEntry,
   output: {
     path: paths.appBrowser,
@@ -12,10 +19,20 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.json$/, exclude: /node_modules/, loader: 'json-loader' },
-      { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader' },
+      {
+        test: /\.json$/,
+        exclude: /node_modules/,
+        loader: 'json-loader'
+      },
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        options: babelrc
+      },
     ]
   },
+  plugins: [],
   externals: {
     'kevoree-library': 'KevoreeLibrary',
     'kevoree-module-loader': 'KevoreeModuleLoader'
@@ -30,3 +47,11 @@ module.exports = {
     hints: false,
   },
 };
+
+config.plugins.push(
+  new webpack.optimize.UglifyJsPlugin({
+    sourceMap: config.devtool && (config.devtool.indexOf('sourcemap') >= 0 || config.devtool.indexOf('source-map') >= 0)
+  })
+);
+
+module.exports = config;

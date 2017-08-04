@@ -1,15 +1,21 @@
 {
   "name": "kevoree-comp-consoleprinter",
   "version": "5.3.3",
-  "main": "./dist/ConsolePrinter.js",
+  "main": "lib/ConsolePrinter.js",
   "kevoree": {
-    "namespace": "kevoree",
-    "browser": "./src/browser/main.js"
+    "namespace": "kevoree"
   },
   "scripts": {
-    "prepublish": "npm run lint && grunt",
-    "postpublish": "grunt publish",
-    "lint": "eslint src"
+    "prestart": "npm run build",
+    "pretest": "npm run build",
+    "prepublishOnly": "npm run test",
+
+    "start": "kevoree-scripts start",
+    "build": "kevoree-scripts build",
+    "test": "mocha test",
+    "kev:publish": "kevoree-scripts publish",
+
+    "postpublish": "npm run kev:publish"
   },
   "keywords": [
     "kevoree-std-lib",
@@ -21,24 +27,14 @@
     "kevoree-entities": "^9.2.1"
   },
   "devDependencies": {
-    "babel-core": "^6.18.2",
-    "babel-loader": "^6.2.8",
-    "babel-preset-react": "^6.16.0",
-    "eslint": "^3.11.1",
-    "eslint-config-standard-jsx": "^3.2.0",
-    "eslint-plugin-react": "^6.7.1",
-    "grunt": "^1.0.1",
-    "grunt-babel": "^6.0.0",
-    "grunt-kevoree": "^6.0.0",
-    "grunt-kevoree-genmodel": "^3.0.3",
-    "grunt-kevoree-registry": "^4.0.0",
-    "grunt-webpack": "^1.0.18",
-    "json-loader": "^0.5.4",
-    "load-grunt-tasks": "^3.5.2",
     "react": "^15.4.1",
-    "standard": "^8.6.0",
-    "webpack": "^3.4.1",
-    "webpack-dev-server": "^1.16.2"
+    "mocha": "^3.4.2",
+    "expect": "^1.20.2",
+    "eslint": "^4.3.0",
+    "babel-eslint": "^7.2.3",
+    "kevoree-scripts": "^1.0.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-es2015": "^6.24.1"
   },
   "description": "Prints incoming message to the console stdout",
   "repository": {

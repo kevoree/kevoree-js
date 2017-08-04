@@ -1,3 +1,3 @@
-module.exports = function (model, expressions, expr) {
+module.exports = function doubleQuoteLine(model, expressions, expr) {
 	return expr.children.join('');
 };

@@ -1,9 +1,9 @@
-var KevScriptError = require('../KevScriptError');
+const KevScriptError = require('../KevScriptError');
 
-module.exports = function (model, expressions, stmt, opts) {
-	var nameList = expressions[stmt.children[0].type](model, expressions, stmt.children[0], opts);
-	nameList.forEach(function (instancePath, i) {
-		var instances = [];
+module.exports = (model, expressions, stmt, opts) => {
+	const nameList = expressions[stmt.children[0].type](model, expressions, stmt.children[0], opts);
+	nameList.forEach((instancePath, i) => {
+		let instances = [];
 		if (instancePath.length === 1) {
 			// node / chan / group
 			instances = model.select('/nodes['+instancePath[0]+']').array
@@ -21,7 +21,7 @@ module.exports = function (model, expressions, stmt, opts) {
 		if (instancePath.indexOf('*') === -1 && instances.length === 0) {
 			throw new KevScriptError('Unable to stop "'+instancePath+'". Instance does not exist', stmt.children[0].pos);
 		} else {
-			instances.forEach(function (instance) {
+			instances.forEach((instance) => {
 				instance.started = false;
 			});
 		}

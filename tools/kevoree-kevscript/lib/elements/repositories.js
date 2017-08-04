@@ -1,11 +1,9 @@
-'use strict';
+function repositories(model) {
+  let str = '';
 
-module.exports = function (model) {
-  var str = '';
-
-  var repos = model.repositories.iterator();
+  const repos = model.repositories.iterator();
   while (repos.hasNext()) {
-    var repo = repos.next();
+    const repo = repos.next();
     if (str.length !== 0) {
       str += '\n';
     }
@@ -13,4 +11,6 @@ module.exports = function (model) {
   }
 
   return str;
-};
+}
+
+module.exports = repositories;

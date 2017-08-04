@@ -1,27 +1,27 @@
 
 module.exports = function tagResolverFactory(logger, next) {
-	var tdefsTags = {};
-	var latestDUS = {};
-	var releaseDUS = {};
+	const tdefsTags = {};
+	const latestDUS = {};
+	const releaseDUS = {};
 
 	function getDUVersions(dus) {
-		var duVersions = {};
-		dus.forEach(function (du) {
+		const duVersions = {};
+		dus.forEach((du) => {
 			duVersions[du.findFiltersByID('platform').value] = du.version;
 		});
 		return duVersions;
 	}
 
 	return {
-		resolve: function (fqn, model) {
-			var tdefChanged = false;
-			var duChanged = false;
+		resolve: (fqn, model) => {
+			let tdefChanged = false;
+			let duChanged = false;
 
-			return Promise.resolve().then(function () {
-				var tdefTag = fqn.version.tdef;
-				var duTag = fqn.version.du;
+			return Promise.resolve().then(() => {
+				const tdefTag = fqn.version.tdef;
+				const duTag = fqn.version.du;
 				if (tdefTag === 'LATEST') {
-					var tdefVersion = tdefsTags[fqn.namespace + '.' + fqn.name];
+					const tdefVersion = tdefsTags[fqn.namespace + '.' + fqn.name];
 					if (tdefVersion) {
 						// found typeDef version in cache
 						fqn.version.tdef = tdefVersion;
@@ -31,7 +31,7 @@ module.exports = function tagResolverFactory(logger, next) {
 				}
 
 				if (fqn.version.tdef !== 'LATEST') {
-					var duVersions;
+					let duVersions;
 					if (fqn.version.du === 'LATEST') {
 						duVersions = latestDUS[fqn.namespace + '.' + fqn.name + '/' + fqn.version.tdef];
 					}
@@ -47,7 +47,7 @@ module.exports = function tagResolverFactory(logger, next) {
 				}
 
 				return next.resolve(fqn, model)
-					.then(function (tdef) {
+					.then((tdef) => {
 						if (!tdefChanged && tdefTag === 'LATEST') {
 							tdefsTags[fqn.namespace + '.' + fqn.name] = tdef.version;
 							logger.debug('KevScript', 'TagResolver linked ' + fqn.namespace + '.' + fqn.name + '/LATEST to ' + fqn.namespace + '.' + fqn.name + '/' + tdef.version);
