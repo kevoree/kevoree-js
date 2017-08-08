@@ -14,12 +14,9 @@ let coreStarted = false;
 let deploying = false;
 let wannaStop = false;
 
-function NodeJSRuntime(modulesPath, logger, resolver, kevs) {
+function NodeJSRuntime(logger, resolver, kevs) {
   if (!kevs) {
     throw new Error('You must give a KevScript engine to the runtime');
-  }
-  if (!modulesPath) {
-    throw new Error('You must give a modulesPath to the runtime');
   }
   if (!logger) {
     throw new Error('You must give a logger to the runtime');

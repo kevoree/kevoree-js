@@ -16,12 +16,14 @@ var Kevscript = require('kevoree-kevscript');
 var myKevscript = 'include npm:kevoree-node-javascript\nadd node0 : JavascriptNode',
     kevs = new Kevscript();
 
-kevs.parse(myKevscript, function (err, model) {
-    if (err) throw err;
-
+kevs.parse(myKevscript)
+  .then(({ model }) => {
     // success
     // 'model' is the equivalent Kevoree model of your Kevscript input
-});
+  })
+  .catch((err) => {
+    // something went wrong
+  });
 ```
 
 You can also give a **context model** and/or **context variables**
@@ -31,16 +33,16 @@ You can also give a **context model** and/or **context variables**
 var KevScript = require('kevoree-kevscript');
 var kevs = new KevScript();
 var script = 'add node : JavascriptNode';
-kevs.parse(script, contextModel, function (err, model) {
-  if (err) {
-    throw err;
-  } else {
+kevs.parse(script, contextModel)
+  .then(({ model }) => {
     // success
     // this model is the contextModel + the interpretation of the given KevScript
     // so here, it will add a JavascriptNode "node" to the resulting model
     // Note that contextModel WILL NOT be modified
-  }
-});
+  })
+  .catch((err) => {
+    // something went wrong
+  });
 ```
 
 #### Context Variables
@@ -57,15 +59,15 @@ var script =
 var ctxVars = {
   node: 'myNode'
 };
-kevs.parse(script, null, ctxVars, function (err, model) {
-  if (err) {
-    throw err;
-  } else {
+kevs.parse(script, null, ctxVars)
+  .then(({ model }) => {
     // success
     // KevScript parser has generated a random value for %%grp%% that you can
     // retrieve here: ctxVars.grp
-  }
-});
+  })
+  .catch((err) => {
+    // something went wrong
+  });
 ```
 
 ### Tests

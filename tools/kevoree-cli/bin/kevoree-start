@@ -135,7 +135,7 @@ fs.lstat(kConst.CONFIG_PATH, (err, stats) => {
             KevScript.Resolvers.registryResolverFactory(kevsLogger)));
         const kevs = new KevScript(kevsLogger, { resolver: rootResolver });
         const resolver = new NPMResolver(commander.modulesPath, loggerFactory.create('NPMResolver'), commander.skipIntegrityCheck);
-        const runtime = new NodeJSRuntime(commander.modulesPath, log, resolver, kevs);
+        const runtime = new NodeJSRuntime(log, resolver, kevs);
 
         runtime.on('stopped', () => {
           process.exit(0);
@@ -157,12 +157,8 @@ fs.lstat(kConst.CONFIG_PATH, (err, stats) => {
               } else {
                 if (path.extname(commander.model) === '.kevs') {
                   // parse model as KevScript
-                  kevs.parse(modelSrc, ctxModel, ctxVars, (err, model) => {
-                    if (err) {
-                      log.error(err.stack);
-                      log.error('Platform shut down.');
-                      process.exit(1);
-                    } else {
+                  kevs.parse(modelSrc, ctxModel, ctxVars)
+                    .then(({ model }) => {
                       const keys = Object.keys(ctxVars);
                       if (keys.length > 0) {
                         let strCtxVars = '';
@@ -199,8 +195,12 @@ fs.lstat(kConst.CONFIG_PATH, (err, stats) => {
 
                       // deploy the model
                       runtime.deploy(model);
-                    }
-                  });
+                    })
+                    .catch((err) => {
+                      log.error(err.stack);
+                      log.error('Platform shut down.');
+                      process.exit(1);
+                    });
                 } else {
                   // parse model as JSON
                   const modelPath = path.resolve(commander.model);
