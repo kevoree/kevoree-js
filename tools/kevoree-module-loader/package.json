@@ -17,7 +17,6 @@
     "eslint": "^4.3.0",
     "json-loader": "^0.5.4",
     "mocha": "^3.4.2",
-    "webpack": "^3.4.1",
-    "mocha": "^3.4.2"
+    "webpack": "^3.4.1"
   }
 }

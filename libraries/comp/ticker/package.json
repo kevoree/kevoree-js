@@ -10,12 +10,10 @@
     "prestart": "npm run build",
     "pretest": "npm run build",
     "prepublishOnly": "npm run test",
-
     "start": "kevoree-scripts start",
     "build": "kevoree-scripts build",
     "test": "mocha test",
     "kev:publish": "kevoree-scripts publish",
-
     "postpublish": "npm run kev:publish"
   },
   "keywords": [
@@ -25,15 +23,15 @@
     "component"
   ],
   "dependencies": {
-    "kevoree-entities": "^9.2.1"
+    "kevoree-entities": "^9.2.2"
   },
   "devDependencies": {
-    "react": "^15.4.1",
-    "mocha": "^3.4.2",
+    "babel-preset-react": "^6.16.0",
     "eslint": "^4.3.0",
     "eslint-config-kevoree": "^1.0.0",
     "kevoree-scripts": "^1.0.0",
-    "babel-preset-react": "^6.16.0"
+    "mocha": "^3.4.2",
+    "react": "^15.4.1"
   },
   "repository": {
     "type": "git",

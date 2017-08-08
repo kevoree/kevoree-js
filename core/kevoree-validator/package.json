@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/kevoree/kevoree-js-validator#readme",
   "dependencies": {
-    "kevoree-library": "^5.0.11"
+    "kevoree-library": "^5.0.12"
   },
   "devDependencies": {
     "expect": "^1.20.2",

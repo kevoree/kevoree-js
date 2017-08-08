@@ -6,7 +6,6 @@
   "scripts": {
     "test": "eslint index.js"
   },
-  "dependencies": {},
   "peerDependencies": {
     "eslint": "^3.19.0 || ^4.3.0"
   },
