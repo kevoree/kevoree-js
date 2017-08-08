@@ -1,7 +1,6 @@
 const util = require('util');
 const readline = require('readline');
 const KevoreeCore = require('kevoree-core');
-const Bootstrapper = require('kevoree-commons').Bootstrapper;
 const kevoree = require('kevoree-library');
 const bootstrapHelper = require('./bootstrapHelper');
 const path = require('path');
@@ -28,7 +27,6 @@ function NodeJSRuntime(modulesPath, logger, resolver, kevs) {
 	this.log = logger;
 	this.kevs = kevs;
 	this.kCore = new KevoreeCore(kevs, this.modulesPath, this.log);
-	this.bootstrapper = new Bootstrapper(this.log, resolver);
 	this.nodename = 'node0'; // default nodename
 	this.groupname = 'sync'; // default groupname
 	this.groupport = 9000; // default grouport

@@ -8,14 +8,14 @@ const path = require('path');
 const commander = require('commander');
 const config = require('tiny-conf');
 const kConst = require('kevoree-const');
-const kCommons = require('kevoree-commons');
 const kLibrary = require('kevoree-library');
 const NPMResolver = require('kevoree-resolvers').NPMResolver;
 const KevScript = require('kevoree-kevscript');
 const mkdirp = require('mkdirp');
 const NodeJSRuntime = require('../lib/NodeJSRuntime');
+const loggerFactory = require('kevoree-logger');
 
-const log = new kCommons.Logger('Runtime');
+const log = loggerFactory.create('Runtime');
 
 function validateName(val) {
   const match = INSTANCE_NAME.exec(val);
