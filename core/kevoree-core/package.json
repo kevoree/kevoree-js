@@ -1,6 +1,6 @@
 {
   "name": "kevoree-core",
-  "version": "9.0.7",
+  "version": "9.0.8",
   "description": "Kevoree Javascript platform core",
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "main": "./kevoree-core.js",
@@ -25,19 +25,19 @@
     "url": "https://github.com/kevoree/kevoree-js-core"
   },
   "dependencies": {
-    "kevoree-library": "^5.0.12"
+    "kevoree-library": "^5.0.13"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
     "babel-preset-env": "^1.6.0",
     "eslint": "^4.3.0",
-    "kevoree-const": "^2.0.0",
-    "kevoree-entities": "^9.2.2",
-    "kevoree-kevscript": "^5.0.0",
-    "kevoree-logger": "^1.0.0",
-    "kevoree-registry-client": "^3.0.0",
-    "kevoree-validator": "^0.1.19",
+    "kevoree-const": "^2.0.1",
+    "kevoree-entities": "^9.2.3",
+    "kevoree-kevscript": "^5.0.1",
+    "kevoree-logger": "^1.0.1",
+    "kevoree-registry-client": "^3.0.1",
+    "kevoree-validator": "^0.1.20",
     "mocha": "^3.4.2",
     "tiny-conf": "^1.1.0",
     "webpack": "^3.4.1"

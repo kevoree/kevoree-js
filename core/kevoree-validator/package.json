@@ -1,6 +1,6 @@
 {
   "name": "kevoree-validator",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "description": "Kevoree model validator",
   "main": "index.js",
   "scripts": {
@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/kevoree/kevoree-js-validator#readme",
   "dependencies": {
-    "kevoree-library": "^5.0.12"
+    "kevoree-library": "^5.0.13"
   },
   "devDependencies": {
     "expect": "^1.20.2",

@@ -1,6 +1,6 @@
 {
   "name": "kevoree-hash",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Creates a hash based on Kevoree namespace, name, version and pkg-hash",
   "main": "kevoree-hash.js",
   "scripts": {

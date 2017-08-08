@@ -1,6 +1,6 @@
 {
   "name": "kevoree-logger",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Kevoree logger based on Winston",
   "scripts": {
     "test": "echo \"no tests\""
@@ -27,6 +27,6 @@
   },
   "devDependencies": {
     "eslint": "^4.3.0",
-    "eslint-config-kevoree": "^1.0.0"
+    "eslint-config-kevoree": "^1.0.1"
   }
 }

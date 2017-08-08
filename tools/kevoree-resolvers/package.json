@@ -1,6 +1,6 @@
 {
   "name": "kevoree-resolvers",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "Standard Kevoree Javascript resolvers",
   "main": "./kevoree-resolvers.js",
   "scripts": {
@@ -27,16 +27,16 @@
   },
   "homepage": "https://github.com/kevoree/kevoree-js-resolvers",
   "dependencies": {
-    "kevoree-hash": "^3.0.2",
+    "kevoree-hash": "^3.0.3",
     "mkdirp": "^0.5.1",
     "npm-package-arg": "^4.2.0",
     "rimraf": "^2.6.1"
   },
   "devDependencies": {
     "eslint": "^4.3.0",
-    "eslint-config-kevoree": "^1.0.0",
-    "kevoree-library": "^5.0.12",
-    "kevoree-logger": "^1.0.0",
+    "eslint-config-kevoree": "^1.0.1",
+    "kevoree-library": "^5.0.13",
+    "kevoree-logger": "^1.0.1",
     "mocha": "^3.4.2",
     "rimraf": "^2.6.1",
     "webpack": "^3.4.1"

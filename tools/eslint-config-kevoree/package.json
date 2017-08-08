@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-kevoree",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "ESLint configuration used by Kevoree",
   "main": "index.js",
   "scripts": {

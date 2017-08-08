@@ -1,6 +1,6 @@
 {
   "name": "kevoree-scripts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Configuration and scripts for Kevoree",
   "scripts": {
     "test": "echo \"no tests\""
@@ -30,19 +30,19 @@
     "cli-table": "^0.3.1",
     "cross-spawn": "^5.1.0",
     "eslint": "^4.3.0",
-    "eslint-config-kevoree": "^1.0.0",
+    "eslint-config-kevoree": "^1.0.1",
     "fs-extra": "^4.0.1",
     "json-loader": "^0.5.4",
-    "kevoree-const": "^2.0.0",
-    "kevoree-core": "^9.0.7",
-    "kevoree-gen-model": "^3.0.20",
-    "kevoree-hash": "^3.0.2",
-    "kevoree-kevscript": "^5.0.0",
-    "kevoree-library": "^5.0.12",
-    "kevoree-logger": "^1.0.0",
-    "kevoree-module-loader": "^1.0.0",
-    "kevoree-registry-client": "^3.0.0",
-    "kevoree-resolvers": "^5.0.1",
+    "kevoree-const": "^2.0.1",
+    "kevoree-core": "^9.0.8",
+    "kevoree-gen-model": "^3.0.21",
+    "kevoree-hash": "^3.0.3",
+    "kevoree-kevscript": "^5.0.1",
+    "kevoree-library": "^5.0.13",
+    "kevoree-logger": "^1.0.1",
+    "kevoree-module-loader": "^1.0.1",
+    "kevoree-registry-client": "^3.0.1",
+    "kevoree-resolvers": "^5.0.2",
     "lodash.merge": "^4.6.0",
     "webpack": "^3.4.1"
   }

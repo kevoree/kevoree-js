@@ -1,6 +1,6 @@
 {
   "name": "kevoree-comp-consoleprinter",
-  "version": "5.3.3",
+  "version": "5.3.4",
   "main": "lib/ConsolePrinter.js",
   "kevoree": {
     "namespace": "kevoree"
@@ -22,13 +22,13 @@
     "comp"
   ],
   "dependencies": {
-    "kevoree-entities": "^9.2.2"
+    "kevoree-entities": "^9.2.3"
   },
   "devDependencies": {
     "babel-preset-react": "^6.16.0",
     "eslint": "^4.3.0",
-    "eslint-config-kevoree": "^1.0.0",
-    "kevoree-scripts": "^1.0.0",
+    "eslint-config-kevoree": "^1.0.1",
+    "kevoree-scripts": "^1.0.1",
     "mocha": "^3.4.2",
     "react": "^15.4.1"
   },

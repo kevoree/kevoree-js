@@ -1,6 +1,6 @@
 {
   "name": "kevoree-module-loader",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Kevoree module loader used in browsers",
   "main": "index.js",
   "scripts": {
