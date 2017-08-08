@@ -1,8 +1,8 @@
 function is(a, b, opts) {
   if (a === b) {
-    return opts.fn(this);
+    return opts.fn(this); // eslint-disable-line no-invalid-this
   } else {
-    return opts.inverse(this);
+    return opts.inverse(this); // eslint-disable-line no-invalid-this
   }
 }
 

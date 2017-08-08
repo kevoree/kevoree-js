@@ -2,5 +2,5 @@ node_modules
 yarn.lock
 # Kevoree JS
 kevlib.json
-browser/kevoree-comp-consoleprinter*.js
+browser/kevoree-group-centralizedws.js
 dist

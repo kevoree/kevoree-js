@@ -6,7 +6,7 @@ const Handlebars = require('handlebars');
 const capitalize = require('./helpers/capitalize');
 const is = require('./helpers/is');
 
-Handlebars.registerHelper('helperMissing', function(/* [args, ] options */) {
+Handlebars.registerHelper('helperMissing', ( /* [args, ] options */ ) => {
   const options = arguments[arguments.length - 1];
   throw new Handlebars.Exception(`Unknown field "${options.name}" in template used for "${options.data.root}"`);
 });
@@ -26,9 +26,12 @@ const templates = fs
 
 module.exports = {
   write(tpl, filepath, context) {
-    const source = templates[tpl](context);
+    const source = this.render(tpl, context);
     mkdirp.sync(path.resolve(filepath, '..'));
     fs.writeFileSync(filepath, source, 'utf8');
     console.log(' ' + chalk.gray(filepath));
+  },
+  render(tpl, context) {
+    return templates[tpl](context);
   }
 };

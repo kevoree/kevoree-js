@@ -1,5 +1,12 @@
 #!/usr/bin/env node
 
+// Makes the script crash on unhandled rejections instead of silently
+// ignoring them. In the future, promise rejections that are not handled will
+// terminate the Node.js process with a non-zero exit code.
+process.on('unhandledRejection', (err) => {
+  throw err;
+});
+
 const INSTANCE_NAME = /^([a-z][a-zA-Z0-9_]*)|(%%[\w]+%%)|(%[\w]+%)$/;
 
 const os = require('os');
@@ -46,7 +53,7 @@ function aggregateCtxVars(arg) {
   ctxVars[key] = val;
 }
 
-fs.lstat(kConst.CONFIG_PATH, function (err, stats) {
+fs.lstat(kConst.CONFIG_PATH, (err, stats) => {
   if (err || !stats.isFile()) {
     log.error('Unable to find Kevoree\'s config file at:' + kConst.CONFIG_PATH);
     process.exit(1);
@@ -83,7 +90,7 @@ fs.lstat(kConst.CONFIG_PATH, function (err, stats) {
       log.setLevel(logLevel);
     }
 
-    mkdirp(commander.modulesPath, function (err) {
+    mkdirp(commander.modulesPath, (err) => {
       if (err) {
         throw err;
       } else {
@@ -101,7 +108,7 @@ fs.lstat(kConst.CONFIG_PATH, function (err, stats) {
             const rootModulesPath = path.resolve(commander.modulesPath, 'node_modules');
             const dirs = fs.readdirSync(rootModulesPath);
             const compare = factory.createModelCompare();
-            dirs.forEach(function (dir) {
+            dirs.forEach((dir) => {
               let kevlib, modelStr;
               try {
                 kevlib = path.resolve(rootModulesPath, dir, 'kevlib.json');
@@ -122,20 +129,19 @@ fs.lstat(kConst.CONFIG_PATH, function (err, stats) {
         }
 
         log.info('Runtime', `Kevoree NodeJS [PID:${process.pid}@${os.hostname()}]`);
-        const rootResolver = KevScript.Resolvers.tagResolverFactory(log,
-          KevScript.Resolvers.modelResolverFactory(log,
-            KevScript.Resolvers.registryResolverFactory(log)));
-        const kevs = new KevScript(log, {
-          resolver: rootResolver
-        });
-        const resolver = new NPMResolver(commander.modulesPath, log, commander.skipIntegrityCheck);
+        const kevsLogger = loggerFactory.create('KevScript');
+        const rootResolver = KevScript.Resolvers.tagResolverFactory(kevsLogger,
+          KevScript.Resolvers.modelResolverFactory(kevsLogger,
+            KevScript.Resolvers.registryResolverFactory(kevsLogger)));
+        const kevs = new KevScript(kevsLogger, { resolver: rootResolver });
+        const resolver = new NPMResolver(commander.modulesPath, loggerFactory.create('NPMResolver'), commander.skipIntegrityCheck);
         const runtime = new NodeJSRuntime(commander.modulesPath, log, resolver, kevs);
 
-        runtime.on('stopped', function () {
+        runtime.on('stopped', () => {
           process.exit(0);
         });
 
-        runtime.on('error', function (err) {
+        runtime.on('error', (err) => {
           log.error(err.stack);
         });
 
@@ -144,14 +150,14 @@ fs.lstat(kConst.CONFIG_PATH, function (err, stats) {
           const ext = path.extname(commander.model);
           if ((ext === '.kevs') || (ext === '.json')) {
             // use model as bootstrap
-            fs.readFile(commander.model, 'utf8', function (err, modelSrc) {
+            fs.readFile(commander.model, 'utf8', (err, modelSrc) => {
               if (err) {
                 log.error(err.message);
                 process.exit(1);
               } else {
                 if (path.extname(commander.model) === '.kevs') {
                   // parse model as KevScript
-                  kevs.parse(modelSrc, ctxModel, ctxVars, function (err, model) {
+                  kevs.parse(modelSrc, ctxModel, ctxVars, (err, model) => {
                     if (err) {
                       log.error(err.stack);
                       log.error('Platform shut down.');
@@ -160,7 +166,7 @@ fs.lstat(kConst.CONFIG_PATH, function (err, stats) {
                       const keys = Object.keys(ctxVars);
                       if (keys.length > 0) {
                         let strCtxVars = '';
-                        keys.forEach(function (key, i) {
+                        keys.forEach((key, i) => {
                           strCtxVars += key + '=' + ctxVars[key];
                           if (i < keys.length - 1) {
                             strCtxVars += ', ';
