@@ -1,6 +1,6 @@
 {
   "name": "kevoree-scripts",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Configuration and scripts for Kevoree",
   "scripts": {
     "test": "echo \"no tests\""
@@ -34,15 +34,15 @@
     "fs-extra": "^4.0.1",
     "json-loader": "^0.5.4",
     "kevoree-const": "^2.0.1",
-    "kevoree-core": "^9.0.8",
+    "kevoree-core": "^9.0.9",
     "kevoree-gen-model": "^3.0.21",
     "kevoree-hash": "^3.0.3",
-    "kevoree-kevscript": "^5.0.1",
+    "kevoree-kevscript": "^5.0.2",
     "kevoree-library": "^5.0.13",
     "kevoree-logger": "^1.0.1",
     "kevoree-module-loader": "^1.0.1",
     "kevoree-registry-client": "^3.0.1",
-    "kevoree-resolvers": "^5.0.2",
+    "kevoree-resolvers": "^5.0.3",
     "lodash.merge": "^4.6.0",
     "webpack": "^3.4.1"
   }
