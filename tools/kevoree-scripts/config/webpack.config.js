@@ -19,17 +19,8 @@ const config = {
   },
   module: {
     loaders: [
-      {
-        test: /\.json$/,
-        exclude: /node_modules/,
-        loader: 'json-loader'
-      },
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        loader: 'babel-loader',
-        options: babelrc
-      },
+      { test: /\.json$/, loader: 'json-loader' },
+      { test: /\.jsx?$/, loader: 'babel-loader', options: babelrc },
     ]
   },
   plugins: [],
