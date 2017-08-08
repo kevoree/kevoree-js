@@ -6,7 +6,8 @@
     "bs": "lerna bootstrap --hoist",
     "postinstall": "npm run bs",
     "clean": "lerna clean --yes",
-    "test": "lerna exec npm test"
+    "test": "lerna exec npm test",
+    "publish": "lerna publish"
   },
   "devDependencies": {
     "lerna": "^2.0.0"
