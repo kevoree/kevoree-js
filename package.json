@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "bs": "lerna bootstrap --hoist",
-    "postinstall": "npm run bs"
+    "postinstall": "npm run bs",
+    "clean": "lerna clean --yes",
+    "test": "lerna exec npm test"
   },
   "devDependencies": {
     "lerna": "^2.0.0"
