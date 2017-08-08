@@ -5,6 +5,7 @@ const kevoree = require('kevoree-library');
 const bootstrapHelper = require('./bootstrapHelper');
 const path = require('path');
 const os = require('os');
+const loggerFactory = require('kevoree-logger');
 const fs = require('fs');
 const EventEmitter = require('events').EventEmitter;
 
@@ -26,7 +27,7 @@ function NodeJSRuntime(modulesPath, logger, resolver, kevs) {
 	this.modulesPath = modulesPath;
 	this.log = logger;
 	this.kevs = kevs;
-	this.kCore = new KevoreeCore(kevs, this.modulesPath, this.log);
+	this.kCore = new KevoreeCore(kevs, this.modulesPath, loggerFactory);
 	this.nodename = 'node0'; // default nodename
 	this.groupname = 'sync'; // default groupname
 	this.groupport = 9000; // default grouport
