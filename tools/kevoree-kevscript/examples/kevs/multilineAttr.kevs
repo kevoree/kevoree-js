@@ -1,7 +1,0 @@
-add node0 : JavascriptNode
-add node0.comp : FakeConsole
-
-set node0.comp.proxy = "first line
-second line
-last line"
-set node0.comp.proxy = "\n"

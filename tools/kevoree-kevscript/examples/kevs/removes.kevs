@@ -1,3 +1,0 @@
-add sync: WSGroup/LATEST/LATEST
-
-set sync.master = 'node0'

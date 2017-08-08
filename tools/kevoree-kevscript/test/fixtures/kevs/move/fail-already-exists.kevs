@@ -1,4 +1,0 @@
-add node0, node1: JavascriptNode/LATEST/LATEST
-add *.ticker: Ticker/LATEST/LATEST
-
-move node0.ticker node1

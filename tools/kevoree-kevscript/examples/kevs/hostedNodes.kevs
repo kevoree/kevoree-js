@@ -1,5 +1,0 @@
-add node0 : JavascriptNode
-add node0.child : JavascriptNode
-
-set node0.child.toto = 'youpi
-lsalsal'

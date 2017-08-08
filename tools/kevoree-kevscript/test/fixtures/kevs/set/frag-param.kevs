@@ -1,6 +1,0 @@
-add node: JavascriptNode
-add sync: WSGroup
-
-attach node sync
-
-set sync.port/node = '9000'

@@ -1,3 +1,0 @@
-add node: JavascriptNode
-
-set node.unknown = 'nope'

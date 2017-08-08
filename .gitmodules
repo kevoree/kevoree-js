@@ -1,0 +1,108 @@
+[submodule "core"]
+	path = core
+	url = git@github.com:kevoree/kevoree-js-core.git
+[submodule "entities"]
+	path = entities
+	url = git@github.com:kevoree/kevoree-js-entities.git
+[submodule "commons"]
+	path = commons
+	url = git@github.com:kevoree/kevoree-js-commons.git
+[submodule "libraries/node-javascript"]
+	path = libraries/node-javascript
+	url = git@github.com:kevoree/kevoree-js-node-javascript.git
+[submodule "libraries/comp/ticker"]
+	path = libraries/comp/ticker
+	url = git@github.com:kevoree/kevoree-js-comp-ticker.git
+[submodule "libraries/node/javascript"]
+	path = libraries/node/javascript
+	url = git@github.com:kevoree/kevoree-js-node-javascript.git
+[submodule "libraries/comp/consoleprinter"]
+	path = libraries/comp/consoleprinter
+	url = git@github.com:kevoree/kevoree-js-comp-consoleprinter.git
+[submodule "libraries/group/ws"]
+	path = libraries/group/ws
+	url = git@github.com:kevoree/kevoree-js-group-ws.git
+[submodule "libraries/group/remotews"]
+	path = libraries/group/remotews
+	url = git@github.com:kevoree/kevoree-js-group-remotews.git
+[submodule "libraries/chan/ws"]
+	path = libraries/chan/ws
+	url = git@github.com:kevoree/kevoree-js-chan-ws.git
+[submodule "libraries/comp/wsmsgbroker"]
+	path = libraries/comp/wsmsgbroker
+	url = git@github.com:kevoree/kevoree-js-comp-wsmsgbroker.git
+[submodule "libraries/chan/local"]
+	path = libraries/chan/local
+	url = git@github.com:kevoree/kevoree-js-chan-local.git
+[submodule "tools/generator-kevoree"]
+	path = tools/generator-kevoree
+	url = git@github.com:kevoree/generator-kevoree.git
+[submodule "tools/grunt-kevoree"]
+	path = tools/grunt-kevoree
+	url = git@github.com:kevoree/grunt-kevoree.git
+[submodule "tools/grunt-kevoree-genmodel"]
+	path = tools/grunt-kevoree-genmodel
+	url = git@github.com:kevoree/grunt-kevoree-genmodel.git
+[submodule "tools/grunt-kevoree-registry"]
+	path = tools/grunt-kevoree-registry
+	url = git@github.com:kevoree/grunt-kevoree-registry.git
+[submodule "tools/kevoree-gen-model"]
+	path = tools/kevoree-gen-model
+	url = git@github.com:kevoree/kevoree-gen-model.git
+[submodule "tools/kevoree-kevscript"]
+	path = tools/kevoree-kevscript
+	url = git@github.com:kevoree/kevoree-js-kevscript.git
+[submodule "library"]
+	path = library
+	url = git@github.com:kevoree/kevoree-js-library.git
+[submodule "runtimes/nodejs"]
+	path = runtimes/nodejs
+	url = git@github.com:kevoree/kevoree-js-cli.git
+[submodule "runtimes/browser"]
+	path = runtimes/browser
+	url = git@github.com:kevoree/kevoree-browser-runtime.git
+[submodule "libraries/chan/remotews"]
+	path = libraries/chan/remotews
+	url = git@github.com:kevoree/kevoree-js-chan-remotews.git
+[submodule "libraries/chan/mqtt"]
+	path = libraries/chan/mqtt
+	url = git@github.com:kevoree/kevoree-js-chan-mqtt.git
+[submodule "libraries/comp/msgsender"]
+	path = libraries/comp/msgsender
+	url = git@github.com:kevoree/kevoree-js-comp-msgsender.git
+[submodule "libraries/comp/chart"]
+	path = libraries/comp/chart
+	url = git@github.com:kevoree/kevoree-js-comp-chart.git
+[submodule "libraries/comp/mqttsubclient"]
+	path = libraries/comp/mqttsubclient
+	url = git@github.com:kevoree/kevoree-js-comp-mqttsubclient.git
+[submodule "libraries/comp/mqttpubclient"]
+	path = libraries/comp/mqttpubclient
+	url = git@github.com:kevoree/kevoree-js-comp-mqttpubclient.git
+[submodule "libraries/comp/nodered"]
+	path = libraries/comp/nodered
+	url = git@github.com:kevoree/kevoree-js-comp-nodered.git
+[submodule "tools/resolvers"]
+	path = tools/resolvers
+	url = git@github.com:kevoree/kevoree-js-resolvers.git
+[submodule "libraries/comp/websiteviewer"]
+	path = libraries/comp/websiteviewer
+	url = git@github.com:kevoree/kevoree-js-comp-websiteviewer.git
+[submodule "libraries/comp/twitter"]
+	path = libraries/comp/twitter
+	url = git@github.com:kevoree/kevoree-js-comp-twitter.git
+[submodule "tools/kevoree-validator"]
+	path = tools/kevoree-validator
+	url = git@github.com:kevoree/kevoree-js-validator.git
+[submodule "tools/hash"]
+	path = tools/hash
+	url = git@github.com:kevoree/kevoree-js-hash.git
+[submodule "libraries/group/centralizedws"]
+	path = libraries/group/centralizedws
+	url = git@github.com:kevoree/kevoree-js-group-centralizedws.git
+[submodule "tools/registry-client"]
+	path = tools/registry-client
+	url = git@github.com:kevoree/kevoree-js-registry-client.git
+[submodule "tools/kreg"]
+	path = tools/kreg
+	url = git@github.com:kevoree/kreg.git

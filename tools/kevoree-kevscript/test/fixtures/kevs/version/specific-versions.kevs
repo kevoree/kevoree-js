@@ -1,5 +1,0 @@
-add node: JavascriptNode/42/LATEST
-add node.ticker: Ticker/1/{
-  js: '5.3.3-beta.0',
-  java: '5.4.0-SNAPSHOT'
-}

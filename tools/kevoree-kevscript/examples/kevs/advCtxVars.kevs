@@ -1,8 +1,0 @@
-add %%node%%: JavascriptNode/LATEST/LATEST
-add sync: WSGroup/LATEST/LATEST
-
-attach %%node%% sync
-
-set sync.port/%%node%% = %port%
-
-network %%node%%.ip.lan %node_ip%

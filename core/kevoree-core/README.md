@@ -1,3 +1,0 @@
-Kevoree :: Javascript :: Core
-===============================
-TODO

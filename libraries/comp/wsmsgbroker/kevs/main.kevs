@@ -1,4 +1,0 @@
-add node0 : JavascriptNode
-add node0.broker : WSMsgBroker
-
-set node0.broker.port = '9050'

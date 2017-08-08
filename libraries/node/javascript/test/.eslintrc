@@ -1,9 +1,0 @@
----
-env:
-  mocha: true
-  browser: true
-globals:
-  KevoreeModuleLoader: true
-rules:
-  no-console: 0
-  no-invalid-this: 0

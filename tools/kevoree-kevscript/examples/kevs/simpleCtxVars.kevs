@@ -1,7 +1,0 @@
-add %%nodeName%%: JavascriptNode
-add %grp%: WSGroup
-
-set %grp%.master = '%%foo%%'
-
-attach %%nodeName%% %grp%
-

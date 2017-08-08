@@ -1,5 +1,0 @@
-node_modules
-
-# Only apps should have lockfiles
-yarn.lock
-package-lock.json

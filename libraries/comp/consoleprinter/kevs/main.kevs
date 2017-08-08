@@ -1,9 +1,0 @@
-add node0 : JavascriptNode/LATEST/LATEST
-add node0.myComp : ConsolePrinter/1/{ js: '5.3.3' }
-add node0.tick: Ticker/1/{ js: '5.3.3' }
-add chan: LocalChannel/1/{ js: '5.3.3' }
-
-bind node0.myComp.input chan
-bind node0.tick.tick chan
-
-set node0.logLevel = 'DEBUG'

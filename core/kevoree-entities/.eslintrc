@@ -1,5 +1,0 @@
----
-root: true
-extends: kevoree
-rules:
-  consistent-this: 2

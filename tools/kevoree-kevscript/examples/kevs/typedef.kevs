@@ -1,7 +1,0 @@
-// a // b // c
-add node0,node1, %%genVar%% : JavascriptNode/LATEST/LATEST // doing some test
-add node0.printer, node0.printer1, node0.printer2: ConsolePrinter/LATEST/LATEST
-add node0.ticker, node1.ticker: kevoree.Ticker/LATEST/LATEST
-add sync  : WSGroup/LATEST/LATEST // end of line comment
-add chan: RemoteWSChan/LATEST/LATEST
-add node0.%ctxVar%: Ticker/LATEST/LATEST

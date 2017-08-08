@@ -1,4 +1,0 @@
-add %%node%% : JavascriptNode
-add %%group%%: WSGroup
-
-attach %%node%% %%group%%
