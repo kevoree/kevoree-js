@@ -1,6 +1,6 @@
 {
   "name": "kevoree-scripts",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Configuration and scripts for Kevoree",
   "scripts": {
     "test": "echo \"no tests\""
