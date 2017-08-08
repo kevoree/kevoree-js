@@ -33,7 +33,6 @@ describe('Auth', function() {
     return auth.login('kevoree', 'password')
       .then(() => {
         const user: IConfigUser = config.get('user');
-        assert.equal(user.login, 'kevoree');
         assert.equal(user.access_token, expectedAuth.access_token);
         assert.equal(user.refresh_token, expectedAuth.refresh_token);
         assert.isAtLeast(user.expires_at!, Date.now());
@@ -62,7 +61,6 @@ describe('Auth', function() {
     return auth.ensureLogin()
       .then(() => {
         const user: IConfigUser = config.get('user');
-        assert.equal(user.login, 'kevoree');
         assert.equal(user.access_token, expectedAuth.access_token);
         assert.equal(user.refresh_token, expectedAuth.refresh_token);
         assert.isAtLeast(user.expires_at!, Date.now());

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>CodeMirror KevScript Test</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    body {
+      font-family: Arial, monospace;
+      overflow-y: scroll;
+    }
+    #editor-container {
+      width: 48%;
+      height: 500px;
+      float: left;
+    }
+    .CodeMirror {
+      height: 100%;
+    }
+    #logger-container {
+      float: right;
+      width: 48%;
+      border: 1px solid #444;
+      padding: 5px;
+    }
+    #logger-container h3 {
+      margin: 0;
+    }
+    #logger .line {
+      padding: 5px;
+      border-bottom: 1px solid #000;
+    }
+    #logger .line .time {
+      float: right;
+    }
+    #logger .line:last-child {
+      border-bottom: none;
+    }
+    #logger .line.info {
+      background-color: #dff0d8;
+    }
+    #logger .line.debug {
+      background-color: #d9edf7;
+    }
+    #logger .line.warn {
+      background-color: #fcf8e3;
+    }
+    #logger .line.error {
+      background-color: #f2dede;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>CodeMirror KevScript Test</h2>
+  <div id="editor-container">
+    <textarea id="editor"></textarea>
+  </div>
+  <div id="logger-container">
+    <h3>Logger</h3>
+    <div id="logger"></div>
+  </div>
+  <script src="main.js"></script>
+</body>
+
+</html>

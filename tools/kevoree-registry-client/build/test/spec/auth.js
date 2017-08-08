@@ -28,7 +28,6 @@ describe('Auth', function () {
         return main_1.auth.login('kevoree', 'password')
             .then(() => {
             const user = config.get('user');
-            chai_1.assert.equal(user.login, 'kevoree');
             chai_1.assert.equal(user.access_token, expectedAuth.access_token);
             chai_1.assert.equal(user.refresh_token, expectedAuth.refresh_token);
             chai_1.assert.isAtLeast(user.expires_at, Date.now());
@@ -52,7 +51,6 @@ describe('Auth', function () {
         return main_1.auth.ensureLogin()
             .then(() => {
             const user = config.get('user');
-            chai_1.assert.equal(user.login, 'kevoree');
             chai_1.assert.equal(user.access_token, expectedAuth.access_token);
             chai_1.assert.equal(user.refresh_token, expectedAuth.refresh_token);
             chai_1.assert.isAtLeast(user.expires_at, Date.now());

@@ -11,7 +11,7 @@ function KevScript(logger, options) {
   }
   this.options = options || {};
   this.logger = logger;
-  this.logger.info('Registry: %s', registryUrl());
+  this.logger.info('Registry: ' + registryUrl());
 
   if (!this.options.resolver) {
     // defaults to modelRegistryResolver & registryResolver if nothing given
@@ -41,19 +41,18 @@ KevScript.prototype = {
     const ast = parser.parse(data);
 
     if (ast.type !== 'kevScript') {
-      return Promise.resolve({
-        error: ast,
-        model: null,
-        warnings: options.warnings || []
-      });
+      const err = new Error('Unable to parse script');
+      err.parser = ast;
+      err.warnings = options.warnings || [];
+      return Promise.reject(err);
     } else {
       return interpreter(ast, ctxModel, options)
-        .then((result) => {
-          if (result.error) {
-            result.error.warnings = result.warnings;
-            throw result.error;
+        .then(({ error, warnings, model }) => {
+          if (error) {
+            error.warnings = warnings;
+            throw error;
           } else {
-            return { model: result.model, warnings: result.warnings };
+            return { model, warnings };
           }
         });
     }

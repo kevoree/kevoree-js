@@ -2,54 +2,42 @@
 
 const fs = require('fs');
 const kConst = require('kevoree-const');
-const mkdirp = require('mkdirp');
-const ora = require('ora');
 const chalk = require('chalk');
 const inquirer = require('inquirer');
 const kApi = require('kevoree-registry-client');
 const config = require('tiny-conf');
-const printConfig = require('../lib/printConfig');
 
 require('tiny-conf-plugin-file')(config, kConst.CONFIG_PATH);
 
-const spinner = ora('Initializing Kevoree login...').start();
-
 new Promise(function (resolve, reject) {
-  mkdirp(kConst.GLOBAL_PATH, function (err) {
+  fs.lstat(kConst.CONFIG_PATH, function (err, stats) {
     if (err) {
       reject(err);
     } else {
-      resolve();
+      resolve(stats.isFile());
     }
   });
-}).then(function () {
-  return new Promise(function (resolve) {
-    fs.lstat(kConst.CONFIG_PATH, function (err, stats) {
-      if (err) {
-        resolve(false);
-      } else {
-        resolve(stats.isFile());
-      }
-    });
-  });
 }).then(function (alreadyExists) {
-  spinner.stop();
   if (alreadyExists) {
-    console.log(chalk.yellow('Warning:'), 'there is already a config file at "' + kConst.CONFIG_PATH + '"');
-    printConfig(require(kConst.CONFIG_PATH));
-    return inquirer.prompt([
-      {
-        name: 'overwrite',
-        type: 'confirm',
-        message: 'Overwrite',
-        default: false
-      }
-    ]);
-  } else {
-    return {
-      overwrite: true
-    };
+    if (config.get('user')) {
+      console.log(chalk.yellow('A user is already registered at:') + ' ' + kConst.CONFIG_PATH);
+      return inquirer.prompt([
+        {
+          name: 'overwrite',
+          type: 'confirm',
+          message: 'Overwrite',
+          default: false
+        }
+      ]);
+    }
   }
+  // default
+  return { overwrite: true };
+}, () => {
+  console.log(chalk.yellow('No config file found at:') + ' ' + kConst.CONFIG_PATH);
+  console.log();
+  console.log('You should run: ' + chalk.blue('$ kevoree init'));
+  process.exit(1);
 }).then(function (answer) {
   if (answer.overwrite) {
     const questions = [
@@ -80,11 +68,17 @@ new Promise(function (resolve, reject) {
     return inquirer.prompt(questions).then(function (answers) {
       return kApi.auth.login(answers.login, answers.password)
         .catch((err) => {
-          spinner.stop(); // (re-)stop spinner (ie. in case of error it will stop it)
-          console.log(chalk.yellow('Login failed') + ' (' + err.message + ')');
+          if (process.env.NODE_ENV === 'development') {
+            console.error(chalk.yellow('Login failed'));
+            console.error(err.stack);
+          } else {
+            console.error(chalk.yellow('Login failed') + ' (' + err.message + ')');
+          }
           process.exit(1);
         });
     }).then(function () {
+      console.log(chalk.green('OK'));
+
       return new Promise(function (resolve, reject) {
         const confSrc = JSON.stringify(config.get(), null, 2);
         fs.writeFile(kConst.CONFIG_PATH, confSrc, {
@@ -107,7 +101,6 @@ new Promise(function (resolve, reject) {
     console.log(chalk.green('No changes'));
   }
 }).catch(function (err) {
-  spinner.stop(); // (re-)stop spinner (ie. in case of error it will stop it)
   console.log(chalk.red('Something went wrong :/'));
   console.log(err.stack);
   process.exit(1);

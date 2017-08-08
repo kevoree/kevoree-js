@@ -4,10 +4,10 @@
   "packages": [
     "core/*",
     "tools/*",
+    "libraries/node/javascript",
+    "libraries/chan/local",
     "libraries/comp/ticker",
     "libraries/comp/consoleprinter",
-    "libraries/node/javascript",
-    "libraries/group/centralizedws",
-    "libraries/chan/local"
+    "libraries/group/centralizedws"
   ]
 }

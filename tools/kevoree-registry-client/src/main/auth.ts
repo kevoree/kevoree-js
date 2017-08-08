@@ -11,8 +11,6 @@ export interface IAOuthToken {
 }
 
 export interface IConfigUser {
-  login: string;
-  password: string;
   access_token?: string;
   refresh_token?: string;
   expires_at?: number;
@@ -32,10 +30,13 @@ function oauthToken(body: { [key: string]: string }) {
       'Authorization': `Basic ${clientAuthorization()}`,
     },
   }).then((data: IAOuthToken) => {
-    const user: IConfigUser = config.get('user');
+    let user: IConfigUser = config.get('user');
+    if (!user) {
+      user = {};
+      config.set('user', user);
+    }
     const expiredAt = new Date();
     expiredAt.setSeconds(expiredAt.getSeconds() + data.expires_in);
-    user.login = body.username ? body.username : user.login;
     user.access_token = data.access_token;
     user.refresh_token = data.refresh_token;
     user.expires_at = expiredAt.getTime();

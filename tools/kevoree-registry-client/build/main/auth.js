@@ -13,10 +13,13 @@ function oauthToken(body) {
             'Authorization': `Basic ${config_1.clientAuthorization()}`,
         },
     }).then((data) => {
-        const user = config_1.default.get('user');
+        let user = config_1.default.get('user');
+        if (!user) {
+            user = {};
+            config_1.default.set('user', user);
+        }
         const expiredAt = new Date();
         expiredAt.setSeconds(expiredAt.getSeconds() + data.expires_in);
-        user.login = body.username ? body.username : user.login;
         user.access_token = data.access_token;
         user.refresh_token = data.refresh_token;
         user.expires_at = expiredAt.getTime();

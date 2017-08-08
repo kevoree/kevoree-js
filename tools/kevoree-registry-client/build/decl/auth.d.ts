@@ -4,8 +4,6 @@ export interface IAOuthToken {
     expires_in: number;
 }
 export interface IConfigUser {
-    login: string;
-    password: string;
     access_token?: string;
     refresh_token?: string;
     expires_at?: number;
