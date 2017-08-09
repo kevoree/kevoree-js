@@ -1,5 +1,6 @@
 const CodeMirror = require('codemirror');
 const api = require('kevoree-registry-client');
+require('./hint.css');
 
 const HINT_TPL = '<div class="hint-primary"><div class="hint-anchor {{type}}">{{typeText}}</div><div class="hint-text">{{text}}</div></div><div class="hint-secondary">{{desc}}</div>';
 

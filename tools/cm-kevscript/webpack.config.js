@@ -7,6 +7,7 @@ const { ProgressPlugin, NoEmitOnErrorsPlugin, NamedModulesPlugin } = require('we
 const config = {
   entry: {
     mode: resolve('src', 'mode', 'kevscript.js'),
+    theme: resolve('src', 'theme', 'kevscript.css'),
     lint: resolve('src', 'lint', 'lint.js'),
     hint: resolve('src', 'hint', 'hint.js'),
   },
@@ -41,12 +42,14 @@ const config = {
   plugins: [
     new ProgressPlugin(),
     new NoEmitOnErrorsPlugin(),
-    new NamedModulesPlugin({}),
+    new NamedModulesPlugin(),
   ],
 };
 
 if (process.env.NODE_ENV === 'development') {
-  config.entry = resolve('test', 'main.js');
+  config.entry = {
+    test: resolve('test', 'main.js')
+  };
   config.plugins.push(
     new webpack.HotModuleReplacementPlugin(),
     new ExtractTextPlugin('style.css'),
@@ -62,6 +65,8 @@ if (process.env.NODE_ENV === 'development') {
   );
   config.devtool = 'source-map';
   config.externals = {};
+} else {
+  config.plugins.push(new ExtractTextPlugin('[name].css'));
 }
 
 module.exports = config;
