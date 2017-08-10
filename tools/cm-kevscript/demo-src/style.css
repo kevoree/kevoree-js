@@ -1,0 +1,119 @@
+html {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+body {
+  display: flex;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, monospace;
+  width: 100%;
+  height: 100%;
+}
+
+#app {
+  display: flex;
+  flex: 1;
+  margin: 10px;
+}
+
+div[data-reactroot] {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.header {
+  margin-bottom: 10px;
+}
+
+.header h2 {
+  flex: 1 0 auto;
+  margin: 0;
+  margin-bottom: 5px;
+}
+
+.header .panel * {
+  margin-left: 8px;
+}
+
+.container {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+}
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 820px;
+  max-width: 820px;
+}
+
+.editor-container {
+  flex: 1;
+  min-height: 300px;
+}
+
+.CodeMirror {
+  height: 100%;
+}
+
+.right-panel {
+  display: flex;
+  flex: 1;
+  margin-left: 10px;
+}
+
+.model-container {
+  flex: 1;
+  overflow: scroll;
+}
+
+.model-container pre {
+  margin: 0;
+}
+
+.logger-container {
+  flex: 1;
+  min-height: 300px;
+  max-height: 300px;
+  margin-top: 10px;
+  overflow-y: scroll;
+  border: 1px solid #444;
+}
+
+.logger .line {
+  overflow: hidden;
+  padding: 5px;
+  border-bottom: 1px solid #000;
+}
+
+.logger .line .time {
+  float: right;
+}
+
+.logger .line:last-child {
+  border-bottom: none;
+}
+
+.logger .line.info {
+  background-color: #dff0d8;
+}
+
+.logger .line.debug {
+  background-color: #d9edf7;
+}
+
+.logger .line.warn {
+  background-color: #fcf8e3;
+}
+
+.logger .line.error {
+  background-color: #f2dede;
+}

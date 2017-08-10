@@ -99,8 +99,7 @@
 
 
 /* Editor styling */
-
-.cm-s-kevscript.CodeMirror {
+.CodeMirror.cm-s-kevscript {
   line-height: 1.40em;
   font-family: Monaco, Menlo, "Andale Mono", "lucida console", "Courier New", monospace !important;
   color: #E6E1DC;

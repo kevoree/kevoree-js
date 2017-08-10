@@ -28,16 +28,17 @@ const config = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: 'babel-loader'
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['env']
+          }
+        },
       },
     ]
   },
   externals: {
     'codemirror': 'CodeMirror',
-    'kevoree-registry-client': 'KevoreeRegistryClient',
-    'tiny-conf': 'TinyConf',
-    'kevoree-library': 'KevoreeLibrary',
-    'kevoree-kevscript': 'KevoreeKevscript'
   },
   plugins: [
     new ProgressPlugin(),
@@ -64,7 +65,10 @@ if (process.env.NODE_ENV === 'development') {
     })
   );
   config.devtool = 'source-map';
-  config.externals = {};
+  config.externals = {
+    'react': 'React',
+    'react-dom': 'ReactDOM'
+  };
 } else {
   config.plugins.push(new ExtractTextPlugin('[name].css'));
 }
