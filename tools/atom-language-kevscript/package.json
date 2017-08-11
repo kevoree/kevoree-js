@@ -1,6 +1,6 @@
 {
   "name": "language-kevscript",
-  "version": "0.3.7",
+  "version": "1.0.0",
   "description": "KevScript language support in Atom",
   "main": "lib/main.js",
   "keywords": [
@@ -36,7 +36,7 @@
   "dependencies": {
     "atom-linter": "^10.0.0",
     "kevoree-const": "^2.0.1",
-    "kevoree-kevscript": "^5.0.4",
+    "kevoree-kevscript": "^5.0.5",
     "kevoree-logger": "^1.0.1",
     "tiny-conf": "^1.1.0"
   },

@@ -1,6 +1,6 @@
 {
   "name": "kevoree-cli",
-  "version": "6.1.6",
+  "version": "6.1.7",
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "main": "./lib/NodeJSRuntime",
   "preferGlobal": true,
@@ -18,8 +18,8 @@
     "handlebars": "^4.0.10",
     "inquirer": "^3.2.0",
     "kevoree-const": "^2.0.1",
-    "kevoree-core": "^9.0.11",
-    "kevoree-kevscript": "^5.0.4",
+    "kevoree-core": "^9.0.12",
+    "kevoree-kevscript": "^5.0.5",
     "kevoree-library": "^5.0.13",
     "kevoree-logger": "^1.0.1",
     "kevoree-registry-client": "^3.0.1",
