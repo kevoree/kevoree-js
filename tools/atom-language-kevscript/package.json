@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "KevScript language support in Atom",
   "main": "lib/main.js",
+  "scripts": {
+    "publish": "apm publish --tag $(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\", ]//g')"
+  },
   "keywords": [
     "kevoree",
     "grammar",
