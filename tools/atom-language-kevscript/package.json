@@ -1,6 +1,6 @@
 {
   "name": "language-kevscript",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "KevScript language support in Atom",
   "main": "lib/main.js",
   "scripts": {
