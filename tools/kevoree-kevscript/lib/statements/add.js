@@ -60,7 +60,9 @@ module.exports = (model, expressions, stmt, opts) => {
           }
         })
         .catch((err) => {
-          err.pos = stmt.children[1].pos;
+          if (!err.pos) {
+            err.pos = stmt.children[1].pos;
+          }
           throw err;
         });
     })

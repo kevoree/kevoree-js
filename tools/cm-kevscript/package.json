@@ -8,7 +8,8 @@
     "start": "NODE_ENV=development webpack-dev-server --config=webpack.config.demo.js",
     "lint": "eslint src demo",
     "build": "webpack -p",
-    "build-demo": "webpack --config=webpack.config.demo.js -p"
+    "build-demo": "webpack --config=webpack.config.demo.js -p",
+    "test": "echo \"No tests specified\""
   },
   "repository": {
     "type": "git",

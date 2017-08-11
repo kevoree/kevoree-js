@@ -27,9 +27,9 @@ function validator(kevs, getModel, ctxVars) {
     let start = 0;
     const lines = text.split('\n').map((line, i) => {
       const obj = {
+        index: i,
         start: start,
         end: start + line.length,
-        line: i
       };
       start += line.length + 1;
       return obj;
@@ -41,12 +41,11 @@ function validator(kevs, getModel, ctxVars) {
         options.lintedModel = model;
 
         warnings.forEach((warning) => {
-          const line = findLine(warning.pos, lines);
           lintErrors.push({
             severity: 'warning',
             message: warning.message,
-            from: CodeMirror.Pos(line, relativeToLine(warning.pos[0], lines)),
-            to: CodeMirror.Pos(line, relativeToLine(warning.pos[1], lines))
+            from: CodeMirror.Pos(findLine(warning.pos[0], lines), relativeToLine(warning.pos[0], lines)),
+            to: CodeMirror.Pos(findLine(warning.pos[1], lines), relativeToLine(warning.pos[1], lines))
           });
         });
 
@@ -71,24 +70,22 @@ function validator(kevs, getModel, ctxVars) {
           });
         } else {
           if (err.pos) {
-            const line = findLine(err.pos, lines);
             lintErrors.push({
               severity: 'error',
               message: err.message,
-              from: CodeMirror.Pos(line, relativeToLine(err.pos[0], lines)),
-              to: CodeMirror.Pos(line, relativeToLine(err.pos[1], lines))
+              from: CodeMirror.Pos(findLine(err.pos[0], lines), relativeToLine(err.pos[0], lines)),
+              to: CodeMirror.Pos(findLine(err.pos[1], lines), relativeToLine(err.pos[1], lines))
             });
           }
         }
 
         if (err.warnings) {
           err.warnings.forEach((warning) => {
-            const line = findLine(warning.pos, lines);
             lintErrors.push({
               severity: 'warning',
               message: warning.message,
-              from: CodeMirror.Pos(line, relativeToLine(warning.pos[0], lines)),
-              to: CodeMirror.Pos(line, relativeToLine(warning.pos[1], lines))
+              from: CodeMirror.Pos(findLine(warning.pos[0], lines), relativeToLine(warning.pos[0], lines)),
+              to: CodeMirror.Pos(findLine(warning.pos[1], lines), relativeToLine(warning.pos[1], lines))
             });
           });
         }
@@ -107,14 +104,12 @@ function validator(kevs, getModel, ctxVars) {
 }
 
 function findLine(pos, lines) {
-  let line = -1;
   for (let i = 0; i < lines.length; i++) {
-    if ((pos[0] >= lines[i].start) && (pos[1] <= lines[i].end)) {
-      line = lines[i].line;
-      break;
+    if ((pos >= lines[i].start) && (pos <= lines[i].end)) {
+      return lines[i].index;
     }
   }
-  return line;
+  return -1;
 }
 
 function relativeToLine(ch, lines) {
