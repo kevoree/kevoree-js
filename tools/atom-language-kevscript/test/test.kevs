@@ -1,0 +1,49 @@
+
+// comment
+//
+// a // b // c
+add node0, node1, %%genVar%% : JavascriptNode/LATEST/LATEST // doing some test
+add node0.printer, node0.printer1, node0.printer2: ConsolePrinter/LATEST/LATEST
+add node0.ticker, node1.ticker: kevoree.Ticker/LATEST/LATEST
+add sync  : WSGroup/LATEST/LATEST // end of line comment
+add chan: RemoteWSChan/LATEST/LATEST
+add node0.%ctxVar%: Ticker/LATEST/LATEST
+
+add node0.a: Ticker/LATEST/{
+  js: '5.3.8'
+}
+
+attach * sync 	//yolo
+
+// detach node0, node1, %%genVar%% *
+
+move node0.a node1
+
+set sync.master = 'node0'
+set sync.port/node0 = '9000' // doing some test
+set sync.onConnect = 'add {nodeName}.foo: Ticker // end of line comment
+set {nodeName}.foo.bar = "dredre"'
+set %%genVar%%.logLevel = 'val'
+set node0.%ctxVar%.period = '1234'
+
+set sync.onDisconnect = "// don't know
+remove {nodeName}\"
+"
+set node0.ticker.period = '5000'
+set node0.logLevel = "DEBUG"
+
+bind node0.ticker.tick chan // end of line comment
+unbind node0.printer.input *
+remove node0 // yolo
+// remove a,*,c // test
+
+// network node0.ip.lo 127.0.0.1
+network node1.ip.lo localhost // end of line comment
+
+start node1
+stop node1.ticker//yolo
+
+network node1.ip.lo %someIP%
+
+set chan.host = 'ws.kevoree.org'
+set chan.uuid = '8545745'

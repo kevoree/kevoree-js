@@ -1,0 +1,10 @@
+---
+extends: kevoree
+env:
+  node: true
+  browser: true
+globals:
+  $: true
+  atom: true
+rules:
+  no-console: 0

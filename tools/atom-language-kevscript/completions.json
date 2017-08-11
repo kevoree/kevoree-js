@@ -1,0 +1,55 @@
+{
+  "statements": [
+    {
+      "name": "add",
+      "description": "Add instances",
+      "snippet": "add ${1:aName}: ${2:TypeDefinition}"
+    }, {
+      "name": "set",
+      "description": "Set instance parameter",
+      "snippet": "set ${1:aName}.${2:aParam} = '${3:aValue}'"
+    }, {
+      "name": "bind",
+      "description": "Bind a port to a chan",
+      "snippet": "bind ${1:aNode}.${2:aComp}.${3:aPort} ${4:aChan}"
+    }, {
+      "name": "move",
+      "description": "Move a component from a node to another",
+      "snippet": "move ${1:aNode}.${2:aComp} ${2:aTarget}"
+    }, {
+      "name": "repo",
+      "description": "DEPRECATED",
+      "snippet": "repo \"$1\""
+    }, {
+      "name": "stop",
+      "description": "Stop an instance",
+      "snippet": "stop ${1:aName}"
+    }, {
+      "name": "start",
+      "description": "Start an instance",
+      "snippet": "start ${1:aName}"
+    }, {
+      "name": "attach",
+      "description": "Attach nodes to a group",
+      "snippet": "attach ${1:aNode} ${2:aGroup}"
+    }, {
+      "name": "detach",
+      "description": "Detach nodes from a group",
+      "snippet": "detach ${1:aNode} ${2:aGroup}"
+    }, {
+      "name": "remove",
+      "description": "Remove instances"
+    }, {
+      "name": "unbind",
+      "description": "Unbind a port from a chan"
+    }, {
+      "name": "network",
+      "description": "Add a network to a node",
+      "snippet": "network ${1:aNode}.${2:ip}.${3:lo} ${4:127.0.0.1}"
+    }, {
+      "name": "include",
+      "description": "DEPRECATED",
+      "snippet": "include $1"
+    }
+  ]
+}

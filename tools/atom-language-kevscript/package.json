@@ -1,0 +1,47 @@
+{
+  "name": "language-kevscript",
+  "version": "0.3.7",
+  "description": "KevScript language support in Atom",
+  "main": "lib/main.js",
+  "keywords": [
+    "kevoree",
+    "grammar",
+    "kevscript",
+    "script",
+    "syntax",
+    "highlighter"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kevoree/kevoree-js.git"
+  },
+  "license": "LGPL-3.0",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "providedServices": {
+    "linter": {
+      "versions": {
+        "2.0.0": "provideLinter"
+      }
+    }
+  },
+  "consumedServices": {
+    "status-bar": {
+      "versions": {
+        "^1.0.0": "consumeStatusBar"
+      }
+    }
+  },
+  "dependencies": {
+    "atom-linter": "^10.0.0",
+    "kevoree-const": "^2.0.1",
+    "kevoree-kevscript": "^5.0.4",
+    "kevoree-logger": "^1.0.1",
+    "tiny-conf": "^1.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.3.0",
+    "eslint-config-kevoree": "^1.0.1"
+  }
+}
