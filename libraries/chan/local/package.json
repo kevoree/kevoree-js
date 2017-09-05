@@ -1,6 +1,6 @@
 {
   "name": "kevoree-chan-local",
-  "version": "5.3.9",
+  "version": "5.3.10",
   "main": "./lib/LocalChannel.js",
   "description": "Kevoree channel that only sends messages to components in the same node",
   "kevoree": {
