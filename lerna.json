@@ -6,6 +6,7 @@
     "tools/*",
     "libraries/node/javascript",
     "libraries/chan/local",
+    "libraries/chan/remotews",
     "libraries/comp/ticker",
     "libraries/comp/consoleprinter",
     "libraries/group/centralizedws"

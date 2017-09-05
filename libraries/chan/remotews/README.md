@@ -1,7 +1,7 @@
 ### kevoree-chan-remotews
 
 **Description:**  
-TODO
+A Kevoree chan that uses an external remote WebSocket broadcast server to share messages
 
 **Dictionary:**
 
