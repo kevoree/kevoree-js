@@ -32,7 +32,7 @@ node_modules
 
 # Kevoree JS
 kevlib.json
-browser/kevoree-chan-local*.js
+browser/kevoree-chan-remotews.js
 
 # Yarn
 yarn.lock
