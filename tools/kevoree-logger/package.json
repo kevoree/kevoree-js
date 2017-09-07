@@ -1,6 +1,6 @@
 {
   "name": "kevoree-logger",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Kevoree logger based on Winston",
   "scripts": {
     "test": "echo \"no tests\""

@@ -1,6 +1,6 @@
 {
   "name": "kevoree-kevscript",
-  "version": "5.0.5",
+  "version": "5.0.6",
   "description": "Kevoree KevScript module - contains parser, interpreter and grammar",
   "main": "./lib/KevScript.js",
   "bin": {
@@ -40,7 +40,7 @@
     "chalk": "^1.1.3",
     "kevoree-const": "^2.0.1",
     "kevoree-library": "^5.0.13",
-    "kevoree-logger": "^1.0.1",
+    "kevoree-logger": "^1.0.2",
     "kevoree-registry-client": "^3.0.1",
     "kevoree-validator": "^0.1.20",
     "mkdirp": "^0.5.1",
