@@ -9,7 +9,7 @@ module.exports = function adaptationExecutor(core, model, adaptations) {
           executedCmds.unshift(adaptations[index - 1]);
         }
         return next.execute();
-      }).catch((err) => {
+      }, (err) => {
         if (core.stopping) {
           // if core is stopping, just log error and keep on adapting
           core.log.error('Adaptation error while stopping core...\n' + err.stack);
@@ -38,14 +38,14 @@ module.exports = function adaptationExecutor(core, model, adaptations) {
     })
     .catch((err) => {
       // === At least one adaptation failed
-      err.message = 'Something went wrong while executing adaptations.\n' + err.message;
       core.log.error(err);
 
       if (core.firstBoot) {
         // === If adaptations failed on startup then it is bad => exit
         core.log.warn('Shutting down Kevoree because bootstrap failed...');
         core.deployModel = null;
-        return core.stop();
+        return core.stop()
+          .then(() => { throw new Error('Something went wrong while executing adaptations'); });
       } else {
         // === If not firstBoot => try to rollback...
         return executedCmds
@@ -62,12 +62,12 @@ module.exports = function adaptationExecutor(core, model, adaptations) {
             throw new Error('Rollbacked to previous state');
           }, (err) => {
             // === Rollback failed => cannot recover from this...
-            err.message = 'Something went wrong while rollbacking. Process will exit.\n' + err.message;
             core.log.error(err);
             // stop everything :(
             core.deployModel = null;
             process.nextTick(() => core.emitter.emit('error', err));
-            return core.stop();
+            return core.stop()
+              .then(() => { throw new Error('Something went wrong while rollbacking. Process will exit.'); });
           });
       }
     });

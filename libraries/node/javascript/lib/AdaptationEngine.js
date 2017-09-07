@@ -159,9 +159,7 @@ AdaptationEngine.prototype = {
                       cmds.push(this.createCommand(AddDeployUnit, du));
                     }
                   } else {
-                    const err = new Error('no DeployUnit found for \'' + modelElement.name + ': ' + modelElement.typeDefinition.name + '/' + modelElement.typeDefinition.version + '\' that matches the \'js\' platform');
-                    err.className = this.toString();
-                    throw err;
+                    throw new Error('no DeployUnit found for \'' + modelElement.name + ': ' + modelElement.typeDefinition.name + '/' + modelElement.typeDefinition.version + '\' that matches the \'js\' platform');
                   }
 
                   if (!this.modelObjMapper.getObject(modelElement.path())) {

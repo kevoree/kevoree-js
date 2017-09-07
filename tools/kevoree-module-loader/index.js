@@ -29,4 +29,7 @@ function createKey(name, version) {
   return `${name}@${version}`;
 }
 
-module.exports = KevoreeModuleLoader;
+if (!global.KevoreeModuleLoader) {
+  global.KevoreeModuleLoader = new KevoreeModuleLoader();
+}
+module.exports = global.KevoreeModuleLoader;

@@ -80,6 +80,9 @@ LoggerFactory.prototype = {
         case 'console':
           logger.add(winston.transports.Console, consoleTransport);
           break;
+
+        default:
+          break;
       }
     });
 

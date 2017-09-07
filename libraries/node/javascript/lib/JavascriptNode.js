@@ -82,7 +82,7 @@ const JavascriptNode = AbstractNode.extend({
 
   updateLogLevel(newLevel, oldLevel) {
     this.log.info('Logger level changed from ' + oldLevel + ' to ' + newLevel);
-    this.log.transports.console.level = newLevel.toLowerCase().trim();
+    this.log.level = newLevel.toLowerCase().trim();
   }
 });
 

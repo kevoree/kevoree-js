@@ -1,5 +1,3 @@
-'use strict';
-
 const kevoree = require('kevoree-library');
 const EventEmitter = require('events').EventEmitter;
 const adaptationsExecutor = require('./lib/adaptation-executor');
@@ -76,12 +74,11 @@ KevoreeCore.prototype = {
    * @return {Promise} resolved when the core is stopped
    */
   stop() {
-    this.log.info('Stopping Kevoree...');
-
     if (this.nodeInstance === null) {
+      this.log.info('Stopping Kevoree...');
       clearInterval(this.loopId);
       this.emitter.emit('stopped');
-      return Promise.reject(new Error('Platform stopped before bootstrapped'));
+      return Promise.resolve();
 
     } else {
       const factory = new kevoree.factory.DefaultKevoreeFactory();
@@ -89,6 +86,7 @@ KevoreeCore.prototype = {
       const stopModel = cloner.clone(this.currentModel, false);
       const node = stopModel.findNodesByID(this.nodeName);
       if (node.started) {
+        this.log.info('Stopping Kevoree...');
         node.started = false;
         const subNodes = node.hosts.iterator();
         while (subNodes.hasNext()) {
@@ -131,6 +129,8 @@ KevoreeCore.prototype = {
             this.emitter.emit('stopped');
             throw err;
           });
+      } else {
+        return Promise.resolve();
       }
     }
   },
@@ -152,49 +152,38 @@ KevoreeCore.prototype = {
       } else {
         this.log.debug((this.stopping ? 'Stopping' : 'Deploy') + ' process started...');
         if (model) {
-          // check if there is an instance currently running
-          // if not, it will try to run it
+          // ensure node instance is bootstrapped before deploying
           return this.checkBootstrapNode(model)
             .then(() => {
-              if (this.nodeInstance) {
-                let adaptations;
-                try {
-                  // monkey-patch model because of KMF
-                  monkeyPatchKMF(model);
-                  const factory = new kevoree.factory.DefaultKevoreeFactory();
-                  // clone model so that adaptations won't modify the proposed one
-                  const cloner = factory.createModelCloner();
-                  this.deployModel = cloner.clone(model, true);
-                  // set it read-only to ensure adaptations consistency
-                  this.deployModel.setRecursiveReadOnly();
-                  // make a diff between the current model and the model to deploy
-                  const diffSeq = factory.createModelCompare().diff(this.currentModel, this.deployModel);
-                  // ask the node platform to create the needed adaptation commands
-                  adaptations = this.nodeInstance.processTraces(diffSeq, this.deployModel);
-                  // execute adaptation commands
-                  return adaptationsExecutor(this, model, adaptations);
-                } catch (err) {
-                  this.log.error(err.stack);
-                  const error = new Error('Something went wrong while creating adaptations (deployment ignored)');
-                  this.log.warn(error.message);
-                  this.deployModel = null;
-                  if (this.firstBoot) {
-                    // === If firstBoot adaptations creation failed then it is bad => exit
-                    this.log.warn('Shutting down Kevoree because bootstrap failed...');
-                    this.emitter.emit('error', error);
-                    throw error;
-                  } else {
-                    this.emitter.emit('error', error);
-                    throw error;
-                  }
-                }
-              } else {
-                throw new Error('There is no instance to bootstrap on');
+              // monkey-patch model because of KMF
+              monkeyPatchKMF(model);
+              const factory = new kevoree.factory.DefaultKevoreeFactory();
+              // clone model so that adaptations won't modify the proposed one
+              const cloner = factory.createModelCloner();
+              this.deployModel = cloner.clone(model, true);
+              // set it read-only to ensure adaptations consistency
+              this.deployModel.setRecursiveReadOnly();
+              // make a diff between the current model and the model to deploy
+              const diffSeq = factory.createModelCompare().diff(this.currentModel, this.deployModel);
+
+              let adaptations;
+              try {
+                // ask the node platform to create the needed adaptation commands
+                adaptations = this.nodeInstance.processTraces(diffSeq, this.deployModel);
+              } catch (err) {
+                this.log.error(err);
+                throw new Error('Something went wrong while planning adaptations');
               }
-            }, () => {
-              this.log.error('Unable to bootstrap \'' + this.nodeName + "'");
+              // execute adaptation commands
+              return adaptationsExecutor(this, model, adaptations);
+            }, (err) => {
+              this.log.error(err);
+              err = new Error('Bootstrap failed');
               this.deployModel = null;
-              return this.stop();
+              // automatically stops the core
+              return this.stop()
+                // then throw the bootstrap failure error
+                .then(() => { throw err; });
             })
             .catch((err) => {
               this.emitter.emit('error', err);
@@ -218,8 +207,7 @@ KevoreeCore.prototype = {
         .then(({ model }) => this.deploy(model))
         .then(() => {
           this.log.info('KevScript submission succeeded');
-        })
-        .catch((err) => {
+        }, (err) => {
           this.log.warn('KevScript submission threw an error');
           this.log.warn(err.stack);
           throw err;
@@ -287,9 +275,9 @@ KevoreeCore.prototype = {
                   }
                 });
               }
-            })
-            .catch(() => {
-              throw new Error('Unable to bootstrap \''+ this.nodeName +'\'');
+            }, (err) => {
+              this.log.error(err);
+              throw new Error('Unable to bootstrap \'' + this.nodeName + '\'');
             });
         } else {
           return Promise.reject(new Error('No DeployUnit found for \'' + this.nodeName + '\' that matches the \'js\' platform'));
@@ -338,7 +326,7 @@ KevoreeCore.prototype = {
 
   getLoggerFactory() {
     return this.loggerFactory;
-  }
+  },
 };
 
 function hash(str) {

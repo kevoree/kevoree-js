@@ -32,6 +32,7 @@ describe('Kevoree Core', function kCoreTests() {
         return Promise.resolve();
       }
     };
+
     loggerFactory.remove('console');
     this.kevscript = new KevScript(loggerFactory.create('KevScript'));
   });
@@ -59,11 +60,13 @@ describe('Kevoree Core', function kCoreTests() {
   it('should stop when deploying unknown component on firstBoot', () => {
     this.slow(200);
     const model = readModel('unknown-comp.json');
+
     return this.core.deploy(model)
       .then(() => {
         throw new Error('Should have errored');
-      })
-      .catch(() => {});
+      }, (err) => {
+        assert.equal(err.message, 'Something went wrong while executing adaptations');
+      });
   });
 
   it('should stop when bootstrap failed on firstBoot', () => {
@@ -72,8 +75,9 @@ describe('Kevoree Core', function kCoreTests() {
     return this.core.deploy(model)
       .then(() => {
         throw new Error('Should have errored');
-      })
-      .catch(() => {});
+      }, (err) => {
+        assert.equal(err.message, 'Something went wrong while planning adaptations');
+      });
   });
 
   it('should rollback when deploying erroneous component after firstBoot', () => {
@@ -82,7 +86,9 @@ describe('Kevoree Core', function kCoreTests() {
     const unknownCompModel = readModel('erroneous-comp.json');
     return this.core.deploy(simpleModel)
       .then(() => this.core.deploy(unknownCompModel))
-      .catch((err) => {
+      .then(() => {
+        throw new Error('Should have errored');
+      }, (err) => {
         assert.equal(err.message, 'Rollbacked to previous state');
         assert.equal(Object.keys(this.core.nodeInstance.adaptationEngine.modelObjMapper.map).length, 1);
       });
