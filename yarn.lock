@@ -5478,10 +5478,6 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^2.0.0"
     inherits "^2.0.1"
 
-rmrf@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/rmrf/-/rmrf-1.0.2.tgz#97d974a64767b7f91bb9fcd19d905fc40b2b2112"
-
 run-async@^2.2.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/run-async/-/run-async-2.3.0.tgz#0371ab4ae0bdd720d4166d7dfda64ff7a445a6c0"

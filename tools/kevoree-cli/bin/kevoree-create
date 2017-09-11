@@ -1,8 +1,8 @@
 #!/usr/bin/env node
+const fs = require('fs-extra');
 const path = require('path');
 const chalk = require('chalk');
 const inquirer = require('inquirer');
-const mkdirp = require('mkdirp');
 const hbsTemplates = require('../lib/hbs-templates');
 const validateModuleName = require("validate-npm-package-name");
 
@@ -53,7 +53,7 @@ if (!dir) {
   ];
 
   console.log('Creating project directory: ' + chalk.cyan(path.resolve(dir)));
-  mkdirp(path.resolve(dir), (err) => {
+  fs.ensureDir(path.resolve(dir), (err) => {
     if (err) {
       console.error(chalk.red('Unable to create project directory:'));
       console.error(err.stack);

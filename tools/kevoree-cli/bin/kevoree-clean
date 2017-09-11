@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const rmrf = require('rmrf');
+const fs = require('fs-extra');
 const path = require('path');
 const kConst = require('kevoree-const');
 const ora = require('ora');
@@ -12,7 +12,7 @@ const spinner = ora('Cleaning ' + NODE_MODULES + '...');
 
 try {
   console.log('Cleaning ' + chalk.gray(NODE_MODULES));
-  rmrf(NODE_MODULES);
+  fs.removeSync(NODE_MODULES);
   spinner.stop();
   console.log(chalk.green('Done'));
 } catch (err) {

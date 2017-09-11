@@ -37,6 +37,7 @@
     "kevoree-entities": "^9.2.3",
     "kevoree-kevscript": "^5.0.6",
     "kevoree-logger": "^1.0.2",
+    "kevoree-resolvers": "^5.0.4",
     "kevoree-registry-client": "^3.0.1",
     "kevoree-validator": "^0.1.20",
     "mocha": "^3.4.2",

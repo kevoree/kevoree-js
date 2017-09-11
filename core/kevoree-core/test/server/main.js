@@ -3,37 +3,46 @@ const assert = require('assert');
 const kConst = require('kevoree-const');
 const KevScript = require('kevoree-kevscript');
 const loggerFactory = require('kevoree-logger');
+const NPMResolver = require('kevoree-resolvers/lib/NPMResolver');
 const config = require('tiny-conf');
 const KevoreeCore = require('../../kevoree-core');
 const readModel = require('./util/read-model');
 
 describe('Kevoree Core', function kCoreTests() {
+  this.timeout(10000);
 
   before('init', () => {
+    loggerFactory.remove('console');
+
     config.set('registry', {
       host: 'registry.kevoree.org',
       port: 443,
       ssl: true
     });
 
+    const npmResolver = new NPMResolver(
+      path.join(kConst.GLOBAL_PATH, 'deploy_units'),
+      loggerFactory.create('NPMResolver'));
+
     this.resolver = {
       resolve(du) {
-        return new Promise((resolve) => {
-          const duPath = path.join(kConst.GLOBAL_PATH, 'deploy_units', du.name, du.version, 'node_modules', du.name);
-          delete require.cache[require.resolve(duPath)];
-          resolve(require(duPath));
-        }).catch(() => {
-          const duPath = path.join('..', 'fixtures', 'module', du.name);
-          delete require.cache[require.resolve(duPath)];
-          return require(duPath);
-        });
+        return npmResolver.resolve(du)
+          .catch(() => {
+            const duPath = path.join(kConst.GLOBAL_PATH, 'deploy_units', du.name, du.version, 'node_modules', du.name);
+            delete require.cache[require.resolve(duPath)];
+            return require(duPath);
+          })
+          .catch(() => {
+            const duPath = path.join('..', 'fixtures', 'module', du.name);
+            delete require.cache[require.resolve(duPath)];
+            return require(duPath);
+          });
       },
       uninstall() {
         return Promise.resolve();
       }
     };
 
-    loggerFactory.remove('console');
     this.kevscript = new KevScript(loggerFactory.create('KevScript'));
   });
 

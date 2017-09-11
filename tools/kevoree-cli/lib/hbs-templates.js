@@ -1,7 +1,6 @@
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 const chalk = require('chalk');
-const mkdirp = require('mkdirp');
 const Handlebars = require('handlebars');
 const capitalize = require('./helpers/capitalize');
 const is = require('./helpers/is');
@@ -27,7 +26,7 @@ const templates = fs
 module.exports = {
   write(tpl, filepath, context) {
     const source = this.render(tpl, context);
-    mkdirp.sync(path.resolve(filepath, '..'));
+    fs.ensureDirSync(path.resolve(filepath, '..'));
     fs.writeFileSync(filepath, source, 'utf8');
     console.log(' ' + chalk.gray(filepath));
   },

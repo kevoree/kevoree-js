@@ -10,7 +10,7 @@ process.on('unhandledRejection', (err) => {
 const INSTANCE_NAME = /^([a-z][a-zA-Z0-9_]*)|(%%[\w]+%%)|(%[\w]+%)$/;
 
 const os = require('os');
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 const commander = require('commander');
 const config = require('tiny-conf');
@@ -18,7 +18,6 @@ const kConst = require('kevoree-const');
 const kLibrary = require('kevoree-library');
 const NPMResolver = require('kevoree-resolvers').NPMResolver;
 const KevScript = require('kevoree-kevscript');
-const mkdirp = require('mkdirp');
 const NodeJSRuntime = require('../lib/NodeJSRuntime');
 const loggerFactory = require('kevoree-logger');
 
@@ -90,7 +89,7 @@ fs.lstat(kConst.CONFIG_PATH, (err, stats) => {
       log.setLevel(logLevel);
     }
 
-    mkdirp(commander.modulesPath, (err) => {
+    fs.ensureDir(commander.modulesPath, (err) => {
       if (err) {
         throw err;
       } else {
