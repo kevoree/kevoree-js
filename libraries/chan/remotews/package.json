@@ -21,7 +21,12 @@
   },
   "dependencies": {
     "kevoree-entities": "^9.2.3",
-    "rwebsocket": "^1.1.0"
+    "rwebsocket": "^1.1.0",
+    "ws": "^1.1.1"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^1.3.0",
+    "utf-8-validate": "^2.0.0"
   },
   "devDependencies": {
     "eslint": "^4.3.0",

@@ -33,10 +33,9 @@ const RemoteWSChan = AbstractChannel.extend({
   },
 
   start: function (done) {
-    const self = this;
     let error;
     try {
-      self.uri = self.processURI();
+      this.uri = this.processURI();
     } catch (err) {
       error = err;
     }
@@ -44,68 +43,66 @@ const RemoteWSChan = AbstractChannel.extend({
     if (error) {
       done(error);
     } else {
-      self.getLocalInputPorts().forEach((input) => {
-        const topic = self.uri + input.path;
+      this.getLocalInputPorts().forEach((input) => {
+        const topic = this.uri + input.path;
         const client = new RWebSocket(topic);
-        self.receivers[input.path] = client;
+        this.receivers[input.path] = client;
         client.onopen = () => {
-          self.log.debug(self.name + ' listening on topic "' + topic + '"');
+          this.log.debug('listening on topic "' + topic + '"');
         };
         client.onmessage = (event) => {
-          self.localDispatch(event.data);
+          this.localDispatch(event.data);
         };
         client.onerror = (evt) => {
-          self.log.warn(evt);
+          this.log.warn(evt);
         };
         client.onclose = (event) => {
           if (event.code === 1000) {
-            self.log.debug(self.name + ' closed connection with topic "' + topic + '"');
+            this.log.debug('closed connection with topic "' + topic + '"');
           } else {
-            self.log.warn(self.name + ' lost connection with topic "' + topic + '"');
+            this.log.warn('lost connection with topic "' + topic + '"');
           }
         };
         client.connect();
       });
 
-      self.getRemoteInputPorts().forEach((remoteInput) => {
-        const topic = self.uri + remoteInput.path;
-        self.dispatchers[remoteInput.path] = new RWebSocket(topic);
-        self.dispatchers[remoteInput.path].connect();
+      this.getRemoteInputPorts().forEach((remoteInput) => {
+        const topic = this.uri + remoteInput.path;
+        this.dispatchers[remoteInput.path] = new RWebSocket(topic);
+        this.dispatchers[remoteInput.path].connect();
       });
       done();
     }
   },
 
   stop: function (done) {
-    const self = this;
     this.uri = null;
 
     Object.keys(this.receivers)
       .forEach((path) => {
         try {
-          self.receivers[path].close(1000);
+          this.receivers[path].close(1000);
         } catch (ignore) { /* noop */ }
-        delete self.receivers[path];
+        delete this.receivers[path];
       });
 
     Object.keys(this.dispatchers)
       .forEach((path) => {
         try {
-          self.dispatchers[path].close(1000);
+          this.dispatchers[path].close(1000);
         } catch (ignore) { /* noop */ }
-        delete self.dispatchers[path];
+        delete this.dispatchers[path];
       });
 
     done();
   },
 
   update: function (done) {
-    const self = this;
-    self.stop((err) => {
+    this.stop((err) => {
       if (err) {
         done(err);
       } else {
-        self.start(done);
+        this.start(done);
       }
     });
   },
@@ -118,22 +115,20 @@ const RemoteWSChan = AbstractChannel.extend({
    * @param msg
    */
   onSend: function (fromPortPath, destPortPaths, msg) {
-    const self = this;
-
     // send message to local inputs (if any)
     this.localDispatch(msg);
 
     // send message to remote inputs (if any)
     this.getRemoteInputPorts().forEach((remoteInput) => {
-      const dispatcher = self.dispatchers[remoteInput.path];
+      const dispatcher = this.dispatchers[remoteInput.path];
       if (dispatcher) {
         if (dispatcher.client.readyState === WebSocket.OPEN) {
           dispatcher.send(msg + '');
         } else {
-          self.log.warn('"' + self.name + '" unable to dispatch "' + msg + '" to topic"' + self.processURI() + remoteInput.path + '" (client not opened)');
+          this.log.warn('unable to dispatch "' + msg + '" to topic"' + this.processURI() + remoteInput.path + '" (client not opened)');
         }
       } else {
-        self.log.warn('"' + self.name + '" unable to dispatch "' + msg + '" to topic "' + self.processURI() + remoteInput.path + '" (client unavailable)');
+        this.log.warn('unable to dispatch "' + msg + '" to topic "' + this.processURI() + remoteInput.path + '" (client unavailable)');
       }
     });
   },
