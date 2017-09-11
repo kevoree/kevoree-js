@@ -4,11 +4,21 @@
   "private": true,
   "scripts": {
     "bs": "lerna bootstrap --hoist",
-    "postinstall": "npm run bs",
     "clean": "lerna clean --yes",
     "test": "lerna exec npm test",
     "publish": "lerna publish"
   },
+  "workspaces": [
+    "core/*",
+    "tools/*",
+    "libraries/node/javascript",
+    "libraries/chan/local",
+    "libraries/chan/remotews",
+    "libraries/comp/ticker",
+    "libraries/comp/consoleprinter",
+    "libraries/group/centralizedws",
+    "libraries/group/remotews"
+  ],
   "devDependencies": {
     "lerna": "^2.0.0"
   },

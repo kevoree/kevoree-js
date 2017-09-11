@@ -1,16 +1,16 @@
-var AbstractGroup = require('kevoree-entities/lib/AbstractGroup');
-var SmartSocket = require('smart-socket');
-var kevoree = require('kevoree-library');
+const AbstractGroup = require('kevoree-entities/lib/AbstractGroup');
+const SmartSocket = require('smart-socket');
+const kevoree = require('kevoree-library');
 
-var LOOP_BREAK = 5000,
-  PUSH = 'push/',
-  PULL = 'pull';
+const LOOP_BREAK = 5000;
+const PUSH = 'push/';
+const PULL = 'pull';
 
 /**
  * Kevoree group
  * @type {RemoteWSGroup}
  */
-var RemoteWSGroup = AbstractGroup.extend({
+const RemoteWSGroup = AbstractGroup.extend({
   toString: 'RemoteWSGroup',
   tdef_version: 1,
 
@@ -35,10 +35,10 @@ var RemoteWSGroup = AbstractGroup.extend({
    * this method will be called by the Kevoree platform when your group has to start
    * @param done
    */
-  start: function (done) {
-    var host = this.dictionary.getString('host'),
-      port = this.dictionary.getNumber('port', 80),
-      path = this.dictionary.getString('path', '');
+  start(done) {
+    const host = this.dictionary.getString('host');
+    const port = this.dictionary.getNumber('port', 80);
+    let path = this.dictionary.getString('path', '');
 
     if (!host) {
       done(new Error('"host" attribute is not specified'));
@@ -49,69 +49,69 @@ var RemoteWSGroup = AbstractGroup.extend({
       path = path.substr(1, path.length - 1);
     }
 
-    var url = host + ':' + port + '/' + path;
+    const url = host + ':' + port + '/' + path;
     this.ss = new SmartSocket({
       addresses: [url],
       loopBreak: LOOP_BREAK
     });
 
-    this.ss.on('open', function (client) {
-      this.log.info('Connected to ' + url);
+    this.ss.on('open', (client) => {
+      this.log.info('connected to ' + url);
       this.getKevoreeCore().on('deployed', this.deployedHandler(client));
-    }.bind(this));
+    });
 
-    this.ss.on('message', function (ws, msg) {
+    this.ss.on('message', (ws, msg) => {
       if (msg.type) {
         msg = msg.data;
       }
 
       try {
-        var factory = new kevoree.factory.DefaultKevoreeFactory();
+        const factory = new kevoree.factory.DefaultKevoreeFactory();
         if (msg.startsWith(PUSH)) {
-          this.log.info('"' + this.getName() + '" received a push request');
-          var model = factory.createJSONLoader().loadModelFromString(msg.substr(PUSH.length, msg.length - 1)).get(0);
+          this.log.info('received a push request');
+          const model = factory.createJSONLoader().loadModelFromString(msg.substr(PUSH.length, msg.length - 1)).get(0);
           this.lock = true;
           try {
-            this.getKevoreeCore().deploy(model, function () {
+            this.getKevoreeCore().deploy(model, () => {
               this.lock = false;
-            }.bind(this));
+            });
           } catch (ignore) {
             this.lock = false;
           }
 
         } else if (msg === PULL) {
           if (this.dictionary.getBoolean('answerPull', this.dic_answerPull.defaultValue)) {
-            this.log.info('"' + this.getName() + '" received a pull request');
+            this.log.info('received a pull request');
 
-            var serializer = factory.createJSONSerializer();
-            var strModel = serializer.serialize(this.getKevoreeCore().getCurrentModel());
+            const serializer = factory.createJSONSerializer();
+            const strModel = serializer.serialize(this.getKevoreeCore().getCurrentModel());
             ws.send(strModel);
           } else {
-            this.log.info('"' + this.getName() + '" received a pull request, but \'answerPull\' mode is false');
+            this.log.info('received a pull request, but \'answerPull\' mode is false');
           }
 
         } else {
           if (msg.toString().length > 30) {
             msg = msg.toString().substr(0, 30) + '...';
           }
-          this.log.debug('"' + this.getName() + '" unknown incoming message (' + msg + ')');
+          this.log.debug('unknown incoming message (' + msg + ')');
         }
       } catch (err) {
         if (msg.toString().length > 30) {
           msg = msg.toString().substr(0, 30) + '...';
         }
-        this.log.warn('"' + this.getName() + '" unable to process incoming message (' + msg + ')');
+        this.log.warn('unable to process incoming message (' + msg + ')');
         this.log.error(err.stack);
       }
-    }.bind(this));
+    });
 
-    this.ss.on('close', function () {
-      this.log.info('Connection lost with ' + url + ' (will retry every ' + LOOP_BREAK + 'ms until reconnected)');
-    }.bind(this));
+    this.ss.on('close', () => {
+      this.log.info('connection lost with ' + url + ' (will retry every ' + LOOP_BREAK + 'ms until reconnected)');
+    });
 
-    this.ss.on('error', function () {
-      this.log.info('Connection problem with ' + url + ' (will retry every ' + LOOP_BREAK + 'ms until connected)');
-    }.bind(this));
+    this.ss.on('error', () => {
+      this.log.info('connection problem with ' + url + ' (will retry every ' + LOOP_BREAK + 'ms until connected)');
+    });
 
     this.ss.start();
 
@@ -123,7 +123,7 @@ var RemoteWSGroup = AbstractGroup.extend({
    * this method will be called by the Kevoree platform when your group has to stop
    * @param done
    */
-  stop: function (done) {
+  stop(done) {
     this.getKevoreeCore().off('deployed', this.deployedHandler());
     if (this.ss) {
       this.ss.close(true);
@@ -131,22 +131,22 @@ var RemoteWSGroup = AbstractGroup.extend({
     done();
   },
 
-  update: function (done) {
-    this.stop(function () {
+  update(done) {
+    this.stop(() => {
       this.start(done);
-    }.bind(this));
+    });
   },
 
-  deployedHandler: function (client) {
-    var core = this.getKevoreeCore();
-    return function () {
+  deployedHandler(client) {
+    const core = this.getKevoreeCore();
+    return () => {
       if (!this.lock && client && client.readyState === 1) {
-        var factory = new kevoree.factory.DefaultKevoreeFactory();
-        var serializer = factory.createJSONSerializer();
-        var strModel = serializer.serialize(core.getCurrentModel());
+        const factory = new kevoree.factory.DefaultKevoreeFactory();
+        const serializer = factory.createJSONSerializer();
+        const strModel = serializer.serialize(core.getCurrentModel());
         client.send(PUSH+strModel);
       }
-    }.bind(this);
+    };
   }
 });
 

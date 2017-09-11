@@ -7,8 +7,14 @@
     "namespace": "kevoree"
   },
   "scripts": {
-    "prepublish": "grunt",
-    "postpublish": "grunt publish"
+    "prestart": "npm run build",
+    "pretest": "npm run build",
+    "prepublishOnly": "npm run test",
+    "start": "kevoree-scripts start",
+    "build": "kevoree-scripts build",
+    "test": "mocha test",
+    "kev:publish": "kevoree-scripts publish",
+    "postpublish": "npm run kev:publish"
   },
   "keywords": [
     "kevoree-std-lib",
@@ -19,21 +25,20 @@
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "contributors": [],
   "license": "LGPL-3.0",
+  "browser": {
+    "ws": "./ws-shim.js"
+  },
   "dependencies": {
-    "kevoree-entities": "^9.2.1",
-    "kevoree-library": "^5.0.11",
+    "kevoree-entities": "^9.2.3",
+    "kevoree-library": "^5.0.13",
     "smart-socket": "^0.5.0"
   },
   "devDependencies": {
-    "grunt": "^1.0.1",
-    "grunt-kevoree": "^6.0.0",
-    "grunt-kevoree-genmodel": "^3.0.3",
-    "grunt-kevoree-registry": "^4.0.0",
-    "grunt-webpack": "^1.0.18",
-    "json-loader": "^0.5.4",
-    "load-grunt-tasks": "^3.5.2",
-    "webpack": "^3.4.1",
-    "webpack-dev-server": "^1.16.2"
+    "eslint": "^4.3.0",
+    "eslint-config-kevoree": "^1.0.1",
+    "expect": "^1.20.2",
+    "kevoree-scripts": "^1.0.7",
+    "mocha": "^3.4.2"
   },
   "homepage": "https://github.com/kevoree/kevoree-js",
   "repository": {
