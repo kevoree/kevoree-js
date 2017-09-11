@@ -1,6 +1,6 @@
 {
   "name": "kevoree-node-javascript",
-  "version": "5.5.8",
+  "version": "5.5.9",
   "main": "./lib/JavascriptNode.js",
   "kevoree": {
     "namespace": "kevoree"
@@ -40,7 +40,7 @@
     "eslint": "^4.3.0",
     "eslint-config-kevoree": "^1.0.1",
     "expect": "^1.20.2",
-    "kevoree-scripts": "^1.0.8",
+    "kevoree-scripts": "^1.0.9",
     "mocha": "^3.4.2"
   },
   "engines": {

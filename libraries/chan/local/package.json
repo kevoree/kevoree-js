@@ -1,6 +1,6 @@
 {
   "name": "kevoree-chan-local",
-  "version": "5.3.12",
+  "version": "5.3.13",
   "main": "./lib/LocalChannel.js",
   "description": "Kevoree channel that only sends messages to components in the same node",
   "kevoree": {
@@ -22,7 +22,7 @@
   "devDependencies": {
     "eslint": "^4.3.0",
     "eslint-config-kevoree": "^1.0.1",
-    "kevoree-scripts": "^1.0.8",
+    "kevoree-scripts": "^1.0.9",
     "mocha": "^3.4.2"
   },
   "keywords": [
