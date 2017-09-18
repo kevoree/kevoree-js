@@ -1,4 +1,4 @@
-FROM        mhart/alpine-node:6.9.1
+FROM        mhart/alpine-node:6.11.3
 MAINTAINER  Maxime Tricoire <max.tricoire@gmail.com> (@maxleiko)
 
 WORKDIR     /root
