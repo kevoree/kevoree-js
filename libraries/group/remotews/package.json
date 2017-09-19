@@ -1,6 +1,6 @@
 {
   "name": "kevoree-group-remotews",
-  "version": "5.3.5",
+  "version": "5.3.6",
   "main": "./lib/RemoteWSGroup.js",
   "description": "A Kevoree group that uses an external remote WebSocket broadcast server to share models.<br/>The attribute <strong>answerPull</strong> specifies whether the fragments must send their model back on pull requests.",
   "kevoree": {
@@ -38,7 +38,7 @@
     "eslint": "^4.3.0",
     "eslint-config-kevoree": "^1.0.1",
     "expect": "^1.20.2",
-    "kevoree-scripts": "^1.0.9",
+    "kevoree-scripts": "^1.0.10",
     "mocha": "^3.4.2"
   },
   "homepage": "https://github.com/kevoree/kevoree-js",
