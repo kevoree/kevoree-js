@@ -1,20 +1,9 @@
 add node0: JavascriptNode
-add node0.comp: Twitter/LATEST/LATEST
-add sync: WSGroup
-add chan: RemoteWSChan
-
-attach node0 sync
-
-bind node0.comp.tweet chan
-
-set sync.master = 'node0'
+add node0.comp: Twitter/1/{ js: '2.0.0-alpha' }
 
 set node0.logLevel = 'DEBUG'
 
-set chan.host = 'ws.kevoree.org'
-set chan.uuid = '0fzxF2Tdz'
-
-set node0.comp.consumer_key = ''
-set node0.comp.consumer_secret = ''
-set node0.comp.access_token_key = ''
-set node0.comp.access_token_secret = ''
+set node0.comp.consumer_key = 'naFu8BdBN5hGqKR3UpGUsl2Ba'
+set node0.comp.consumer_secret = 'fv1Bgv7DLLIpn7rw08ogH7IZPhfFgaR9FsKyJA4fv5cK6zO2XU'
+set node0.comp.access_token_key = '112838414-Z0PYFu3hfK3zFotBta4dX2vLHsnfaoASoZdh470Y'
+set node0.comp.access_token_secret = 's9H2ineNaAKCBsyDC9YZShfkFXoX0vMBwblghLtfuk5hd'

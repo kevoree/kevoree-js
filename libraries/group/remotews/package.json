@@ -4,7 +4,8 @@
   "main": "./lib/RemoteWSGroup.js",
   "description": "A Kevoree group that uses an external remote WebSocket broadcast server to share models.<br/>The attribute <strong>answerPull</strong> specifies whether the fragments must send their model back on pull requests.",
   "kevoree": {
-    "namespace": "kevoree"
+    "namespace": "kevoree",
+    "browser": "lib/browser.js"
   },
   "scripts": {
     "prestart": "npm run build",

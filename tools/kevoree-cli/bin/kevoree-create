@@ -50,6 +50,12 @@ if (!dir) {
       type: 'input',
       message: (answers) => `Describe your ${answers.type} (HTML tags are supported)?`
     },
+    {
+      name: 'browserCompat',
+      type: 'confirm',
+      default: true,
+      message: (answers) => `Will your ${answers.type} be used in a Kevoree browser runtime?`
+    }
   ];
 
   console.log('Creating project directory: ' + chalk.cyan(path.resolve(dir)));
@@ -64,9 +70,13 @@ if (!dir) {
         console.log();
         console.log('Generating files:');
         console.log();
-        hbsTemplates.write('package', path.join(dir, 'package.json'), answers);
         hbsTemplates.write(answers.type, path.join(dir, 'lib', answers.name + '.js'), answers);
-        hbsTemplates.write('browser', path.join(dir, 'lib', 'browser.js'), answers);
+        if (answers.browserCompat) {
+          hbsTemplates.write('browser', path.join(dir, 'lib', 'browser.js'), answers);
+          hbsTemplates.write('package-browser', path.join(dir, 'package.json'), answers);
+        } else {
+          hbsTemplates.write('package', path.join(dir, 'package.json'), answers);
+        }
         hbsTemplates.write('test', path.join(dir, 'test', 'main.js'), answers);
         hbsTemplates.write('test-eslintrc', path.join(dir, 'test', '.eslintrc'), answers);
         hbsTemplates.write('main', path.join(dir, 'kevs', 'main.kevs'), answers);

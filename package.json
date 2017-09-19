@@ -16,6 +16,7 @@
     "libraries/chan/remotews",
     "libraries/comp/ticker",
     "libraries/comp/consoleprinter",
+    "libraries/comp/twitter",
     "libraries/group/centralizedws",
     "libraries/group/remotews"
   ],

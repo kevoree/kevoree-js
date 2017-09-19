@@ -4,7 +4,8 @@
   "main": "./lib/LocalChannel.js",
   "description": "Kevoree channel that only sends messages to components in the same node",
   "kevoree": {
-    "namespace": "kevoree"
+    "namespace": "kevoree",
+    "browser": "lib/browser.js"
   },
   "scripts": {
     "prestart": "npm run build",

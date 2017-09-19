@@ -3,7 +3,8 @@
   "version": "5.5.9",
   "main": "./lib/JavascriptNode.js",
   "kevoree": {
-    "namespace": "kevoree"
+    "namespace": "kevoree",
+    "browser": "lib/browser.js"
   },
   "scripts": {
     "prestart": "npm run build",

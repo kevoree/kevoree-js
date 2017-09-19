@@ -1,7 +1,5 @@
-'use strict';
-
-var Entity = require('kevoree-entities');
-var Twitter = require('twitter');
+const Entity = require('kevoree-entities');
+const Twitter = require('twitter');
 
 /**
  * Tweets input messages and streams Tweets based on hashtags (comma-separated)
@@ -25,8 +23,7 @@ module.exports = Entity.AbstractComponent.extend({
    *                            done(): all good
    *                            done(error): something went wrong
    */
-  start: function (done) {
-    this.log.info(this.name + ' start');
+  start(done) {
     this.client = new Twitter({
       consumer_key:        this.dictionary.getString('consumer_key'),
       consumer_secret:     this.dictionary.getString('consumer_secret'),
@@ -34,6 +31,7 @@ module.exports = Entity.AbstractComponent.extend({
       access_token_secret: this.dictionary.getString('access_token_secret'),
       bearer_token:        this.dictionary.getString('bearer_token')
     });
+    this.log.debug('started');
     done();
   },
 
@@ -43,8 +41,8 @@ module.exports = Entity.AbstractComponent.extend({
    *                            done(): all good
    *                            done(error): something went wrong
    */
-  stop: function (done) {
-    this.log.info(this.name + ' stop');
+  stop(done) {
+    this.log.debug('stopped');
     done();
   },
 
@@ -54,14 +52,14 @@ module.exports = Entity.AbstractComponent.extend({
    *
    * @param {Function}     done call this when you are done updating
    */
-  update: function (done) {
-    this.stop(function (err) {
+  update(done) {
+    this.stop((err) => {
       if (err) {
         done(err);
       } else {
         this.start(done);
       }
-    }.bind(this));
+    });
   },
 
   /**
@@ -69,21 +67,21 @@ module.exports = Entity.AbstractComponent.extend({
    *
    * @param {String}       msg input message
    */
-  in_tweet: function (msg) {
+  in_tweet(msg) {
     if (this.client) {
-      this.client.post('statuses/update', { status: msg }, function (err, res) {
+      this.client.post('statuses/update', { status: msg }, (err, res) => {
         if (err) {
           if (res.request) {
-            this.log.error(this.name + ' unable to tweet ('+err.message+', request='+res.request+', message='+res.error+')');
+            this.log.error('unable to tweet ('+err.message+', request='+res.request+', message='+res.error+')');
           } else {
-            res.errors.forEach(function (error) {
-              this.log.error(this.name + ' unable to tweet (code='+error.code+', message='+error.message+')');
-            }.bind(this));
+            res.errors.forEach((error) => {
+              this.log.error('unable to tweet (code='+error.code+', message='+error.message+')');
+            });
           }
         } else {
-          this.log.debug(this.name + ' just tweeted: '+msg);
+          this.log.debug('just tweeted: ' + msg);
         }
-      }.bind(this));
+      });
     }
   }
 });

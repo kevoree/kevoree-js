@@ -12,7 +12,7 @@ try {
 const config = {
   bail: true,
   // devtool: 'source-map',
-  entry: paths.appBrowserEntry,
+  entry: paths.resolveApp(pkg.kevoree.browser),
   output: {
     path: paths.appBrowser,
     filename: pkg.name + '.js',

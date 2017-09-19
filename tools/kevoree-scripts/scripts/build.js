@@ -44,51 +44,53 @@ kevoreeGenModel(paths.appPath, false, (err) => {
     console.log(err.message);
     process.exit(1);
   } else {
-    console.log();
-    printHeader('Generating browser bundle', appPkg.name, appPkg.version);
+    if (appPkg.kevoree.browser) {
+      console.log();
+      printHeader('Generating browser bundle', appPkg.name, appPkg.version);
 
-    // merge default webpack config with optional custom conf
-    let conf;
-    try {
-      const customConf = require(paths.appWebpackConf);
-      conf = merge({}, webpackConfig, customConf);
-    } catch (ignore) {
-      conf = webpackConfig;
-    }
+      // merge default webpack config with optional custom conf
+      let conf;
+      try {
+        const customConf = require(paths.appWebpackConf);
+        conf = merge({}, webpackConfig, customConf);
+      } catch (ignore) {
+        conf = webpackConfig;
+      }
 
-    // Remove all content but keep the directory so that
-    // if you're in it, you don't end up in Trash
-    fs.emptyDirSync(conf.output.path);
+      // Remove all content but keep the directory so that
+      // if you're in it, you don't end up in Trash
+      fs.emptyDirSync(conf.output.path);
 
-    // Start the webpack build
-    console.log();
-    return browserBuild(conf)
-      .then(({ stats, warnings }) => {
-          if (warnings.length) {
-            console.log(chalk.yellow('Compiled with warnings.\n'));
-            console.log(warnings.join('\n\n'));
-            console.log(
-              '\nSearch for the ' +
-              chalk.underline(chalk.yellow('keywords')) +
-              ' to learn more about each warning.'
-            );
-            console.log(
-              'To ignore, add ' +
-              chalk.cyan('// eslint-disable-next-line') +
-              ' to the line before.\n'
-            );
-          } else {
-            console.log(stats.toString({ colors: true }));
-            console.log();
-            console.log(chalk.green('Compiled successfully') + '\n');
+      // Start the webpack build
+      console.log();
+      return browserBuild(conf)
+        .then(({ stats, warnings }) => {
+            if (warnings.length) {
+              console.log(chalk.yellow('Compiled with warnings.\n'));
+              console.log(warnings.join('\n\n'));
+              console.log(
+                '\nSearch for the ' +
+                chalk.underline(chalk.yellow('keywords')) +
+                ' to learn more about each warning.'
+              );
+              console.log(
+                'To ignore, add ' +
+                chalk.cyan('// eslint-disable-next-line') +
+                ' to the line before.\n'
+              );
+            } else {
+              console.log(stats.toString({ colors: true }));
+              console.log();
+              console.log(chalk.green('Compiled successfully') + '\n');
+            }
+          },
+          (err) => {
+            console.log(chalk.red('Failed to compile.\n'));
+            console.log(err.stack);
+            process.exit(1);
           }
-        },
-        (err) => {
-          console.log(chalk.red('Failed to compile.\n'));
-          console.log(err.stack);
-          process.exit(1);
-        }
-      );
+        );
+    }
   }
 });
 

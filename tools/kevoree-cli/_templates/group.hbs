@@ -5,12 +5,12 @@ const {{name}} = AbstractGroup.extend({
   tdef_version: 1,
 
   start(done) {
-    this.log.info('{{name}}', 'Hello world!');
+    this.log.info('Hello world!');
     done();
   },
 
   stop(done) {
-    this.log.info('{{name}}', 'Bye world!');
+    this.log.info('Bye world!');
     done();
   }
 });

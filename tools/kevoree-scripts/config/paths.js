@@ -23,10 +23,11 @@ module.exports = {
   appModel: resolveApp('kevlib.json'),
   appBabelrc: resolveApp('.babelrc'),
   appWebpackConf: resolveApp('webpack.config.js'),
-  appBrowserEntry: resolveApp('lib/browser.js'),
   appBrowser: resolveApp('browser'),
   appKevs: resolveApp('kevs/main.kevs'),
   appNodeModules: resolveApp('node_modules'),
   ownPath: resolveOwn('.'),
   ownNodeModules: resolveOwn('node_modules'), // This is empty on npm 3
+  resolveApp: resolveApp,
+  resolveOwn: resolveOwn,
 };

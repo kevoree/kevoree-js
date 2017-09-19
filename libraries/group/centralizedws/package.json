@@ -14,7 +14,8 @@
     "postpublish": "npm run kev:publish"
   },
   "kevoree": {
-    "namespace": "kevoree"
+    "namespace": "kevoree",
+    "browser": "lib/browser.js"
   },
   "browser": {
     "ws": "./ws-shim.js"
