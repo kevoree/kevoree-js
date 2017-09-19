@@ -6,7 +6,7 @@
     "bs": "lerna bootstrap --hoist",
     "clean": "lerna clean --yes",
     "test": "lerna exec npm test",
-    "publish": "lerna publish"
+    "publish": "lerna run test && lerna publish"
   },
   "workspaces": [
     "core/*",

@@ -20,7 +20,6 @@ const webpack = require('webpack');
 const merge = require('lodash.merge');
 const kevoreeGenModel = require('kevoree-gen-model');
 const paths = require('../config/paths');
-const webpackConfig = require('../config/webpack.config');
 const eslintConfig = require('../config/eslintrc');
 const printHeader = require('./util/print-header');
 const formatWebpackMessages = require('./util/format-webpack-messages');
@@ -46,6 +45,7 @@ kevoreeGenModel(paths.appPath, false, (err) => {
   } else {
     if (appPkg.kevoree.browser) {
       console.log();
+      const webpackConfig = require('../config/webpack.config');
       printHeader('Generating browser bundle', appPkg.name, appPkg.version);
 
       // merge default webpack config with optional custom conf
