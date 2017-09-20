@@ -71,14 +71,10 @@ const RemoteWSGroup = AbstractGroup.extend({
           this.log.info('received a push request');
           const model = factory.createJSONLoader().loadModelFromString(msg.substr(PUSH.length, msg.length - 1)).get(0);
           this.lock = true;
-          try {
-            this.getKevoreeCore().deploy(model, () => {
-              this.lock = false;
-            });
-          } catch (ignore) {
+          const freeLock = () => {
             this.lock = false;
-          }
-
+          };
+          this.getKevoreeCore().deploy(model).then(freeLock, freeLock);
         } else if (msg === PULL) {
           if (this.dictionary.getBoolean('answerPull', this.dic_answerPull.defaultValue)) {
             this.log.info('received a pull request');

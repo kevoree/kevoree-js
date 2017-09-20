@@ -159,8 +159,8 @@ NodeJSRuntime.prototype = {
         });
 
         // deploy model
-        this.kCore.deploy(bootstrapModel, (err) => {
-          if (err) {
+        this.kCore.deploy(bootstrapModel)
+          .then(() => {}, () => {
             try {
               const timestamp = Date.now();
               const currModelPath = path.join(os.tmpdir(), 'model-' + this.nodename + '-' + timestamp + '.curr.json');
@@ -175,8 +175,7 @@ NodeJSRuntime.prototype = {
             } catch (err) {
               console.log(err);
             }
-          }
-        });
+          });
       }
     });
   },

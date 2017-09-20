@@ -141,10 +141,15 @@ KevoreeCore.prototype = {
    * given one. The resulting delta must be a set of commands to sequentially
    * execute in order to move to the next state (described by the given model)
    *
-   * @param  {ContainerRoot} model the new state to converge to
-   * @return {Promise}             resolved when the model is deployed
+   * @param  {ContainerRoot} model        the new state to converge to
+   * @param  {any}           deprecatedCb this should not be set (it used to be callback-based but now it is Promise-based
+   *                                      so to prevent further error, setting this param will throw an Error)
+   * @return {Promise}                    resolved when the model is deployed
    */
-  deploy(model) {
+  deploy(model, deprecatedCb) {
+    if (typeof deprecatedCb !== 'undefined') {
+      return Promise.reject(new Error('Core.deploy() is now Promise-based, please update your code accordingly'));
+    }
     if (!this.deployModel) {
       this.emitter.emit('deploying', model);
       if (model && !model.findNodesByID(this.nodeName)) {

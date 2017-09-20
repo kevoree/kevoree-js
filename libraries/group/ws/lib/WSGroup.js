@@ -213,13 +213,10 @@ var WSGroup = AbstractGroup.extend({
                     // push from master
                     var model = loader.loadModelFromString(parsedMsg.getModel()).get(0);
                     this.lock = true;
-                    try {
-                      this.getKevoreeCore().deploy(model, function () {
-                        this.lock = false;
-                      }.bind(this));
-                    } catch (ignore) {
+                    var freeLock = function () {
                       this.lock = false;
-                    }
+                    }.bind(this);
+                    this.getKevoreeCore().deploy(model).then(freeLock, freeLock);
                     break;
 
                   default:
