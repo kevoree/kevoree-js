@@ -36,7 +36,7 @@ InstanceMock.prototype = {
       getCurrentModel() {
         return self.currentModel;
       },
-      deploy: () => {},
+      deploy: () => Promise.resolve(),
       on: () => {},
       off: () => {},
       submitScript: () => {}
