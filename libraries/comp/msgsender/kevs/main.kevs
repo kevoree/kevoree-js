@@ -1,17 +1,15 @@
-add node0, browser: JavascriptNode
+add node0: JavascriptNode
+add node0.printer: ConsolePrinter
 add sync : CentralizedWSGroup
-add browser.sender : MsgSender/1/{ js: '2.0.0-alpha' }
-add browser.printer: ConsolePrinter
-
 add chan: RemoteWSChan
 
-attach node0, browser sync
+attach node0 sync
 
 set sync.isMaster/node0 = 'true'
 set chan.host = 'localhost'
+set chan.port = '3000'
 set chan.uuid = '12345'
 
-network node0.ip.lo 127.0.0.1
+bind node0.printer.input chan
 
-bind browser.sender.send chan
-bind browser.printer.input chan
+network node0.ip.lo 127.0.0.1
