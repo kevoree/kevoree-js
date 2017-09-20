@@ -1,6 +1,6 @@
 {
   "name": "kevoree-comp-msgsender",
-  "version": "2.0.0-alpha",
+  "version": "2.0.0-alpha.0",
   "main": "./lib/MsgSender.js",
   "kevoree": {
     "namespace": "kevoree",
