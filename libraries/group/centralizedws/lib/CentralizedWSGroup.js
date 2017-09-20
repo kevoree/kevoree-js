@@ -5,16 +5,16 @@ const client = require('./client');
 function logger(log, tag) {
   return {
     info: (msg) => {
-      log.info('CentralizedWSGroup', tag + ' ' + msg);
+      log.info(tag + ' ' + msg);
     },
     debug: (msg) => {
-      log.debug('CentralizedWSGroup', tag + ' ' + msg);
+      log.debug(tag + ' ' + msg);
     },
     warn: (msg) => {
-      log.warn('CentralizedWSGroup', tag + ' ' + msg);
+      log.warn(tag + ' ' + msg);
     },
     error: (msg) => {
-      log.error('CentralizedWSGroup', tag + ' ' + msg);
+      log.error(tag + ' ' + msg);
     }
   };
 }
@@ -53,11 +53,11 @@ const CentralizedWSGroup = AbstractGroup.extend({
     const rMasterNet = masterNet.match(/^([a-z0-9A-Z]+)\.([a-z0-9A-Z]+)$/);
     if (rMasterNet && rMasterNet.length > 0) {
       if (isMaster) {
-        this.fragment = server.create(logger(this.log, '[' + this.name + '][master]'), port, this);
+        this.fragment = server.create(logger(this.log, '[master]'), port, this);
         done();
       } else {
         try {
-          this.fragment = client.create(logger(this.log, '[' + this.name + '][client]'), port, this, rMasterNet[1], rMasterNet[2]);
+          this.fragment = client.create(logger(this.log, '[client]'), port, this, rMasterNet[1], rMasterNet[2]);
           done();
         } catch (err) {
           done(err);
@@ -67,7 +67,7 @@ const CentralizedWSGroup = AbstractGroup.extend({
       const self = this;
       this.dictionary.on('port', () => {
         if (isMaster) {
-          this.fragment.broadcast(logger(this.log, '[' + this.name + '][master]'), this);
+          this.fragment.broadcast(logger(this.log, '[master]'), this);
         }
         this.stop(() => {
           self.start(() => {});

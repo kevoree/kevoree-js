@@ -44,10 +44,11 @@ module.exports = function register(logger, client2name, client, pMsg, instance) 
         // fs.writeFileSync('/tmp/master-register-'+pMsg.getNodeName()+'.json', JSON.stringify(JSON.parse(factory.createJSONSerializer().serialize(registerModel)), null, 2), 'utf8');
         instance.isRegister = true;
         logger.debug('isRegister lock = true');
-        kCore.deploy(registerModel, () => {
+        const freeLock = () => {
           logger.debug('isRegister lock = false');
           instance.isRegister = false;
-        });
+        };
+        kCore.deploy(registerModel).then(freeLock, freeLock);
       } else {
         throw new Error('Unable to find a master node');
       }
