@@ -1,15 +1,15 @@
 add node0, browser: JavascriptNode
-add sync : WSGroup
-add browser.sender : MsgSender
+add sync : CentralizedWSGroup
+add browser.sender : MsgSender/1/{ js: '2.0.0-alpha' }
 add browser.printer: ConsolePrinter
 
-add chan: RemoteWSChan/5.2.9-SNAPSHOT
+add chan: RemoteWSChan
 
 attach node0, browser sync
 
-set sync.master = 'node0'
-set chan.host = 'ws.kevoree.org'
-set chan.uuid = 'chan-0001'
+set sync.isMaster/node0 = 'true'
+set chan.host = 'localhost'
+set chan.uuid = '12345'
 
 network node0.ip.lo 127.0.0.1
 

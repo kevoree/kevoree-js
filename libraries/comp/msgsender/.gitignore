@@ -32,4 +32,12 @@ node_modules
 
 # Kevoree JS
 kevlib.json
-browser/*.js
+browser/kevoree-comp-msgsender.js
+dist
+
+yarn.lock
+
+# Webpack
+*.hot-update.js
+*.hot-update.json
+*.hot-update.js.map

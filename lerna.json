@@ -10,6 +10,7 @@
     "libraries/comp/ticker",
     "libraries/comp/consoleprinter",
     "libraries/comp/twitter",
+    "libraries/comp/msgsender",
     "libraries/group/centralizedws",
     "libraries/group/remotews"
   ]
