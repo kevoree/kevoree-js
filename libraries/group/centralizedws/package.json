@@ -1,6 +1,6 @@
 {
   "name": "kevoree-group-centralizedws",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "WebSocket group based on a centralized architecture that only sends partial model to connected clients",
   "main": "lib/CentralizedWSGroup.js",
   "scripts": {
@@ -35,7 +35,7 @@
     "eslint": "^4.3.0",
     "eslint-config-kevoree": "^1.0.1",
     "expect": "^1.20.2",
-    "kevoree-scripts": "^1.0.12",
+    "kevoree-scripts": "^1.0.13",
     "mocha": "^3.4.2"
   },
   "repository": {
