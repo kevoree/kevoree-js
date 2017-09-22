@@ -1,8 +1,8 @@
 {
-  "name": "kevoree-comp-twitter",
-  "version": "2.0.5",
-  "description": "Tweets input messages and streams Tweets based on hashtags (comma-separated)",
-  "main": "lib/Twitter.js",
+  "name": "kevoree-comp-tweet",
+  "version": "1.0.0",
+  "description": "Sends input messages as tweets using the given Twitter account key/secret in params.",
+  "main": "lib/Tweet.js",
   "kevoree": {
     "namespace": "kevoree"
   },

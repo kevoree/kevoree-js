@@ -7,7 +7,7 @@ const Twitter = require('twitter');
  * @type {Twitter}
  */
 module.exports = Entity.AbstractComponent.extend({
-  toString: 'Twitter',
+  toString: 'Tweet',
   tdef_version: 1,
 
   dic_consumer_key:        { optional: false },

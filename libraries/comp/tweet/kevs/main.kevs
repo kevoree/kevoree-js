@@ -1,5 +1,10 @@
 add node0: JavascriptNode
-add node0.comp: Twitter/1/{ js: '2.0.0-alpha' }
+add node0.comp: Tweet/1/{ js: '1.0.0' }
+add sync: CentralizedWSGroup
+
+attach node0 sync
+
+set sync.isMaster/node0 = 'true'
 
 set node0.logLevel = 'DEBUG'
 
