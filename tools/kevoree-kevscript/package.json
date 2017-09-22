@@ -1,6 +1,6 @@
 {
   "name": "kevoree-kevscript",
-  "version": "5.0.8",
+  "version": "5.0.9",
   "description": "Kevoree KevScript module - contains parser, interpreter and grammar",
   "main": "./lib/KevScript.js",
   "bin": {
