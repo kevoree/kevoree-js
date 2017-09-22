@@ -1,6 +1,6 @@
 {
   "name": "kevoree-comp-twitter",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Tweets input messages and streams Tweets based on hashtags (comma-separated)",
   "main": "lib/Twitter.js",
   "kevoree": {
@@ -30,7 +30,7 @@
     "babel-preset-react": "^6.16.0",
     "eslint": "^4.3.0",
     "eslint-config-kevoree": "^1.0.1",
-    "kevoree-scripts": "^1.0.13",
+    "kevoree-scripts": "^1.0.14",
     "mocha": "^3.4.2",
     "react": "^15.4.1"
   },
