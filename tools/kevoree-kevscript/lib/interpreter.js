@@ -148,8 +148,7 @@ function interpreter(ast, ctxModel, opts) {
           monkeyPatch(model);
           return result;
         });
-    })
-    .catch((err) => {
+    }, (err) => {
       return {
         error: err,
         model: null,

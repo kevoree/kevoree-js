@@ -1,3 +1,4 @@
+const xtend = require('xtend');
 const kevs = require('./parser');
 const interpreter = require('./interpreter');
 const modelInterpreter = require('./model-interpreter');
@@ -33,10 +34,7 @@ KevScript.prototype = {
    * @throws  Error on SyntaxError and on source code validity and such
    */
   parse: function (data, ctxModel, ctxVars) {
-    this.options.logger = this.logger;
-    this.options.ctxVars = ctxVars;
-    const options = this.options;
-
+    const options = xtend(this.options, { ctxVars, logger: this.logger });
     const parser = new kevs.Parser();
     const ast = parser.parse(data);
 
