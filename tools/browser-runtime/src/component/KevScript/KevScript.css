@@ -1,0 +1,12 @@
+.CodeMirror {
+  height: 100%;
+}
+
+.CodeMirror.cm-s-kevscript {
+  font-family: monospace !important;
+  font-size: 1.1em;
+}
+
+.CodeMirror-scroll {
+  cursor: text;
+}

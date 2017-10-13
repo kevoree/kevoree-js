@@ -1,0 +1,39 @@
+.output {
+  border: 1px solid #444;
+  overflow: hidden;
+}
+
+.output-header {
+  padding: 5px;
+  background-color: #333;
+  border-bottom: 1px solid #444;
+}
+
+.output-header h4 {
+  margin: 0;
+}
+
+.output-header h4 .name {
+  padding-right: 15px;
+}
+
+.output-header .clickable {
+  float: right;
+}
+
+.output .list {
+  height: 100%;
+  overflow-y: auto;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.output .list li {
+  border-bottom: 1px solid #444;
+  padding: 0 5px;
+}
+
+.output .list li:hover {
+  background-color: #333;
+}

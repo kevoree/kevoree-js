@@ -1,0 +1,21 @@
+.PageContent {
+  display: flex !important;
+  flex-grow: 1;
+  flex-flow: column;
+}
+
+.PageContent-header {
+  height: 80px !important;
+  flex: 0 0 80px !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  border: 0 !important;
+}
+
+.PageContent-content {
+  display: flex;
+  flex-flow: column;
+  flex-grow: 1;
+  height: 100%;
+  padding: 10px;
+}

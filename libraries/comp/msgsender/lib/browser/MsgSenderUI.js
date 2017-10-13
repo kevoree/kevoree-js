@@ -4,51 +4,51 @@ const MsgSender = require('../MsgSender');
 const MsgSenderUI = MsgSender.extend({
 
   uiFactory() {
-    const containerStyle = { padding: 5 };
-    const btnStyle = { float: 'right' };
+    const containerStyle = {
+      display: 'flex',
+      flexGrow: 1,
+      padding: 5,
+      height: 22,
+    };
+    const inputStyle = {
+      flexGrow: 1,
+    };
 
-    const ReactTicker = React.createClass({
-
-      getInitialState() {
-        return { value: '' };
-      },
+    return class ReactTicker extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = { value: '' };
+      }
 
       onChange(e) {
         this.setState({ value: e.target.value });
-      },
+      }
 
       onKeyPress(e) {
         if (e.charCode === 13 || e.keyCode === 13) { // 'enter' key
           this.onClick();
         }
-      },
+      }
 
       onClick() {
         this.props.instance.out_send(this.state.value);
         this.setState({ value: '' }); // reset field value after send
-      },
+      }
 
       render() {
         return (
           <div style={containerStyle}>
             <input
               type="text"
+              style={inputStyle}
               value={this.state.value}
               onChange={(e) => this.onChange(e)}
               onKeyPress={(e) => this.onKeyPress(e)} />
-            <button
-              onClick={() => this.onClick()}
-              style={btnStyle}>Send</button>
+            <button onClick={() => this.onClick()}>Send</button>
           </div>
         );
       }
-    });
-
-    ReactTicker.propTypes = {
-      instance: React.PropTypes.object.isRequired
     };
-
-    return ReactTicker;
   }
 });
 

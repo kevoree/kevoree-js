@@ -1,15 +1,2 @@
 add node0: JavascriptNode
-add node0.printer: ConsolePrinter
-add sync : CentralizedWSGroup
-add chan: RemoteWSChan
-
-attach node0 sync
-
-set sync.isMaster/node0 = 'true'
-set chan.host = 'localhost'
-set chan.port = '3000'
-set chan.uuid = '12345'
-
-bind node0.printer.input chan
-
-network node0.ip.lo 127.0.0.1
+add node0.comp: MsgSender

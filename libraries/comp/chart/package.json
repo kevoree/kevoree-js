@@ -1,13 +1,22 @@
 {
   "name": "kevoree-comp-chart",
-  "version": "2.0.3",
+  "version": "3.0.0-alpha",
   "main": "./lib/Chart.js",
+  "description": "Displays received inputs in a chart (the chart is only available for browser runtimes)",
   "kevoree": {
-    "namespace": "kevoree"
+    "namespace": "kevoree",
+    "browser": "lib/browser.js"
   },
   "scripts": {
-    "prepublish": "grunt",
-    "postpublish": "grunt publish"
+    "prestart": "npm run build",
+    "pretest": "npm run build",
+    "prepublishOnly": "npm run test",
+    "start": "kevoree-scripts start",
+    "build": "kevoree-scripts build",
+    "browser": "kevoree-scripts browser",
+    "test": "mocha test",
+    "kev:publish": "kevoree-scripts publish",
+    "postpublish": "npm run kev:publish"
   },
   "keywords": [
     "kevoree-std-lib",
@@ -19,12 +28,13 @@
     "kevoree-entities": "^9.2.1"
   },
   "devDependencies": {
-    "grunt": "^1.0.1",
-    "grunt-browserify": "^5.0.0",
-    "grunt-contrib-uglify": "^0.4.0",
-    "grunt-contrib-watch": "~0.6.1",
-    "grunt-kevoree": "^5.9.0-alpha.2",
-    "grunt-kevoree-genmodel": "^3.0.3",
-    "grunt-kevoree-registry": "^3.0.1"
+    "babel-preset-react": "^6.16.0",
+    "eslint": "^4.3.0",
+    "eslint-config-kevoree": "^1.0.1",
+    "kevoree-scripts": "^1.0.16",
+    "mocha": "^3.4.2",
+    "react": "^15.4.1",
+    "react-dom": "^16.0.0",
+    "recharts": "^1.0.0-apha.5"
   }
 }

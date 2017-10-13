@@ -1,16 +1,13 @@
-add node0, browser : JavascriptNode
-add sync : WSGroup
-add browser.chart : Chart
-add browser.ticker : Ticker
+add node0 : JavascriptNode
+add node0.comp : Chart/1/{ js: '3.0.0-alpha' }
+add node0.ticker: Ticker
 add chan: LocalChannel
 
-attach node0, browser sync
+bind node0.ticker.tick chan
+bind node0.comp.input chan
 
-set browser.ticker.random = "true"
-set browser.ticker.period = "500"
-set sync.master = 'node0'
+set node0.ticker.random = 'true'
+set node0.ticker.period = '200'
+set node0.comp.xLimit = '10'
 
-bind browser.chart.input chan
-bind browser.ticker.tick chan
-
-network node0.ip.lo 127.0.0.1
+stop node0.ticker

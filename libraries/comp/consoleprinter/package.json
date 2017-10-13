@@ -12,6 +12,7 @@
     "prepublishOnly": "npm run test",
     "start": "kevoree-scripts start",
     "build": "kevoree-scripts build",
+    "browser": "kevoree-scripts browser",
     "test": "mocha test",
     "kev:publish": "kevoree-scripts publish",
     "postpublish": "npm run kev:publish"

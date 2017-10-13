@@ -2,25 +2,41 @@ module.exports = {
   container: {
     padding: 0,
     margin: 0,
-    backgroundColor: '#f5f5f5'
+    display: 'flex',
+    flexGrow: 1,
+    flexFlow: 'column',
+    minWidth: 200,
+    minHeight: 200,
   },
-
   topPanel: {
     padding: 5,
-    overflow: 'auto'
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexShrink: 0
   },
-
-  btn: {
-    float: 'left'
-  },
-
   maxLines: {
-    display: 'inline',
     width: 100,
-    float: 'right'
   },
-
   listPanel: {
-    padding: '0 5px'
+    padding: '10px 5px',
+    display: 'flex',
+    justifyContent: 'center',
+    overflowY: 'auto'
+  },
+  emptyList: {
+    textAlign: 'center',
+    padding: '8px 0'
+  },
+  list: {
+    margin: 0,
+    padding: 0,
+    flexGrow: 1,
+    height: '100%',
+    listStyleType: 'none'
+  },
+  listItem: {
+    borderBottom: '1px solid #ccc',
+    padding: '0 10px',
+    height: 25
   }
 };

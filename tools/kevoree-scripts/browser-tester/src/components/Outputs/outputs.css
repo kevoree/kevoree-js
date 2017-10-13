@@ -1,0 +1,6 @@
+.outputs {
+  display: flex;
+  flex: 100;
+  flex-flow: row;
+  overflow-y: hidden;
+}

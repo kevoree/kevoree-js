@@ -1,19 +1,9 @@
 const React = require('react');
 const Ticker = require('../Ticker');
 
-const containerStyle = {
-  padding: 5,
-  margin: 0
-};
-
-const pStyle = {
-  margin: 0,
-  fontFamily: '"Helvetica", "Arial", sans-serif'
-};
-
-const pullRight = {
-  float: 'right'
-};
+const containerStyle = { flexGrow: 1, padding: 5, minWidth: 230 };
+const labelStyle = { fontWeight: 'bold' };
+const valueStyle = { float: 'right' };
 
 const TickerUI = Ticker.extend({
 
@@ -42,38 +32,31 @@ const TickerUI = Ticker.extend({
   },
 
   uiFactory() {
-    const ReactTicker = React.createClass({
-      getInitialState() {
-        return this.props.instance.uiState;
-      },
+    return class ReactTicker extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = props.instance.uiState;
+      }
 
       render() {
         return (
           <div style={containerStyle}>
-            <p style={pStyle}>
-              <strong>Period:</strong>
-              <span style={pullRight}>{this.state.period + 'ms'}</span>
-            </p>
-            <p style={pStyle}>
-              <strong>Tick count:
-              </strong>
-              <span style={pullRight}>{this.state.count + ''}</span>
-            </p>
-            <p style={pStyle}>
-              <strong>Last tick:
-              </strong>
-              <span style={pullRight}>{this.state.value + ''}</span>
-            </p>
+            <div>
+              <span style={labelStyle}>Period:</span>
+              <span style={valueStyle}>{this.state.period + 'ms'}</span>
+            </div>
+            <div>
+              <span style={labelStyle}>Tick count:</span>
+              <span style={valueStyle}>{this.state.count + ''}</span>
+            </div>
+            <div>
+              <span style={labelStyle}>Last tick:</span>
+              <span style={valueStyle}>{this.state.value + ''}</span>
+            </div>
           </div>
         );
       }
-    });
-
-    ReactTicker.propTypes = {
-      instance: React.PropTypes.object.isRequired
     };
-
-    return ReactTicker;
   }
 });
 

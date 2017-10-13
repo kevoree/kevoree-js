@@ -1,0 +1,4 @@
+.description tr > td:first-child {
+  width: 150px;
+  font-weight: bold;
+}

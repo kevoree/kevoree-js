@@ -1,15 +1,15 @@
-const React = require('react');
+import React from 'react';
 
-const ConsolePrinter = require('../ConsolePrinter');
-const s = require('./styles');
+import ConsolePrinter from '../ConsolePrinter';
+import s from './styles';
 
 const ConsolePrinterUI = ConsolePrinter.extend({
 
-  construct: function () {
+  construct() {
     this.uiState = { messages: [], maxLines: 25 };
   },
 
-  in_input: function (msg) {
+  in_input(msg) {
     this._super(msg);
     this.uiState.messages = [].concat(this.uiState.messages).concat(msg);
     if (this.ui) {
@@ -18,70 +18,60 @@ const ConsolePrinterUI = ConsolePrinter.extend({
     }
   },
 
-  uiFactory: function () {
-    const ReactConsolePrinter = React.createClass({
-      getInitialState: function () {
-        return this.props.instance.uiState;
-      },
+  uiFactory() {
+    return class ReactConsolePrinter extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = props.instance.uiState;
+      }
 
-      updateLines: function () {
+      updateLines() {
         const state = this.props.instance.uiState;
         if (state.messages.length > state.maxLines) {
           state.messages = [].concat(state.messages);
           state.messages.splice(0, state.messages.length - state.maxLines);
           this.setState({ messages: state.messages });
         }
-      },
+      }
 
-      onClear: function () {
+      onClear() {
         this.props.instance.uiState.messages = [];
         this.setState({ messages: this.props.instance.uiState.messages });
-      },
+      }
 
-      onMaxLineChange: function (event) {
-        this.props.instance.uiState.maxLines = parseInt(event.target.value, 10);
+      onMaxLineChange(value) {
+        this.props.instance.uiState.maxLines = parseInt(value, 10);
         this.setState({ maxLines: this.props.instance.uiState.maxLines });
         this.updateLines();
-      },
+      }
 
-      render: function () {
+      render() {
         return (
           <div style={s.container}>
             <div style={s.topPanel}>
-              <button style={s.btn} onClick={this.onClear}>Clear</button>
+              <button style={s.btn} onClick={() => this.onClear()}>Clear</button>
               <input
                 type='number'
                 value={this.state.maxLines}
-                onChange={this.onMaxLineChange}
+                onChange={(e) => this.onMaxLineChange(e.target.value)}
                 style={Object.assign({}, s.maxLines, s.formControl, s.inputSm, s.pullRight)}
               />
             </div>
             <div style={s.listPanel}>
-              {this.state.messages.length === 0 && (
-                <p style={s.textCenter}>
-                  <em>- empty -</em>
-                </p>
-              )}
-              {this.state.messages.length > 0 && (
-                <ul>
+              {this.state.messages.length > 0 ? (
+                <ul style={s.list}>
                   {this.state.messages.map((msg, i) => {
                     return (
-                      <li key={i} style={s.listGroupItem}>{msg}</li>
+                      <li key={i} style={s.listItem}>{msg}</li>
                     );
                   })}
                 </ul>
-              )}
+              ) : (<em style={s.emptyList}>- no messages -</em>)}
             </div>
           </div>
         );
       }
-    });
-
-    ReactConsolePrinter.propTypes = {
-      instance: React.PropTypes.object.isRequired
     };
-
-    return ReactConsolePrinter;
   }
 });
 

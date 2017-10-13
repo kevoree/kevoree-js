@@ -32,4 +32,4 @@ node_modules
 
 # Kevoree JS
 kevlib.json
-browser/kevoree-comp-chart*.js
+browser/kevoree-comp-chart.js

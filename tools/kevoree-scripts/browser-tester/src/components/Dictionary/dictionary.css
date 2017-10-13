@@ -1,0 +1,20 @@
+table.dictionary {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table.dictionary tr {
+  border-bottom: 1px solid #333;
+}
+
+table.dictionary tbody tr:last-child {
+  border-bottom: none;
+}
+
+table.dictionary td {
+  width: 16.5%; /* becaure there are 6 columns */
+}
+
+table.dictionary thead th {
+  text-align: left;
+}

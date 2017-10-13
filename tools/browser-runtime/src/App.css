@@ -1,0 +1,14 @@
+.App-container {
+  display: flex;
+  flex-grow: 1;
+}
+
+.App-content {
+  display: flex;
+  flex-grow: 1;
+  padding-left: 1px;
+}
+
+.App-grow {
+  flex-grow: 1;
+}

@@ -1,0 +1,38 @@
+.collapsable {
+  display: flex;
+  flex-flow: column;
+}
+
+.collapsable h3 {
+  color: #BBB;
+  margin: 0;
+  border-bottom: 1px solid #666;
+  text-transform: capitalize;
+}
+
+.collapsable h3:hover {
+  border-bottom: 1px solid #ccc;
+}
+
+.collapsable h3 .status {
+  text-transform: uppercase;
+  font-size: 10px;
+  color: #666;
+  float: right;
+  line-height: 25px;
+  vertical-align: middle;
+  display: none;
+}
+
+.collapsable h3:hover .status {
+  display: inline-block;
+}
+
+.collapsable .content {
+  padding-top: 15px;
+  overflow: hidden;
+}
+
+.collapsable .content.collapsed {
+  display: none;
+}

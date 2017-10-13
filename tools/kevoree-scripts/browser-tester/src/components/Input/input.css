@@ -1,0 +1,14 @@
+.input label {
+  display: block;
+  color: #BBB;
+  font-weight: bold;
+}
+
+.input .group {
+  display: flex;
+}
+
+.input input {
+  flex-grow: 1;
+  padding: 5px;
+}

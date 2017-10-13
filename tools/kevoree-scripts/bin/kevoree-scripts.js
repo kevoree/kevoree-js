@@ -11,6 +11,7 @@ switch (script) {
   case 'build':
   case 'start':
   case 'publish':
+  case 'browser':
   case 'test':
     {
       ['SIGINT', 'SIGTERM'].forEach((sig) => {

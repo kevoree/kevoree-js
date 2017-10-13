@@ -39,10 +39,12 @@ const config = {
   },
 };
 
-config.plugins.push(
-  new webpack.optimize.UglifyJsPlugin({
-    sourceMap: config.devtool && (config.devtool.indexOf('sourcemap') >= 0 || config.devtool.indexOf('source-map') >= 0)
-  })
-);
+if (process.env.NODE_ENV !== 'development') {
+  config.plugins.push(
+    new webpack.optimize.UglifyJsPlugin({
+      sourceMap: config.devtool && (config.devtool.indexOf('sourcemap') >= 0 || config.devtool.indexOf('source-map') >= 0)
+    })
+  );
+}
 
 module.exports = config;

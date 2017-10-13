@@ -1,0 +1,9 @@
+.Sidebar-header {
+  height: 80px !important;
+  padding: 0 !important;
+}
+
+.Sidebar-logo {
+  height: 100%;
+  padding: 5px;
+}
