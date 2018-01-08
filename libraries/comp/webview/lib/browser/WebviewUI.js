@@ -1,7 +1,7 @@
 import React from 'react';
 import Webview from '../Webview';
 
-const containerStyle = { flexGrow: 1 };
+const containerStyle = { display: 'flex', flewGrow: 1 };
 const iframeStyle = {
   boxSizing: 'border-box',
   position: 'absolute',
@@ -25,6 +25,10 @@ const WebviewUI = Webview.extend({
     });
   },
 
+  start(done) {
+    done();
+  },
+
   uiFactory() {
     return class ReactWebview extends React.Component {
       constructor(props) {
@@ -39,7 +43,6 @@ const WebviewUI = Webview.extend({
               title='Web View'
               src={this.state.url}
               frameBorder='0'
-              scrolling='no'
               marginHeight='0'
               marginWidth='0'
               style={iframeStyle}></iframe>
