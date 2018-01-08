@@ -1,0 +1,72 @@
+{
+    "class": "root:org.kevoree.ContainerRoot@0.328625315764640161515423930898",
+    "generated_KMF_ID": "0.328625315764640161515423930898",
+    "nodes": [],
+    "repositories": [],
+    "hubs": [],
+    "mBindings": [],
+    "groups": [],
+    "packages": [
+        {
+            "class": "org.kevoree.Package@kevoree",
+            "name": "kevoree",
+            "packages": [],
+            "typeDefinitions": [
+                {
+                    "class": "org.kevoree.ComponentType@name=Webview,version=1",
+                    "abstract": "false",
+                    "name": "Webview",
+                    "version": "1",
+                    "deployUnits": [
+                        "/packages[kevoree]/deployUnits[hashcode=5d3616dccfc4c7f44585ba4c21cf5894,name=kevoree-comp-webview,version=0.0.1]"
+                    ],
+                    "superTypes": [],
+                    "dictionaryType": [
+                        {
+                            "class": "org.kevoree.DictionaryType@0.0",
+                            "generated_KMF_ID": "0.0",
+                            "attributes": [
+                                {
+                                    "class": "org.kevoree.DictionaryAttribute@url",
+                                    "fragmentDependant": "false",
+                                    "optional": "true",
+                                    "name": "url",
+                                    "state": "false",
+                                    "datatype": "STRING",
+                                    "defaultValue": "http://www.kevoree.org",
+                                    "genericTypes": []
+                                }
+                            ]
+                        }
+                    ],
+                    "metaData": [
+                        {
+                            "class": "org.kevoree.Value@description",
+                            "name": "description",
+                            "value": "Displays a Website in a Kevoree Browser Runtime"
+                        }
+                    ],
+                    "required": [],
+                    "provided": []
+                }
+            ],
+            "deployUnits": [
+                {
+                    "class": "org.kevoree.DeployUnit@hashcode=5d3616dccfc4c7f44585ba4c21cf5894,name=kevoree-comp-webview,version=0.0.1",
+                    "name": "kevoree-comp-webview",
+                    "hashcode": "5d3616dccfc4c7f44585ba4c21cf5894",
+                    "url": "",
+                    "version": "0.0.1",
+                    "requiredLibs": [],
+                    "filters": [
+                        {
+                            "class": "org.kevoree.Value@platform",
+                            "name": "platform",
+                            "value": "js"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

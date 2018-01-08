@@ -1,0 +1,2 @@
+add node0: JavascriptNode
+add node0.comp: Webview
