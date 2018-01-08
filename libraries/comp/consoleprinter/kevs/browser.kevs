@@ -1,2 +1,2 @@
 add node0: JavascriptNode
-add node0.comp: ConsolePrinter/1/{ js: '5.3.20-alpha' }
+add node0.comp: ConsolePrinter
