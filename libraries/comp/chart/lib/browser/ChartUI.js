@@ -1,6 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { LineChart, Tooltip, Line, XAxis, YAxis } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts';
 import Chart from '../Chart';
 
 const ChartUI = Chart.extend({
@@ -40,71 +39,66 @@ const ChartUI = Chart.extend({
   },
 
   uiFactory() {
-    return ReactChart;
+    return class ReactChart extends React.Component {
+
+      constructor(props) {
+        super(props);
+        this.state = {
+          paused: false,
+          values: props.instance.values,
+          xLimit: props.instance.getXLimit()
+        };
+        this.localValues = this.state.values;
+      }
+
+      changeXLimit(value) {
+        if (!isNaN(value)) {
+          this.props.instance.setXLimit(value);
+        }
+      }
+
+      clear() {
+        this.props.instance.values = [];
+        this.setState({ values: this.props.instance.values });
+      }
+
+      togglePause() {
+        if (!this.state.paused) {
+          this.localValues = this.state.values;
+        } else {
+          this.localValues = [];
+        }
+        this.setState({ paused: !this.state.paused });
+      }
+
+      render() {
+        let data;
+        if (this.state.paused) {
+          data = this.localValues.map((value) => ({ value }));
+        } else {
+          data = this.state.values.map((value) => ({ value }));
+        }
+        return (
+          <div style={{ minWidth: 500, minHeight: 400 }}>
+            <div style={{ padding: 5, display: 'flex', justifyContent: 'space-between' }}>
+              <div>
+                <button onClick={() => this.clear()} style={{ marginRight: 5 }}>Clear</button>
+                <button onClick={() => this.togglePause()}>{this.state.paused ? 'Resume' : 'Pause'}</button>
+              </div>
+              <input type="number" value={this.state.xLimit} onChange={(e) => this.changeXLimit(parseInt(e.target.value, 10))} />
+            </div>
+            <LineChart width={500} height={350} data={data}>
+              <XAxis />
+              <YAxis />
+              <Tooltip />
+              <Line type="monotone" dataKey="value" stroke="#8884d8" />
+            </LineChart>
+          </div>
+        );
+      }
+    };
   }
 });
 
-class ReactChart extends React.Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      paused: false,
-      values: props.instance.values,
-      xLimit: props.instance.getXLimit()
-    };
-    this.localValues = this.state.values;
-  }
-
-  changeXLimit(value) {
-    if (!isNaN(value)) {
-      this.props.instance.setXLimit(value);
-    }
-  }
-
-  clear() {
-    this.props.instance.values = [];
-    this.setState({ values: this.props.instance.values });
-  }
-
-  togglePause() {
-    if (!this.state.paused) {
-      this.localValues = this.state.values;
-    } else {
-      this.localValues = [];
-    }
-    this.setState({ paused: !this.state.paused });
-  }
-
-  render() {
-    let data;
-    if (this.state.paused) {
-      data = this.localValues.map((value) => ({ value }));
-    } else {
-      data = this.state.values.map((value) => ({ value }));
-    }
-    return (
-      <div style={{ minWidth: 500, minHeight: 400 }}>
-        <div style={{ padding: 5, display: 'flex', justifyContent: 'space-between' }}>
-          <div>
-            <button onClick={() => this.clear()} style={{ marginRight: 5 }}>Clear</button>
-            <button onClick={() => this.togglePause()}>{this.state.paused ? 'Resume' : 'Pause'}</button>
-          </div>
-          <input type="number" value={this.state.xLimit} onChange={(e) => this.changeXLimit(parseInt(e.target.value, 10))} />
-        </div>
-        <LineChart width={500} height={350} data={data}>
-          <XAxis />
-          <YAxis />
-          <Tooltip />
-          <Line type="monotone" dataKey="value" stroke="#8884d8" />
-        </LineChart>
-      </div>
-    );
-  }
-}
-
-ReactChart.propTypes = {
-  instance: PropTypes.object,
-};
 
 module.exports = ChartUI;
