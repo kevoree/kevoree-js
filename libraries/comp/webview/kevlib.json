@@ -1,6 +1,6 @@
 {
-    "class": "root:org.kevoree.ContainerRoot@0.328625315764640161515423930898",
-    "generated_KMF_ID": "0.328625315764640161515423930898",
+    "class": "root:org.kevoree.ContainerRoot@0.97633567379064061515424098478",
+    "generated_KMF_ID": "0.97633567379064061515424098478",
     "nodes": [],
     "repositories": [],
     "hubs": [],
@@ -18,7 +18,7 @@
                     "name": "Webview",
                     "version": "1",
                     "deployUnits": [
-                        "/packages[kevoree]/deployUnits[hashcode=5d3616dccfc4c7f44585ba4c21cf5894,name=kevoree-comp-webview,version=0.0.1]"
+                        "/packages[kevoree]/deployUnits[hashcode=aa6583d03c302faf2c9460f2e2aefbc8,name=kevoree-comp-webview,version=0.0.2]"
                     ],
                     "superTypes": [],
                     "dictionaryType": [
@@ -52,11 +52,11 @@
             ],
             "deployUnits": [
                 {
-                    "class": "org.kevoree.DeployUnit@hashcode=5d3616dccfc4c7f44585ba4c21cf5894,name=kevoree-comp-webview,version=0.0.1",
+                    "class": "org.kevoree.DeployUnit@hashcode=aa6583d03c302faf2c9460f2e2aefbc8,name=kevoree-comp-webview,version=0.0.2",
                     "name": "kevoree-comp-webview",
-                    "hashcode": "5d3616dccfc4c7f44585ba4c21cf5894",
+                    "hashcode": "aa6583d03c302faf2c9460f2e2aefbc8",
                     "url": "",
-                    "version": "0.0.1",
+                    "version": "0.0.2",
                     "requiredLibs": [],
                     "filters": [
                         {
