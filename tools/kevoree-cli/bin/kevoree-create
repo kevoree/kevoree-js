@@ -72,8 +72,13 @@ if (!dir) {
         console.log();
         hbsTemplates.write(answers.type, path.join(dir, 'lib', answers.name + '.js'), answers);
         if (answers.browserCompat) {
-          hbsTemplates.write('browser', path.join(dir, 'lib', 'browser.js'), answers);
           hbsTemplates.write('package-browser', path.join(dir, 'package.json'), answers);
+          if (answers.type === 'component') {
+            hbsTemplates.write('browser-ui', path.join(dir, 'lib', 'browser.js'), answers);
+            hbsTemplates.write('component-ui', path.join(dir, 'lib', 'browser', answers.name + 'UI.js'), answers);
+          } else {
+            hbsTemplates.write('browser', path.join(dir, 'lib', 'browser.js'), answers);
+          }
         } else {
           hbsTemplates.write('package', path.join(dir, 'package.json'), answers);
         }

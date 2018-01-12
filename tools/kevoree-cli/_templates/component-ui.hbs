@@ -1,0 +1,24 @@
+import React from 'react';
+
+import {{name}} from '../{{name}}';
+
+/**
+ * Extends {{name}} in order to provide an `uiFactory()` method that will be
+ * used by Kevoree Browser Runtimes to display this component in a title.
+ */
+const {{name}}UI = {{name}}.extend({
+
+  uiFactory() {
+    return class React{{name}} extends React.Component {
+
+      render() {
+        return (
+          <div>Kevoree {{name}} UI</div>
+        );
+      }
+    };
+  }
+
+});
+
+module.exports = {{name}}UI;

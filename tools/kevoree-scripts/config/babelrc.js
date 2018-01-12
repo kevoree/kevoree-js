@@ -1,3 +1,4 @@
 module.exports = {
-  presets: ['env']
+  presets: ['env'],
+  plugins: ['transform-react-jsx']
 };

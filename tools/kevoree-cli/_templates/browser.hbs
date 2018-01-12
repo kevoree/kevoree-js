@@ -1,6 +1,6 @@
 const KevoreeModuleLoader = require('kevoree-module-loader');
 
 const pkg = require('../package.json');
-const Type = require('./{{name}}');
+const {{name}} = require('./{{name}}');
 
-KevoreeModuleLoader.register(pkg.name, pkg.version, Type);
+KevoreeModuleLoader.register(pkg.name, pkg.version, {{name}});
