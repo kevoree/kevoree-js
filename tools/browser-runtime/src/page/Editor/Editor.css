@@ -1,4 +1,9 @@
 .Editor-container {
   flex-grow: 100;
   height: 100%;
+  padding: 15px 15px 0 15px;
+}
+
+.Editor-menu {
+  padding-bottom: 10px;
 }

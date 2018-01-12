@@ -1,3 +1,7 @@
+.Sidebar {
+  margin: 0 !important;
+}
+
 .Sidebar-header {
   height: 80px !important;
   padding: 0 !important;

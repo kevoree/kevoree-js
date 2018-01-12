@@ -1,24 +1,22 @@
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import registerServiceWorker from './registerServiceWorker';
-import { capitalize, randomId } from './lib/util';
+import { capitalize, randomId, queryparams } from './lib/util';
 
 import './theme.css';
 import './index.css';
 
+global.React = React;
+global.ReactDOM = ReactDOM;
 
-const params = decodeURI(window.location.search.substr(1))
-  .split('&')
-  .reduce((params, value) => {
-    const array = value.split('=');
-    params[array[0]] = array[1];
-    return params;
-  }, {});
+const params = queryparams();
 
 ReactDOM.render(
-  <App name={params.name || `browser${capitalize(randomId())}`} type={params.type || 'JavascriptNode'} />,
+  <App
+    name={params.name || `browser${capitalize(randomId())}`}
+    type={params.type || 'JavascriptNode'} />,
   document.getElementById('root')
 );
-
-registerServiceWorker();

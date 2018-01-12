@@ -1,4 +1,4 @@
-add node0: JavascriptNode/1/{ js: '5.5.0-alpha.3' }
+add node0: JavascriptNode/LATEST/LATEST
 set node0.logLevel = 'DEBUG'
 // add sync: CentralizedWSGroup/LATEST/LATEST
 // add node0.ticker: Ticker/LATEST/LATEST

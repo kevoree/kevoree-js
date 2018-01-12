@@ -17,3 +17,31 @@ export function randomInt(min = 0, max = Infinity) {
 export function capitalize(str) {
   return str.substr(0, 1).toUpperCase() + str.substr(1);
 }
+
+export function queryparams() {
+  return decodeURI(window.location.search.substr(1))
+    .split('&')
+    .reduce((params, value) => {
+      const array = value.split('=');
+      params[array[0]] = array[1];
+      return params;
+    }, {});
+}
+
+export const makeCancelable = (promise) => {
+  let hasCanceled_ = false;
+
+  const wrappedPromise = new Promise((resolve, reject) => {
+    promise.then(
+      val => hasCanceled_ ? reject({isCanceled: true}) : resolve(val),
+      error => hasCanceled_ ? reject({isCanceled: true}) : reject(error)
+    );
+  });
+
+  return {
+    promise: wrappedPromise,
+    cancel() {
+      hasCanceled_ = true;
+    },
+  };
+};

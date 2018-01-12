@@ -20,12 +20,14 @@ export default class Settings extends React.Component {
   render() {
     return (
       <PageContent title='Settings'>
-        <Input
-          fluid
-          label='Registry'
-          placeholder='eg. https://registry.kevoree.org'
-          value={this.state.registry || 'https://registry.kevoree.org'}
-          onChange={(evt) => this.onChange('registry', evt.target.value)} />
+        <div className='Settings-container'>
+          <Input
+            fluid
+            label='Registry'
+            placeholder='eg. https://registry.kevoree.org'
+            value={this.state.registry || 'https://registry.kevoree.org'}
+            onChange={(evt) => this.onChange('registry', evt.target.value)} />
+        </div>
       </PageContent>
     );
   }

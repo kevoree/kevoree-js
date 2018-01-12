@@ -1,16 +1,16 @@
-.tile-container {
+.Tile {
   background-color: #333;
   box-sizing: border-box;
   display: flex;
-  flex-flow: column;
   flex-grow: 1;
-  height: 100%;
+  flex-flow: column;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
   padding: 4px;
+  position: relative;
 }
 
-.tile-header {
+.Tile-header {
   display: flex;
   justify-content: space-between;
   flex: 0 1 25px;
@@ -27,15 +27,15 @@
   user-select: none;
 }
 
-.tile-name:hover {
+.Tile-name:hover {
   cursor: grab;
 }
 
-.tile-name:active {
+.Tile-name:active {
   cursor: grabbing;
 }
 
-.tile-header .tile-name {
+.Tile-header .Tile-name {
   display: flex;
   flex: 2;
   font-size: 16px;
@@ -45,16 +45,15 @@
   text-overflow: ellipsis;
 }
 
-.tile-content {
-  position: relative;
-  margin: 3px;
-  display: flex;
-  flex-grow: 1;
-  justify-content: center;
-  align-content: center;
+.Tile-header .Tile-actions .Tile-action i:hover {
+  cursor: pointer;
 }
 
-.tile-overlay {
+.Tile-header .Tile-actions .Tile-action:active i {
+  color: #ccc;
+}
+
+.Tile-overlay, .Tile-stopped-overlay {
   z-index: 2;
   box-sizing: border-box;
   position: absolute;
@@ -66,18 +65,37 @@
   width: 100%;
 }
 
-.tile-content iframe {
+.Tile-stopped-overlay {
+  background-color: #000;
+  opacity: 0.8;
+  display: flex;
+  flex-grow: 1;
+  align-content: center;
+  justify-content: center;
+}
+
+.Tile-stopped-overlay > * {
+  align-self: center;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.Tile-content {
+  position: relative;
+  margin: 3px;
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-content: center;
+}
+
+.Tile-content iframe {
   box-sizing: border-box;
   position: absolute;
   top: 0;
-  right: 0;
   bottom: 0;
   left: 0;
-  width: 100%;
+  right: 0;
   height: 100%;
-}
-
-.react-resizable > .react-resizable-handle::after {
-  border-right: 2px solid rgba(255, 255, 255, 0.4);
-  border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+  width: 100%;
 }

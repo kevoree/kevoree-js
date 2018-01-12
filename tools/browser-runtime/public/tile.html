@@ -16,8 +16,8 @@
 <body>
   <div id="tile">Loading...</div>
   <script type="text/javascript">
-    window.React = parent.React;
-    window.ReactDOM = parent.ReactDOM;
+    const React = window.React = parent.React;
+    const ReactDOM = window.ReactDOM = parent.ReactDOM;
 
     const params = decodeURI(window.location.search.substr(1))
       .split('&')
@@ -32,8 +32,7 @@
       const instance = parent.KevoreeInstanceLoader.require(params.path);
       const ui = ReactDOM.render(
         React.createElement(instance.uiFactory(), { instance: instance }),
-        document.getElementById('tile')
-      );
+        document.getElementById('tile'));
       instance.ui = ui;
       console.log(`Tile for instance ${params.path} created successfully`);
     } catch (err) {

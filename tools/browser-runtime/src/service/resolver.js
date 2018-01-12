@@ -1,9 +1,9 @@
 import KevoreeModuleLoader from 'kevoree-module-loader';
 
-export default class Resolver {
+export default class ResolverService {
 
-  constructor(logger) {
-    this.logger = logger;
+  constructor(loggerService) {
+    this.logger = loggerService.create('Resolver');
   }
 
   install(du) {

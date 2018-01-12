@@ -5,6 +5,7 @@
 }
 
 .PageContent-header {
+  background: #444 !important;
   height: 80px !important;
   flex: 0 0 80px !important;
   margin: 0 !important;
@@ -17,5 +18,4 @@
   flex-flow: column;
   flex-grow: 1;
   height: 100%;
-  padding: 10px;
 }

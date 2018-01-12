@@ -21,7 +21,7 @@ export default class KevScript extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { value: props.defaultScript };
+    this.state = { value: props.value };
     this.ctxVars = {};
   }
 
@@ -71,6 +71,15 @@ export default class KevScript extends React.Component {
         this.props.onChange(editor.getValue());
       }
     });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.state.value !== nextProps.value) {
+      this.setState({ value: nextProps.value });
+      if (this.editor) {
+        this.editor.setValue(nextProps.value);
+      }
+    }
   }
 
   render() {

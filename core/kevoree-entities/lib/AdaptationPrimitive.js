@@ -23,7 +23,7 @@ const AdaptationPrimitive = Class({
     this.mapper = mapper;
     this.adaptModel = model;
     this.modelElement = modelElement;
-    this.log = this.node.log;
+    this.log = this.node.kCore.loggerFactory.create(this.toString(), this.node.name);
   },
 
   /**

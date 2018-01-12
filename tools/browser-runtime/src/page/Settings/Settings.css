@@ -1,3 +1,7 @@
+.Settings-container {
+  padding: 15px;
+}
+
 .Settings-header {
   color: #eee !important;
 }

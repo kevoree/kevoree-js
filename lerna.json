@@ -11,6 +11,7 @@
     "libraries/comp/consoleprinter",
     "libraries/comp/tweet",
     "libraries/comp/chart",
+    "libraries/comp/webview",
     "libraries/comp/msgsender",
     "libraries/group/centralizedws",
     "libraries/group/remotews"

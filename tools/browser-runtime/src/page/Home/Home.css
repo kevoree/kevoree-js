@@ -3,3 +3,30 @@
   flex-grow: 1;
   flex-flow: column;
 }
+
+.Grid {
+  display: block;
+}
+
+.Grid-elem {
+  display: flex;
+  flex-grow: 1;
+}
+
+.react-grid-placeholder {
+  background: #eee !important;
+  opacity: 0.3 !important;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.react-grid-item > .react-resizable-handle::after {
+  border-right: 2px solid rgba(255, 255, 255, 0.4);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.Home-empty {
+  display: flex;
+  flex-grow: 1;
+  padding: 15px;
+}

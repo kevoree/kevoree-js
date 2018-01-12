@@ -5,34 +5,71 @@ import { Menu, Button } from 'semantic-ui-react';
 import PageContent from '../../component/PageContent';
 import KevScript from '../../component/KevScript';
 
+import { makeCancelable } from '../../lib/util';
+
 import './Editor.css';
 
 export default class Editor extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { script: '// Write your KevScript directly here\n' };
+    this.state = {
+      model: null,
+      script: props.services.kevs.script,
+      canSubmit: false,
+      processing: false
+    };
   }
 
-  handleChange = (script) => {
-    this.setState({ script });
+  submit = () => {
+    if (this.state.model) {
+      this.setState({ canSubmit: false, processing: true }, () => {
+        this.deployPromise = makeCancelable(this.props.services.core.deploy(this.state.model));
+        this.deployPromise.promise.then(
+          () => this.setState({ script: '' }),
+          (err) => {
+            if (!err.isCanceled) {
+              console.error('Deploy failed with submitted script\n' + err.stack);
+            }
+          }
+        );
+      });
+    }
   }
 
-  submit = () => {}
+  onChange = (script) => {
+    this.props.services.kevs.script = script;
+    this.setState({ canSubmit: false, processing: false });
+  }
+
+  onLintSuccess = ({ model }) => {
+    this.setState({ canSubmit: true, processing: false, model });
+  }
+
+  onLintError = () => {
+    this.setState({ canSubmit: false, processing: false });
+  }
+
+  componentWillUnmount() {
+    if (this.deployPromise) {
+      this.deployPromise.cancel();
+    }
+  }
 
   render() {
     const subtitle = (
       <span>
-        Runtime adaptations using Kevoree's own script DSL&nbsp;-&nbsp;
-        <a href='http://kevoree.org/docs/kevscript/introducing-kevscript.html' target='_blank' rel='noopener noreferrer'>more info</a>
+        Runtime adaptations using Kevoree Script (<a href='http://kevoree.org/docs/kevscript/introducing-kevscript.html' target='_blank' rel='noopener noreferrer'>what is it?</a>)
       </span>
     );
 
     const kevsProps = {
-      kevs: this.props.kevs,
+      kevs: this.props.services.kevs,
       getModel: this.props.getModel,
-      defaultScript: this.state.script,
-      onChange: this.handleChange
+      value: this.state.script,
+      onChange: this.onChange,
+      onLintSuccess: this.onLintSuccess,
+      onLintError: this.onLintError,
     };
 
     return (
@@ -40,10 +77,17 @@ export default class Editor extends React.Component {
         <div className='Editor-container'>
           <KevScript {...kevsProps} />
         </div>
-        <Menu secondary>
+        <Menu secondary className='Editor-menu'>
           <Menu.Menu position='right'>
             <Menu.Item>
-              <Button primary onClick={this.submit}>Submit script</Button>
+              <Button
+                content='Submit'
+                icon='play'
+                labelPosition='right'
+                onClick={this.submit}
+                disabled={!this.state.canSubmit}
+                loading={this.state.processing}
+                primary />
             </Menu.Item>
           </Menu.Menu>
         </Menu>
@@ -53,6 +97,6 @@ export default class Editor extends React.Component {
 }
 
 Editor.propTypes = {
-  kevs: PropTypes.object.isRequired,
+  services: PropTypes.object.isRequired,
   getModel: PropTypes.func.isRequired,
 };

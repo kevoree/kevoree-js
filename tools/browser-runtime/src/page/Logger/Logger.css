@@ -1,0 +1,67 @@
+.Logger-container {
+  padding: 10px;
+}
+
+.Logger {
+  flex-grow: 100;
+}
+
+.Logger em.empty {
+  margin: auto;
+}
+
+.Logger .item {
+  padding: 0 !important;
+}
+
+.Logger .item .content {
+  display: flex;
+  font-family: monospace !important;
+  padding: 3px 5px !important;
+}
+
+.Logger .item .content .logger-fixed {
+  width: 150px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-right: 10px;
+}
+
+.Logger .item .content pre {
+  margin: 0;
+}
+
+.Logger-line-info, .Logger-line-info .header {
+  color: #464a4e !important;
+  background-color: #e7e8ea !important;
+  border-color: #dddfe2 !important;
+}
+
+.Logger-line-debug, .Logger-line-debug .header {
+  color: #004085 !important;
+  background-color: #cce5ff !important;
+  border-color: #b8daff !important;
+}
+
+.Logger-line-warn, .Logger-line-warn .header {
+  color: #856404 !important;
+  background-color: #fff3cd !important;
+  border-color: #ffeeba !important;
+}
+
+.Logger-line-error, .Logger-line-error .header {
+  color: #721c24 !important;
+  background-color: #f8d7da !important;
+  border-color: #f5c6cb !important;
+}
+
+.Logger-menu {
+  margin-bottom: 0 !important;
+}
+
+@media screen and (max-width:880px) {
+  .Logger .item .content .logger-fixed {
+    width: 50px;
+  }
+}
