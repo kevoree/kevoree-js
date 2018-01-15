@@ -1,6 +1,6 @@
 {
   "name": "kevoree-core",
-  "version": "9.0.20",
+  "version": "9.0.21",
   "description": "Kevoree Javascript platform core",
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "main": "./kevoree-core.js",
@@ -34,7 +34,7 @@
     "eslint": "^4.3.0",
     "eslint-config-kevoree": "^1.0.1",
     "kevoree-const": "^2.0.1",
-    "kevoree-entities": "^9.2.3",
+    "kevoree-entities": "^9.2.4",
     "kevoree-kevscript": "^5.0.9",
     "kevoree-logger": "^1.0.2",
     "kevoree-registry-client": "^3.0.1",

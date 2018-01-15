@@ -1,6 +1,6 @@
 {
   "name": "kevoree-scripts",
-  "version": "1.0.16",
+  "version": "1.1.0",
   "description": "Configuration and scripts for Kevoree",
   "scripts": {
     "test": "echo \"no tests\"",
@@ -36,8 +36,8 @@
     "fs-extra": "^4.0.1",
     "json-loader": "^0.5.4",
     "kevoree-const": "^2.0.1",
-    "kevoree-core": "^9.0.20",
-    "kevoree-gen-model": "^3.0.21",
+    "kevoree-core": "^9.0.21",
+    "kevoree-gen-model": "^3.0.22",
     "kevoree-hash": "^3.0.3",
     "kevoree-kevscript": "^5.0.9",
     "kevoree-library": "^5.0.13",
