@@ -1,6 +1,6 @@
 {
   "name": "kevoree-comp-msgsender",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "main": "./lib/MsgSender.js",
   "kevoree": {
     "namespace": "kevoree",
@@ -30,7 +30,7 @@
     "eslint": "^4.3.0",
     "eslint-config-kevoree": "^1.0.1",
     "eslint-plugin-react": "^7.4.0",
-    "kevoree-scripts": "^1.1.0",
+    "kevoree-scripts": "^1.1.1",
     "mocha": "^3.4.2"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "kevoree-comp-chart",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "main": "./lib/Chart.js",
   "description": "Displays received inputs in a chart (the chart is only available for browser runtimes)",
   "kevoree": {
@@ -31,7 +31,7 @@
     "babel-preset-react": "^6.16.0",
     "eslint": "^4.3.0",
     "eslint-config-kevoree": "^1.0.1",
-    "kevoree-scripts": "^1.1.0",
+    "kevoree-scripts": "^1.1.1",
     "mocha": "^3.4.2",
     "react": "^15.4.1",
     "react-dom": "^16.0.0",
