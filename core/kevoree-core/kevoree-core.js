@@ -61,7 +61,9 @@ KevoreeCore.prototype = {
       this.currentModel.addNodes(node);
 
       // hang-on until the core is stopped
-      this.loopId = setInterval(() => {}, 10e10);
+      if (process.stdin) {
+        process.stdin.resume();
+      }
 
       this.log.info('Platform node name: ' + nodeName);
     } else {
@@ -77,6 +79,9 @@ KevoreeCore.prototype = {
     if (this.nodeInstance === null) {
       this.log.info('Stopping Kevoree...');
       clearInterval(this.loopId);
+      if (process.stdin) {
+        process.stdin.emit('end');
+      }
       this.emitter.emit('stopped');
       return Promise.resolve();
 
@@ -119,13 +124,17 @@ KevoreeCore.prototype = {
         return this.deploy(stopModel)
           .then(() => {
             this.log.info('Platform stopped: ' + this.nodeInstance.getName());
-            clearInterval(this.loopId);
+            if (process.stdin) {
+              process.stdin.emit('end');
+            }
             this.emitter.emit('stopped');
           })
           .catch((err) => {
             this.log.error(err);
             this.log.error('Something went wrong while stopping Kevoree. Force stop.');
-            clearInterval(this.loopId);
+            if (process.stdin) {
+              process.stdin.emit('end');
+            }
             this.emitter.emit('stopped');
             throw err;
           });
