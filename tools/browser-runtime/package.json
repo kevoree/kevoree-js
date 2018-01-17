@@ -1,6 +1,6 @@
 {
   "name": "browser-runtime",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "dependencies": {
     "autoprefixer": "7.1.2",
@@ -28,7 +28,7 @@
     "fs-extra": "3.0.1",
     "html-webpack-plugin": "2.29.0",
     "jest": "20.0.4",
-    "kevoree-core": "^9.0.21",
+    "kevoree-core": "^9.0.22",
     "kevoree-kevscript": "^5.0.9",
     "kevoree-module-loader": "^1.0.2",
     "object-assign": "4.1.1",

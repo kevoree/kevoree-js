@@ -1,6 +1,6 @@
 {
   "name": "kevoree-chan-remotews",
-  "version": "5.3.16",
+  "version": "5.3.17",
   "main": "./lib/RemoteWSChan.js",
   "description": "A Kevoree chan that uses an external remote WebSocket broadcast server to share messages",
   "kevoree": {
@@ -32,7 +32,7 @@
   "devDependencies": {
     "eslint": "^4.3.0",
     "eslint-config-kevoree": "^1.0.1",
-    "kevoree-scripts": "^1.1.1",
+    "kevoree-scripts": "^1.1.2",
     "mocha": "^3.4.2"
   },
   "keywords": [

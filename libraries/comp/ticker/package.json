@@ -1,6 +1,6 @@
 {
   "name": "kevoree-comp-ticker",
-  "version": "5.3.22",
+  "version": "5.3.23",
   "description": "A Kevoree component that sends a 'tick' message at user-defined intervals",
   "main": "lib/Ticker.js",
   "kevoree": {
@@ -31,7 +31,7 @@
     "eslint": "^4.3.0",
     "eslint-config-kevoree": "^1.0.1",
     "eslint-plugin-react": "^7.4.0",
-    "kevoree-scripts": "^1.1.1",
+    "kevoree-scripts": "^1.1.2",
     "mocha": "^3.4.2"
   },
   "repository": {

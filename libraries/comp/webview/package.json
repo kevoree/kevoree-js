@@ -1,6 +1,6 @@
 {
   "name": "kevoree-comp-webview",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Displays a Website in a Kevoree Browser Runtime",
   "main": "lib/Webview.js",
   "kevoree": {
@@ -25,7 +25,7 @@
   "devDependencies": {
     "eslint": "^4.3.0",
     "eslint-config-kevoree": "^1.0.0",
-    "kevoree-scripts": "^1.1.1",
+    "kevoree-scripts": "^1.1.2",
     "mocha": "^3.4.2"
   }
 }
